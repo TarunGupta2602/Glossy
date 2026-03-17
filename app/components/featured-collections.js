@@ -28,7 +28,7 @@ export default async function FeaturedCollections() {
                         </h2>
                     </div>
                     <Link
-                        href="/collections"
+                        href="/collection"
                         className="text-sm font-bold text-gray-900 border-b-2 border-[#E91E63] pb-1 hover:text-[#E91E63] transition-all w-fit mt-4"
                     >
                         View All Collections
