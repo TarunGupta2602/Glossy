@@ -166,7 +166,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 </svg>
                             </div>
 
-                            {/* Add to Bag CTA */}
+                            {/* Add new to Bag CTA */}
                             <button
                                 onClick={handleAddToBag}
                                 className={`flex-1 rounded-xl text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300 active:scale-[0.98] ${addedToBag
