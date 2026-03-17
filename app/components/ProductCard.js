@@ -56,11 +56,11 @@ export default function ProductCard({ product }) {
 
                 <div className="flex items-center justify-between mt-1">
                     <p className="text-[14px] font-bold text-gray-800">
-                        ${price}
+                        ₹{price}
                     </p>
                     {product.original_price && product.original_price > product.price && (
                         <p className="text-[12px] text-gray-400 line-through">
-                            ${product.original_price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            ₹{product.original_price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </p>
                     )}
                 </div>

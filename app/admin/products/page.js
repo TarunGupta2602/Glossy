@@ -132,7 +132,7 @@ export default function ProductsListPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 font-semibold text-gray-900">
-                                                ${product.price}
+                                                ₹{product.price}
                                             </td>
                                             <td className="px-6 py-4 text-right space-x-3">
                                                 <Link

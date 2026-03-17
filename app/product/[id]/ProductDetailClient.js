@@ -125,7 +125,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                         {/* Price */}
                         <p className="mt-2 text-[20px] font-bold text-gray-900">
-                            ${price}
+                            ₹{price}
                         </p>
 
                         {/* Divider */}
@@ -202,7 +202,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                             </svg>
                             <p className="text-[12px] text-gray-400 leading-relaxed">
-                                Free insured express shipping on jewelry over $100. Complimentary gift wrapping included.
+                                Free insured express shipping on jewelry over ₹10,000. Complimentary gift wrapping included.
                             </p>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                             {p.name}
                                         </h3>
                                         <span className="text-[11px] text-gray-400 mt-0.5">{cat}</span>
-                                        <p className="text-[13px] font-bold text-[#E91E63] mt-1">${pPrice}</p>
+                                        <p className="text-[13px] font-bold text-[#E91E63] mt-1">₹{pPrice}</p>
                                     </Link>
                                 );
                             })}

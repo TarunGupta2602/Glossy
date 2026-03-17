@@ -118,7 +118,7 @@ export default function AddProductPage() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Price ($)</label>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Price (₹)</label>
                                 <input
                                     type="number"
                                     placeholder="0.00"

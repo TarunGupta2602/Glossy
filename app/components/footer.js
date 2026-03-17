@@ -22,7 +22,7 @@ export default function Footer() {
                             <li><Link href="/shop" className="text-gray-500 hover:text-[#E91E63] transition-colors">New Arrivals</Link></li>
                             <li><Link href="/earrings" className="text-gray-500 hover:text-[#E91E63] transition-colors">Earrings</Link></li>
                             <li><Link href="/necklaces" className="text-gray-500 hover:text-[#E91E63] transition-colors">Necklaces</Link></li>
-                            <li><Link href="/shop/gift-cards" className="text-gray-500 hover:text-[#E91E63] transition-colors">Gift Cards</Link></li>
+
                         </ul>
                     </div>
 
@@ -33,7 +33,7 @@ export default function Footer() {
                             <li><Link href="/shipping-returns" className="text-gray-500 hover:text-[#E91E63] transition-colors">Shipping & Returns</Link></li>
                             <li><Link href="/contact" className="text-gray-500 hover:text-[#E91E63] transition-colors">Contact Us</Link></li>
                             <li><Link href="/faqs" className="text-gray-500 hover:text-[#E91E63] transition-colors">FAQs</Link></li>
-                            <li><Link href="/store-locator" className="text-gray-500 hover:text-[#E91E63] transition-colors">Store Locator</Link></li>
+
                         </ul>
                     </div>
 

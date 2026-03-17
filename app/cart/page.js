@@ -68,7 +68,7 @@ export default function CartPage() {
                                             <Link href={`/product/${item.id}`} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
                                                 {item.name}
                                             </Link>
-                                            <p className="text-lg font-bold text-gray-900">${(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                            <p className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                         </div>
                                         <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-4">{item.category}</p>
                                     </div>
@@ -112,7 +112,7 @@ export default function CartPage() {
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Subtotal</span>
-                                <span className="font-semibold text-gray-900">${cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="font-semibold text-gray-900">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Shipping</span>
@@ -120,14 +120,14 @@ export default function CartPage() {
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Tax</span>
-                                <span className="font-semibold text-gray-900">$0.00</span>
+                                <span className="font-semibold text-gray-900">₹0.00</span>
                             </div>
                         </div>
 
                         <div className="border-t border-gray-200 pt-6 mb-8">
                             <div className="flex justify-between items-end">
                                 <span className="text-base font-bold text-gray-900">Total</span>
-                                <span className="text-2xl font-bold text-[#E91E63]">${cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="text-2xl font-bold text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                         </div>
 

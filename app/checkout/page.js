@@ -287,7 +287,7 @@ export default function CheckoutPage() {
                                             <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-1">{item.category}</p>
                                             <div className="flex justify-between items-center mt-1">
                                                 <span className="text-xs text-gray-500 font-semibold">Qty: {item.quantity}</span>
-                                                <span className="text-sm font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                                                <span className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -297,7 +297,7 @@ export default function CheckoutPage() {
                             <div className="border-t border-gray-100 mt-8 pt-6 space-y-3">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Subtotal</span>
-                                    <span className="font-bold text-gray-900">${cartTotal.toFixed(2)}</span>
+                                    <span className="font-bold text-gray-900">₹{cartTotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Shipping</span>
@@ -305,7 +305,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
-                                    <span className="text-2xl font-black text-[#E91E63]">${cartTotal.toFixed(2)}</span>
+                                    <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

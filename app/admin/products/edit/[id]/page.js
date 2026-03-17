@@ -135,7 +135,7 @@ export default function EditProductPage({ params }) {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Price (USD)</label>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Price (INR)</label>
                                 <input
                                     type="number"
                                     className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"

@@ -94,12 +94,12 @@ export default function AdminOrdersPage() {
                                                     </p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="text-sm font-black text-gray-900">${parseFloat(order.total_amount).toFixed(2)}</p>
+                                                    <p className="text-sm font-black text-gray-900">₹{parseFloat(order.total_amount).toFixed(2)}</p>
                                                 </td>
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${order.status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                        order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                                                            order.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
-                                                                'bg-gray-100 text-gray-600'
+                                                    order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                                                        order.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
+                                                            'bg-gray-100 text-gray-600'
                                                     }`}>
                                                     {order.status}
                                                 </span>
@@ -174,9 +174,9 @@ export default function AdminOrdersPage() {
                                                 }
                                             }}
                                             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest outline-none border-none cursor-pointer ${selectedOrder.status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                    selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                                                        selectedOrder.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
-                                                            'bg-gray-100 text-gray-700'
+                                                selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                                                    selectedOrder.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
+                                                        'bg-gray-100 text-gray-700'
                                                 }`}
                                         >
                                             <option value="paid">Paid</option>
@@ -200,7 +200,7 @@ export default function AdminOrdersPage() {
 
                             <div className="flex justify-between items-center bg-[#E91E63] text-white p-6 rounded-2xl">
                                 <span className="text-sm font-bold tracking-widest uppercase">Total Amount Paid</span>
-                                <span className="text-2xl font-black">${parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
+                                <span className="text-2xl font-black">₹{parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
                             </div>
                         </div>
                     </div>

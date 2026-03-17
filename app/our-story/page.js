@@ -16,15 +16,7 @@ export default function OurStoryPage() {
                     Crafted with passion. Designed for timeless elegance.
                 </p>
 
-                {/* Image */}
-                <div className="relative w-full h-[400px] rounded-2xl overflow-hidden mb-16">
-                    <Image
-                        src="/heroimage.png" // put your image in public folder
-                        alt="Our Story"
-                        fill
-                        className="object-cover"
-                    />
-                </div>
+
 
                 {/* Content */}
                 <div className="space-y-8 text-gray-600 leading-relaxed text-lg">

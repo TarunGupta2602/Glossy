@@ -49,7 +49,7 @@ export default function SearchClient({ query, products = [] }) {
                                         {category}
                                     </p>
                                     <p className="text-sm font-black text-[#E91E63]">
-                                        ${price}
+                                        ₹{price}
                                     </p>
                                 </div>
                             </Link>
