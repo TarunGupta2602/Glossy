@@ -12,7 +12,7 @@ export default function CheckoutPage() {
     const { user } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
-    const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, success, error
+    const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, success, error new
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
         lastName: "",
