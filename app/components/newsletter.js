@@ -1,35 +1,83 @@
+"use client";
+
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
 export default function Newsletter() {
+    const [email, setEmail] = useState("");
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setLoading(true);
+        setMessage("");
+
+        // simple validation
+        if (!email.includes("@")) {
+            setMessage("Enter a valid email");
+            setLoading(false);
+            return;
+        }
+
+        const { error } = await supabase
+            .from("newsletter_subscribers")
+            .insert([{ email }]);
+
+        if (error) {
+            if (error.code === "23505") {
+                setMessage("You are already subscribed!");
+            } else {
+                setMessage("Something went wrong");
+            }
+        } else {
+            setMessage("Subscribed successfully 🎉");
+            setEmail("");
+        }
+
+        setLoading(false);
+    }
+
     return (
         <section className="py-28 bg-white text-center">
             <div className="max-w-3xl mx-auto px-6">
 
-                {/* Heading */}
                 <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
                     Join the Glossy List
                 </h2>
 
-                {/* Subtext */}
                 <p className="text-gray-500 text-[16px] mb-10">
                     Sign up for early access to new drops and exclusive offers.
                 </p>
 
-                {/* Form */}
-                <form className="flex items-center justify-center gap-3 max-w-xl mx-auto">
-
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex items-center justify-center gap-3 max-w-xl mx-auto"
+                >
                     <input
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="flex-1 px-5 py-4 rounded-xl border border-gray-200 bg-[#f7f7f7] text-gray-700 placeholder-gray-400 outline-none focus:ring-1 focus:ring-gray-300"
+                        className="flex-1 px-5 py-4 rounded-xl border border-gray-200 bg-[#f7f7f7]"
                         required
                     />
 
                     <button
                         type="submit"
-                        className="px-8 py-4 rounded-xl bg-[#0f172a] text-white font-semibold hover:opacity-90 transition"
+                        disabled={loading}
+                        className="px-8 py-4 rounded-xl bg-[#0f172a] text-white font-semibold disabled:opacity-50"
                     >
-                        Join
+                        {loading ? "Joining..." : "Join"}
                     </button>
                 </form>
+
+                {/* Message */}
+                {message && (
+                    <p className="mt-4 text-sm text-gray-600">
+                        {message}
+                    </p>
+                )}
 
             </div>
         </section>

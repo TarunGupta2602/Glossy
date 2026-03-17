@@ -19,7 +19,7 @@ export default function Footer() {
                     <div>
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6">Shop</h3>
                         <ul className="space-y-4">
-                            <li><Link href="/shop/new-arrivals" className="text-gray-500 hover:text-[#E91E63] transition-colors">New Arrivals</Link></li>
+                            <li><Link href="/shop" className="text-gray-500 hover:text-[#E91E63] transition-colors">New Arrivals</Link></li>
                             <li><Link href="/shop/earrings" className="text-gray-500 hover:text-[#E91E63] transition-colors">Earrings</Link></li>
                             <li><Link href="/shop/necklaces" className="text-gray-500 hover:text-[#E91E63] transition-colors">Necklaces</Link></li>
                             <li><Link href="/shop/gift-cards" className="text-gray-500 hover:text-[#E91E63] transition-colors">Gift Cards</Link></li>
