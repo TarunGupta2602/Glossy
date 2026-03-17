@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
     const categoryName = product.categories?.name || "Jewelry";
+    const { addToCart } = useCart();
 
     // Build full image list: main image first, then gallery extras
     const allImages = [
@@ -39,6 +41,14 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     })();
 
     const handleAddToBag = () => {
+        addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price || 0,
+            image: product.main_image || "/placeholder.jpg",
+            category: categoryName
+        }, qty);
+
         setAddedToBag(true);
         setTimeout(() => setAddedToBag(false), 2200);
     };

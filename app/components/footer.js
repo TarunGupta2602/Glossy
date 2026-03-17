@@ -20,8 +20,8 @@ export default function Footer() {
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6">Shop</h3>
                         <ul className="space-y-4">
                             <li><Link href="/shop" className="text-gray-500 hover:text-[#E91E63] transition-colors">New Arrivals</Link></li>
-                            <li><Link href="/shop/earrings" className="text-gray-500 hover:text-[#E91E63] transition-colors">Earrings</Link></li>
-                            <li><Link href="/shop/necklaces" className="text-gray-500 hover:text-[#E91E63] transition-colors">Necklaces</Link></li>
+                            <li><Link href="/earrings" className="text-gray-500 hover:text-[#E91E63] transition-colors">Earrings</Link></li>
+                            <li><Link href="/necklaces" className="text-gray-500 hover:text-[#E91E63] transition-colors">Necklaces</Link></li>
                             <li><Link href="/shop/gift-cards" className="text-gray-500 hover:text-[#E91E63] transition-colors">Gift Cards</Link></li>
                         </ul>
                     </div>
@@ -30,10 +30,10 @@ export default function Footer() {
                     <div>
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6">Support</h3>
                         <ul className="space-y-4">
-                            <li><Link href="/support/shipping-returns" className="text-gray-500 hover:text-[#E91E63] transition-colors">Shipping & Returns</Link></li>
-                            <li><Link href="/support/contact" className="text-gray-500 hover:text-[#E91E63] transition-colors">Contact Us</Link></li>
-                            <li><Link href="/support/faqs" className="text-gray-500 hover:text-[#E91E63] transition-colors">FAQs</Link></li>
-                            <li><Link href="/support/store-locator" className="text-gray-500 hover:text-[#E91E63] transition-colors">Store Locator</Link></li>
+                            <li><Link href="/shipping-returns" className="text-gray-500 hover:text-[#E91E63] transition-colors">Shipping & Returns</Link></li>
+                            <li><Link href="/contact" className="text-gray-500 hover:text-[#E91E63] transition-colors">Contact Us</Link></li>
+                            <li><Link href="/faqs" className="text-gray-500 hover:text-[#E91E63] transition-colors">FAQs</Link></li>
+                            <li><Link href="/store-locator" className="text-gray-500 hover:text-[#E91E63] transition-colors">Store Locator</Link></li>
                         </ul>
                     </div>
 

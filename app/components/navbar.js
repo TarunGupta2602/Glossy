@@ -2,9 +2,23 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const { cartCount } = useCart();
+    const router = useRouter();
+
+    const handleSearch = (e) => {
+        if (e.key === "Enter" && searchQuery.trim()) {
+            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            setIsSearchOpen(false);
+            setSearchQuery("");
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4">
@@ -34,13 +48,29 @@ export default function Navbar() {
 
                 {/* Right: Actions */}
                 <div className="flex items-center space-x-5">
-                    {/* Search Icon */}
-                    <button className="text-gray-800 hover:text-gray-500 transition-colors" aria-label="Search">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
+                    {/* Search Bar */}
+                    <div className="relative flex items-center">
+                        <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-48 sm:w-64 opacity-100" : "w-0 opacity-0 overflow-hidden"}`}>
+                            <input
+                                type="text"
+                                placeholder="Search jewelry..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleSearch}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:border-[#E91E63] text-gray-800"
+                            />
+                        </div>
+                        <button
+                            className={`text-gray-800 hover:text-[#E91E63] transition-colors p-1 ${isSearchOpen ? "ml-2" : ""}`}
+                            aria-label="Search"
+                            onClick={() => setIsSearchOpen(!isSearchOpen)}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </div>
 
                     {/* User Icon */}
                     <button className="hidden sm:block text-gray-800 hover:text-gray-500 transition-colors" aria-label="User profile">
@@ -57,9 +87,11 @@ export default function Navbar() {
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <path d="M16 10a4 4 0 0 1-8 0"></path>
                         </svg>
-                        <span className="absolute -top-1.5 -right-2 bg-[#E91E63] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                            0
-                        </span>
+                        {cartCount > 0 && (
+                            <span className="absolute -top-1.5 -right-2 bg-[#E91E63] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110">
+                                {cartCount}
+                            </span>
+                        )}
                     </Link>
 
                     {/* Mobile Menu Button */}
