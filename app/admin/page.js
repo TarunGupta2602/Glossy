@@ -8,14 +8,26 @@ export default function AdminPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [orderCount, setOrderCount] = useState(0);
 
     // Check for existing session on mount
     useEffect(() => {
         const session = localStorage.getItem("glossy_admin_logged_in");
         if (session === "true") {
             setIsLoggedIn(true);
+            fetchStats();
         }
     }, []);
+
+    const fetchStats = async () => {
+        const { count, error } = await require("@/lib/supabaseClient").supabase
+            .from("orders")
+            .select("*", { count: 'exact', head: true });
+
+        if (!error) {
+            setOrderCount(count || 0);
+        }
+    };
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -136,6 +148,33 @@ export default function AdminPage() {
                             <p className="text-gray-500 text-sm flex-grow">Control your inventory. Add new items, update pricing, or manage product visibility.</p>
                             <div className="mt-6 flex items-center text-black font-semibold text-sm">
                                 View All Products
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* Manage Orders Card */}
+                    <Link href="/admin/orders" className="group">
+                        <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all border-l-4 border-l-blue-600 h-full flex flex-col">
+                            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                                    <path d="M3 6h18" />
+                                    <path d="M16 10a4 4 0 0 1-8 0" />
+                                </svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-3">Manage Orders</h2>
+                            <p className="text-gray-500 text-sm flex-grow">Track customer orders. View order history, payment statuses, and shipping details.</p>
+
+                            <div className="mt-4 flex items-center gap-2">
+                                <span className="text-2xl font-black text-blue-600">{orderCount}</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Orders</span>
+                            </div>
+
+                            <div className="mt-6 flex items-center text-blue-600 font-semibold text-sm">
+                                View All Orders
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>

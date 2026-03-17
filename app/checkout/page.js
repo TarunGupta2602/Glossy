@@ -3,20 +3,147 @@
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function CheckoutPage() {
-    const { cart, cartTotal, isInitialized } = useCart();
+    const { cart, cartTotal, isInitialized, clearCart } = useCart();
     const { user } = useAuth();
     const router = useRouter();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, success, error
+    const [shippingInfo, setShippingInfo] = useState({
+        firstName: "",
+        lastName: "",
+        address: "",
+        city: "",
+        phone: ""
+    });
 
     useEffect(() => {
         if (isInitialized && !user) {
             router.push("/cart");
         }
     }, [user, isInitialized, router]);
+
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+    const handlePayment = async () => {
+        setIsProcessing(true);
+        const res = await loadRazorpay();
+
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            setIsProcessing(false);
+            return;
+        }
+
+        try {
+            // 1. Create order on server
+            const orderResponse = await fetch("/api/razorpay", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: cartTotal,
+                    currency: "INR",
+                }),
+            });
+
+            const orderData = await orderResponse.json();
+
+            if (!orderResponse.ok) {
+                throw new Error(orderData.error || "Failed to create order");
+            }
+
+            // 2. Open Razorpay Checkout
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: "GLOSSY",
+                description: "Jewelry Purchase",
+                order_id: orderData.id,
+                handler: async function (response) {
+                    // Payment successful
+                    try {
+                        const storeOrderRes = await fetch("/api/orders", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                user_id: user.id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                total_amount: cartTotal,
+                                shipping_address: shippingInfo,
+                                contact_phone: shippingInfo.phone
+                            }),
+                        });
+
+                        if (!storeOrderRes.ok) {
+                            const errorData = await storeOrderRes.json();
+                            throw new Error(errorData.error || "Failed to store order");
+                        }
+
+                        setPaymentStatus("success");
+                        clearCart();
+                    } catch (error) {
+                        console.error("Error storing order:", error);
+                        alert("Payment was successful, but we had trouble saving your order. Please contact support.");
+                        setPaymentStatus("error");
+                    }
+                },
+                prefill: {
+                    name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+                    email: user.email,
+                    contact: shippingInfo.phone,
+                },
+                theme: {
+                    color: "#E91E63",
+                },
+                modal: {
+                    ondismiss: function () {
+                        setIsProcessing(false);
+                    }
+                }
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
+        } catch (error) {
+            console.error("Payment Error:", error);
+            alert("Something went wrong with the payment.");
+            setPaymentStatus("error");
+            setIsProcessing(false);
+        }
+    };
+
+    if (paymentStatus === "success") {
+        return (
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <h1 className="text-3xl font-black text-gray-900 mb-4">Payment Successful!</h1>
+                <p className="text-gray-500 max-w-sm mb-10 text-lg">Thank you for your purchase. We've sent a confirmation email to {user.email}.</p>
+                <Link
+                    href="/shop"
+                    className="bg-gray-900 text-white px-10 py-5 rounded-2xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all"
+                >
+                    Continue Shopping
+                </Link>
+            </div>
+        );
+    }
 
     if (!isInitialized || !user) {
         return (
@@ -47,7 +174,7 @@ export default function CheckoutPage() {
                 <h1 className="text-[32px] font-black tracking-tight text-gray-900 mb-10">Secure Checkout</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                    {/* Left: Information Forms Placeholder */}
+                    {/* Left: Information Forms */}
                     <div className="bg-white rounded-3xl p-8 shadow-sm space-y-8">
                         <div>
                             <h2 className="text-xl font-bold mb-6 flex items-center gap-3">
@@ -59,8 +186,9 @@ export default function CheckoutPage() {
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Email Address</label>
                                     <input
                                         type="email"
-                                        defaultValue={user.email}
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                        readOnly
+                                        value={user.email}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none text-gray-500"
                                     />
                                 </div>
                             </div>
@@ -74,21 +202,73 @@ export default function CheckoutPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">First Name</label>
-                                    <input type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]" />
+                                    <input
+                                        type="text"
+                                        placeholder="Enter first name"
+                                        value={shippingInfo.firstName}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, firstName: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Last Name</label>
-                                    <input type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]" />
+                                    <input
+                                        type="text"
+                                        placeholder="Enter last name"
+                                        value={shippingInfo.lastName}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, lastName: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
                                 </div>
                                 <div className="col-span-2 space-y-1">
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Address</label>
-                                    <input type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]" />
+                                    <input
+                                        type="text"
+                                        placeholder="Street address"
+                                        value={shippingInfo.address}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">City</label>
+                                    <input
+                                        type="text"
+                                        placeholder="City"
+                                        value={shippingInfo.city}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Phone</label>
+                                    <input
+                                        type="tel"
+                                        placeholder="10-digit mobile number"
+                                        value={shippingInfo.phone}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
                                 </div>
                             </div>
                         </div>
 
-                        <button className="w-full bg-gray-900 text-white py-5 rounded-2xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all duration-300">
-                            Continue to Payment
+                        <button
+                            onClick={handlePayment}
+                            disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone}
+                            className={`w-full py-5 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-900 text-white hover:bg-black transform active:scale-[0.98]"
+                                }`}
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                    Processing...
+                                </>
+                            ) : (
+                                "Pay Now with Razorpay"
+                            )}
                         </button>
                     </div>
 
@@ -121,13 +301,18 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className="font-bold text-green-600 tracking-widest uppercase text-xs">Calculated at next step</span>
+                                    <span className="font-bold text-green-600 tracking-widest uppercase text-xs">Free</span>
                                 </div>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
                                     <span className="text-2xl font-black text-[#E91E63]">${cartTotal.toFixed(2)}</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 font-bold tracking-widest uppercase">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            Secure encrypted payments
                         </div>
                     </div>
                 </div>
