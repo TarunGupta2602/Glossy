@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import LoginModal from "./LoginModal";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const { cartCount } = useCart();
+    const { user, signInWithGoogle, signOut } = useAuth();
     const router = useRouter();
 
     const handleSearch = (e) => {
@@ -72,16 +78,77 @@ export default function Navbar() {
                         </button>
                     </div>
 
-                    {/* User Icon */}
-                    <button className="hidden sm:block text-gray-800 hover:text-gray-500 transition-colors" aria-label="User profile">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </button>
+                    {/* Authentication Section */}
+                    <div className="relative flex items-center">
+                        {user ? (
+                            <div className="relative leading-none">
+                                <button
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                    className="flex items-center gap-2 focus:outline-none group"
+                                    aria-label="User menu"
+                                >
+                                    <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-100 group-hover:border-[#E91E63] transition-colors">
+                                        <Image
+                                            src={user.user_metadata?.avatar_url || "/placeholder.jpg"}
+                                            alt={user.user_metadata?.full_name || "User"}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                </button>
+
+                                {isUserMenuOpen && (
+                                    <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                                            <p className="text-xs font-bold text-gray-900 truncate">
+                                                {user.user_metadata?.full_name || "Account"}
+                                            </p>
+                                            <p className="text-[10px] text-gray-400 truncate">
+                                                {user.email}
+                                            </p>
+                                        </div>
+                                        <Link
+                                            href="/profile"
+                                            className="block px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#E91E63] transition-colors"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <button
+                                            onClick={() => {
+                                                signOut();
+                                                setIsUserMenuOpen(false);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#E91E63] transition-colors"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="relative leading-none">
+                                <button
+                                    onClick={() => setIsLoginModalOpen(true)}
+                                    className="text-gray-800 hover:text-[#E91E63] transition-colors p-1"
+                                    aria-label="Sign in"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </button>
+
+                                <LoginModal
+                                    isOpen={isLoginModalOpen}
+                                    onClose={() => setIsLoginModalOpen(false)}
+                                />
+                            </div>
+                        )}
+                    </div>
 
                     {/* Bag Icon with Badge */}
-                    <Link href="/cart" className="relative text-gray-800 hover:text-gray-500 transition-colors" aria-label="Shopping bag">
+                    <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors" aria-label="Shopping bag">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
                             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -133,9 +200,27 @@ export default function Navbar() {
                     <Link href="/our-story" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
                         Our Story
                     </Link>
-                    <Link href="/profile" className="sm:hidden text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
-                        My Account
-                    </Link>
+                    {user ? (
+                        <button
+                            onClick={() => {
+                                signOut();
+                                setIsMenuOpen(false);
+                            }}
+                            className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2"
+                        >
+                            Sign Out
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                signInWithGoogle();
+                                setIsMenuOpen(false);
+                            }}
+                            className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2"
+                        >
+                            Sign In
+                        </button>
+                    )}
                 </div>
             )}
         </nav>
