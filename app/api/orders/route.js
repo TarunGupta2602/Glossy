@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabaseClient";
 import { createClient } from "@supabase/supabase-js";
-
-// Initialize admin client with service role key to bypass RLS
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export async function POST(req) {
     try {
@@ -23,7 +18,7 @@ export async function POST(req) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await supabase
             .from("orders")
             .insert([
                 {
@@ -53,9 +48,22 @@ export async function POST(req) {
 }
 export async function GET() {
     try {
-        const { data, error } = await supabaseAdmin
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+        console.log("Supabase URL present:", !!supabaseUrl);
+        console.log("Service Role Key present:", !!serviceRoleKey);
+
+        if (!supabaseUrl || !serviceRoleKey) {
+            return NextResponse.json({ error: "Supabase configuration missing" }, { status: 500 });
+        }
+
+        // Initialize service role client on the server to bypass RLS
+        const supabaseService = createClient(supabaseUrl, serviceRoleKey);
+
+        const { data, error, count } = await supabaseService
             .from("orders")
-            .select("*")
+            .select("*", { count: 'exact' })
             .order("created_at", { ascending: false });
 
         if (error) {
@@ -63,7 +71,8 @@ export async function GET() {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ success: true, orders: data });
+        console.log("Fetched orders count:", count);
+        return NextResponse.json({ success: true, orders: data, totalCount: count });
     } catch (error) {
         console.error("Order Fetch Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -72,31 +81,27 @@ export async function GET() {
 
 export async function PATCH(req) {
     try {
-        const { id, order_status, user_id } = await req.json();
+        const { id, order_status } = await req.json();
 
         if (!id || !order_status) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        let query = supabaseAdmin
+        // Use service role client to bypass RLS
+        const supabaseService = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+        );
+
+        const { data, error } = await supabaseService
             .from("orders")
             .update({ order_status })
-            .eq("id", id);
-
-        // If user_id is provided (from client-side cancellation), ensure they own the order
-        if (user_id) {
-            query = query.eq("user_id", user_id);
-        }
-
-        const { data, error } = await query.select();
+            .eq("id", id)
+            .select();
 
         if (error) {
             console.error("Update Order Error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
-        }
-
-        if (data.length === 0) {
-            return NextResponse.json({ error: "Order not found or unauthorized" }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, order: data[0] });

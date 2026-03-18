@@ -23,12 +23,11 @@ export default function AdminPage() {
         try {
             const response = await fetch("/api/orders");
             const data = await response.json();
-
             if (data.success) {
-                setOrderCount(data.orders.length);
+                setOrderCount(data.totalCount || data.orders.length || 0);
             }
         } catch (error) {
-            console.error("Fetch Stats Error:", error);
+            console.error("Error fetching stats:", error);
         }
     };
 
