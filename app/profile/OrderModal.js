@@ -1,7 +1,9 @@
 "use client";
 
-export default function OrderModal({ order, onClose, getStatusColor }) {
+export default function OrderModal({ order, onClose, getStatusColor, onCancelOrder }) {
     if (!order) return null;
+
+    const isProcessing = order.order_status === 'processing';
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
@@ -67,6 +69,17 @@ export default function OrderModal({ order, onClose, getStatusColor }) {
                             </div>
                             <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
                         </div>
+
+                        {isProcessing && (
+                            <div className="mt-12 flex justify-center">
+                                <button
+                                    onClick={() => onCancelOrder(order.id)}
+                                    className="px-10 py-4 rounded-2xl bg-red-50 text-red-600 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                                >
+                                    Cancel Order
+                                </button>
+                            </div>
+                        )}
 
                         <div className="mt-12 text-center">
                             <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">Thank you for your trust in GLOSSY. Fine Jewelry</p>

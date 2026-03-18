@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { OrderCardSkeleton } from "./ProfileSkeletons";
 
-export default function OrderHistory({ orders, loading, onViewDetails, getStatusColor }) {
+export default function OrderHistory({ orders, loading, onViewDetails, getStatusColor, onCancelOrder }) {
     if (loading) {
         return (
             <div className="grid grid-cols-1 gap-8">
@@ -73,6 +73,17 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                         </div>
 
                         <div className="flex items-center gap-4">
+                            {order.order_status === 'processing' && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onCancelOrder(order.id);
+                                    }}
+                                    className="px-6 h-14 rounded-2xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center"
+                                >
+                                    Cancel
+                                </button>
+                            )}
                             <button
                                 onClick={() => onViewDetails(order)}
                                 className="flex-1 md:flex-none h-14 px-10 rounded-2xl bg-gray-50 hover:bg-gray-100 text-gray-900 text-[11px] font-bold tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3"

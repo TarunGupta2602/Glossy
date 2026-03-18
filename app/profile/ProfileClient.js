@@ -46,6 +46,36 @@ export default function ProfileClient() {
         setOrdersLoading(false);
     };
 
+    const handleCancelOrder = async (orderId) => {
+        if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
+
+        try {
+            const response = await fetch("/api/orders", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: orderId,
+                    order_status: "cancelled",
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Refresh orders
+                fetchUserOrders();
+                setSelectedOrder(null);
+            } else {
+                alert("Failed to cancel order: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error cancelling order:", error);
+            alert("An error occurred while cancelling the order.");
+        }
+    };
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'processing': return 'bg-amber-100 text-amber-700';
@@ -118,6 +148,7 @@ export default function ProfileClient() {
                             loading={ordersLoading}
                             onViewDetails={setSelectedOrder}
                             getStatusColor={getStatusColor}
+                            onCancelOrder={handleCancelOrder}
                         />
                     ) : (
                         <WishlistTab
@@ -134,6 +165,7 @@ export default function ProfileClient() {
                 order={selectedOrder}
                 onClose={() => setSelectedOrder(null)}
                 getStatusColor={getStatusColor}
+                onCancelOrder={handleCancelOrder}
             />
 
             <style jsx global>{`
