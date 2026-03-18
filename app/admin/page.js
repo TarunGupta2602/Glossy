@@ -20,12 +20,15 @@ export default function AdminPage() {
     }, []);
 
     const fetchStats = async () => {
-        const { count, error } = await require("@/lib/supabaseClient").supabase
-            .from("orders")
-            .select("*", { count: 'exact', head: true });
+        try {
+            const response = await fetch("/api/orders");
+            const data = await response.json();
 
-        if (!error) {
-            setOrderCount(count || 0);
+            if (data.success) {
+                setOrderCount(data.orders.length);
+            }
+        } catch (error) {
+            console.error("Fetch Stats Error:", error);
         }
     };
 

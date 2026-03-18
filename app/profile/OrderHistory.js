@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { OrderCardSkeleton } from "./ProfileSkeletons";
 
-export default function OrderHistory({ orders, loading, onViewDetails, getStatusColor }) {
+export default function OrderHistory({ orders, loading, onViewDetails, onCancelOrder, getStatusColor }) {
     if (loading) {
         return (
             <div className="grid grid-cols-1 gap-8">
@@ -72,14 +72,26 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col md:flex-row items-center gap-4">
                             <button
                                 onClick={() => onViewDetails(order)}
-                                className="flex-1 md:flex-none h-14 px-10 rounded-2xl bg-gray-50 hover:bg-gray-100 text-gray-900 text-[11px] font-bold tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3"
+                                className="w-full md:w-auto h-14 px-10 rounded-2xl bg-gray-50 hover:bg-gray-100 text-gray-900 text-[11px] font-bold tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3"
                             >
                                 View Details
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                             </button>
+
+                            {order.order_status === 'processing' && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onCancelOrder(order.id);
+                                    }}
+                                    className="w-full md:w-auto h-14 px-10 rounded-2xl border border-red-100 text-red-600 hover:bg-red-50 text-[11px] font-bold tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3"
+                                >
+                                    Cancel
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

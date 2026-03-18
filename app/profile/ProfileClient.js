@@ -46,6 +46,37 @@ export default function ProfileClient() {
         setOrdersLoading(false);
     };
 
+    const handleCancelOrder = async (orderId) => {
+        if (!confirm("Are you sure you want to cancel this order?")) return;
+
+        try {
+            const response = await fetch("/api/orders", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: orderId,
+                    order_status: 'cancelled',
+                    user_id: user.id
+                }),
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                fetchUserOrders();
+                if (selectedOrder && selectedOrder.id === orderId) {
+                    setSelectedOrder(null);
+                }
+            } else {
+                alert("Failed to cancel order: " + data.error);
+            }
+        } catch (error) {
+            console.error("Cancel order error:", error);
+            alert("An error occurred while cancelling your order.");
+        }
+    };
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'processing': return 'bg-amber-100 text-amber-700';
@@ -117,6 +148,7 @@ export default function ProfileClient() {
                             orders={orders}
                             loading={ordersLoading}
                             onViewDetails={setSelectedOrder}
+                            onCancelOrder={handleCancelOrder}
                             getStatusColor={getStatusColor}
                         />
                     ) : (
@@ -133,6 +165,7 @@ export default function ProfileClient() {
             <OrderModal
                 order={selectedOrder}
                 onClose={() => setSelectedOrder(null)}
+                onCancelOrder={handleCancelOrder}
                 getStatusColor={getStatusColor}
             />
 

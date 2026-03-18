@@ -15,7 +15,7 @@ export default function Navbar() {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const { cartCount } = useCart();
-    const { user, signInWithGoogle, signOut } = useAuth();
+    const { user, profile, signInWithGoogle, signOut } = useAuth();
     const router = useRouter();
 
     const handleSearch = (e) => {
@@ -89,19 +89,25 @@ export default function Navbar() {
                                 >
                                     <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-100 group-hover:border-[#E91E63] transition-colors">
                                         <Image
-                                            src={user.user_metadata?.avatar_url || "/placeholder.jpg"}
-                                            alt={user.user_metadata?.full_name || "User"}
+                                            src={profile?.avatar || user.user_metadata?.avatar_url || "/placeholder.jpg"}
+                                            alt={profile?.name || user.user_metadata?.full_name || "User"}
                                             fill
                                             className="object-cover"
                                         />
                                     </div>
+                                    {profile?.role === 'admin' && (
+                                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 border-2 border-white rounded-full" title="Admin Access" />
+                                    )}
                                 </button>
 
                                 {isUserMenuOpen && (
                                     <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
                                         <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                                            <p className="text-xs font-bold text-gray-900 truncate">
-                                                {user.user_metadata?.full_name || "Account"}
+                                            <p className="text-xs font-bold text-gray-900 truncate flex items-center gap-2">
+                                                {profile?.name || user.user_metadata?.full_name || "Account"}
+                                                {profile?.role === 'admin' && (
+                                                    <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase tracking-tighter">Admin</span>
+                                                )}
                                             </p>
                                             <p className="text-[10px] text-gray-400 truncate">
                                                 {user.email}

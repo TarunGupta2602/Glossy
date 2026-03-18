@@ -34,15 +34,17 @@ export default function AdminOrdersPage() {
 
     const fetchOrders = async () => {
         setLoading(true);
-        const { data, error } = await supabase
-            .from("orders")
-            .select("*")
-            .order("created_at", { ascending: false });
+        try {
+            const response = await fetch("/api/orders");
+            const data = await response.json();
 
-        if (error) {
-            console.error("Error fetching orders:", error);
-        } else {
-            setOrders(data);
+            if (data.success) {
+                setOrders(data.orders);
+            } else {
+                console.error("Error fetching orders:", data.error);
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
         }
         setLoading(false);
     };
@@ -173,16 +175,28 @@ export default function AdminOrdersPage() {
                                             onChange={async (e) => {
                                                 const newStatus = e.target.value;
                                                 setUpdatingStatus(true);
-                                                const { error } = await supabase
-                                                    .from("orders")
-                                                    .update({ order_status: newStatus })
-                                                    .eq("id", selectedOrder.id);
+                                                try {
+                                                    const response = await fetch("/api/orders", {
+                                                        method: "PATCH",
+                                                        headers: {
+                                                            "Content-Type": "application/json",
+                                                        },
+                                                        body: JSON.stringify({
+                                                            id: selectedOrder.id,
+                                                            order_status: newStatus
+                                                        }),
+                                                    });
+                                                    const data = await response.json();
 
-                                                if (!error) {
-                                                    setSelectedOrder({ ...selectedOrder, order_status: newStatus });
-                                                    fetchOrders();
-                                                } else {
-                                                    alert("Failed to update status");
+                                                    if (data.success) {
+                                                        setSelectedOrder({ ...selectedOrder, order_status: newStatus });
+                                                        fetchOrders();
+                                                    } else {
+                                                        alert("Failed to update status: " + data.error);
+                                                    }
+                                                } catch (error) {
+                                                    console.error("Update Error:", error);
+                                                    alert("An error occurred while updating status");
                                                 }
                                                 setUpdatingStatus(false);
                                             }}
