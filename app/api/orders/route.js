@@ -9,7 +9,8 @@ export async function POST(req) {
             razorpay_payment_id,
             total_amount,
             shipping_address,
-            contact_phone
+            contact_phone,
+            items
         } = await req.json();
 
         if (!user_id || !razorpay_order_id || !razorpay_payment_id || !total_amount) {
@@ -26,7 +27,9 @@ export async function POST(req) {
                     total_amount,
                     shipping_address,
                     contact_phone,
-                    status: 'paid'
+                    items,
+                    status: 'paid',
+                    order_status: 'processing'
                 }
             ])
             .select();

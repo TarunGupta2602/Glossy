@@ -84,7 +84,8 @@ export default function CheckoutPage() {
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 total_amount: cartTotal,
                                 shipping_address: shippingInfo,
-                                contact_phone: shippingInfo.phone
+                                contact_phone: shippingInfo.phone,
+                                items: cart
                             }),
                         });
 

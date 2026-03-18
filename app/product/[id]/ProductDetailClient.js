@@ -4,10 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 
 export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
     const categoryName = product.categories?.name || "Jewelry";
     const { addToCart } = useCart();
+    const { isInWishlist, toggleWishlist } = useWishlist();
 
     // Build full image list: main image first, then gallery extras
     const allImages = [
@@ -18,7 +20,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
     const [activeIdx, setActiveIdx] = useState(0);
     const [qty, setQty] = useState(1);
-    const [wishlisted, setWishlisted] = useState(false);
+    const isWishlisted = isInWishlist(product.id);
     const [addedToBag, setAddedToBag] = useState(false);
 
     const price = product.price
@@ -180,20 +182,26 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                         {/* Wishlist Button */}
                         <button
-                            onClick={() => setWishlisted((w) => !w)}
-                            className={`mt-3 w-full h-[50px] rounded-xl text-[12px] font-semibold tracking-[0.1em] uppercase border transition-all duration-200 flex items-center justify-center gap-2 ${wishlisted
+                            onClick={() => toggleWishlist({
+                                id: product.id,
+                                name: product.name,
+                                price: product.price || 0,
+                                image: product.main_image || "/placeholder.jpg",
+                                category: categoryName
+                            })}
+                            className={`mt-3 w-full h-[50px] rounded-xl text-[12px] font-semibold tracking-[0.1em] uppercase border transition-all duration-200 flex items-center justify-center gap-2 ${isWishlisted
                                 ? "border-[#E91E63] text-[#E91E63] bg-pink-50"
                                 : "border-gray-200 text-gray-700 hover:border-gray-300 bg-white"
                                 }`}
                         >
                             <svg
-                                className={`w-4 h-4 transition-colors ${wishlisted ? "fill-[#E91E63] stroke-[#E91E63]" : "fill-none stroke-current"}`}
+                                className={`w-4 h-4 transition-colors ${isWishlisted ? "fill-[#E91E63] stroke-[#E91E63]" : "fill-none stroke-current"}`}
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.8"
                             >
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
-                            {wishlisted ? "Saved to Wishlist" : "Wishlist"}
+                            {isWishlisted ? "Saved to Wishlist" : "Wishlist"}
                         </button>
 
                         {/* Shipping Note */}

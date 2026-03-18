@@ -9,6 +9,18 @@ export default function AdminOrdersPage() {
     const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'processing': return 'bg-amber-100 text-amber-700';
+            case 'confirmed': return 'bg-blue-100 text-blue-700';
+            case 'shipped': return 'bg-indigo-100 text-indigo-700';
+            case 'delivered': return 'bg-green-100 text-green-700';
+            case 'cancelled': return 'bg-red-100 text-red-700';
+            default: return 'bg-gray-100 text-gray-600';
+        }
+    };
 
     useEffect(() => {
         const session = localStorage.getItem("glossy_admin_logged_in");
@@ -96,13 +108,11 @@ export default function AdminOrdersPage() {
                                                 <td className="px-6 py-4">
                                                     <p className="text-sm font-black text-gray-900">₹{parseFloat(order.total_amount).toFixed(2)}</p>
                                                 </td>
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${order.status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                    order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                                                        order.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
-                                                            'bg-gray-100 text-gray-600'
-                                                    }`}>
-                                                    {order.status}
-                                                </span>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${getStatusColor(order.order_status)}`}>
+                                                        {order.order_status}
+                                                    </span>
+                                                </td>
                                                 <td className="px-6 py-4">
                                                     <p className="text-sm text-gray-900 font-bold">
                                                         {order.shipping_address.firstName} {order.shipping_address.lastName}
@@ -156,35 +166,60 @@ export default function AdminOrdersPage() {
                                         <p className="text-sm font-semibold text-gray-900">{selectedOrder.contact_phone}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Order Status</p>
                                         <select
-                                            value={selectedOrder.status}
+                                            disabled={updatingStatus}
+                                            value={selectedOrder.order_status}
                                             onChange={async (e) => {
                                                 const newStatus = e.target.value;
+                                                setUpdatingStatus(true);
                                                 const { error } = await supabase
                                                     .from("orders")
-                                                    .update({ status: newStatus })
+                                                    .update({ order_status: newStatus })
                                                     .eq("id", selectedOrder.id);
 
                                                 if (!error) {
-                                                    setSelectedOrder({ ...selectedOrder, status: newStatus });
+                                                    setSelectedOrder({ ...selectedOrder, order_status: newStatus });
                                                     fetchOrders();
                                                 } else {
                                                     alert("Failed to update status");
                                                 }
+                                                setUpdatingStatus(false);
                                             }}
-                                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest outline-none border-none cursor-pointer ${selectedOrder.status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                                                    selectedOrder.status === 'delivered' ? 'bg-purple-100 text-purple-700' :
-                                                        'bg-gray-100 text-gray-700'
-                                                }`}
+                                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest outline-none border-none cursor-pointer ${getStatusColor(selectedOrder.order_status)}`}
                                         >
-                                            <option value="paid">Paid</option>
+                                            <option value="processing">Processing</option>
+                                            <option value="confirmed">Confirmed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Ordered Items</p>
+                                <div className="space-y-4">
+                                    {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                                        selectedOrder.items.map((item, index) => (
+                                            <div key={index} className="flex gap-4 items-center">
+                                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white border border-gray-100 flex-shrink-0">
+                                                    <img src={item.image} alt={item.name} className="object-cover w-full h-full" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-bold text-gray-900">{item.name}</p>
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{item.category}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toFixed(2)}</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium">Qty: {item.quantity}</p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-gray-500 italic">No item details available for this order.</p>
+                                    )}
                                 </div>
                             </div>
 
