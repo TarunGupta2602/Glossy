@@ -2,6 +2,9 @@ import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
 import Link from "next/link";
 
+// Force dynamic rendering to ensure fresh data on every request (SSR)
+export const dynamic = "force-dynamic";
+
 export default async function NecklacesPage() {
 
     // ✅ Step 1: Get category using DB slug
@@ -65,7 +68,7 @@ export default async function NecklacesPage() {
                                         ₹{product.price}
                                     </p>
                                 </div>
-                            </Link>    
+                            </Link>
                         ))}
                     </div>
                 )}
