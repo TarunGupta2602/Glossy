@@ -3,7 +3,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 
 export default async function FeaturedCollections() {
-    // Fetch categories from Supabase
+    // Fetch categories from bb Supabase
     const { data: categories, error } = await supabase
         .from("categories")
         .select("*")
