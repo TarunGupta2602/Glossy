@@ -21,7 +21,7 @@ export async function POST(req) {
         // Initialize service role client to bypass RLS for order creation
         const supabaseService = createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
         );
 
         const { data, error } = await supabaseService
