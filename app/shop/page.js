@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabaseClient";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 import ShopClient from "../components/ShopClient";
 
 // Force dynamic rendering to ensure fresh data on every request (SSR)
@@ -10,19 +10,12 @@ export const metadata = {
 };
 
 async function getShopData() {
+    const supabase = getServiceClient();
 
-
-    // Fetch all categories
-    const catRes = await fetch(`/api/categories`, { cache: 'no-store' });
-    const { categories, error: catError } = await catRes.json();
-
-    if (catError) console.error("Error fetching categories:", catError);
-
-    // Fetch all products
-    const prodRes = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
-    const { products, error: prodError } = await prodRes.json();
-
-    if (prodError) console.error("Error fetching products:", prodError);
+    const [{ data: categories }, { data: products }] = await Promise.all([
+        supabase.from("categories").select("*").order("name", { ascending: true }),
+        supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false }),
+    ]);
 
     return {
         categories: categories || [],

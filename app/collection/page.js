@@ -1,15 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
+
 // Force dynamic rendering to ensure fresh data on every request (SSR)
 export const dynamic = "force-dynamic";
 
 export default async function FeaturedCollections() {
-    // Fetch categories from API
+    const supabase = getServiceClient();
 
-
-    const res = await fetch(`/api/categories`, { cache: 'no-store' });
-    const { categories, error } = await res.json();
+    const { data: categories, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name", { ascending: true });
 
     if (error) {
         console.error("Error fetching featured collections:", error);
