@@ -6,14 +6,12 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function EarringsPage() {
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
-    const baseUrl = `${protocol}://${host}`;
+
 
     const slug = "-statement-pieces";
 
     // 1. Get category info from API
-    const catRes = await fetch(`${baseUrl}/api/categories`, { cache: 'no-store' });
+    const catRes = await fetch(`/api/categories`, { cache: 'no-store' });
     const { categories } = await catRes.json();
     const category = categories?.find(c => c.slug === slug);
 
@@ -22,7 +20,7 @@ export default async function EarringsPage() {
     }
 
     // 2. Get products from API
-    const prodRes = await fetch(`${baseUrl}/api/products?slug=${slug}`, { cache: 'no-store' });
+    const prodRes = await fetch(`/api/products?slug=${slug}`, { cache: 'no-store' });
     const { products } = await prodRes.json();
 
     return (

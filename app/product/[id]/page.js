@@ -7,11 +7,9 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }) {
     const { id } = await params;
 
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
-    const baseUrl = `${protocol}://${host}`;
 
-    const res = await fetch(`${baseUrl}/api/products/${id}`, { cache: 'no-store' });
+
+    const res = await fetch(`/api/products/${id}`, { cache: 'no-store' });
     const { product } = await res.json();
 
     if (!product) return { title: "Product Not Found | GLOSSY." };

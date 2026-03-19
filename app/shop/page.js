@@ -10,12 +10,10 @@ export const metadata = {
 };
 
 async function getShopData() {
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
-    const baseUrl = `${protocol}://${host}`;
+
 
     // Fetch all categories
-    const catRes = await fetch(`${baseUrl}/api/categories`, { cache: 'no-store' });
+    const catRes = await fetch(`/api/categories`, { cache: 'no-store' });
     const { categories, error: catError } = await catRes.json();
 
     if (catError) console.error("Error fetching categories:", catError);
