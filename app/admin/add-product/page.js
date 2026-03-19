@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AddProductPage() {
+    const { user, profile, loading: authLoading } = useAuth();
     const router = useRouter();
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
@@ -20,20 +22,20 @@ export default function AddProductPage() {
 
     // Check session on mount
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session !== "true") {
-            router.push("/admin");
+        if (!authLoading) {
+            if (!user || profile?.role !== 'admin') {
+                router.push("/admin");
+            } else {
+                fetchCategories();
+            }
         }
-    }, [router]);
+    }, [user, profile, authLoading, router]);
 
     // Fetch categories
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const { data } = await supabase.from("categories").select("*").order("name");
-            setCategories(data || []);
-        };
-        fetchCategories();
-    }, []);
+    const fetchCategories = async () => {
+        const { data } = await supabase.from("categories").select("*").order("name");
+        setCategories(data || []);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -88,6 +90,16 @@ export default function AddProductPage() {
 
         setLoading(false);
     };
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">
+                Verifying authorization...
+            </div>
+        );
+    }
+
+    if (!user || profile?.role !== 'admin') return null;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">

@@ -104,6 +104,21 @@ export function CartProvider({ children }) {
     };
 
     const addToCart = async (product, quantity = 1) => {
+        const previousCart = [...cart];
+
+        // Optimistic local update
+        setCart((prevCart) => {
+            const existingItem = prevCart.find((item) => item.id === product.id);
+            if (existingItem) {
+                return prevCart.map((item) =>
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                );
+            }
+            return [...prevCart, { ...product, quantity }];
+        });
+
         if (user) {
             const { error } = await supabase
                 .from("cart_items")
@@ -113,23 +128,22 @@ export function CartProvider({ children }) {
                     quantity: (cart.find(i => i.id === product.id)?.quantity || 0) + quantity
                 }, { onConflict: 'user_id,product_id' });
 
-            if (!error) await fetchDBCart();
-        } else {
-            setCart((prevCart) => {
-                const existingItem = prevCart.find((item) => item.id === product.id);
-                if (existingItem) {
-                    return prevCart.map((item) =>
-                        item.id === product.id
-                            ? { ...item, quantity: item.quantity + quantity }
-                            : item
-                    );
-                }
-                return [...prevCart, { ...product, quantity }];
-            });
+            if (error) {
+                console.error("Cart Add Error:", error.message);
+                setCart(previousCart); // Revert on error
+            } else {
+                await fetchDBCart();
+            }
         }
+        // Guest mode handled by the initial setCart call and the useEffect for localStorage
     };
 
     const removeFromCart = async (productId) => {
+        const previousCart = [...cart];
+
+        // Optimistic update
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+
         if (user) {
             const { error } = await supabase
                 .from("cart_items")
@@ -137,14 +151,25 @@ export function CartProvider({ children }) {
                 .eq("user_id", user.id)
                 .eq("product_id", productId);
 
-            if (!error) await fetchDBCart();
-        } else {
-            setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+            if (error) {
+                console.error("Cart Remove Error:", error.message);
+                setCart(previousCart); // Revert on error
+            } else {
+                await fetchDBCart();
+            }
         }
     };
 
     const updateQuantity = async (productId, quantity) => {
         if (quantity < 1) return;
+        const previousCart = [...cart];
+
+        // Optimistic update
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.id === productId ? { ...item, quantity } : item
+            )
+        );
 
         if (user) {
             const { error } = await supabase
@@ -153,13 +178,12 @@ export function CartProvider({ children }) {
                 .eq("user_id", user.id)
                 .eq("product_id", productId);
 
-            if (!error) await fetchDBCart();
-        } else {
-            setCart((prevCart) =>
-                prevCart.map((item) =>
-                    item.id === productId ? { ...item, quantity } : item
-                )
-            );
+            if (error) {
+                console.error("Cart Update Error:", error.message);
+                setCart(previousCart);
+            } else {
+                await fetchDBCart();
+            }
         }
     };
 

@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminOrdersPage() {
+    const router = useRouter();
+    const { user, profile, loading: authLoading } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [updatingStatus, setUpdatingStatus] = useState(false);
 
@@ -24,14 +27,14 @@ export default function AdminOrdersPage() {
     };
 
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session === "true") {
-            setIsLoggedIn(true);
-            fetchOrders();
-        } else {
-            setLoading(false);
+        if (!authLoading) {
+            if (!user || profile?.role !== 'admin') {
+                router.push("/admin");
+            } else {
+                fetchOrders();
+            }
         }
-    }, []);
+    }, [user, profile, authLoading, router]);
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -50,16 +53,15 @@ export default function AdminOrdersPage() {
         setLoading(false);
     };
 
-    if (!isLoggedIn && !loading) {
+    if (authLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-                <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <Link href="/admin" className="text-[#E91E63] font-semibold hover:underline">
-                    Go to Admin Login
-                </Link>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">
+                Verifying authorization...
             </div>
         );
     }
+
+    if (!user || profile?.role !== 'admin') return null;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">

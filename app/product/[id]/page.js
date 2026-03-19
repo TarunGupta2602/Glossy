@@ -1,12 +1,15 @@
 import { notFound } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
     const { id } = await params;
-    const supabase = getServiceClient();
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
 
     const { data: product } = await supabase
         .from("products")
@@ -29,12 +32,16 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductPage({ params }) {
     const { id } = await params;
-    const supabase = getServiceClient();
+
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
 
     // 1. Fetch main product with category
     const { data: product, error } = await supabase
         .from("products")
-        .select("*, categories(name, id)")
+        .select("*, categories(name, id, slug)")
         .eq("id", id)
         .single();
 
@@ -49,7 +56,7 @@ export default async function ProductPage({ params }) {
 
     const galleryImages = (galleryRows || []).map((r) => r.image_url).filter(Boolean);
 
-    // 3. Related products — same category first, then newest as fallback
+    // 3. Related products — same category first, fallback to newest
     const { data: related } = await supabase
         .from("products")
         .select("id, name, price, main_image, categories(name)")

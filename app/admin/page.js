@@ -2,22 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminPage() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState("");
+    const { user, profile, loading: authLoading, signOut } = useAuth();
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loginLoading, setLoginLoading] = useState(false);
     const [error, setError] = useState("");
     const [orderCount, setOrderCount] = useState(0);
 
-    // Check for existing session on mount
+    // Fetch stats if user is an admin
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session === "true") {
-            setIsLoggedIn(true);
+        if (profile?.role === 'admin') {
             fetchStats();
         }
-    }, []);
+    }, [profile]);
 
     const fetchStats = async () => {
         try {
@@ -31,43 +32,65 @@ export default function AdminPage() {
         }
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Hardcoded credentials
-        if (username === "admin" && password === "admin123") {
-            localStorage.setItem("glossy_admin_logged_in", "true");
-            setIsLoggedIn(true);
-            setError("");
-        } else {
-            setError("Invalid username or password");
+        setError("");
+        setLoginLoading(true);
+
+        try {
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (signInError) {
+                setError(signInError.message);
+                setLoginLoading(false);
+                return;
+            }
+
+            // The profile will be loaded via AuthContext automatically.
+            // We just need to wait for it.
+        } catch (err) {
+            console.error("Login Error:", err);
+            setError("An unexpected error occurred. Please try again.");
+            setLoginLoading(false);
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("glossy_admin_logged_in");
-        setIsLoggedIn(false);
-        setUsername("");
-        setPassword("");
-    };
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="w-8 h-8 border-4 border-[#E91E63] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
-    if (!isLoggedIn) {
+    if (!user || profile?.role !== 'admin') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-black tracking-tighter text-[#E91E63] mb-2">GLOSSY.</h1>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
+                        {user && profile?.role !== 'admin' && (
+                            <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">
+                                <p className="text-xs text-amber-700 font-semibold leading-relaxed">
+                                    Your account is logged in but does not have administrator privileges.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Username</label>
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Admin Email</label>
                             <input
-                                type="text"
+                                type="email"
                                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all bg-gray-50"
-                                placeholder="Enter username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Enter admin email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
                         </div>
@@ -85,14 +108,17 @@ export default function AdminPage() {
                         </div>
 
                         {error && (
-                            <p className="text-red-500 text-xs font-medium text-center animate-pulse">{error}</p>
+                            <p className="text-red-500 text-xs font-medium text-center">{error}</p>
                         )}
 
                         <button
                             type="submit"
-                            className="w-full bg-[#E91E63] text-white font-bold py-4 rounded-xl shadow-lg shadow-pink-100 hover:bg-[#D81B60] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                            disabled={loginLoading}
+                            className="w-full bg-[#E91E63] text-white font-bold py-4 rounded-xl shadow-lg shadow-pink-100 hover:bg-[#D81B60] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 flex items-center justify-center gap-2"
                         >
-                            Sign In
+                            {loginLoading ? (
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            ) : "Sign In to Dashboard"}
                         </button>
                     </form>
                 </div>
@@ -109,7 +135,7 @@ export default function AdminPage() {
                         <p className="text-gray-500">Welcome back, Administrator</p>
                     </div>
                     <button
-                        onClick={handleLogout}
+                        onClick={signOut}
                         className="px-6 py-2 bg-white border border-gray-200 text-gray-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors shadow-sm self-start md:self-center"
                     >
                         Logout

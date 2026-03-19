@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
-import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import ProfileHeader from "./ProfileHeader";
 import OrderHistory from "./OrderHistory";
@@ -32,16 +31,17 @@ export default function ProfileClient() {
 
     const fetchUserOrders = async () => {
         setOrdersLoading(true);
-        const { data, error } = await supabase
-            .from("orders")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false });
+        try {
+            const response = await fetch(`/api/orders?userId=${user.id}`);
+            const data = await response.json();
 
-        if (error) {
+            if (data.success) {
+                setOrders(data.orders || []);
+            } else {
+                console.error("Error fetching user orders:", data.error);
+            }
+        } catch (error) {
             console.error("Error fetching user orders:", error);
-        } else {
-            setOrders(data || []);
         }
         setOrdersLoading(false);
     };

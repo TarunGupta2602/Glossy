@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export async function POST(req) {
     try {
@@ -18,11 +17,8 @@ export async function POST(req) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Initialize service role client to bypass RLS for order creation
-        const supabaseService = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
-        );
+        // Use service role client to bypass RLS for order creation
+        const supabaseService = getServiceClient();
 
         const { data, error } = await supabaseService
             .from("orders")
@@ -52,32 +48,30 @@ export async function POST(req) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
-export async function GET() {
+export async function GET(req) {
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const { searchParams } = new URL(req.url);
+        const userId = searchParams.get("userId");
 
-        console.log("Supabase URL present:", !!supabaseUrl);
-        console.log("Service Role Key present:", !!serviceRoleKey);
+        // Use service role client on the server to bypass RLS
+        const supabaseService = getServiceClient();
 
-        if (!supabaseUrl || !serviceRoleKey) {
-            return NextResponse.json({ error: "Supabase configuration missing" }, { status: 500 });
-        }
-
-        // Initialize service role client on the server to bypass RLS
-        const supabaseService = createClient(supabaseUrl, serviceRoleKey);
-
-        const { data, error, count } = await supabaseService
+        let query = supabaseService
             .from("orders")
             .select("*", { count: 'exact' })
             .order("created_at", { ascending: false });
+
+        if (userId) {
+            query = query.eq("user_id", userId);
+        }
+
+        const { data, error, count } = await query;
 
         if (error) {
             console.error("Fetch Orders Error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        console.log("Fetched orders count:", count);
         return NextResponse.json({ success: true, orders: data, totalCount: count });
     } catch (error) {
         console.error("Order Fetch Error:", error);
@@ -94,10 +88,7 @@ export async function PATCH(req) {
         }
 
         // Use service role client to bypass RLS
-        const supabaseService = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
-        );
+        const supabaseService = getServiceClient();
 
         const { data, error } = await supabaseService
             .from("orders")

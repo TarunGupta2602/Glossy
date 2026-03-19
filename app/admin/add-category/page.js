@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AddCategoryPage() {
+    const { user, profile, loading: authLoading } = useAuth();
     const router = useRouter();
     const [name, setName] = useState("");
     const [image, setImage] = useState(null);
@@ -13,11 +15,20 @@ export default function AddCategoryPage() {
 
     // Check session on mount
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session !== "true") {
+        if (!authLoading && (!user || profile?.role !== 'admin')) {
             router.push("/admin");
         }
-    }, [router]);
+    }, [user, profile, authLoading, router]);
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">
+                Verifying authorization...
+            </div>
+        );
+    }
+
+    if (!user || profile?.role !== 'admin') return null;
 
     // slug generator
     const generateSlug = (text) =>

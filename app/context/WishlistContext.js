@@ -99,6 +99,13 @@ export function WishlistProvider({ children }) {
     };
 
     const addToWishlist = async (product) => {
+        // Optimistic update
+        const previousWishlist = [...wishlist];
+        setWishlist((prev) => {
+            if (prev.some((item) => item.id === product.id)) return prev;
+            return [...prev, product];
+        });
+
         if (user) {
             const { error } = await supabase
                 .from("wishlist_items")
@@ -107,16 +114,23 @@ export function WishlistProvider({ children }) {
                     product_id: product.id
                 }, { onConflict: 'user_id,product_id' });
 
-            if (!error) await fetchDBWishlist();
-        } else {
-            setWishlist((prev) => {
-                if (prev.some((item) => item.id === product.id)) return prev;
-                return [...prev, product];
-            });
+            if (error) {
+                console.error("Wishlist Add Error:", error.message);
+                setWishlist(previousWishlist); // Revert on error
+            } else {
+                // Optionally refetch to ensure everything is in sync, 
+                // but let's trust our optimistic state for now to keep it snappy.
+                await fetchDBWishlist();
+            }
         }
+        // Guest mode is already handled by the state update above and the useEffect for localStorage
     };
 
     const removeFromWishlist = async (productId) => {
+        // Optimistic update
+        const previousWishlist = [...wishlist];
+        setWishlist((prev) => prev.filter((item) => item.id !== productId));
+
         if (user) {
             const { error } = await supabase
                 .from("wishlist_items")
@@ -124,10 +138,14 @@ export function WishlistProvider({ children }) {
                 .eq("user_id", user.id)
                 .eq("product_id", productId);
 
-            if (!error) await fetchDBWishlist();
-        } else {
-            setWishlist((prev) => prev.filter((item) => item.id !== productId));
+            if (error) {
+                console.error("Wishlist Remove Error:", error.message);
+                setWishlist(previousWishlist); // Revert on error
+            } else {
+                await fetchDBWishlist();
+            }
         }
+        // Guest mode handled by state update
     };
 
     const isInWishlist = (productId) => {

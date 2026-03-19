@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
 export default async function CollectionDetails({ params }) {
     const { slug } = await params;
-    const supabase = getServiceClient();
+
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
 
     // 1. Get category by slug
     const { data: category, error: catError } = await supabase
@@ -19,10 +23,10 @@ export default async function CollectionDetails({ params }) {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
-    // 2. Get products for that category
+    // 2. Get products by category_id
     const { data: products } = await supabase
         .from("products")
-        .select("*")
+        .select("*, categories(name, id, slug)")
         .eq("category_id", category.id)
         .order("created_at", { ascending: false });
 
@@ -30,17 +34,11 @@ export default async function CollectionDetails({ params }) {
         <section className="py-24 px-6 md:px-12 bg-white">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold mb-10 text-center">{category.name}</h1>
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {products?.map((product) => (
                         <Link key={product.id} href={`/product/${product.id}`} className="group block">
                             <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-100">
-                                <Image
-                                    src={product.main_image || "/placeholder.jpg"}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
+                                <Image src={product.main_image || "/placeholder.jpg"} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                             </div>
                             <div className="mt-4">
                                 <h3 className="text-lg font-semibold text-gray-900 group-hover:underline">{product.name}</h3>

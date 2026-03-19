@@ -1,5 +1,5 @@
 import SearchClient from "./SearchClient";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
@@ -8,10 +8,14 @@ export default async function SearchPage({ searchParams }) {
     let products = [];
 
     if (query) {
-        const supabase = getServiceClient();
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        );
+
         const { data, error } = await supabase
             .from("products")
-            .select("*, categories(name)")
+            .select("*, categories(name, id, slug)")
             .ilike("name", `%${query}%`)
             .order("created_at", { ascending: false });
 

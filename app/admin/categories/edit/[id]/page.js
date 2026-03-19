@@ -4,10 +4,12 @@ import { useState, useEffect, use } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "../../../../context/AuthContext";
 
 export default function EditCategoryPage({ params }) {
     const unwrappedParams = use(params);
     const { id } = unwrappedParams;
+    const { user, profile, loading: authLoading } = useAuth();
     const router = useRouter();
 
     const [name, setName] = useState("");
@@ -17,32 +19,32 @@ export default function EditCategoryPage({ params }) {
     const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session !== "true") {
-            router.push("/admin");
-            return;
-        }
-
-        const fetchCategory = async () => {
-            const { data, error } = await supabase
-                .from("categories")
-                .select("*")
-                .eq("id", id)
-                .single();
-
-            if (error) {
-                console.error("Error fetching category:", error);
-                alert("Error fetching category");
-                router.push("/admin/categories");
+        if (!authLoading) {
+            if (!user || profile?.role !== 'admin') {
+                router.push("/admin");
             } else {
-                setName(data.name);
-                setImageUrl(data.image_url);
+                fetchCategory();
             }
-            setLoading(false);
-        };
+        }
+    }, [id, user, profile, authLoading, router]);
 
-        fetchCategory();
-    }, [id, router]);
+    const fetchCategory = async () => {
+        const { data, error } = await supabase
+            .from("categories")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+        if (error) {
+            console.error("Error fetching category:", error);
+            alert("Error fetching category");
+            router.push("/admin/categories");
+        } else {
+            setName(data.name);
+            setImageUrl(data.image_url);
+        }
+        setLoading(false);
+    };
 
     const generateSlug = (text) => text.toLowerCase().replace(/\s+/g, "-");
 
@@ -89,7 +91,15 @@ export default function EditCategoryPage({ params }) {
         setIsUpdating(false);
     };
 
-    if (loading) return <div className="p-12 text-center">Loading...</div>;
+    if (authLoading || loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">
+                {authLoading ? "Verifying authorization..." : "Loading category data..."}
+            </div>
+        );
+    }
+
+    if (!user || profile?.role !== 'admin') return null;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">

@@ -4,20 +4,33 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CategoriesListPage() {
+    const { user, profile, loading: authLoading } = useAuth();
     const router = useRouter();
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const session = localStorage.getItem("glossy_admin_logged_in");
-        if (session !== "true") {
-            router.push("/admin");
-            return;
+        if (!authLoading) {
+            if (!user || profile?.role !== 'admin') {
+                router.push("/admin");
+            } else {
+                fetchCategories();
+            }
         }
-        fetchCategories();
-    }, [router]);
+    }, [user, profile, authLoading, router]);
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">
+                Verifying authorization...
+            </div>
+        );
+    }
+
+    if (!user || profile?.role !== 'admin') return null;
 
     const fetchCategories = async () => {
         setLoading(true);

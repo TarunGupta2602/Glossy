@@ -10,36 +10,20 @@ export function AuthProvider({ children }) {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const fetchProfile = async (userId, userData = null) => {
-        const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", userId)
-            .single();
+    const fetchProfile = async (userId) => {
+        try {
+            const response = await fetch(`/api/profile?userId=${userId}`);
+            const data = await response.json();
 
-        if (error) {
-            // If profile doesn't exist (PGRST116), try to sync it as a fallback
-            if (error.code === 'PGRST116' && userData) {
-                console.log("Profile missing, attempting fallback sync...");
-                const { data: newData, error: syncError } = await supabase.from("users").upsert({
-                    id: userId,
-                    email: userData.email,
-                    name: userData.user_metadata?.full_name || userData.user_metadata?.name,
-                    avatar: userData.user_metadata?.avatar_url || userData.user_metadata?.picture,
-                }).select().single();
-
-                if (syncError) {
-                    console.error("Fallback sync failed:", syncError.message);
-                } else {
-                    setProfile(newData);
-                    return;
-                }
+            if (data.success) {
+                setProfile(data.profile);
+            } else {
+                console.error("Error fetching profile via API:", data.error);
+                setProfile(null);
             }
-
-            console.error("Error fetching profile:", error.message || error);
+        } catch (error) {
+            console.error("Error fetching profile from API:", error);
             setProfile(null);
-        } else {
-            setProfile(data);
         }
     };
 
@@ -49,7 +33,7 @@ export function AuthProvider({ children }) {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
-                fetchProfile(currentUser.id, currentUser);
+                fetchProfile(currentUser.id);
             }
             setLoading(false);
         });
@@ -59,7 +43,7 @@ export function AuthProvider({ children }) {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
-                fetchProfile(currentUser.id, currentUser);
+                fetchProfile(currentUser.id);
             } else {
                 setProfile(null);
             }

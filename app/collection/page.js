@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
 export default async function FeaturedCollections() {
-    const supabase = getServiceClient();
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
 
     const { data: categories, error } = await supabase
         .from("categories")
@@ -13,7 +16,7 @@ export default async function FeaturedCollections() {
         .order("name", { ascending: true });
 
     if (error) {
-        console.error("Error fetching featured collections:", error);
+        console.error("Error fetching collections:", error);
         return null;
     }
 
@@ -35,13 +38,8 @@ export default async function FeaturedCollections() {
                     {categories?.map((category) => {
                         const isEarrings = category.name.toLowerCase().includes("earring");
                         const isNecklaces = category.name.toLowerCase().includes("necklace");
-
-                        const displayTitle = isEarrings ? "Statement Pieces" :
-                            isNecklaces ? "The Necklace Edit" : category.name;
-
-                        const displayDesc = isEarrings ? "Crafted to last a lifetime." :
-                            isNecklaces ? "Luminous accents for every style." :
-                                category.description || `Explore our ${category.name} collection.`;
+                        const displayTitle = isEarrings ? "Statement Pieces" : isNecklaces ? "The Necklace Edit" : category.name;
+                        const displayDesc = isEarrings ? "Crafted to last a lifetime." : isNecklaces ? "Luminous accents for every style." : category.description || `Explore our ${category.name} collection.`;
 
                         return (
                             <Link
@@ -49,19 +47,12 @@ export default async function FeaturedCollections() {
                                 href={`/shop/${category.slug}`}
                                 className="group relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-gray-100 block shadow-sm border border-gray-50 transition-all hover:shadow-xl"
                             >
-                                <Image
-                                    src={category.image_url || "/placeholder.jpg"}
-                                    alt={category.name}
-                                    fill
-                                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                                />
+                                <Image src={category.image_url || "/placeholder.jpg"} alt={category.name} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
                                 <div className="absolute inset-0 p-10 md:p-14 flex flex-col justify-end">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">{displayTitle}</h3>
                                     <p className="text-white/90 font-medium mb-8 max-w-xs [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">{displayDesc}</p>
-                                    <div className="px-7 py-3 bg-white text-gray-900 text-[11px] font-black uppercase tracking-widest rounded-xl w-fit shadow-xl transition-transform group-hover:scale-105">
-                                        EXPLORE
-                                    </div>
+                                    <div className="px-7 py-3 bg-white text-gray-900 text-[11px] font-black uppercase tracking-widest rounded-xl w-fit shadow-xl transition-transform group-hover:scale-105">EXPLORE</div>
                                 </div>
                             </Link>
                         );

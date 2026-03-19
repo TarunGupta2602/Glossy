@@ -1,13 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
 export default async function EarringsPage() {
-    const supabase = getServiceClient();
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+
     const slug = "-statement-pieces";
 
+    // Get category by slug
     const { data: category, error } = await supabase
         .from("categories")
         .select("id, name")
@@ -18,9 +23,10 @@ export default async function EarringsPage() {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
+    // Get products by category_id
     const { data: products } = await supabase
         .from("products")
-        .select("*")
+        .select("*, categories(name, id, slug)")
         .eq("category_id", category.id)
         .order("created_at", { ascending: false });
 
@@ -31,7 +37,6 @@ export default async function EarringsPage() {
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Earrings</h1>
                     <p className="text-gray-500 max-w-xl mx-auto">Crafted to last a lifetime.</p>
                 </div>
-
                 {!products || products.length === 0 ? (
                     <p className="text-center text-gray-500">No products found.</p>
                 ) : (
@@ -39,12 +44,7 @@ export default async function EarringsPage() {
                         {products.map((product) => (
                             <Link key={product.id} href={`/product/${product.id}`} className="group block">
                                 <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                                    <Image
-                                        src={product.main_image || "/placeholder.jpg"}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition"
-                                    />
+                                    <Image src={product.main_image || "/placeholder.jpg"} alt={product.name} fill className="object-cover group-hover:scale-105 transition" />
                                 </div>
                                 <div className="mt-4">
                                     <h3 className="font-semibold text-gray-900">{product.name}</h3>
