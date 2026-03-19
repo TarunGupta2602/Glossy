@@ -1,34 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getBaseUrl } from "@/lib/getBaseUrl";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function NecklacesPage() {
-    const base = getBaseUrl();
+    const supabase = getServiceClient();
     const slug = "the-necklace-edit";
 
-    const catRes = await fetch(`${base}/api/categories`, { cache: "no-store" });
-    const { categories } = await catRes.json();
-    const category = categories?.find((c) => c.slug === slug);
+    const { data: category, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .eq("slug", slug)
+        .single();
 
-    if (!category) {
+    if (error || !category) {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
-    const prodRes = await fetch(`${base}/api/products?slug=${slug}`, { cache: "no-store" });
-    const { products } = await prodRes.json();
+    const { data: products } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category_id", category.id)
+        .order("created_at", { ascending: false });
 
     return (
         <section className="py-24 px-6 md:px-12 bg-white">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Necklaces
-                    </h1>
-                    <p className="text-gray-500 max-w-xl mx-auto">
-                        Luminous accents for every style.
-                    </p>
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Necklaces</h1>
+                    <p className="text-gray-500 max-w-xl mx-auto">Luminous accents for every style.</p>
                 </div>
 
                 {!products || products.length === 0 ? (

@@ -1,14 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getBaseUrl } from "@/lib/getBaseUrl";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function FeaturedCollections() {
-    const base = getBaseUrl();
+    const supabase = getServiceClient();
 
-    const res = await fetch(`${base}/api/categories`, { cache: "no-store" });
-    const { categories, error } = await res.json();
+    const { data: categories, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name", { ascending: true });
 
     if (error) {
         console.error("Error fetching featured collections:", error);
@@ -35,8 +37,7 @@ export default async function FeaturedCollections() {
                         const isNecklaces = category.name.toLowerCase().includes("necklace");
 
                         const displayTitle = isEarrings ? "Statement Pieces" :
-                            isNecklaces ? "The Necklace Edit" :
-                                category.name;
+                            isNecklaces ? "The Necklace Edit" : category.name;
 
                         const displayDesc = isEarrings ? "Crafted to last a lifetime." :
                             isNecklaces ? "Luminous accents for every style." :
@@ -54,14 +55,10 @@ export default async function FeaturedCollections() {
                                     fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500"></div>
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
                                 <div className="absolute inset-0 p-10 md:p-14 flex flex-col justify-end">
-                                    <h3 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">
-                                        {displayTitle}
-                                    </h3>
-                                    <p className="text-white/90 font-medium mb-8 max-w-xs transition-opacity [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">
-                                        {displayDesc}
-                                    </p>
+                                    <h3 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">{displayTitle}</h3>
+                                    <p className="text-white/90 font-medium mb-8 max-w-xs [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">{displayDesc}</p>
                                     <div className="px-7 py-3 bg-white text-gray-900 text-[11px] font-black uppercase tracking-widest rounded-xl w-fit shadow-xl transition-transform group-hover:scale-105">
                                         EXPLORE
                                     </div>

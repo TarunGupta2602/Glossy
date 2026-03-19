@@ -1,5 +1,5 @@
 import ShopClient from "../components/ShopClient";
-import { getBaseUrl } from "@/lib/getBaseUrl";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
@@ -8,25 +8,13 @@ export const metadata = {
     description: "Explore our latest curation of hand-crafted fine jewelry.",
 };
 
-async function getShopData() {
-    const base = getBaseUrl();
-
-    const [catRes, prodRes] = await Promise.all([
-        fetch(`${base}/api/categories`, { cache: "no-store" }),
-        fetch(`${base}/api/products`, { cache: "no-store" }),
-    ]);
-
-    const { categories } = await catRes.json();
-    const { products } = await prodRes.json();
-
-    return {
-        categories: categories || [],
-        products: products || [],
-    };
-}
-
 export default async function ShopPage() {
-    const { categories, products } = await getShopData();
+    const supabase = getServiceClient();
+
+    const [{ data: categories }, { data: products }] = await Promise.all([
+        supabase.from("categories").select("*").order("name", { ascending: true }),
+        supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false }),
+    ]);
 
     return (
         <main className="min-h-screen bg-white">
@@ -43,8 +31,8 @@ export default async function ShopPage() {
             <section className="pb-32 px-6 md:px-12">
                 <div className="max-w-7xl mx-auto">
                     <ShopClient
-                        initialProducts={products}
-                        categories={categories}
+                        initialProducts={products || []}
+                        categories={categories || []}
                     />
                 </div>
             </section>
