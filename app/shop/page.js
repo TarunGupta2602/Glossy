@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import ShopClient from "../components/ShopClient";
 
-export const revalidate = 3600; // ISR: Revalidate every hour
+export const revalidate = 3600; // ISR: Revalidate nnevery hour
 
 export const metadata = {
     title: "Shop All | GLOSSY.",

@@ -17,7 +17,7 @@ export default async function CollectionDetails({ params }) {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
-    // 2. Get products
+    // 2. Get producsts
     const { data: products } = await supabase
         .from("products")
         .select("*")
