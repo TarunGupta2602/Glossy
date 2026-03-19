@@ -2,15 +2,17 @@ import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
     const { id } = await params;
-    const { data: product } = await supabase
-        .from("products")
-        .select("name, description, main_image, categories(name)")
-        .eq("id", id)
-        .single();
+
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+
+    const res = await fetch(`${baseUrl}/api/products/${id}`, { cache: 'no-store' });
+    const { product } = await res.json();
 
     if (!product) return { title: "Product Not Found | GLOSSY." };
 
@@ -30,55 +32,15 @@ export async function generateMetadata({ params }) {
 export default async function ProductPage({ params }) {
     const { id } = await params;
 
-    // Fetch the main product with category
-    const { data: product, error } = await supabase
-        .from("products")
-        .select(`
-            *,
-            categories(name, id)
-        `)
-        .eq("id", id)
-        .single();
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+
+    // Fetch product details from API
+    const res = await fetch(`${baseUrl}/api/products/${id}`, { cache: 'no-store' });
+    const { product, galleryImages, relatedProducts, error } = await res.json();
 
     if (error || !product) notFound();
-
-    // Fetch additional gallery images from product_images table
-    const { data: galleryRows } = await supabase
-        .from("product_images")
-        .select("image_url")
-        .eq("product_id", id)
-        .order("created_at", { ascending: true });
-
-    const galleryImages = (galleryRows || []).map((r) => r.image_url).filter(Boolean);
-
-    // Related products – same category first, newest products as fallback
-    const { data: related } = await supabase
-        .from("products")
-        .select(`
-            id, name, price, main_image,
-            categories(name)
-        `)
-        .eq("category_id", product.category_id)
-        .neq("id", id)
-        .order("created_at", { ascending: false })
-        .limit(4);
-
-    let relatedProducts = related || [];
-
-    if (relatedProducts.length < 4) {
-        const excludeIds = [id, ...relatedProducts.map((p) => p.id)];
-        const { data: extras } = await supabase
-            .from("products")
-            .select(`
-                id, name, price, main_image,
-                categories(name)
-            `)
-            .not("id", "in", `(${excludeIds.join(",")})`)
-            .order("created_at", { ascending: false })
-            .limit(4 - relatedProducts.length);
-
-        relatedProducts = [...relatedProducts, ...(extras || [])];
-    }
 
     return (
         <main className="min-h-screen bg-white">

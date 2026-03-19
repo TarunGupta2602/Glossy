@@ -21,17 +21,21 @@ export default function ContactPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { error } = await supabase.from("contacts").insert([
-            {
+        const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
                 name: form.name,
                 email: form.email,
                 message: form.message,
-            },
-        ]);
+            }),
+        });
 
-        if (error) {
-            console.error(error);
-            alert("Something went wrong!");
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error(data.error);
+            alert("Something went wrong: " + (data.error || "Unknown error"));
         } else {
             setSuccess(true);
             setForm({ name: "", email: "", message: "" });

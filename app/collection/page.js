@@ -5,11 +5,13 @@ import { supabase } from "@/lib/supabaseClient";
 export const dynamic = "force-dynamic";
 
 export default async function FeaturedCollections() {
-    // Fetch categories from bb Supabase
-    const { data: categories, error } = await supabase
-        .from("categories")
-        .select("*")
+    // Fetch categories from API
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
 
+    const res = await fetch(`${baseUrl}/api/categories`, { cache: 'no-store' });
+    const { categories, error } = await res.json();
 
     if (error) {
         console.error("Error fetching featured collections:", error);

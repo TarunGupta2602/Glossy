@@ -6,24 +6,24 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function CollectionDetails({ params }) {
-    const { slug } = await params; // ✅ important fix
+    const { slug } = await params;
 
-    // 1. Get category
-    const { data: category, error: catError } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("slug", slug)
-        .single();
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
 
-    if (catError || !category) {
+    // 1. Get category info from API
+    const catRes = await fetch(`${baseUrl}/api/categories`, { cache: 'no-store' });
+    const { categories } = await catRes.json();
+    const category = categories?.find(c => c.slug === slug);
+
+    if (!category) {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
-    // 2. Get producsts
-    const { data: products } = await supabase
-        .from("products")
-        .select("*")
-        .eq("category_id", category.id);
+    // 2. Get products from API
+    const prodRes = await fetch(`${baseUrl}/api/products?slug=${slug}`, { cache: 'no-store' });
+    const { products } = await prodRes.json();
 
     return (
         <section className="py-24 px-6 md:px-12 bg-white">

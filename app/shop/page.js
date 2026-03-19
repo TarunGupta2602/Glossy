@@ -10,24 +10,19 @@ export const metadata = {
 };
 
 async function getShopData() {
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const host = process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+
     // Fetch all categories
-    const { data: categories, error: catError } = await supabase
-        .from("categories")
-        .select("*")
-        .order("name", { ascending: true });
+    const catRes = await fetch(`${baseUrl}/api/categories`, { cache: 'no-store' });
+    const { categories, error: catError } = await catRes.json();
 
     if (catError) console.error("Error fetching categories:", catError);
 
-    // Fetch all products with their category info
-    const { data: products, error: prodError } = await supabase
-        .from("products")
-        .select(`
-      *,
-      categories (
-        name
-      )
-    `)
-        .order("created_at", { ascending: false });
+    // Fetch all products
+    const prodRes = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
+    const { products, error: prodError } = await prodRes.json();
 
     if (prodError) console.error("Error fetching products:", prodError);
 
