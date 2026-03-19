@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
+// Force dynamic rendering to ensure fresh data on every request (SSR)
+export const dynamic = "force-dynamic";
 
 export default async function FeaturedCollections() {
     // Fetch categories from bb Supabase

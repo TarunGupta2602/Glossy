@@ -1,7 +1,8 @@
 import { supabase } from "@/lib/supabaseClient";
 import ShopClient from "../components/ShopClient";
 
-export const revalidate = 3600; // ISR: Revalidate nnevery hour
+// Force dynamic rendering to ensure fresh data on every request (SSR)
+export const dynamic = "force-dynamic";
 
 export const metadata = {
     title: "Shop All | GLOSSY.",
