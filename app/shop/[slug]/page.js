@@ -1,16 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function CollectionDetails({ params }) {
     const { slug } = await params;
 
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    const supabase = getServiceClient();
 
     // 1. Get category by slug
     const { data: category, error: catError } = await supabase

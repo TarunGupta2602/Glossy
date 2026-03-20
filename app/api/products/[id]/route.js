@@ -1,18 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export async function GET(req, { params }) {
     try {
         const { id } = await params;
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-        if (!supabaseUrl || !serviceRoleKey) {
-            return NextResponse.json({ error: "Supabase configuration missing" }, { status: 500 });
-        }
-
-        const supabaseService = createClient(supabaseUrl, serviceRoleKey);
+        const supabaseService = getServiceClient();
 
         // 1. Fetch main product
         const { data: product, error: productError } = await supabaseService
@@ -73,6 +66,56 @@ export async function GET(req, { params }) {
         });
     } catch (error) {
         console.error("Product Detail API Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+export async function PATCH(req, { params }) {
+    try {
+        const { id } = await params;
+        const body = await req.json();
+        const supabaseService = getServiceClient();
+
+        const { data, error } = await supabaseService
+            .from("products")
+            .update(body)
+            .eq("id", id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Update Product Error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, product: data });
+    } catch (error) {
+        console.error("Product PATCH Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req, { params }) {
+    try {
+        const { id } = await params;
+        const supabaseService = getServiceClient();
+
+        // Optional: First delete from product_images table if needed (or cascade might handle it)
+        await supabaseService.from("product_images").delete().eq("product_id", id);
+
+        const { error } = await supabaseService
+            .from("products")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            console.error("Delete Product Error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, message: "Product deleted" });
+    } catch (error) {
+        console.error("Product DELETE Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

@@ -33,8 +33,15 @@ export default function AddProductPage() {
 
     // Fetch categories
     const fetchCategories = async () => {
-        const { data } = await supabase.from("categories").select("*").order("name");
-        setCategories(data || []);
+        try {
+            const response = await fetch("/api/categories");
+            const data = await response.json();
+            if (data.success) {
+                setCategories(data.categories || []);
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -42,43 +49,64 @@ export default function AddProductPage() {
         setLoading(true);
 
         try {
-            // 1. Insert product
-            const { data: product, error } = await supabase
-                .from("products")
-                .insert([
-                    {
-                        name,
-                        price,
-                        description,
-                        category_id: categoryId,
-                    },
-                ])
-                .select()
-                .single();
+            // 1. Insert product record via API
+            const productRes = await fetch("/api/products", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name,
+                    price,
+                    description,
+                    category_id: categoryId,
+                }),
+            });
+            const productData = await productRes.json();
 
-            if (error) throw error;
+            if (!productData.success) throw new Error(productData.error || "Failed to create product");
+            const product = productData.product;
 
-            // 2. Upload main image
+            let finalMainImageUrl = "";
+
+            // 2. Upload main image to storage
             if (mainImage) {
                 const fileName = `${product.id}/main-${Date.now()}`;
-                await supabase.storage.from("product-images").upload(fileName, mainImage);
-                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, mainImage);
+                if (uploadError) throw uploadError;
 
-                await supabase.from("products").update({ main_image: data.publicUrl }).eq("id", product.id);
+                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                finalMainImageUrl = data.publicUrl;
+
+                // Update product with main image via API
+                await fetch(`/api/products/${product.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ main_image: finalMainImageUrl }),
+                });
             }
 
             // 3. Upload other images
+            const imageObjects = [];
             for (let file of otherImages) {
                 const fileName = `${product.id}/${Date.now()}-${file.name}`;
-                await supabase.storage.from("product-images").upload(fileName, file);
-                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, file);
+                if (uploadError) throw uploadError;
 
-                await supabase.from("product_images").insert([
-                    {
-                        product_id: product.id,
-                        image_url: data.publicUrl,
-                    },
-                ]);
+                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                imageObjects.push({
+                    product_id: product.id,
+                    image_url: data.publicUrl,
+                });
+            }
+
+            // Save gallery images via API
+            if (imageObjects.length > 0) {
+                const galleryRes = await fetch("/api/admin/product-images", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(imageObjects),
+                });
+                const galleryData = await galleryRes.json();
+                if (!galleryData.success) throw new Error(galleryData.error || "Failed to save gallery images");
             }
 
             alert("Product added successfully 🚀");

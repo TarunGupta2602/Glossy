@@ -34,21 +34,16 @@ export default function ProductsListPage() {
 
     const fetchProducts = async () => {
         setLoading(true);
-        // Fetch products with their category name
-        const { data, error } = await supabase
-            .from("products")
-            .select(`
-        *,
-        categories (
-          name
-        )
-      `)
-            .order("created_at", { ascending: false });
-
-        if (error) {
+        try {
+            const response = await fetch("/api/products");
+            const data = await response.json();
+            if (data.success) {
+                setProducts(data.products || []);
+            } else {
+                console.error("Error fetching products:", data.error);
+            }
+        } catch (error) {
             console.error("Error fetching products:", error);
-        } else {
-            setProducts(data || []);
         }
         setLoading(false);
     };
@@ -64,10 +59,13 @@ export default function ProductsListPage() {
                 await supabase.storage.from("product-images").remove([fileName]);
             }
 
-            // 2. Delete product from database
-            const { error } = await supabase.from("products").delete().eq("id", id);
+            // 2. Delete product from database via API
+            const res = await fetch(`/api/products/${id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
 
-            if (error) throw error;
+            if (!data.success) throw new Error(data.error || "Failed to delete product");
 
             alert("Product deleted successfully");
             fetchProducts();

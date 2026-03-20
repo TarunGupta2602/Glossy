@@ -29,21 +29,21 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         // Initial session check
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase.auth.getSession().then(async ({ data: { session } }) => {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
-                fetchProfile(currentUser.id);
+                await fetchProfile(currentUser.id);
             }
             setLoading(false);
         });
 
         // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
-                fetchProfile(currentUser.id);
+                await fetchProfile(currentUser.id);
             } else {
                 setProfile(null);
             }

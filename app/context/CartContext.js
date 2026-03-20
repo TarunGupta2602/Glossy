@@ -13,6 +13,9 @@ export function CartProvider({ children }) {
 
     // Fetch cart from database for authenticated users
     const fetchDBCart = useCallback(async () => {
+        // Disabled database fetch to prevent RLS recursion error for now
+        return;
+        /*
         if (!user) return;
 
         const { data, error } = await supabase
@@ -39,6 +42,7 @@ export function CartProvider({ children }) {
             }));
             setCart(formattedCart);
         }
+        */
     }, [user]);
 
     // Initial load: either from DB or localStorage

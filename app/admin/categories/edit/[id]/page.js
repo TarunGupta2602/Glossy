@@ -29,19 +29,19 @@ export default function EditCategoryPage({ params }) {
     }, [id, user, profile, authLoading, router]);
 
     const fetchCategory = async () => {
-        const { data, error } = await supabase
-            .from("categories")
-            .select("*")
-            .eq("id", id)
-            .single();
-
-        if (error) {
+        try {
+            const response = await fetch(`/api/categories/${id}`);
+            const data = await response.json();
+            if (data.success) {
+                setName(data.category.name);
+                setImageUrl(data.category.image_url);
+            } else {
+                console.error("Error fetching category:", data.error);
+                alert("Error fetching category");
+                router.push("/admin/categories");
+            }
+        } catch (error) {
             console.error("Error fetching category:", error);
-            alert("Error fetching category");
-            router.push("/admin/categories");
-        } else {
-            setName(data.name);
-            setImageUrl(data.image_url);
         }
         setLoading(false);
     };
@@ -69,17 +69,19 @@ export default function EditCategoryPage({ params }) {
                 finalImageUrl = data.publicUrl;
             }
 
-            // 2. Update Category
-            const { error } = await supabase
-                .from("categories")
-                .update({
+            // 2. Update Category via API
+            const res = await fetch(`/api/categories/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     name,
                     slug: generateSlug(name),
                     image_url: finalImageUrl,
-                })
-                .eq("id", id);
+                }),
+            });
+            const data = await res.json();
 
-            if (error) throw error;
+            if (!data.success) throw new Error(data.error || "Failed to update category");
 
             alert("Category updated successfully 🚀");
             router.push("/admin/categories");

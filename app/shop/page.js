@@ -1,5 +1,5 @@
 import ShopClient from "../components/ShopClient";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
@@ -9,10 +9,7 @@ export const metadata = {
 };
 
 export default async function ShopPage() {
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    const supabase = getServiceClient();
 
     const [{ data: categories }, { data: products }] = await Promise.all([
         supabase.from("categories").select("*").order("name", { ascending: true }),

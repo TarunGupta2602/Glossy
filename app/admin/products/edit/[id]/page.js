@@ -36,27 +36,33 @@ export default function EditProductPage({ params }) {
     const fetchData = async () => {
         setLoading(true);
 
-        // 1. Fetch Categories
-        const { data: cats } = await supabase.from("categories").select("*").order("name");
-        setCategories(cats || []);
+        try {
+            // 1. Fetch Categories
+            const catRes = await fetch("/api/categories");
+            const catData = await catRes.json();
+            if (catData.success) {
+                setCategories(catData.categories || []);
+            }
 
-        // 2. Fetch Product
-        const { data: product, error } = await supabase
-            .from("products")
-            .select("*")
-            .eq("id", id)
-            .single();
+            // 2. Fetch Product
+            const prodRes = await fetch(`/api/products/${id}`);
+            const prodData = await prodRes.json();
 
-        if (error) {
-            console.error("Error fetching product:", error);
-            alert("Error fetching product");
-            router.push("/admin/products");
-        } else {
-            setName(product.name);
-            setPrice(product.price);
-            setDescription(product.description || "");
-            setCategoryId(product.category_id);
-            setMainImageUrl(product.main_image || "");
+            if (!prodData.success) {
+                console.error("Error fetching product:", prodData.error);
+                alert("Error fetching product");
+                router.push("/admin/products");
+            } else {
+                const product = prodData.product;
+                setName(product.name);
+                setPrice(product.price);
+                setDescription(product.description || "");
+                setCategoryId(product.category_id);
+                setMainImageUrl(product.main_image || "");
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            alert("Unexpected error occurred while fetching product data.");
         }
 
         setLoading(false);
@@ -83,19 +89,21 @@ export default function EditProductPage({ params }) {
                 finalMainImageUrl = data.publicUrl;
             }
 
-            // 2. Update Product record
-            const { error } = await supabase
-                .from("products")
-                .update({
+            // 2. Update Product record via API
+            const res = await fetch(`/api/products/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     name,
-                    price,
+                    price: parseFloat(price),
                     description,
                     category_id: categoryId,
                     main_image: finalMainImageUrl,
-                })
-                .eq("id", id);
+                }),
+            });
+            const data = await res.json();
 
-            if (error) throw error;
+            if (!data.success) throw new Error(data.error || "Failed to update product");
 
             alert("Product updated successfully 🚀");
             router.push("/admin/products");

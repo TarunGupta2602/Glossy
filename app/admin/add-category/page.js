@@ -56,16 +56,19 @@ export default function AddCategoryPage() {
                 imageUrl = data.publicUrl;
             }
 
-            // 2. Insert Category
-            const { error } = await supabase.from("categories").insert([
-                {
+            // 2. Insert Category via API
+            const res = await fetch("/api/categories", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     name,
                     slug: generateSlug(name),
                     image_url: imageUrl,
-                },
-            ]);
+                }),
+            });
+            const data = await res.json();
 
-            if (error) throw error;
+            if (!data.success) throw new Error(data.error || "Failed to create category");
 
             alert("Category added successfully 🚀");
             router.push("/admin/categories");

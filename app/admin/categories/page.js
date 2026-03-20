@@ -34,15 +34,16 @@ export default function CategoriesListPage() {
 
     const fetchCategories = async () => {
         setLoading(true);
-        const { data, error } = await supabase
-            .from("categories")
-            .select("*")
-            .order("name", { ascending: true });
-
-        if (error) {
+        try {
+            const response = await fetch("/api/categories");
+            const data = await response.json();
+            if (data.success) {
+                setCategories(data.categories || []);
+            } else {
+                console.error("Error fetching categories:", data.error);
+            }
+        } catch (error) {
             console.error("Error fetching categories:", error);
-        } else {
-            setCategories(data || []);
         }
         setLoading(false);
     };
@@ -57,10 +58,13 @@ export default function CategoriesListPage() {
                 await supabase.storage.from("category-images").remove([fileName]);
             }
 
-            // 2. Delete category from database
-            const { error } = await supabase.from("categories").delete().eq("id", id);
+            // 2. Delete category via API
+            const res = await fetch(`/api/categories/${id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
 
-            if (error) throw error;
+            if (!data.success) throw new Error(data.error || "Failed to delete category");
 
             alert("Category deleted successfully");
             fetchCategories();

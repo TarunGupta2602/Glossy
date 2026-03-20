@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export async function POST(req) {
     try {
@@ -9,14 +9,7 @@ export async function POST(req) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const serviceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-        if (!supabaseUrl || !serviceRoleKey) {
-            return NextResponse.json({ error: "Supabase configuration missing" }, { status: 500 });
-        }
-
-        const supabaseService = createClient(supabaseUrl, serviceRoleKey);
+        const supabaseService = getServiceClient();
 
         const { error } = await supabaseService.from("contacts").insert([
             { name, email, message }

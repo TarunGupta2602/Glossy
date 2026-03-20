@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export default async function FeaturedCollections() {
+    const supabase = getServiceClient();
     // Fetch categories from Supabase
     const { data: categories, error } = await supabase
         .from("categories")

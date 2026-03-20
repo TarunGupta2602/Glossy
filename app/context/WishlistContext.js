@@ -13,6 +13,9 @@ export function WishlistProvider({ children }) {
 
     // Fetch wishlist from database for authenticated users
     const fetchDBWishlist = useCallback(async () => {
+        // Disabled database fetch per request ("no need to fetch wishlist here")
+        return;
+        /*
         if (!user) return;
 
         const { data, error } = await supabase
@@ -37,6 +40,7 @@ export function WishlistProvider({ children }) {
             }));
             setWishlist(formattedWishlist);
         }
+        */
     }, [user]);
 
     // Initial load: either from DB or localStorage

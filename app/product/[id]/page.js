@@ -1,15 +1,13 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
-import { createClient } from "@supabase/supabase-js";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
     const { id } = await params;
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    const supabase = getServiceClient();
 
     const { data: product } = await supabase
         .from("products")
@@ -33,10 +31,7 @@ export async function generateMetadata({ params }) {
 export default async function ProductPage({ params }) {
     const { id } = await params;
 
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
+    const supabase = getServiceClient();
 
     // 1. Fetch main product with category
     const { data: product, error } = await supabase
