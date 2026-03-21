@@ -101,6 +101,25 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                             </div>
                         )}
 
+                        <div className="mt-12 p-8 bg-gray-50 rounded-[32px] border border-gray-100">
+                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6">Delivery Particulars</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-900">
+                                <div className="space-y-1">
+                                    <p className="text-[11px] font-black text-[#E91E63] uppercase tracking-widest">Addressee</p>
+                                    <p className="text-xl font-bold">{order.shipping_address.firstName} {order.shipping_address.lastName}</p>
+                                    <p className="text-sm font-medium text-gray-500">{order.shipping_address.email}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[11px] font-black text-[#E91E63] uppercase tracking-widest">Shipping Location</p>
+                                    <p className="text-sm font-bold leading-relaxed">
+                                        {order.shipping_address.address}<br />
+                                        {order.shipping_address.city}, {order.shipping_address.state} - {order.shipping_address.pincode}
+                                    </p>
+                                    <p className="text-sm font-black mt-2">Mobile: {order.shipping_address.phone}</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="mt-12 text-center">
                             <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">Thank you for your trust in GLOSSY. Fine Jewelry</p>
                         </div>

@@ -16,8 +16,11 @@ export default function CheckoutPage() {
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
         lastName: "",
+        email: user?.email || "",
         address: "",
         city: "",
+        state: "",
+        pincode: "",
         phone: ""
     });
 
@@ -138,7 +141,7 @@ export default function CheckoutPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <h1 className="text-3xl font-black text-gray-900 mb-4">Payment Successful!</h1>
-                <p className="text-gray-500 max-w-sm mb-10 text-lg">Thank you for your purchase. We've sent a confirmation email to {user.email}.</p>
+                <p className="text-gray-500 max-w-sm mb-10 text-lg">Thank you for your purchase.</p>
                 <Link
                     href="/shop"
                     className="bg-gray-900 text-white px-10 py-5 rounded-2xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all"
@@ -190,9 +193,10 @@ export default function CheckoutPage() {
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Email Address</label>
                                     <input
                                         type="email"
-                                        readOnly
-                                        value={user.email}
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none text-gray-500"
+                                        placeholder="your@email.com"
+                                        value={shippingInfo.email}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
                                     />
                                 </div>
                             </div>
@@ -245,6 +249,26 @@ export default function CheckoutPage() {
                                     />
                                 </div>
                                 <div className="space-y-1">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">State</label>
+                                    <input
+                                        type="text"
+                                        placeholder="State"
+                                        value={shippingInfo.state}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Pin Code</label>
+                                    <input
+                                        type="text"
+                                        placeholder="6-digit pin code"
+                                        value={shippingInfo.pincode}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, pincode: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
+                                </div>
+                                <div className="space-y-1">
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Phone</label>
                                     <input
                                         type="tel"
@@ -259,8 +283,8 @@ export default function CheckoutPage() {
 
                         <button
                             onClick={handlePayment}
-                            disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone}
-                            className={`w-full py-5 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone
+                            disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode}
+                            className={`w-full py-5 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode
                                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                                 : "bg-gray-900 text-white hover:bg-black transform active:scale-[0.98]"
                                 }`}

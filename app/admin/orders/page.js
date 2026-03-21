@@ -246,12 +246,15 @@ export default function AdminOrdersPage() {
                             </div>
 
                             <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Shipping Address</p>
-                                <div className="space-y-1 text-sm text-gray-900">
-                                    <p className="font-bold">{selectedOrder.shipping_address.firstName} {selectedOrder.shipping_address.lastName}</p>
-                                    <p>{selectedOrder.shipping_address.address}</p>
-                                    <p>{selectedOrder.shipping_address.city}</p>
-                                    <p className="mt-2 font-semibold">Phone: {selectedOrder.shipping_address.phone}</p>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Shipping Address & Contact</p>
+                                <div className="space-y-2 text-sm text-gray-900">
+                                    <p className="font-bold text-base">{selectedOrder.shipping_address.firstName} {selectedOrder.shipping_address.lastName}</p>
+                                    <p className="text-gray-600 truncate">{selectedOrder.shipping_address.email}</p>
+                                    <div className="pt-2">
+                                        <p>{selectedOrder.shipping_address.address}</p>
+                                        <p>{selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} - <span className="font-bold">{selectedOrder.shipping_address.pincode}</span></p>
+                                    </div>
+                                    <p className="mt-2 font-black text-[#E91E63]">Phone: {selectedOrder.shipping_address.phone}</p>
                                 </div>
                             </div>
 
