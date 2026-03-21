@@ -22,6 +22,8 @@ export default function AdminOrdersPage() {
             case 'out for delivery': return 'bg-purple-100 text-purple-700';
             case 'delivered': return 'bg-green-100 text-green-700';
             case 'cancelled': return 'bg-red-100 text-red-700';
+            case 'return requested': return 'bg-orange-100 text-orange-700';
+            case 'returned': return 'bg-gray-200 text-gray-700';
             default: return 'bg-gray-100 text-gray-600';
         }
     };
@@ -211,6 +213,8 @@ export default function AdminOrdersPage() {
                                             <option value="out for delivery">Out for Delivery</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
+                                            <option value="return requested">Return Requested</option>
+                                            <option value="returned">Returned</option>
                                         </select>
                                     </div>
                                 </div>

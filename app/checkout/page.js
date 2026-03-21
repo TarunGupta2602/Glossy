@@ -21,7 +21,7 @@ export default function CheckoutPage() {
         phone: ""
     });
 
-    const deliveryFee = cartTotal < 1000 ? 80 : 0;
+    const deliveryFee = cartTotal < 1000 ? 40 : 0;
     const totalCheckoutAmount = cartTotal + deliveryFee;
 
     useEffect(() => {
@@ -300,15 +300,22 @@ export default function CheckoutPage() {
 
                             <div className="border-t border-gray-100 mt-8 pt-6 space-y-3">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Subtotal</span>
+                                    <span className="text-gray-500">Cart Total</span>
                                     <span className="font-bold text-gray-900">₹{cartTotal.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Shipping</span>
-                                    <span className={`font-bold tracking-widest uppercase text-xs ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-gray-500">Small Order Delivery</span>
+                                    <span className={`font-black tracking-widest uppercase ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900 underline decoration-pink-100 underline-offset-4'}`}>
                                         {deliveryFee === 0 ? 'Free' : `₹${deliveryFee.toFixed(2)}`}
                                     </span>
                                 </div>
+                                {deliveryFee > 0 && (
+                                    <div className="bg-pink-50/50 p-3 rounded-xl border border-pink-100/50">
+                                        <p className="text-[10px] text-[#E91E63] font-bold text-center leading-relaxed">
+                                            Shop for ₹{(1000 - cartTotal).toFixed(0)} more to get **Free Delivery**!
+                                        </p>
+                                    </div>
+                                )}
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
                                     <span className="text-2xl font-black text-[#E91E63]">₹{totalCheckoutAmount.toFixed(2)}</span>

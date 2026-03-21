@@ -1,7 +1,16 @@
 "use client";
 
-export default function OrderModal({ order, onClose, getStatusColor, onCancelOrder }) {
+export default function OrderModal({ order, onClose, getStatusColor, onCancelOrder, onReturnOrder }) {
     if (!order) return null;
+
+    const isEligibleForReturn = () => {
+        if (order.order_status !== 'delivered') return false;
+        // In a real app we'd use delivered_at. Fallback to created_at for now.
+        const deliveryDate = new Date(order.delivered_at || order.created_at);
+        const diffTime = Math.abs(new Date() - deliveryDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 7;
+    };
 
     const isProcessing = order.order_status === 'processing';
 
@@ -77,6 +86,17 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                                     className="px-10 py-4 rounded-2xl bg-red-50 text-red-600 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-red-600 hover:text-white transition-all shadow-sm"
                                 >
                                     Cancel Order
+                                </button>
+                            </div>
+                        )}
+
+                        {isEligibleForReturn() && (
+                            <div className="mt-12 flex justify-center">
+                                <button
+                                    onClick={() => onReturnOrder(order.id)}
+                                    className="px-10 py-4 rounded-2xl bg-orange-50 text-orange-600 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-orange-600 hover:text-white transition-all shadow-sm"
+                                >
+                                    Request Return
                                 </button>
                             </div>
                         )}

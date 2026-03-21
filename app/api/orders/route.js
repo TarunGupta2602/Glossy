@@ -90,9 +90,15 @@ export async function PATCH(req) {
         // Use service role client to bypass RLS
         const supabaseService = getServiceClient();
 
+        // Handle setting delivered_at timestamp when status becomes 'delivered'
+        const updateData = { order_status };
+        if (order_status === 'delivered') {
+            updateData.delivered_at = new Date().toISOString();
+        }
+
         const { data, error } = await supabaseService
             .from("orders")
-            .update({ order_status })
+            .update(updateData)
             .eq("id", id)
             .select();
 

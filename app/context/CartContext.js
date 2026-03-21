@@ -205,10 +205,14 @@ export function CartProvider({ children }) {
     };
 
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    const cartTotal = cart.reduce(
+    const cartSubtotal = cart.reduce(
         (total, item) => total + item.price * (item.quantity || 0),
         0
     );
+
+    // Rule: ₹20 shipping if subtotal < ₹1000
+    const shippingFee = cartSubtotal > 0 && cartSubtotal < 1000 ? 20 : 0;
+    const cartTotal = cartSubtotal + shippingFee;
 
     return (
         <CartContext.Provider
@@ -219,6 +223,8 @@ export function CartProvider({ children }) {
                 updateQuantity,
                 clearCart,
                 cartCount,
+                cartSubtotal,
+                shippingFee,
                 cartTotal,
                 isInitialized,
             }}

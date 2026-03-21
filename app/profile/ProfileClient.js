@@ -52,19 +52,12 @@ export default function ProfileClient() {
         try {
             const response = await fetch("/api/orders", {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: orderId,
-                    order_status: "cancelled",
-                }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: orderId, order_status: "cancelled" }),
             });
 
             const data = await response.json();
-
             if (data.success) {
-                // Refresh orders
                 fetchUserOrders();
                 setSelectedOrder(null);
             } else {
@@ -76,6 +69,30 @@ export default function ProfileClient() {
         }
     };
 
+    const handleReturnOrder = async (orderId) => {
+        if (!confirm("Are you sure you want to request a return for this order? Our policy allows returns within 7 days of delivery.")) return;
+
+        try {
+            const response = await fetch("/api/orders", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: orderId, order_status: "return requested" }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                fetchUserOrders();
+                setSelectedOrder(null);
+                alert("Return request submitted successfully. Our team will contact you shortly.");
+            } else {
+                alert("Failed to request return: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error requesting return:", error);
+            alert("An error occurred while requesting the return.");
+        }
+    };
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'processing': return 'bg-amber-100 text-amber-700';
@@ -84,6 +101,8 @@ export default function ProfileClient() {
             case 'out for delivery': return 'bg-purple-100 text-purple-700';
             case 'delivered': return 'bg-green-100 text-green-700';
             case 'cancelled': return 'bg-red-100 text-red-700';
+            case 'return requested': return 'bg-orange-100 text-orange-700';
+            case 'returned': return 'bg-gray-200 text-gray-700';
             default: return 'bg-gray-100 text-gray-600';
         }
     };
@@ -150,6 +169,7 @@ export default function ProfileClient() {
                             onViewDetails={setSelectedOrder}
                             getStatusColor={getStatusColor}
                             onCancelOrder={handleCancelOrder}
+                            onReturnOrder={handleReturnOrder}
                         />
                     ) : (
                         <WishlistTab
@@ -167,6 +187,7 @@ export default function ProfileClient() {
                 onClose={() => setSelectedOrder(null)}
                 getStatusColor={getStatusColor}
                 onCancelOrder={handleCancelOrder}
+                onReturnOrder={handleReturnOrder}
             />
 
             <style jsx global>{`

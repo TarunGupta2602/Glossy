@@ -7,12 +7,9 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-    const { cart, cartTotal, removeFromCart, updateQuantity, isInitialized } = useCart();
+    const { cart, cartSubtotal, cartTotal, shippingFee, removeFromCart, updateQuantity, isInitialized } = useCart();
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
-
-    const shippingFee = cartTotal < 1000 ? 80 : 0;
-    const totalAmount = cartTotal + shippingFee;
 
     if (!isInitialized) {
         return (
@@ -115,7 +112,7 @@ export default function CartPage() {
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Subtotal</span>
-                                <span className="font-semibold text-gray-900">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="font-semibold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Shipping</span>
@@ -132,7 +129,7 @@ export default function CartPage() {
                         <div className="border-t border-gray-200 pt-6 mb-8">
                             <div className="flex justify-between items-end">
                                 <span className="text-base font-bold text-gray-900">Total</span>
-                                <span className="text-2xl font-bold text-[#E91E63]">₹{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="text-2xl font-bold text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                         </div>
 

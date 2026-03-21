@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { OrderCardSkeleton } from "./ProfileSkeletons";
 
-export default function OrderHistory({ orders, loading, onViewDetails, getStatusColor, onCancelOrder }) {
+export default function OrderHistory({ orders, loading, onViewDetails, getStatusColor, onCancelOrder, onReturnOrder }) {
+    const isEligibleForReturn = (order) => {
+        if (order.order_status !== 'delivered') return false;
+        // In a real app we'd use delivered_at. Fallback to created_at for now.
+        const deliveryDate = new Date(order.delivered_at || order.created_at);
+        const diffTime = Math.abs(new Date() - deliveryDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 7;
+    };
     if (loading) {
         return (
             <div className="grid grid-cols-1 gap-8">
@@ -82,6 +90,17 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                                     className="px-6 h-14 rounded-2xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center"
                                 >
                                     Cancel
+                                </button>
+                            )}
+                            {isEligibleForReturn(order) && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onReturnOrder(order.id);
+                                    }}
+                                    className="px-6 h-14 rounded-2xl bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center"
+                                >
+                                    Return
                                 </button>
                             )}
                             <button
