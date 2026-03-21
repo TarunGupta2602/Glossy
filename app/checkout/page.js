@@ -21,6 +21,9 @@ export default function CheckoutPage() {
         phone: ""
     });
 
+    const deliveryFee = cartTotal < 1000 ? 80 : 0;
+    const totalCheckoutAmount = cartTotal + deliveryFee;
+
     useEffect(() => {
         if (isInitialized && !user) {
             router.push("/cart");
@@ -53,7 +56,7 @@ export default function CheckoutPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: cartTotal,
+                    amount: totalCheckoutAmount,
                     currency: "INR",
                 }),
             });
@@ -82,7 +85,7 @@ export default function CheckoutPage() {
                                 user_id: user.id,
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
-                                total_amount: cartTotal,
+                                total_amount: totalCheckoutAmount,
                                 shipping_address: shippingInfo,
                                 contact_phone: shippingInfo.phone,
                                 items: cart
@@ -302,11 +305,13 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className="font-bold text-green-600 tracking-widest uppercase text-xs">Free</span>
+                                    <span className={`font-bold tracking-widest uppercase text-xs ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                        {deliveryFee === 0 ? 'Free' : `₹${deliveryFee.toFixed(2)}`}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
-                                    <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>
+                                    <span className="text-2xl font-black text-[#E91E63]">₹{totalCheckoutAmount.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

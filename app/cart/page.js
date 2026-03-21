@@ -11,6 +11,9 @@ export default function CartPage() {
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
 
+    const shippingFee = cartTotal < 1000 ? 80 : 0;
+    const totalAmount = cartTotal + shippingFee;
+
     if (!isInitialized) {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
@@ -116,7 +119,9 @@ export default function CartPage() {
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Shipping</span>
-                                <span className="font-semibold text-green-600">Free</span>
+                                <span className={`font-semibold ${shippingFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                    {shippingFee === 0 ? 'Free' : `₹${shippingFee.toFixed(2)}`}
+                                </span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Tax</span>
@@ -127,7 +132,7 @@ export default function CartPage() {
                         <div className="border-t border-gray-200 pt-6 mb-8">
                             <div className="flex justify-between items-end">
                                 <span className="text-base font-bold text-gray-900">Total</span>
-                                <span className="text-2xl font-bold text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="text-2xl font-bold text-[#E91E63]">₹{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                         </div>
 

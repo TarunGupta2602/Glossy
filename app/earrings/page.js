@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function EarringsPage() {
     const supabase = getServiceClient();
 
-    const slug = "-statement-pieces";
+    const slug = "-statement-piecess";
 
     // Get category by slug
     const { data: category, error } = await supabase
