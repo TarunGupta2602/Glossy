@@ -1,9 +1,9 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Privacy Policy | Glossy Jewelry",
+    title: "Privacy Policy | SLAYAURA Jewelry",
     description:
-        "Learn how Glossy Jewelry collects, uses, and protects your personal information when you use our website.",
+        "Learn how SLAYAURA Jewelry collects, uses, and protects your personal information when you use our website.",
 };
 
 export default function PrivacyPolicy() {
@@ -90,7 +90,7 @@ export default function PrivacyPolicy() {
                         <p>
                             If you have any questions about this Privacy Policy, please contact us at{" "}
                             <span className="text-gray-900 font-medium">
-                                support@glossy.com
+                                support@slayaura.com
                             </span>.
                         </p>
                     </div>

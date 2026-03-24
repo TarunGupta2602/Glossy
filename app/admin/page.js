@@ -71,7 +71,7 @@ export default function AdminPage() {
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-black tracking-tighter text-[#E91E63] mb-2">GLOSSY.</h1>
+                        <h1 className="text-3xl font-black tracking-tighter text-[#E91E63] mb-2">SLAYAURA.</h1>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
                         {user && profile?.role !== 'admin' && (
                             <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">

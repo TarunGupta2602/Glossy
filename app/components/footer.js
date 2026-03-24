@@ -8,7 +8,7 @@ export default function Footer() {
                     {/* Logo & Bio */}
                     <div className="md:col-span-1">
                         <Link href="/" className="text-2xl font-black tracking-tighter text-[#E91E63] mb-6 block">
-                            GLOSSY.
+                            SLAYAURA.
                         </Link>
                         <p className="text-gray-500 leading-relaxed max-w-xs">
                             Defining modern luxury through intentional design and sustainable practices in fine jewelry.
@@ -60,7 +60,7 @@ export default function Footer() {
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-gray-400 text-sm">
-                        © {new Date().getFullYear()} GLOSSY. All rights reserved.
+                        © {new Date().getFullYear()} SLAYAURA. All rights reserved.
                     </p>
                     <div className="flex items-center space-x-6 text-sm text-gray-400">
                         <Link href="/privacy" className="hover:text-gray-900 transition-colors">Privacy Policy</Link>

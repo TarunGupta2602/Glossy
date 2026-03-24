@@ -32,7 +32,7 @@ export default function Navbar() {
                 {/* Left: Logo */}
                 <div className="flex-shrink-0">
                     <Link href="/" className="text-2xl font-black tracking-tighter text-[#E91E63]">
-                        GLOSSY.
+                        SLAYAURA.
                     </Link>
                 </div>
 

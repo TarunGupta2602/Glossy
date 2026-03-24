@@ -6,7 +6,7 @@ export default function Testimonials() {
         },
         {
             name: "Elena Rodriguez",
-            text: "Their unique bracelets have become a staple in my daily look. Glossy is my new go-to for refined jewelry. Fast shipping and lovely packaging.",
+            text: "Their unique bracelets have become a staple in my daily look. SLAYAURA is my new go-to for refined jewelry. Fast shipping and lovely packaging.",
         },
         {
             name: "Maya Thompson",

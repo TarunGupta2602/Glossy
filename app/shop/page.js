@@ -4,7 +4,7 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Shop All | GLOSSY.",
+    title: "Shop All | SLAYAURA.",
     description: "Explore our latest curation of hand-crafted fine jewelry.",
 };
 

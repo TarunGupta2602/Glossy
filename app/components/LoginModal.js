@@ -27,7 +27,7 @@ export default function LoginModal({ isOpen, onClose }) {
 
                     {/* Content */}
                     <div className="space-y-2">
-                        <h3 className="text-2xl font-black tracking-tight text-gray-900">Join GLOSSY.</h3>
+                        <h3 className="text-2xl font-black tracking-tight text-gray-900">Join SLAYAURA.</h3>
                         <p className="text-sm text-gray-500 font-medium px-4">Log in to track your orders, save favorites, and enjoy a faster checkout.</p>
                     </div>
 

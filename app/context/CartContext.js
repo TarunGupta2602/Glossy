@@ -51,13 +51,13 @@ export function CartProvider({ children }) {
             if (user) {
                 await fetchDBCart();
                 // Sync local items ONLY manually right after login if they exist
-                const localCartString = localStorage.getItem("glossy-cart");
+                const localCartString = localStorage.getItem("slayaura-cart");
                 if (localCartString) {
                     try {
                         const localCart = JSON.parse(localCartString);
                         if (localCart.length > 0) {
                             await syncLocalCartToDB(localCart);
-                            localStorage.removeItem("glossy-cart");
+                            localStorage.removeItem("slayaura-cart");
                         }
                     } catch (e) {
                         console.error("Failed to parse local cart for sync", e);
@@ -66,7 +66,7 @@ export function CartProvider({ children }) {
             } else {
                 // If we just logged out (isInitialized was true and now user is null)
                 // we should reload the local cart (which should be empty or have guest items)
-                const savedCart = localStorage.getItem("glossy-cart");
+                const savedCart = localStorage.getItem("slayaura-cart");
                 if (savedCart) {
                     try {
                         setCart(JSON.parse(savedCart));
@@ -86,7 +86,7 @@ export function CartProvider({ children }) {
     // Save Guest cart to localStorage ONLY if user is not logged in
     useEffect(() => {
         if (isInitialized && !user) {
-            localStorage.setItem("glossy-cart", JSON.stringify(cart));
+            localStorage.setItem("slayaura-cart", JSON.stringify(cart));
         }
     }, [cart, isInitialized, user]);
 

@@ -1,11 +1,11 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "FAQs | Glossy Jewelry",
+    title: "FAQs | SLAYAURA Jewelry",
     description:
-        "Find answers to common questions about shipping, returns, delivery time, and orders at Glossy Jewelry.",
+        "Find answers to common questions about shipping, returns, delivery time, and orders at SLAYAURA Jewelry.",
     keywords: [
-        "Glossy FAQs",
+        "SLAYAURA FAQs",
         "shipping policy",
         "returns policy",
         "jewelry delivery",

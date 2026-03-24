@@ -1,7 +1,7 @@
 import ProfileClient from "./ProfileClient";
 
 export const metadata = {
-    title: "My Profile | GLOSSY. Fine Jewelry",
+    title: "My Profile | SLAYAURA. Fine Jewelry",
     description: "Manage your acquisitions and curated wishlist.",
 };
 

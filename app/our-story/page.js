@@ -21,7 +21,7 @@ export default function OurStoryPage() {
                 {/* Content */}
                 <div className="space-y-8 text-gray-600 leading-relaxed text-lg">
                     <p>
-                        At Glossy, we believe jewelry is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
+                        At SLAYAURA, we believe jewelry is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
                     </p>
 
                     <p>
@@ -33,7 +33,7 @@ export default function OurStoryPage() {
                     </p>
 
                     <p>
-                        From everyday elegance to statement pieces, Glossy is here to elevate your style.
+                        From everyday elegance to statement pieces, SLAYAURA is here to elevate your style.
                     </p>
                 </div>
             </div>

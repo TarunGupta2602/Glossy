@@ -1,9 +1,9 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Terms of Service | Glossy Jewelry",
+    title: "Terms of Service | SLAYAURA Jewelry",
     description:
-        "Read the terms and conditions for using Glossy Jewelry website, including orders, payments, and user responsibilities.",
+        "Read the terms and conditions for using SLAYAURA Jewelry website, including orders, payments, and user responsibilities.",
 };
 
 export default function TermsPage() {
@@ -81,7 +81,7 @@ export default function TermsPage() {
                         </h2>
                         <p>
                             All content on this website, including images, text, and branding, is the property
-                            of Glossy Jewelry and may not be used without permission.
+                            of SLAYAURA Jewelry and may not be used without permission.
                         </p>
                     </div>
 
@@ -112,7 +112,7 @@ export default function TermsPage() {
                         <p>
                             If you have any questions about these Terms, please contact us at{" "}
                             <span className="text-gray-900 font-medium">
-                                support@glossy.com
+                                support@slayaura.com
                             </span>.
                         </p>
                     </div>

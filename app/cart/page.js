@@ -142,7 +142,7 @@ export default function CartPage() {
                             </button>
                         ) : (
                             <div className="mb-6 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                                <h3 className="text-lg font-black tracking-tight text-gray-900 mb-2">Join GLOSSY.</h3>
+                                <h3 className="text-lg font-black tracking-tight text-gray-900 mb-2">Join SLAYAURA.</h3>
                                 <p className="text-xs text-gray-500 font-medium mb-5">Sign in to sync your bag, track orders, and enjoy a faster checkout.</p>
                                 <button
                                     onClick={signInWithGoogle}

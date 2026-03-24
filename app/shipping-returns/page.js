@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Shipping & Returns | Glossy",
+    title: "Shipping & Returns | SLAYAURA",
     description: "Learn about our shipping times, delivery process, and easy return policy.",
 };
 
@@ -81,7 +81,7 @@ export default function ShippingReturns() {
                         <p>
                             If you have any questions regarding your order, feel free to contact our support team at{" "}
                             <span className="font-medium text-gray-900">
-                                support@glossy.com
+                                support@slayaura.com
                             </span>.
                         </p>
                     </div>

@@ -15,11 +15,11 @@ export async function generateMetadata({ params }) {
         .eq("id", id)
         .single();
 
-    if (!product) return { title: "Product Not Found | GLOSSY." };
+    if (!product) return { title: "Product Not Found | SLAYAURA." };
 
     return {
-        title: `${product.name} | GLOSSY.`,
-        description: product.description || `Shop ${product.name} at GLOSSY. Fine jewelry, designed to last.`,
+        title: `${product.name} | SLAYAURA.`,
+        description: product.description || `Shop ${product.name} at SLAYAURA. Fine jewelry, designed to last.`,
         openGraph: {
             title: product.name,
             description: product.description,

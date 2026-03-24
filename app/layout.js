@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "GLOSSY. | Modern Luxury Jewelry",
+  title: "SLAYAURA. | Modern Luxury Jewelry",
   description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
 };
 

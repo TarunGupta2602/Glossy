@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "GLOSSY",
+                name: "SLAYAURA",
                 description: "Jewelry Purchase",
                 order_id: orderData.id,
                 handler: async function (response) {

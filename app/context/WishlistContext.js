@@ -49,20 +49,20 @@ export function WishlistProvider({ children }) {
             if (user) {
                 await fetchDBWishlist();
                 // Sync local items manually right after login if they exist
-                const localWishString = localStorage.getItem("glossy-wishlist");
+                const localWishString = localStorage.getItem("slayaura-wishlist");
                 if (localWishString) {
                     try {
                         const localWish = JSON.parse(localWishString);
                         if (localWish.length > 0) {
                             await syncLocalWishlistToDB(localWish);
-                            localStorage.removeItem("glossy-wishlist");
+                            localStorage.removeItem("slayaura-wishlist");
                         }
                     } catch (e) {
                         console.error("Failed to parse local wishlist for sync", e);
                     }
                 }
             } else {
-                const savedWishlist = localStorage.getItem("glossy-wishlist");
+                const savedWishlist = localStorage.getItem("slayaura-wishlist");
                 if (savedWishlist) {
                     try {
                         setWishlist(JSON.parse(savedWishlist));
@@ -82,7 +82,7 @@ export function WishlistProvider({ children }) {
     // Save Guest wishlist to localStorage ONLY if user is not logged in
     useEffect(() => {
         if (isInitialized && !user) {
-            localStorage.setItem("glossy-wishlist", JSON.stringify(wishlist));
+            localStorage.setItem("slayaura-wishlist", JSON.stringify(wishlist));
         }
     }, [wishlist, isInitialized, user]);
 
