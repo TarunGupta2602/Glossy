@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "../context/AuthContext";
+import Image from "next/image";
 
 export default function LoginModal({ isOpen, onClose }) {
     const { signInWithGoogle } = useAuth();
@@ -17,17 +18,19 @@ export default function LoginModal({ isOpen, onClose }) {
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-pink-50 rounded-full blur-3xl opacity-50"></div>
 
                 <div className="relative flex flex-col items-center text-center space-y-6">
-                    {/* Icon */}
-                    <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center transform rotate-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E91E63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
+                    {/* Logo instead of Icon */}
+                    <div className="w-48 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-2">
+                        <Image
+                            src="/logo.png"
+                            alt="SLAYAURA Logo"
+                            width={160}
+                            height={64}
+                            className="w-full h-full object-contain"
+                        />
                     </div>
 
                     {/* Content */}
                     <div className="space-y-2">
-                        <h3 className="text-2xl font-black tracking-tight text-gray-900">Join SLAYAURA.</h3>
                         <p className="text-sm text-gray-500 font-medium px-4">Log in to track your orders, save favorites, and enjoy a faster checkout.</p>
                     </div>
 

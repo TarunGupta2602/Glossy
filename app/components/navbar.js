@@ -31,8 +31,15 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Left: Logo */}
                 <div className="flex-shrink-0">
-                    <Link href="/" className="text-2xl font-black tracking-tighter text-[#E91E63]">
-                        SLAYAURA.
+                    <Link href="/" className="group block focus:outline-none">
+                        <Image
+                            src="/logo.png"
+                            alt="SLAYAURA Logo"
+                            width={160}
+                            height={64}
+                            className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
+                            priority
+                        />
                     </Link>
                 </div>
 

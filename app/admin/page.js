@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -70,8 +71,16 @@ export default function AdminPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-black tracking-tighter text-[#E91E63] mb-2">SLAYAURA.</h1>
+                    <div className="flex flex-col items-center mb-8 text-center">
+                        <div className="flex flex-col items-center gap-4 mb-4">
+                            <Image
+                                src="/logo.png"
+                                alt="SLAYAURA Logo"
+                                width={160}
+                                height={64}
+                                className="h-16 w-auto object-contain"
+                            />
+                        </div>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
                         {user && profile?.role !== 'admin' && (
                             <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">

@@ -77,6 +77,7 @@ export default function CheckoutPage() {
                 currency: orderData.currency,
                 name: "SLAYAURA",
                 description: "Jewelry Purchase",
+                image: "/logo.png",
                 order_id: orderData.id,
                 handler: async function (response) {
                     // Payment successful

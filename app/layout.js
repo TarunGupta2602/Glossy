@@ -19,6 +19,12 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "SLAYAURA. | Modern Luxury Jewelry",
   description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }) {

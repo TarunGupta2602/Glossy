@@ -142,7 +142,16 @@ export default function CartPage() {
                             </button>
                         ) : (
                             <div className="mb-6 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                                <h3 className="text-lg font-black tracking-tight text-gray-900 mb-2">Join SLAYAURA.</h3>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Image
+                                        src="/favicon.ico"
+                                        alt="SLAYAURA Logo"
+                                        width={24}
+                                        height={24}
+                                        className="w-6 h-6 object-contain"
+                                    />
+                                    <h3 className="text-lg font-black tracking-tight text-gray-900">Join SLAYAURA.</h3>
+                                </div>
                                 <p className="text-xs text-gray-500 font-medium mb-5">Sign in to sync your bag, track orders, and enjoy a faster checkout.</p>
                                 <button
                                     onClick={signInWithGoogle}

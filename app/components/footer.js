@@ -1,14 +1,21 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
     return (
         <footer className="bg-white border-t border-gray-100 py-16 px-6 md:px-12 ">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-10">
                     {/* Logo & Bio */}
                     <div className="md:col-span-1">
-                        <Link href="/" className="text-2xl font-black tracking-tighter text-[#E91E63] mb-6 block">
-                            SLAYAURA.
+                        <Link href="/" className="mb-4 group block focus:outline-none">
+                            <Image
+                                src="/logo.png"
+                                alt="SLAYAURA Logo"
+                                width={240}
+                                height={96}
+                                className="h-24 w-auto object-contain transition-all duration-300 group-hover:opacity-90 grayscale hover:grayscale-0"
+                            />
                         </Link>
                         <p className="text-gray-500 leading-relaxed max-w-xs">
                             Defining modern luxury through intentional design and sustainable practices in fine jewelry.
