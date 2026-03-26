@@ -14,7 +14,7 @@ export default function Footer() {
                                 alt="SLAYAURA Logo"
                                 width={240}
                                 height={96}
-                                className="h-24 w-auto object-contain transition-all duration-300 group-hover:opacity-90 grayscale hover:grayscale-0"
+                                className="h-24 w-auto object-contain "
                             />
                         </Link>
                         <p className="text-gray-500 leading-relaxed max-w-xs">
