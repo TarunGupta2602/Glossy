@@ -1,6 +1,13 @@
 import Image from "next/image";
 
 export const dynamic = "force-static"; // ✅ SSG
+export const metadata = {
+    title: "Our Story",
+    description: "Learn about The luxe jewels, our journey, and our commitment to crafting timeless, luxurious jewelry.",
+    alternates: {
+        canonical: "/our-story",
+    },
+};
 
 export default function OurStoryPage() {
     return (
@@ -21,7 +28,7 @@ export default function OurStoryPage() {
                 {/* Content */}
                 <div className="space-y-8 text-gray-600 leading-relaxed text-lg">
                     <p>
-                        At SLAYAURA, we believe jewelry is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
+                        At The luxe jewels, we believe jewelry is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
                     </p>
 
                     <p>
@@ -33,7 +40,7 @@ export default function OurStoryPage() {
                     </p>
 
                     <p>
-                        From everyday elegance to statement pieces, SLAYAURA is here to elevate your style.
+                        From everyday elegance to statement pieces, The luxe jewels is here to elevate your style.
                     </p>
                 </div>
             </div>

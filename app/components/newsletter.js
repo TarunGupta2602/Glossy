@@ -53,7 +53,7 @@ export default function Newsletter() {
             <div className="max-w-3xl mx-auto px-6">
 
                 <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
-                    Join the SLAYAURA List
+                    Join The luxe jewels List
                 </h2>
 
                 <p className="text-gray-500 text-[16px] mb-10">

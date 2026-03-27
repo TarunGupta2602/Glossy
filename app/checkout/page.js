@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "SLAYAURA",
+                name: "The luxe jewels",
                 description: "Jewelry Purchase",
                 image: "/logo.png",
                 order_id: orderData.id,

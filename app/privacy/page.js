@@ -1,9 +1,12 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Privacy Policy | SLAYAURA Jewelry",
+    title: "Privacy Policy",
     description:
-        "Learn how SLAYAURA Jewelry collects, uses, and protects your personal information when you use our website.",
+        "Learn how The luxe jewels collects, uses, and protects your personal information when you use our website.",
+    alternates: {
+        canonical: "/privacy",
+    },
 };
 
 export default function PrivacyPolicy() {
@@ -90,7 +93,7 @@ export default function PrivacyPolicy() {
                         <p>
                             If you have any questions about this Privacy Policy, please contact us at{" "}
                             <span className="text-gray-900 font-medium">
-                                support@slayaura.com
+                                support@theluxejewels.in
                             </span>.
                         </p>
                     </div>

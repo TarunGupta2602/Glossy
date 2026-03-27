@@ -110,7 +110,7 @@ export default function ContactPage() {
 
                 {/* Info */}
                 <div className="mt-10 text-center text-sm text-gray-500">
-                    <p>Email: support@slayaura.com</p>
+                    <p>Email: support@theluxejewels.in</p>
                 </div>
 
             </div>

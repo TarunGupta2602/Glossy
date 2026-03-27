@@ -29,7 +29,7 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">No Acquisitions Yet</h3>
-                <p className="text-gray-400 mb-10 max-w-xs mx-auto text-sm">Your journey with SLAYAURA begins with your first selection.</p>
+                <p className="text-gray-400 mb-10 max-w-xs mx-auto text-sm">Your journey with The luxe jewels begins with your first selection.</p>
                 <Link href="/shop" className="inline-flex items-center gap-3 bg-gray-900 text-white px-10 py-5 rounded-2xl text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-black transition-all shadow-xl shadow-gray-200">
                     Browse the Collection
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>

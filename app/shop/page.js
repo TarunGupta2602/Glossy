@@ -4,8 +4,11 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Shop All | SLAYAURA.",
-    description: "Explore our latest curation of hand-crafted fine jewelry.",
+    title: "Shop All",
+    description: "Explore our latest curation of hand-crafted fine jewelry from The luxe jewels.",
+    alternates: {
+        canonical: "/shop",
+    },
 };
 
 export default async function ShopPage() {

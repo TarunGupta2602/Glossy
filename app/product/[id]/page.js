@@ -15,12 +15,24 @@ export async function generateMetadata({ params }) {
         .eq("id", id)
         .single();
 
-    if (!product) return { title: "Product Not Found | SLAYAURA." };
+    if (!product) return { title: "Product Not Found" };
 
     return {
-        title: `${product.name} | SLAYAURA.`,
-        description: product.description || `Shop ${product.name} at SLAYAURA. Fine jewelry, designed to last.`,
+        title: product.name,
+        description: product.description || `Shop ${product.name} at The luxe jewels. Fine jewelry, designed to last.`,
+        alternates: {
+            canonical: `/product/${id}`,
+        },
         openGraph: {
+            title: product.name,
+            description: product.description,
+            url: `https://www.theluxejewels.in/product/${id}`,
+            siteName: "The luxe jewels",
+            images: product.main_image ? [{ url: product.main_image }] : [],
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
             title: product.name,
             description: product.description,
             images: product.main_image ? [product.main_image] : [],

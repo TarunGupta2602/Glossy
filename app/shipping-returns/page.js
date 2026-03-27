@@ -1,8 +1,11 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Shipping & Returns | SLAYAURA",
-    description: "Learn about our shipping times, delivery process, and easy return policy.",
+    title: "Shipping & Returns",
+    description: "Learn about our shipping times, delivery process, and easy return policy at The luxe jewels.",
+    alternates: {
+        canonical: "/shipping-returns",
+    },
 };
 
 export default function ShippingReturns() {
@@ -81,7 +84,7 @@ export default function ShippingReturns() {
                         <p>
                             If you have any questions regarding your order, feel free to contact our support team at{" "}
                             <span className="font-medium text-gray-900">
-                                support@slayaura.com
+                                support@theluxejewels.in
                             </span>.
                         </p>
                     </div>

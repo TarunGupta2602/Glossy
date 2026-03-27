@@ -1,7 +1,10 @@
 import ProfileClient from "./ProfileClient";
 
 export const metadata = {
-    title: "My Profile | SLAYAURA. Fine Jewelry",
+    title: "My Profile | The luxe jewels",
+    alternates: {
+        canonical: "/profile",
+    },
     description: "Manage your acquisitions and curated wishlist.",
 };
 

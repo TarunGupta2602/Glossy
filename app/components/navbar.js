@@ -34,7 +34,7 @@ export default function Navbar() {
                     <Link href="/" className="group block focus:outline-none">
                         <Image
                             src="/logo.png"
-                            alt="SLAYAURA Logo"
+                            alt="The luxe jewels Logo"
                             width={160}
                             height={64}
                             className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"

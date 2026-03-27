@@ -75,7 +75,7 @@ export default function AdminPage() {
                         <div className="flex flex-col items-center gap-4 mb-4">
                             <Image
                                 src="/logo.png"
-                                alt="SLAYAURA Logo"
+                                alt="The luxe jewels Logo"
                                 width={160}
                                 height={64}
                                 className="h-16 w-auto object-contain"

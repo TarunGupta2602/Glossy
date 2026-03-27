@@ -1,11 +1,14 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "FAQs | SLAYAURA Jewelry",
+    title: "FAQs",
     description:
-        "Find answers to common questions about shipping, returns, delivery time, and orders at SLAYAURA Jewelry.",
+        "Find answers to common questions about shipping, returns, delivery time, and orders at The luxe jewels.",
+    alternates: {
+        canonical: "/faqs",
+    },
     keywords: [
-        "SLAYAURA FAQs",
+        "The luxe jewels FAQs",
         "shipping policy",
         "returns policy",
         "jewelry delivery",

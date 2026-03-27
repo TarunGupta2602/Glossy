@@ -22,7 +22,7 @@ export default function LoginModal({ isOpen, onClose }) {
                     <div className="w-48 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-2">
                         <Image
                             src="/logo.png"
-                            alt="SLAYAURA Logo"
+                            alt="The luxe jewels Logo"
                             width={160}
                             height={64}
                             className="w-full h-full object-contain"

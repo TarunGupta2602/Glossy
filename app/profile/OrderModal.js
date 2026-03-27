@@ -121,7 +121,7 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                         </div>
 
                         <div className="mt-12 text-center">
-                            <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">Thank you for your trust in SLAYAURA. Fine Jewelry</p>
+                            <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">Thank you for your trust in The luxe jewels. Fine Jewelry</p>
                         </div>
                     </div>
                 </div>

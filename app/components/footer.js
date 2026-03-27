@@ -11,7 +11,7 @@ export default function Footer() {
                         <Link href="/" className="mb-4 group block focus:outline-none">
                             <Image
                                 src="/logo.png"
-                                alt="SLAYAURA Logo"
+                                alt="The luxe jewels Logo"
                                 width={240}
                                 height={96}
                                 className="h-24 w-auto object-contain "
@@ -67,7 +67,7 @@ export default function Footer() {
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-gray-400 text-sm">
-                        © {new Date().getFullYear()} SLAYAURA. All rights reserved.
+                        © {new Date().getFullYear()} The luxe jewels. All rights reserved.
                     </p>
                     <div className="flex items-center space-x-6 text-sm text-gray-400">
                         <Link href="/privacy" className="hover:text-gray-900 transition-colors">Privacy Policy</Link>

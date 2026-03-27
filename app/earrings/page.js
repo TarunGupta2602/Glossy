@@ -4,6 +4,14 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+    title: "Earrings",
+    description: "Shop our exclusive collection of ethical and elegant earrings from The luxe jewels.",
+    alternates: {
+        canonical: "/earrings",
+    },
+};
+
 export default async function EarringsPage() {
     const supabase = getServiceClient();
 
