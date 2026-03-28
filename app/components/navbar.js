@@ -27,7 +27,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4">
+        <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-50/50 backdrop-blur-md bg-white/90 px-4 py-2.5 md:px-6 md:py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Left: Logo */}
                 <div className="flex-shrink-0">
@@ -37,7 +37,7 @@ export default function Navbar() {
                             alt="The luxe jewels Logo"
                             width={160}
                             height={64}
-                            className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
+                            className="h-10 md:h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
                             priority
                         />
                     </Link>
@@ -60,7 +60,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center space-x-3 md:space-x-5">
                     {/* Search Bar */}
                     <div className="relative flex items-center">
                         <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-48 sm:w-64 opacity-100" : "w-0 opacity-0 overflow-hidden"}`}>
@@ -200,36 +200,41 @@ export default function Navbar() {
 
             {/* Mobile Navigation Menu */}
             {isMenuOpen && (
-                <div className="md:hidden mt-4 pb-4 bg-white space-y-4 flex flex-col items-center">
-                    <Link href="/shop" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
+                <div className="md:hidden mt-2 pb-4 bg-white border-t border-gray-50 flex flex-col items-center divide-y divide-gray-50">
+                    <Link href="/shop" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                         Shop All
                     </Link>
-                    <Link href="/earrings" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/earrings" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                         Earrings
                     </Link>
-                    <Link href="/necklaces" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/necklaces" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                         Necklaces
                     </Link>
-                    <Link href="/our-story" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/our-story" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                         Our Story
                     </Link>
                     {user ? (
-                        <button
-                            onClick={() => {
-                                signOut();
-                                setIsMenuOpen(false);
-                            }}
-                            className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2"
-                        >
-                            Sign Out
-                        </button>
+                        <div className="w-full flex flex-col items-center">
+                            <Link href="/profile" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
+                                My Profile
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    signOut();
+                                    setIsMenuOpen(false);
+                                }}
+                                className="w-full text-center text-xs font-semibold text-gray-500 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4"
+                            >
+                                Sign Out
+                            </button>
+                        </div>
                     ) : (
                         <button
                             onClick={() => {
-                                signInWithGoogle();
+                                setIsLoginModalOpen(true);
                                 setIsMenuOpen(false);
                             }}
-                            className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider py-2"
+                            className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4"
                         >
                             Sign In
                         </button>
