@@ -34,10 +34,12 @@ export async function GET(req) {
                 id: item.product.id,
                 name: item.product.name,
                 price: item.product.price,
+                description: item.product.description,
                 image: item.product.main_image || "/placeholder.jpg",
                 category: item.product.categories?.name || "Jewelry",
                 quantity: item.quantity
             }));
+
 
         return NextResponse.json({ success: true, cart: formattedCart });
     } catch (error) {

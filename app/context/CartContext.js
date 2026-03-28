@@ -223,9 +223,10 @@ export function CartProvider({ children }) {
         0
     );
 
-    // Rule: ₹20 shipping if subtotal < ₹1000
-    const shippingFee = cartSubtotal > 0 && cartSubtotal < 1000 ? 20 : 0;
+    // Rule: ₹10 shipping if subtotal < ₹1000
+    const shippingFee = cartSubtotal > 0 && cartSubtotal < 1000 ? 10 : 0;
     const cartTotal = cartSubtotal + shippingFee;
+
 
     return (
         <CartContext.Provider

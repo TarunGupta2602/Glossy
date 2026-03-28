@@ -24,8 +24,9 @@ export default function CheckoutPage() {
         phone: ""
     });
 
-    const deliveryFee = cartTotal < 1000 ? 40 : 0;
+    const deliveryFee = cartTotal < 1000 ? 20 : 0;
     const totalCheckoutAmount = cartTotal + deliveryFee;
+
 
     useEffect(() => {
         if (isInitialized && !user) {
