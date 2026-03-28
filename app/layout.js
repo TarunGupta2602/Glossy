@@ -74,6 +74,9 @@ export const metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/manifest.json",
+  verification: {
+    google: "UtTE7g1RfX5oNGZhiC88Lxr-Pcbh5DuxIVljwgxC4YY",
+  },
 };
 
 export default function RootLayout({ children }) {
