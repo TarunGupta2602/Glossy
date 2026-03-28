@@ -9,11 +9,11 @@ export default function LoginModal({ isOpen, onClose }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center w-full h-full min-h-screen p-4 bg-black/40 backdrop-blur-sm">
             {/* Backdrop click to close */}
-            <div className="absolute inset-0" onClick={onClose}></div>
+            <div className="absolute inset-0 w-full h-full" onClick={onClose}></div>
 
-            <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 z-10 animate-in zoom-in-95 duration-300 overflow-hidden">
+            <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 z-10 overflow-hidden">
                 {/* Decorative background element */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-pink-50 rounded-full blur-3xl opacity-50"></div>
 

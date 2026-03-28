@@ -171,7 +171,7 @@ export default function CartPage() {
                                         height={24}
                                         className="w-6 h-6 object-contain"
                                     />
-                                    <h3 className="text-lg font-black tracking-tight text-gray-900">Join Glory.</h3>
+                                    <h3 className="text-lg font-black tracking-tight text-gray-900">Join The luxe jewels.</h3>
                                 </div>
                                 <p className="text-xs text-gray-500 font-medium mb-5">Sign in to track orders and enjoy a faster checkout.</p>
                                 <button
