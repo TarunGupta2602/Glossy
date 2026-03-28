@@ -13,37 +13,22 @@ export function CartProvider({ children }) {
 
     // Fetch cart from database for authenticated users
     const fetchDBCart = useCallback(async () => {
-        // Disabled database fetch to prevent RLS recursion error for now
-        return;
-        /*
         if (!user) return;
 
-        const { data, error } = await supabase
-            .from("cart_items")
-            .select(`
-                quantity,
-                product:products (
-                    *,
-                    categories(name)
-                )
-            `)
-            .eq("user_id", user.id);
+        try {
+            const response = await fetch(`/api/cart?userId=${user.id}`);
+            const data = await response.json();
 
-        if (error) {
-            console.error("Error fetching cart from DB:", error.message);
-        } else {
-            const formattedCart = data.map(item => ({
-                id: item.product.id,
-                name: item.product.name,
-                price: item.product.price,
-                image: item.product.main_image || "/placeholder.jpg",
-                category: item.product.categories?.name || "Jewelry",
-                quantity: item.quantity
-            }));
-            setCart(formattedCart);
+            if (data.success) {
+                setCart(data.cart || []);
+            } else {
+                console.error("Error fetching cart from API:", data.error);
+            }
+        } catch (error) {
+            console.error("Cart context fetch error:", error);
         }
-        */
     }, [user]);
+
 
     // Initial load: either from DB or localStorage
     useEffect(() => {
@@ -93,19 +78,20 @@ export function CartProvider({ children }) {
     const syncLocalCartToDB = async (localCart) => {
         if (!user || localCart.length === 0) return;
 
-        for (const item of localCart) {
-            const { error } = await supabase
-                .from("cart_items")
-                .upsert({
-                    user_id: user.id,
-                    product_id: item.id,
-                    quantity: item.quantity
-                }, { onConflict: 'user_id,product_id' });
-
-            if (error) console.error("Sync Error:", error.message);
+        try {
+            for (const item of localCart) {
+                await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: item.id, quantity: item.quantity, action: "add" }),
+                });
+            }
+            await fetchDBCart();
+        } catch (error) {
+            console.error("Cart sync error:", error);
         }
-        await fetchDBCart();
     };
+
 
     const addToCart = async (product, quantity = 1) => {
         const previousCart = [...cart];
@@ -124,21 +110,26 @@ export function CartProvider({ children }) {
         });
 
         if (user) {
-            const { error } = await supabase
-                .from("cart_items")
-                .upsert({
-                    user_id: user.id,
-                    product_id: product.id,
-                    quantity: (cart.find(i => i.id === product.id)?.quantity || 0) + quantity
-                }, { onConflict: 'user_id,product_id' });
+            try {
+                const response = await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: product.id, quantity: (cart.find(i => i.id === product.id)?.quantity || 0) + quantity, action: "add" }),
+                });
 
-            if (error) {
-                console.error("Cart Add Error:", error.message);
-                setCart(previousCart); // Revert on error
-            } else {
-                await fetchDBCart();
+                const data = await response.json();
+                if (!data.success) {
+                    console.error("Cart Add Error:", data.error);
+                    setCart(previousCart); // Revert on error
+                } else {
+                    await fetchDBCart();
+                }
+            } catch (error) {
+                console.error("Cart context add error:", error);
+                setCart(previousCart);
             }
         }
+
         // Guest mode handled by the initial setCart call and the useEffect for localStorage
     };
 
@@ -149,19 +140,26 @@ export function CartProvider({ children }) {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
 
         if (user) {
-            const { error } = await supabase
-                .from("cart_items")
-                .delete()
-                .eq("user_id", user.id)
-                .eq("product_id", productId);
+            try {
+                const response = await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: productId, action: "remove" }),
+                });
 
-            if (error) {
-                console.error("Cart Remove Error:", error.message);
-                setCart(previousCart); // Revert on error
-            } else {
-                await fetchDBCart();
+                const data = await response.json();
+                if (!data.success) {
+                    console.error("Cart Remove Error:", data.error);
+                    setCart(previousCart); // Revert on error
+                } else {
+                    await fetchDBCart();
+                }
+            } catch (error) {
+                console.error("Cart context remove error:", error);
+                setCart(previousCart);
             }
         }
+
     };
 
     const updateQuantity = async (productId, quantity) => {
@@ -176,33 +174,48 @@ export function CartProvider({ children }) {
         );
 
         if (user) {
-            const { error } = await supabase
-                .from("cart_items")
-                .update({ quantity })
-                .eq("user_id", user.id)
-                .eq("product_id", productId);
+            try {
+                const response = await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: productId, quantity: quantity, action: "update" }),
+                });
 
-            if (error) {
-                console.error("Cart Update Error:", error.message);
+                const data = await response.json();
+                if (!data.success) {
+                    console.error("Cart Update Error:", data.error);
+                    setCart(previousCart);
+                } else {
+                    await fetchDBCart();
+                }
+            } catch (error) {
+                console.error("Cart context update error:", error);
                 setCart(previousCart);
-            } else {
-                await fetchDBCart();
             }
         }
+
     };
 
     const clearCart = async () => {
         if (user) {
-            const { error } = await supabase
-                .from("cart_items")
-                .delete()
-                .eq("user_id", user.id);
-
-            if (!error) setCart([]);
+            try {
+                const response = await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, action: "clear" }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setCart([]);
+                }
+            } catch (error) {
+                console.error("Cart clear error:", error);
+            }
         } else {
             setCart([]);
         }
     };
+
 
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
     const cartSubtotal = cart.reduce(

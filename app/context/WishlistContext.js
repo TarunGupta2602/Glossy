@@ -13,35 +13,24 @@ export function WishlistProvider({ children }) {
 
     // Fetch wishlist from database for authenticated users
     const fetchDBWishlist = useCallback(async () => {
-        // Disabled database fetch per request ("no need to fetch wishlist here")
-        return;
-        /*
         if (!user) return;
 
-        const { data, error } = await supabase
-            .from("wishlist_items")
-            .select(`
-                product:products (
-                    *,
-                    categories(name)
-                )
-            `)
-            .eq("user_id", user.id);
+        try {
+            const response = await fetch(`/api/wishlist?userId=${user.id}`);
+            const data = await response.json();
 
-        if (error) {
-            console.error("Error fetching wishlist from DB:", error.message);
-        } else {
-            const formattedWishlist = data.map(item => ({
-                id: item.product.id,
-                name: item.product.name,
-                price: item.product.price,
-                image: item.product.main_image || "/placeholder.jpg",
-                category: item.product.categories?.name || "Jewelry"
-            }));
-            setWishlist(formattedWishlist);
+            if (data.success) {
+                setWishlist(data.wishlist || []);
+            } else {
+                console.error("Error fetching wishlist from API:", data.error);
+            }
+        } catch (error) {
+            console.error("Wishlist fetch error:", error);
         }
-        */
     }, [user]);
+
+
+
 
     // Initial load: either from DB or localStorage
     useEffect(() => {
@@ -89,18 +78,21 @@ export function WishlistProvider({ children }) {
     const syncLocalWishlistToDB = async (localWish) => {
         if (!user || localWish.length === 0) return;
 
-        const itemsToInsert = localWish.map(item => ({
-            user_id: user.id,
-            product_id: item.id
-        }));
-
-        const { error } = await supabase
-            .from("wishlist_items")
-            .upsert(itemsToInsert, { onConflict: 'user_id,product_id' });
-
-        if (error) console.error("Wishlist Sync Error:", error.message);
-        await fetchDBWishlist();
+        try {
+            // Synchronize each item via the API
+            for (const item of localWish) {
+                await fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: item.id, action: "add" }),
+                });
+            }
+            await fetchDBWishlist();
+        } catch (error) {
+            console.error("Wishlist sync error:", error);
+        }
     };
+
 
     const addToWishlist = async (product) => {
         // Optimistic update
@@ -111,22 +103,26 @@ export function WishlistProvider({ children }) {
         });
 
         if (user) {
-            const { error } = await supabase
-                .from("wishlist_items")
-                .upsert({
-                    user_id: user.id,
-                    product_id: product.id
-                }, { onConflict: 'user_id,product_id' });
+            try {
+                const response = await fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: product.id, action: "add" }),
+                });
 
-            if (error) {
-                console.error("Wishlist Add Error:", error.message);
-                setWishlist(previousWishlist); // Revert on error
-            } else {
-                // Optionally refetch to ensure everything is in sync, 
-                // but let's trust our optimistic state for now to keep it snappy.
-                await fetchDBWishlist();
+                const data = await response.json();
+                if (!data.success) {
+                    console.error("Wishlist Add Error:", data.error);
+                    setWishlist(previousWishlist); // Revert on error
+                } else {
+                    await fetchDBWishlist();
+                }
+            } catch (error) {
+                console.error("Wishlist context add error:", error);
+                setWishlist(previousWishlist);
             }
         }
+
         // Guest mode is already handled by the state update above and the useEffect for localStorage
     };
 
@@ -136,19 +132,26 @@ export function WishlistProvider({ children }) {
         setWishlist((prev) => prev.filter((item) => item.id !== productId));
 
         if (user) {
-            const { error } = await supabase
-                .from("wishlist_items")
-                .delete()
-                .eq("user_id", user.id)
-                .eq("product_id", productId);
+            try {
+                const response = await fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: productId, action: "remove" }),
+                });
 
-            if (error) {
-                console.error("Wishlist Remove Error:", error.message);
-                setWishlist(previousWishlist); // Revert on error
-            } else {
-                await fetchDBWishlist();
+                const data = await response.json();
+                if (!data.success) {
+                    console.error("Wishlist Remove Error:", data.error);
+                    setWishlist(previousWishlist); // Revert on error
+                } else {
+                    await fetchDBWishlist();
+                }
+            } catch (error) {
+                console.error("Wishlist context remove error:", error);
+                setWishlist(previousWishlist);
             }
         }
+
         // Guest mode handled by state update
     };
 

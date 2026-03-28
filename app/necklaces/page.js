@@ -53,8 +53,12 @@ export default async function NecklacesPage() {
                                 </div>
                                 <div className="mt-4">
                                     <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                                    <p className="text-gray-500 text-sm">₹{product.price}</p>
+                                    {product.description && (
+                                        <p className="text-gray-400 text-xs mt-1 line-clamp-2">{product.description}</p>
+                                    )}
+                                    <p className="text-gray-900 font-bold mt-2">₹{product.price}</p>
                                 </div>
+
                             </Link>
                         ))}
                     </div>
