@@ -1,8 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+    title: "Featured Collections",
+    description: "Explore our curated collections of fine jewelry, from statement pieces to timeless classics at The luxe jewels.",
+    alternates: {
+        canonical: "/collection",
+    },
+    openGraph: {
+        title: "Featured Collections | The luxe jewels",
+        description: "Explore our curated collections of fine jewelry.",
+        url: "https://www.theluxejewels.in/collection",
+        siteName: "The luxe jewels",
+        images: [{ url: "/logo.png" }],
+        type: "website",
+    },
+};
 
 export default async function FeaturedCollections() {
     const supabase = getServiceClient();
@@ -18,8 +35,9 @@ export default async function FeaturedCollections() {
     }
 
     return (
-        <section className="py-2 px-6 md:px-12 bg-white">
+        <section className="py-24 px-6 md:px-12 bg-white">
             <div className="max-w-7xl mx-auto">
+                <Breadcrumbs items={[{ label: "Collections" }]} />
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                     <div>
                         <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
