@@ -56,35 +56,7 @@ export default async function ShopPage() {
                 </div>
             </section>
 
-            {/* SEO Footnote */}
-            <section className="pb-24 px-6 md:px-12 border-t border-gray-100 pt-24 bg-gray-50/30">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-sm leading-relaxed text-gray-500">
-                    <div className="md:col-span-1">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Luxury Fine Jewelry Online</h2>
-                        <p>
-                            Welcome to the <Link href="/shop" className="text-gray-900 font-bold">The luxe jewels shop</Link>.
-                            We offer a meticulously curated selection of fine jewelry that blends traditional craftsmanship with modern design.
-                            Our pieces are made for those who value ethical luxury and timeless beauty.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">Collections</h3>
-                        <ul className="space-y-4">
-                            <li><Link href="/earrings" className="hover:text-[#E91E63] transition-colors">Handcrafted Earrings</Link></li>
-                            <li><Link href="/necklaces" className="hover:text-[#E91E63] transition-colors">Designer Necklaces</Link></li>
-                            <li><Link href="/shop" className="hover:text-[#E91E63] transition-colors">New Arrivals</Link></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">About Our Ethics</h3>
-                        <p>
-                            Every piece in our collection is a testament to our commitment to sustainability.
-                            We believe that <Link href="/our-story" className="text-gray-900 underline font-medium">our story</Link>
-                            is defined by the care we put into every design. Discover jewelry that you can wear with pride.
-                        </p>
-                    </div>
-                </div>
-            </section>
+
         </main>
     );
 }
