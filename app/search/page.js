@@ -3,6 +3,14 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+    title: "Search Results",
+    robots: {
+        index: false,
+        follow: true,
+    },
+};
+
 export default async function SearchPage({ searchParams }) {
     const { q: query } = await searchParams;
     let products = [];

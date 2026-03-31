@@ -3,6 +3,42 @@ import Link from "next/link";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
+    const supabase = getServiceClient();
+
+    const { data: category } = await supabase
+        .from("categories")
+        .select("name, description, image_url")
+        .eq("slug", slug)
+        .single();
+
+    if (!category) return { title: "Collection Not Found" };
+
+    return {
+        title: category.name,
+        description: category.description || `Explore our ${category.name} collection at The luxe jewels.`,
+        alternates: {
+            canonical: `/shop/${slug}`,
+        },
+        openGraph: {
+            title: `${category.name} | The luxe jewels`,
+            description: category.description || `Explore our ${category.name} collection.`,
+            url: `https://www.theluxejewels.in/shop/${slug}`,
+            siteName: "The luxe jewels",
+            images: category.image_url ? [{ url: category.image_url }] : [{ url: "/logo.png" }],
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${category.name} | The luxe jewels`,
+            description: category.description,
+            images: category.image_url ? [category.image_url] : ["/logo.png"],
+        },
+    };
+}
 
 export default async function CollectionDetails({ params }) {
     const { slug } = await params;

@@ -165,7 +165,7 @@ export default function CartPage() {
                             <div className="mb-6 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Image
-                                        src="/favicon.ico"
+                                        src="/logo.png"
                                         alt="The luxe jewels Logo"
                                         width={24}
                                         height={24}

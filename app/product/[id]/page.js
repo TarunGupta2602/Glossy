@@ -28,14 +28,14 @@ export async function generateMetadata({ params }) {
             description: product.description,
             url: `https://www.theluxejewels.in/product/${id}`,
             siteName: "The luxe jewels",
-            images: product.main_image ? [{ url: product.main_image }] : [],
+            images: product.main_image ? [{ url: product.main_image }] : [{ url: "/logo.png" }],
             type: "website",
         },
         twitter: {
             card: "summary_large_image",
             title: product.name,
             description: product.description,
-            images: product.main_image ? [product.main_image] : [],
+            images: product.main_image ? [product.main_image] : ["/logo.png"],
         },
     };
 }
