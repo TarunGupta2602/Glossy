@@ -68,28 +68,7 @@ export default async function NecklacesPage() {
                 )}
             </div>
 
-            {/* SEO Footnote */}
-            <div className="max-w-7xl mx-auto mt-24 pt-24 border-t border-gray-100">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm leading-relaxed text-gray-500">
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">Elegant Necklaces for Modern Styling</h2>
-                        <p>
-                            Shop our exclusive curation of <Link href="/necklaces" className="text-gray-900 underline font-medium">necklaces</Link> at The luxe jewels.
-                            From delicate chains meant for layering to bold statement pendants, each design is realized with a focus on sustainable luxury.
-                            Our jewelry is designed in India and crafted with the highest ethical standards.
-                        </p>
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">Sustainable Luxury Fine Jewelry</h2>
-                        <p>
-                            At <Link href="/" className="text-gray-900 font-bold">The luxe jewels</Link>, we believe in beauty that lasts.
-                            Explore our <Link href="/shop" className="text-gray-900 underline font-medium">fine jewelry collections</Link> and find pieces that
-                            resonate with your personal style. Pair your necklace with our <Link href="/earrings" className="text-gray-900 underline font-medium">handcrafted earrings</Link>
-                            for a complete, sophisticated look.
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </section>
     );
 }

@@ -69,27 +69,6 @@ export default async function EarringsPage() {
                 )}
             </div>
 
-            {/* SEO Footnote */}
-            <div className="max-w-7xl mx-auto mt-24 pt-24 border-t border-gray-100">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm leading-relaxed text-gray-500">
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">Fine Earrings for Every Occasion</h2>
-                        <p>
-                            Explore our premium collection of <Link href="/earrings" className="text-gray-900 underline font-medium">earrings</Link>, ranging from everyday minimalist studs to statement-making drops.
-                            Each piece at <Link href="/" className="text-gray-900 font-bold">The luxe jewels</Link> is crafted with intentional design,
-                            using fine materials like recycled gold and high-quality ethically sourced stones.
-                        </p>
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">Craftsmanship and Quality</h2>
-                        <p>
-                            We pride ourselves on delivering <Link href="/shop" className="text-gray-900 underline font-medium">luxury jewelry</Link> that doesn't compromise on ethical standards.
-                            Whether you're looking for classic hoops or modern sculptural designs, our jewelry is created to elevate your look
-                            while remaining timeless and sustainable. Browse our <Link href="/necklaces" className="text-gray-900 underline font-medium">necklaces</Link> too to complete your signature look.
-                        </p>
-                    </div>
-                </div>
-            </div>
         </section>
     );
 }
