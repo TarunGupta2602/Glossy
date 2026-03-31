@@ -23,7 +23,12 @@ export const metadata = {
     template: "%s | The luxe jewels"
   },
   description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry. Shop our exclusive collection of ethical and elegant jewelry.",
-  keywords: ["luxury jewelry", "fine jewelry", "sustainable jewelry", "modern jewelry", "The luxe jewels", "jewelry India"],
+  keywords: [
+    "luxury jewelry", "fine jewelry", "sustainable jewelry", "modern jewelry",
+    "The luxe jewels", "jewelry India", "gold earrings", "diamond necklaces",
+    "ethical luxury", "custom jewelry", "designer jewelry", "handcrafted jewelry",
+    "minimalist jewelry", "premium jewelry India", "wedding jewelry"
+  ],
   authors: [{ name: "The luxe jewels" }],
   creator: "The luxe jewels",
   publisher: "The luxe jewels",
@@ -42,7 +47,7 @@ export const metadata = {
     siteName: "The luxe jewels",
     images: [
       {
-        url: "/logo.png", // Recommended: Use a high-quality OG image
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "The luxe jewels Logo",
@@ -80,8 +85,31 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "The luxe jewels",
+    "url": "https://www.theluxejewels.in",
+    "logo": "https://www.theluxejewels.in/logo.png",
+    "description": "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "",
+      "contactType": "customer service"
+    },
+    "sameAs": [
+      // Add social links if available
+    ]
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

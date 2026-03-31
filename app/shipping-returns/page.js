@@ -1,3 +1,5 @@
+import Breadcrumbs from "../components/Breadcrumbs";
+
 export const dynamic = "force-static";
 
 export const metadata = {
@@ -12,6 +14,7 @@ export default function ShippingReturns() {
     return (
         <section className="bg-white py-24 px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
+                <Breadcrumbs items={[{ label: "Shipping & Returns" }]} />
 
                 {/* Heading */}
                 <div className="text-center mb-16">

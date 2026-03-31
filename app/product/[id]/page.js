@@ -86,8 +86,32 @@ export default async function ProductPage({ params }) {
         relatedProducts = [...relatedProducts, ...(extras || [])];
     }
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": [product.main_image, ...galleryImages],
+        "description": product.description,
+        "sku": product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "The luxe jewels"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.theluxejewels.in/product/${id}`,
+            "priceCurrency": "INR",
+            "price": product.price,
+            "availability": "https://schema.org/InStock"
+        }
+    };
+
     return (
         <main className="min-h-screen bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <ProductDetailClient
                 product={product}
                 galleryImages={galleryImages}
