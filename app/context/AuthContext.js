@@ -27,6 +27,25 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Handle identity from Google prompt
+    const handleGoogleResponse = async (response) => {
+        try {
+            const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+            });
+
+            if (data?.user) {
+                setUser(data.user);
+                await fetchProfile(data.user.id);
+            } else if (error) {
+                console.error("Supabase Auth error with Google Token:", error.message);
+            }
+        } catch (error) {
+            console.error("Failed to sign in with Google ID token:", error);
+        }
+    };
+
     useEffect(() => {
         // Initial session check
         supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -37,6 +56,32 @@ export function AuthProvider({ children }) {
             }
             setLoading(false);
         });
+
+        // Initialize Google GSI Client
+        const initGSI = () => {
+            if (window.google) {
+                window.google.accounts.id.initialize({
+                    client_id: "483518069191-egjpfiap3opnnj90q6ui20evr8pg6fic.apps.googleusercontent.com",
+                    callback: handleGoogleResponse,
+                    auto_select: false, // Don't auto-select to avoid surprising users
+                });
+                // Optional: show One Tap if already on the page
+                window.google.accounts.id.prompt();
+            }
+        };
+
+        // Try to init, or wait for script load
+        if (window.google) {
+            initGSI();
+        } else {
+            const interval = setInterval(() => {
+                if (window.google) {
+                    initGSI();
+                    clearInterval(interval);
+                }
+            }, 500);
+            setTimeout(() => clearInterval(interval), 5000);
+        }
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -54,13 +99,40 @@ export function AuthProvider({ children }) {
     }, []);
 
     const signInWithGoogle = async () => {
-        const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-        await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${origin}/auth/callback`,
-            },
-        });
+        // Trigger the Google sign-in picker directly
+        if (window.google) {
+            try {
+                window.google.accounts.id.prompt((notification) => {
+                    // Check if the prompt was suppressed (e.g. by origin error)
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        console.log("One Tap UI not displayed, falling back to redirect...");
+                        supabase.auth.signInWithOAuth({
+                            provider: "google",
+                            options: {
+                                redirectTo: `${window.location.origin}/auth/callback`,
+                            },
+                        });
+                    }
+                });
+            } catch (err) {
+                console.error("GSI Prompt failed, falling back:", err);
+                supabase.auth.signInWithOAuth({
+                    provider: "google",
+                    options: {
+                        redirectTo: `${window.location.origin}/auth/callback`,
+                    },
+                });
+            }
+        } else {
+            // Fallback for script not loaded
+            const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+            await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: `${origin}/auth/callback`,
+                },
+            });
+        }
     };
 
     const signOut = async () => {
