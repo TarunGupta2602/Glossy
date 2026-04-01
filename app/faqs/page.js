@@ -17,8 +17,59 @@ export const metadata = {
 };
 
 export default function FAQsPage() {
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How long does shipping take?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Orders are processed within 1–2 days and delivered within 3–7 business days."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do you offer free shipping?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, we offer free shipping on all prepaid orders across India."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I return my order?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, returns are accepted within 7 days of delivery if the item is unused."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I track my order?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You will receive a tracking link via email or SMS once your order is shipped."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How long does a refund take?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Refunds are processed within 5–7 business days after the return is approved."
+                }
+            }
+        ]
+    };
+
     return (
         <section className="bg-white py-20 px-6">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <div className="max-w-3xl mx-auto">
 
                 {/* Heading */}

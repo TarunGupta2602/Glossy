@@ -15,26 +15,26 @@ export async function generateMetadata({ params }) {
         .eq("id", id)
         .single();
 
-    if (!product) return { title: "Product Not Found" };
+    const categoryName = product.categories?.name || "Fine Jewelry";
 
     return {
-        title: product.name,
-        description: product.description || `Shop ${product.name} at The luxe jewels. Fine jewelry, designed to last.`,
+        title: `${product.name} | ${categoryName} | The luxe jewels`,
+        description: product.description || `Explore our ${product.name}, a premium handcrafted piece from The luxe jewels. Ethically sourced anti-tarnish jewelry designed for elegance.`,
         alternates: {
             canonical: `/product/${id}`,
         },
         openGraph: {
-            title: product.name,
-            description: product.description,
+            title: `${product.name} | The luxe jewels`,
+            description: product.description || `Discover ${product.name} in our latest ${categoryName} collection at The luxe jewels. Shop now for premium fine jewelry in India.`,
             url: `https://www.theluxejewels.in/product/${id}`,
             siteName: "The luxe jewels",
             images: product.main_image ? [{ url: product.main_image }] : [{ url: "/logo.png" }],
-            type: "website",
+            type: "article",
         },
         twitter: {
             card: "summary_large_image",
-            title: product.name,
-            description: product.description,
+            title: `${product.name} | The luxe jewels`,
+            description: product.description || `Shop ${product.name} at The luxe jewels. Premium fine jewelry designed for the modern individual.`,
             images: product.main_image ? [product.main_image] : ["/logo.png"],
         },
     };

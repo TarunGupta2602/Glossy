@@ -11,7 +11,7 @@ export default function Footer() {
                         <Link href="/" className="mb-4 group block focus:outline-none">
                             <Image
                                 src="/logo.png"
-                                alt="The luxe jewels Logo"
+                                alt="The luxe jewels | Premium Anti-Tarnish & Fine Jewelry Online India"
                                 width={240}
                                 height={96}
                                 className="h-24 w-auto object-contain "

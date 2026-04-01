@@ -19,15 +19,16 @@ const geistMono = Geist_Mono({
 export const metadata = {
   metadataBase: new URL("https://www.theluxejewels.in"),
   title: {
-    default: "The luxe jewels | Modern Luxury Jewelry",
+    default: "The luxe jewels | Premium Anti-Tarnish & Fine Jewelry India",
     template: "%s | The luxe jewels"
   },
-  description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry. Shop our exclusive collection of ethical and elegant jewelry.",
+  description: "Discover premium anti-tarnish, waterproof jewelry and handcrafted fine jewelry at The luxe jewels. Sustainable, ethically sourced gold and silver pieces designed for modern elegance. Shop now for delivery across India.",
   keywords: [
-    "luxury jewelry", "fine jewelry", "sustainable jewelry", "modern jewelry",
-    "The luxe jewels", "jewelry India", "gold earrings", "diamond necklaces",
-    "ethical luxury", "custom jewelry", "designer jewelry", "handcrafted jewelry",
-    "minimalist jewelry", "premium jewelry India", "wedding jewelry"
+    "anti tarnish jewelry online", "waterproof jewelry India", "daily wear jewelry",
+    "premium fine jewelry", "ethically sourced gold jewelry", "sustainable jewelry brands",
+    "The luxe jewels", "jewelry India online", "gold earrings online",
+    "designer necklaces India", "minimalist jewelry", "18k gold plated jewelry",
+    "bridal and wedding jewelry India", "women's jewelry accessories", "best jewelry online India"
   ],
   authors: [{ name: "The luxe jewels" }],
   creator: "The luxe jewels",

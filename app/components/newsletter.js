@@ -56,8 +56,9 @@ export default function Newsletter() {
                     Join The luxe jewels List
                 </h2>
 
-                <p className="text-gray-500 text-[16px] mb-10">
-                    Sign up for early access to new drops and exclusive offers.
+                <p className="text-gray-500 text-[16px] mb-10 max-w-xl mx-auto">
+                    Sign up for early access to our anti-tarnish jewelry drops,
+                    exclusive offers, and new handcrafted fine jewelry collections.
                 </p>
 
                 <form

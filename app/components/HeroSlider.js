@@ -34,7 +34,7 @@ export default function HeroSlider() {
                     >
                         <Image
                             src={img}
-                            alt={`Luxury Jewelry Hero ${idx + 1}`}
+                            alt={idx === 0 ? "Premium Anti-Tarnish Necklace Collection | The luxe jewels" : "Handcrafted 18k Gold Plated Earrings and Fine Jewelry"}
                             fill
                             priority={idx === 0}
                             className="object-cover"
