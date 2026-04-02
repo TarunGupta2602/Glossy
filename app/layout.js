@@ -75,9 +75,9 @@ export const metadata = {
     },
   },
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
-    shortcut: "/logo.png",
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+    shortcut: "/favicon.ico",
   },
   manifest: "/manifest.json",
   verification: {
