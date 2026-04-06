@@ -22,3 +22,25 @@ export async function POST(req) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+export async function DELETE(req) {
+    try {
+        const { id } = await req.json(); // Image ID
+        const supabaseService = getServiceClient();
+
+        const { error } = await supabaseService
+            .from("product_images")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            console.error("Delete Product Image Error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, message: "Gallery image deleted" });
+    } catch (error) {
+        console.error("Product Images DELETE Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}

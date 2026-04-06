@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
         // 2. Fetch gallery images
         const { data: galleryImages } = await supabaseService
             .from("product_images")
-            .select("image_url")
+            .select("id, image_url")
             .eq("product_id", id)
             .order("created_at", { ascending: true });
 
@@ -61,7 +61,7 @@ export async function GET(req, { params }) {
         return NextResponse.json({
             success: true,
             product,
-            galleryImages: (galleryImages || []).map(r => r.image_url).filter(Boolean),
+            galleryImages: (galleryImages || []).filter(img => img.image_url),
             relatedProducts
         });
     } catch (error) {

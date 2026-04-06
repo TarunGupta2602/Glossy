@@ -19,6 +19,8 @@ export default function EditProductPage({ params }) {
     const [categoryId, setCategoryId] = useState("");
     const [mainImageUrl, setMainImageUrl] = useState("");
     const [newMainImage, setNewMainImage] = useState(null);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [newGalleryImages, setNewGalleryImages] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -59,6 +61,7 @@ export default function EditProductPage({ params }) {
                 setDescription(product.description || "");
                 setCategoryId(product.category_id);
                 setMainImageUrl(product.main_image || "");
+                setGalleryImages(prodData.galleryImages || []);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -66,6 +69,39 @@ export default function EditProductPage({ params }) {
         }
 
         setLoading(false);
+    };
+
+    const handleDeleteGalleryImage = async (imgId) => {
+        if (!confirm("Are you sure you want to delete this gallery image?")) return;
+
+        const imgToDelete = galleryImages.find(img => img.id === imgId);
+        if (!imgToDelete) return;
+
+        try {
+            // 1. Optional: Delete from storage
+            // Extracting path from URL: .../product-images/ID/filename
+            const urlParts = imgToDelete.image_url.split('/product-images/');
+            if (urlParts.length > 1) {
+                const storagePath = urlParts[1];
+                await supabase.storage.from("product-images").remove([storagePath]);
+            }
+
+            // 2. Delete from database
+            const res = await fetch("/api/admin/product-images", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: imgId }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setGalleryImages(prev => prev.filter(img => img.id !== imgId));
+            } else {
+                throw new Error(data.error || "Failed to delete image");
+            }
+        } catch (error) {
+            console.error("Delete Error:", error);
+            alert("Error deleting gallery image");
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -79,12 +115,17 @@ export default function EditProductPage({ params }) {
             if (newMainImage) {
                 // Optional: Delete old image
                 if (mainImageUrl) {
-                    const oldFileName = mainImageUrl.split("/").pop();
-                    await supabase.storage.from("product-images").remove([`${id}/${oldFileName}`]);
+                    const urlParts = mainImageUrl.split('/product-images/');
+                    if (urlParts.length > 1) {
+                        const oldPath = urlParts[1];
+                        await supabase.storage.from("product-images").remove([oldPath]);
+                    }
                 }
 
                 const fileName = `${id}/main-${Date.now()}`;
-                await supabase.storage.from("product-images").upload(fileName, newMainImage);
+                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, newMainImage);
+                if (uploadError) throw uploadError;
+
                 const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
                 finalMainImageUrl = data.publicUrl;
             }
@@ -104,6 +145,32 @@ export default function EditProductPage({ params }) {
             const data = await res.json();
 
             if (!data.success) throw new Error(data.error || "Failed to update product");
+
+            // 3. Handle NEW Gallery Images
+            if (newGalleryImages.length > 0) {
+                const imageObjects = [];
+                for (let file of newGalleryImages) {
+                    const fileName = `${id}/gallery-${Date.now()}-${file.name}`;
+                    const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, file);
+                    if (uploadError) throw uploadError;
+
+                    const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                    imageObjects.push({
+                        product_id: id,
+                        image_url: data.publicUrl
+                    });
+                }
+
+                if (imageObjects.length > 0) {
+                    const galleryRes = await fetch("/api/admin/product-images", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(imageObjects),
+                    });
+                    const galleryData = await galleryRes.json();
+                    if (!galleryData.success) throw new Error(galleryData.error || "Failed to save new gallery images");
+                }
+            }
 
             alert("Product updated successfully 🚀");
             router.push("/admin/products");
@@ -193,8 +260,8 @@ export default function EditProductPage({ params }) {
                         </div>
 
                         {/* Main Image Management */}
-                        <div>
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Main Cover Image</label>
+                        <div className="space-y-4">
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 px-1">Main Cover Image</label>
                             <div className="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl border-2 border-dashed border-gray-100">
                                 {mainImageUrl && (
                                     <div className="w-32 h-32 rounded-xl overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
@@ -207,10 +274,57 @@ export default function EditProductPage({ params }) {
                                         className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#E91E63] file:text-white hover:file:bg-[#D81B60] file:cursor-pointer transition-all"
                                         onChange={(e) => setNewMainImage(e.target.files[0])}
                                     />
-                                    <p className="mt-3 text-[11px] text-gray-400 font-medium italic underline underline-offset-4 decoration-pink-100">
-                                        Choosing a new file will automatically replace the existing cover image.
+                                    <p className="mt-3 text-[11px] text-gray-400 font-medium italic">
+                                        Replacing this replaces the primary thumbnail shown in the shop.
                                     </p>
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Gallery Management */}
+                        <div className="space-y-4">
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Product Gallery</label>
+
+                            {/* Existing Gallery Images */}
+                            {galleryImages.length > 0 && (
+                                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                                    {galleryImages.map((img) => (
+                                        <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50">
+                                            <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteGalleryImage(img.id)}
+                                                className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Add New Gallery Images */}
+                            <div className="p-4 rounded-2xl border-2 border-dashed border-gray-100 bg-gray-50/50">
+                                <div className="flex flex-col items-center gap-3">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300 file:cursor-pointer transition-all"
+                                        onChange={(e) => setNewGalleryImages(Array.from(e.target.files))}
+                                    />
+                                    <p className="text-[11px] text-gray-400 font-medium">Add more images to the product slider (Multiple files allowed)</p>
+                                </div>
+                                {newGalleryImages.length > 0 && (
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        {newGalleryImages.map((file, idx) => (
+                                            <span key={idx} className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-500 border border-gray-100 truncate max-w-[100px]">
+                                                {file.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
