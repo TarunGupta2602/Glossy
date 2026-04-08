@@ -24,21 +24,30 @@ export default async function sitemap() {
         priority: route === "" ? 1.0 : route === "/shop" ? 0.9 : 0.8,
     }));
 
-    // 2. Dynamic Product Pages
+    // 2. Dynamic Category Pages
+    const { data: categories } = await supabase
+        .from("categories")
+        .select("slug");
+
+    const categoryPages = (categories || []).map((cat) => ({
+        url: `${baseUrl}/shop/${cat.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+    }));
+
+    // 3. Dynamic Product Pages
     const { data: products } = await supabase
         .from("products")
-        .select("id, updated_at")
-        .order("updated_at", { ascending: false });
+        .select("id, created_at")
+        .order("created_at", { ascending: false });
 
     const productPages = (products || []).map((product) => ({
         url: `${baseUrl}/product/${product.id}`,
-        lastModified: product.updated_at ? new Date(product.updated_at) : new Date(),
+        lastModified: product.created_at ? new Date(product.created_at) : new Date(),
         changeFrequency: "weekly",
         priority: 0.7,
     }));
 
-    // 3. Dynamic Category Pages (Optional — if you have category slugs)
-    // For now, these were hardcoded in your previous sitemap.
-
-    return [...staticPages, ...productPages];
+    return [...staticPages, ...categoryPages, ...productPages];
 }
