@@ -29,15 +29,19 @@ export default function EditProductPage({ params }) {
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
 
+    // 1. Handle Authentication Redirect
     useEffect(() => {
-        if (!authLoading) {
-            if (!user || profile?.role !== 'admin') {
-                router.push("/admin");
-            } else {
-                fetchData();
-            }
+        if (!authLoading && (!user || profile?.role !== 'admin')) {
+            router.push("/admin");
         }
-    }, [id, user, profile, authLoading, router]);
+    }, [user, profile, authLoading, router]);
+
+    // 2. Handle Initial Data Fetch (Only once or if ID changes)
+    useEffect(() => {
+        if (!authLoading && user && profile?.role === 'admin') {
+            fetchData();
+        }
+    }, [id]); // Only refetch if the product ID changes
 
     const fetchData = async () => {
         setLoading(true);
