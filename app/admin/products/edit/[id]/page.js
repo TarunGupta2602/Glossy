@@ -21,6 +21,10 @@ export default function EditProductPage({ params }) {
     const [newMainImage, setNewMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [newGalleryImages, setNewGalleryImages] = useState([]);
+    const [metaTitle, setMetaTitle] = useState("");
+    const [metaDescription, setMetaDescription] = useState("");
+    const [metaKeywords, setMetaKeywords] = useState("");
+    const [imageAlt, setImageAlt] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -62,6 +66,10 @@ export default function EditProductPage({ params }) {
                 setCategoryId(product.category_id);
                 setMainImageUrl(product.main_image || "");
                 setGalleryImages(prodData.galleryImages || []);
+                setMetaTitle(product.meta_title || "");
+                setMetaDescription(product.meta_description || "");
+                setMetaKeywords(product.meta_keywords || "");
+                setImageAlt(product.image_alt || "");
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -79,7 +87,6 @@ export default function EditProductPage({ params }) {
 
         try {
             // 1. Optional: Delete from storage
-            // Extracting path from URL: .../product-images/ID/filename
             const urlParts = imgToDelete.image_url.split('/product-images/');
             if (urlParts.length > 1) {
                 const storagePath = urlParts[1];
@@ -113,7 +120,6 @@ export default function EditProductPage({ params }) {
 
             // 1. Handle Main Image Update
             if (newMainImage) {
-                // Optional: Delete old image
                 if (mainImageUrl) {
                     const urlParts = mainImageUrl.split('/product-images/');
                     if (urlParts.length > 1) {
@@ -140,6 +146,10 @@ export default function EditProductPage({ params }) {
                     description,
                     category_id: categoryId,
                     main_image: finalMainImageUrl,
+                    meta_title: metaTitle,
+                    meta_description: metaDescription,
+                    meta_keywords: metaKeywords,
+                    image_alt: imageAlt,
                 }),
             });
             const data = await res.json();
@@ -325,6 +335,56 @@ export default function EditProductPage({ params }) {
                                         ))}
                                     </div>
                                 )}
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="pt-10 border-t border-gray-100">
+                            <h2 className="text-xl font-bold mb-8 text-gray-900 px-1">SEO Optimization</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Meta Title</label>
+                                    <input
+                                        type="text"
+                                        placeholder="SEO Title (e.g. Elegant Diamond Studs | The Luxe Jewels)"
+                                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
+                                        value={metaTitle}
+                                        onChange={(e) => setMetaTitle(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Meta Description</label>
+                                    <textarea
+                                        placeholder="Brief description for search engines..."
+                                        rows="3"
+                                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium resize-none shadow-inner"
+                                        value={metaDescription}
+                                        onChange={(e) => setMetaDescription(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Meta Keywords</label>
+                                    <input
+                                        type="text"
+                                        placeholder="jewelry, diamond, luxury..."
+                                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
+                                        value={metaKeywords}
+                                        onChange={(e) => setMetaKeywords(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Main Image Alt Text</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Description of the main image..."
+                                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
+                                        value={imageAlt}
+                                        onChange={(e) => setImageAlt(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
 

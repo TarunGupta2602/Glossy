@@ -40,10 +40,8 @@ export default async function ShopPage() {
                     Featured Collection
                 </h1>
                 <p className="text-base md:text-lg text-gray-400 font-normal leading-relaxed max-w-2xl mx-auto">
-                    Explore our latest curation of anti-tarnish jewelry and hand-crafted fine jewelry,
-                    from signature <Link href="/necklaces" className="text-gray-950 hover:text-[#E91E63] mx-1 transition-colors">necklaces</Link> to
-                    <Link href="/earrings" className="text-gray-950 hover:text-[#E91E63] mx-1 transition-colors">sculptural earrings</Link>
-                    designed with 18k gold plating for the modern individual.
+                    Explore our latest curation of anti-tarnish jewelry and hand-crafted fine jewelry.
+
                 </p>
             </section>
 

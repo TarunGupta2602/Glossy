@@ -11,21 +11,32 @@ export async function generateMetadata({ params }) {
 
     const { data: product } = await supabase
         .from("products")
-        .select("name, description, main_image, categories(name)")
+        .select("name, description, main_image, meta_title, meta_description, meta_keywords, categories(name)")
         .eq("id", id)
         .single();
 
+    if (!product) return {
+        title: "Product Not Found | The luxe jewels",
+        robots: "noindex"
+    };
+
     const categoryName = product.categories?.name || "Fine Jewelry";
 
+    // SEO Logic: Use custom meta fields if available, otherwise fallback to defaults
+    const seoTitle = product.meta_title || `${product.name} | ${categoryName} | The luxe jewels`;
+    const seoDescription = product.meta_description || product.description || `Explore our ${product.name}, a premium handcrafted piece from The luxe jewels. Ethically sourced anti-tarnish jewelry designed for elegance.`;
+    const seoKeywords = product.meta_keywords || `${product.name}, ${categoryName}, luxury jewelry, fine jewelry India`;
+
     return {
-        title: `${product.name} | ${categoryName} | The luxe jewels`,
-        description: product.description || `Explore our ${product.name}, a premium handcrafted piece from The luxe jewels. Ethically sourced anti-tarnish jewelry designed for elegance.`,
+        title: seoTitle,
+        description: seoDescription,
+        keywords: seoKeywords,
         alternates: {
             canonical: `/product/${id}`,
         },
         openGraph: {
-            title: `${product.name} | The luxe jewels`,
-            description: product.description || `Discover ${product.name} in our latest ${categoryName} collection at The luxe jewels. Shop now for premium fine jewelry in India.`,
+            title: seoTitle,
+            description: seoDescription,
             url: `https://www.theluxejewels.in/product/${id}`,
             siteName: "The luxe jewels",
             images: product.main_image ? [{ url: product.main_image }] : [{ url: "/logo.png" }],
@@ -33,8 +44,8 @@ export async function generateMetadata({ params }) {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${product.name} | The luxe jewels`,
-            description: product.description || `Shop ${product.name} at The luxe jewels. Premium fine jewelry designed for the modern individual.`,
+            title: seoTitle,
+            description: seoDescription,
             images: product.main_image ? [product.main_image] : ["/logo.png"],
         },
     };

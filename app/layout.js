@@ -105,7 +105,7 @@ export default function RootLayout({ children }) {
       "contactType": "customer service"
     },
     "sameAs": [
-      // Add social links if available
+      "https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
     ]
   };
 

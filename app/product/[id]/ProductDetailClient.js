@@ -80,7 +80,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             <Image
                                 key={activeIdx}
                                 src={allImages[activeIdx]}
-                                alt={product.name}
+                                alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
                                 priority
                                 sizes="(max-width: 1024px) 90vw, 45vw"

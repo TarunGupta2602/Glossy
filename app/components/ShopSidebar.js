@@ -167,23 +167,7 @@ export default function ShopSidebar({
                 </div>
             </div>
 
-            {/* Divider */}
-            <div className="h-px bg-gray-100" />
 
-            {/* Sort / Availability Filter */}
-            <div>
-                <h3 className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase mb-5">
-                    Availability
-                </h3>
-                <div className="space-y-3">
-                    {["In Stock", "Made to Order", "Limited Edition"].map((label) => (
-                        <div key={label} className="flex items-center gap-3 cursor-pointer group opacity-50">
-                            <div className="w-4 h-4 rounded-sm border-2 border-gray-200 bg-white flex-shrink-0" />
-                            <span className="text-[13px] text-gray-400">{label}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
             <style jsx>{`
                 input[type="range"]::-webkit-slider-thumb {

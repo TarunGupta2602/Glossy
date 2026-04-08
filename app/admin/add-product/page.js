@@ -14,6 +14,10 @@ export default function AddProductPage() {
     const [description, setDescription] = useState("");
     const [categories, setCategories] = useState([]);
     const [categoryId, setCategoryId] = useState("");
+    const [metaTitle, setMetaTitle] = useState("");
+    const [metaDescription, setMetaDescription] = useState("");
+    const [metaKeywords, setMetaKeywords] = useState("");
+    const [imageAlt, setImageAlt] = useState("");
 
     const [mainImage, setMainImage] = useState(null);
     const [otherImages, setOtherImages] = useState([]);
@@ -58,6 +62,10 @@ export default function AddProductPage() {
                     price,
                     description,
                     category_id: categoryId,
+                    meta_title: metaTitle,
+                    meta_description: metaDescription,
+                    meta_keywords: metaKeywords,
+                    image_alt: imageAlt,
                 }),
             });
             const productData = await productRes.json();
@@ -219,6 +227,56 @@ export default function AddProductPage() {
                                     className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 transition-all cursor-pointer"
                                     onChange={(e) => setOtherImages([...e.target.files])}
                                 />
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="pt-8 border-t border-gray-100">
+                            <h2 className="text-xl font-bold mb-6 text-gray-900 px-1">SEO Optimization</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Meta Title</label>
+                                    <input
+                                        type="text"
+                                        placeholder="SEO Title (e.g. Elegant Diamond Studs | The Luxe Jewels)"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                        value={metaTitle}
+                                        onChange={(e) => setMetaTitle(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Meta Description</label>
+                                    <textarea
+                                        placeholder="Brief description for search engines..."
+                                        rows="3"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all resize-none"
+                                        value={metaDescription}
+                                        onChange={(e) => setMetaDescription(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Meta Keywords</label>
+                                    <input
+                                        type="text"
+                                        placeholder="jewelry, diamond, luxury..."
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                        value={metaKeywords}
+                                        onChange={(e) => setMetaKeywords(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Main Image Alt Text</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Description of the main image..."
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                        value={imageAlt}
+                                        onChange={(e) => setImageAlt(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
 
