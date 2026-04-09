@@ -8,11 +8,11 @@ export default function ProductCard({ product }) {
         : "0.00";
 
     return (
-        <div className="group flex flex-col">
+        <div className="group flex flex-col h-full">
             {/* Image Container */}
             <Link
                 href={`/product/${product.id}`}
-                className="block relative overflow-hidden rounded-2xl bg-[#F5F5F5] aspect-[3/4]"
+                className="block relative overflow-hidden rounded-2xl bg-[#F5F5F5] aspect-square w-full"
             >
                 <Image
                     src={product.main_image || "/placeholder.jpg"}
@@ -49,7 +49,7 @@ export default function ProductCard({ product }) {
                 </span>
 
                 <Link href={`/product/${product.id}`}>
-                    <h3 className="text-[14px] font-semibold text-gray-900 leading-snug group-hover:text-[#E91E63] transition-colors duration-200 line-clamp-1">
+                    <h3 className="text-[14px] font-semibold text-gray-900 leading-snug group-hover:text-[#E91E63] transition-colors duration-200 line-clamp-2 h-10">
                         {product.name}
                     </h3>
                 </Link>

@@ -49,7 +49,7 @@ export default function Testimonials() {
 
                             {/* Text */}
                             <p className="text-gray-500 italic leading-relaxed text-[15px] mb-8 px-4">
-                                "{review.text}"
+                                &quot;{review.text}&quot;
                             </p>
 
                             {/* Name */}

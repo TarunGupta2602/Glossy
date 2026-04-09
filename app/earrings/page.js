@@ -76,8 +76,8 @@ export default async function EarringsPage() {
                 </p>
                 <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Craftsmanship and Sustainable Quality</h2>
                 <p>
-                    We pride ourselves on delivering <Link href="/shop" className="text-gray-900 transition-colors font-semibold">luxury fine jewelry</Link> that doesn't compromise on ethical standards.
-                    Whether you're looking for classic hoops or modern sculptural earrings, our jewelry is created to elevate your look
+                    We pride ourselves on delivering <Link href="/shop" className="text-gray-900 transition-colors font-semibold">luxury fine jewelry</Link> that doesn&apos;t compromise on ethical standards.
+                    Whether you&apos;re looking for classic hoops or modern sculptural earrings, our jewelry is created to elevate your look
                     while remaining timeless. Browse our <Link href="/necklaces" className="text-gray-900 transition-colors font-semibold">fine necklaces</Link> collection too to complete your signature look.
                 </p>
             </div>

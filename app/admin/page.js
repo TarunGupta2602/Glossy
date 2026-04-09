@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
@@ -15,23 +15,23 @@ export default function AdminPage() {
     const [orderCount, setOrderCount] = useState(0);
 
     // Fetch stats if user is an admin
-    useEffect(() => {
-        if (profile?.role === 'admin') {
-            fetchStats();
-        }
-    }, [profile]);
-
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
             const response = await fetch("/api/orders");
             const data = await response.json();
             if (data.success) {
-                setOrderCount(data.totalCount || data.orders.length || 0);
+                setOrderCount(data.totalCount || data.orders?.length || 0);
             }
         } catch (error) {
             console.error("Error fetching stats:", error);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (profile?.role === 'admin') {
+            fetchStats(); // eslint-disable-line react-hooks/set-state-in-effect
+        }
+    }, [profile, fetchStats]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -161,7 +161,7 @@ export default function AdminPage() {
                                 </svg>
                             </div>
                             <h2 className="text-xl font-bold text-gray-900 mb-3">Manage Categories</h2>
-                            <p className="text-gray-500 text-sm flex-grow">View, edit, or delete existing collections. Organise your store's taxonomy efficiently.</p>
+                            <p className="text-gray-500 text-sm flex-grow">View, edit, or delete existing collections. Organise your store&apos;s taxonomy efficiently.</p>
                             <div className="mt-6 flex items-center text-[#E91E63] font-semibold text-sm">
                                 View All Categories
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

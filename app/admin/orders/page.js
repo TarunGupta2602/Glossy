@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,17 +28,7 @@ export default function AdminOrdersPage() {
         }
     };
 
-    useEffect(() => {
-        if (!authLoading) {
-            if (!user || profile?.role !== 'admin') {
-                router.push("/admin");
-            } else {
-                fetchOrders();
-            }
-        }
-    }, [user, profile, authLoading, router]);
-
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         setLoading(true);
         try {
             const response = await fetch("/api/orders");
@@ -53,7 +43,17 @@ export default function AdminOrdersPage() {
             console.error("Fetch Error:", error);
         }
         setLoading(false);
-    };
+    }, []);
+
+    useEffect(() => {
+        if (!authLoading) {
+            if (!user || profile?.role !== 'admin') {
+                router.push("/admin");
+            } else {
+                fetchOrders(); // eslint-disable-line react-hooks/set-state-in-effect
+            }
+        }
+    }, [user, profile, authLoading, router, fetchOrders]);
 
     if (authLoading) {
         return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
@@ -21,15 +21,8 @@ export default function ProfileClient() {
     const [activeTab, setActiveTab] = useState("orders");
     const [selectedOrder, setSelectedOrder] = useState(null);
 
-    useEffect(() => {
-        if (user) {
-            fetchUserOrders();
-        } else if (!authLoading) {
-            setOrdersLoading(false);
-        }
-    }, [user, authLoading]);
-
-    const fetchUserOrders = async () => {
+    const fetchUserOrders = useCallback(async () => {
+        if (!user) return;
         setOrdersLoading(true);
         try {
             const response = await fetch(`/api/orders?userId=${user.id}`);
@@ -44,7 +37,15 @@ export default function ProfileClient() {
             console.error("Error fetching user orders:", error);
         }
         setOrdersLoading(false);
-    };
+    }, [user]);
+
+    useEffect(() => {
+        if (user) {
+            fetchUserOrders(); // eslint-disable-line react-hooks/set-state-in-effect
+        } else if (!authLoading) {
+            setOrdersLoading(false);
+        }
+    }, [user, authLoading, fetchUserOrders]);
 
     const handleCancelOrder = async (orderId) => {
         if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;

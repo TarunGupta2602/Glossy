@@ -30,7 +30,7 @@ export default function CartPage() {
                     </svg>
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">Your bag is empty</h1>
-                <p className="text-gray-500 mb-8 max-w-xs text-center">Looks like you haven't added anything to your bag yet. Let's find something special.</p>
+                <p className="text-gray-500 mb-8 max-w-xs text-center">Looks like you haven&apos;t added anything to your bag yet. Let&apos;s find something special.</p>
                 <Link
                     href="/shop"
                     className="bg-[#E91E63] text-white px-8 py-4 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-[#C2185B] transition-all duration-300"

@@ -78,7 +78,7 @@ export default async function ShopPage() {
                         <p>
                             At <Link href="/" className="text-gray-900 font-bold underline decoration-pink-100 underline-offset-4">The luxe jewels</Link>, every piece in our collection is a testament to our commitment to sustainability.
                             We believe that <Link href="/our-story" className="text-gray-900 transition-colors font-semibold">our story</Link>
-                            is defined by the care we put into every design. Shop India's best **anti-tarnish jewelry** online now.
+                            is defined by the care we put into every design. Shop India&apos;s best **anti-tarnish jewelry** online now.
                         </p>
                     </div>
                 </div>

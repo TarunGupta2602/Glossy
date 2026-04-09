@@ -30,6 +30,24 @@ export function CartProvider({ children }) {
     }, [user]);
 
 
+    const syncLocalCartToDB = useCallback(async (localCart) => {
+        if (!user || localCart.length === 0) return;
+
+        try {
+            for (const item of localCart) {
+                await fetch("/api/cart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: item.id, quantity: item.quantity, action: "add" }),
+                });
+            }
+            await fetchDBCart();
+        } catch (error) {
+            console.error("Cart sync error:", error);
+        }
+    }, [user, fetchDBCart]);
+
+
     // Initial load: either from DB or localStorage
     useEffect(() => {
         const loadInitialCart = async () => {
@@ -66,7 +84,7 @@ export function CartProvider({ children }) {
         };
 
         loadInitialCart();
-    }, [user, fetchDBCart]);
+    }, [user, fetchDBCart, syncLocalCartToDB]);
 
     // Save Guest cart to localStorage ONLY if user is not logged in
     useEffect(() => {
@@ -74,23 +92,6 @@ export function CartProvider({ children }) {
             localStorage.setItem("theluxejewels-cart", JSON.stringify(cart));
         }
     }, [cart, isInitialized, user]);
-
-    const syncLocalCartToDB = async (localCart) => {
-        if (!user || localCart.length === 0) return;
-
-        try {
-            for (const item of localCart) {
-                await fetch("/api/cart", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user.id, productId: item.id, quantity: item.quantity, action: "add" }),
-                });
-            }
-            await fetchDBCart();
-        } catch (error) {
-            console.error("Cart sync error:", error);
-        }
-    };
 
 
     const addToCart = async (product, quantity = 1) => {

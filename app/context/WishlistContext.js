@@ -32,6 +32,25 @@ export function WishlistProvider({ children }) {
 
 
 
+    const syncLocalWishlistToDB = useCallback(async (localWish) => {
+        if (!user || localWish.length === 0) return;
+
+        try {
+            // Synchronize each item via the API
+            for (const item of localWish) {
+                await fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, productId: item.id, action: "add" }),
+                });
+            }
+            await fetchDBWishlist();
+        } catch (error) {
+            console.error("Wishlist sync error:", error);
+        }
+    }, [user, fetchDBWishlist]);
+
+
     // Initial load: either from DB or localStorage
     useEffect(() => {
         const loadInitialWishlist = async () => {
@@ -66,7 +85,7 @@ export function WishlistProvider({ children }) {
         };
 
         loadInitialWishlist();
-    }, [user, fetchDBWishlist]);
+    }, [user, fetchDBWishlist, syncLocalWishlistToDB]);
 
     // Save Guest wishlist to localStorage ONLY if user is not logged in
     useEffect(() => {
@@ -74,24 +93,6 @@ export function WishlistProvider({ children }) {
             localStorage.setItem("theluxejewels-wishlist", JSON.stringify(wishlist));
         }
     }, [wishlist, isInitialized, user]);
-
-    const syncLocalWishlistToDB = async (localWish) => {
-        if (!user || localWish.length === 0) return;
-
-        try {
-            // Synchronize each item via the API
-            for (const item of localWish) {
-                await fetch("/api/wishlist", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user.id, productId: item.id, action: "add" }),
-                });
-            }
-            await fetchDBWishlist();
-        } catch (error) {
-            console.error("Wishlist sync error:", error);
-        }
-    };
 
 
     const addToWishlist = async (product) => {
