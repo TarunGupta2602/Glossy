@@ -33,14 +33,26 @@ export default function Navbar() {
                     {/* Left: Logo */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="group block focus:outline-none">
-                            <Image
-                                src="/logo.png"
-                                alt="The luxe jewels Logo"
-                                width={160}
-                                height={64}
-                                className="h-10 md:h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
-                                priority
-                            />
+                            {/* Desktop Logo (Image) */}
+                            <div className="hidden md:block">
+                                <Image
+                                    src="/logo.png"
+                                    alt="The luxe jewels Logo"
+                                    width={160}
+                                    height={64}
+                                    className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
+                                    priority
+                                />
+                            </div>
+                            {/* Mobile Logo (Text) */}
+                            <div className="md:hidden pr-4">
+                                <div className="flex flex-col items-start leading-none">
+                                    <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                                    <span className="text-lg font-bold tracking-tight text-gray-900 uppercase">
+                                        LUXE <span className="font-light text-gray-500">JEWELS</span>
+                                    </span>
+                                </div>
+                            </div>
                         </Link>
                     </div>
 
