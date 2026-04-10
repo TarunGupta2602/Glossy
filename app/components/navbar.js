@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import LoginModal from "./LoginModal";
 
 export default function Navbar() {
@@ -15,6 +16,7 @@ export default function Navbar() {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const { cartCount } = useCart();
+    const { wishlist } = useWishlist();
     const { user, profile, signInWithGoogle, signOut } = useAuth();
     const router = useRouter();
 
@@ -168,6 +170,18 @@ export default function Navbar() {
                             )}
                         </div>
 
+                        {/* Wishlist Icon with Badge */}
+                        <Link href="/wishlist" className="relative text-gray-800 hover:text-[#E91E63] transition-colors" aria-label="Wishlist">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                            </svg>
+                            {wishlist.length > 0 && (
+                                <span className="absolute -top-1.5 -right-2 bg-gray-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110 shadow-sm">
+                                    {wishlist.length}
+                                </span>
+                            )}
+                        </Link>
+
                         {/* Bag Icon with Badge */}
                         <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors" aria-label="Shopping bag">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -176,7 +190,7 @@ export default function Navbar() {
                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
                             </svg>
                             {cartCount > 0 && (
-                                <span className="absolute -top-1.5 -right-2 bg-[#E91E63] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110">
+                                <span className="absolute -top-1.5 -right-2 bg-gray-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110 shadow-sm">
                                     {cartCount}
                                 </span>
                             )}
@@ -211,6 +225,10 @@ export default function Navbar() {
                     <div className="md:hidden mt-2 pb-4 bg-white border-t border-gray-50 flex flex-col items-center divide-y divide-gray-50">
                         <Link href="/shop" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                             Shop All
+                        </Link>
+                        <Link href="/wishlist" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
+                            My Wishlist
+                            {wishlist.length > 0 && <span className="ml-2 bg-gray-900 text-white px-2 py-0.5 rounded-full text-[9px]">{wishlist.length}</span>}
                         </Link>
                         <Link href="/earrings" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                             Earrings
