@@ -54,15 +54,30 @@ export default function ProductCard({ product }) {
                     </h3>
                 </Link>
 
-                <div className="flex items-center justify-between mt-1">
-                    <p className="text-[14px] font-bold text-gray-800">
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <p className="text-[14px] font-bold text-gray-900">
                         ₹{price}
                     </p>
-                    {product.original_price && product.original_price > product.price && (
-                        <p className="text-[12px] text-gray-400 line-through">
-                            ₹{product.original_price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        </p>
-                    )}
+                    {(() => {
+                        const originalPrice = product.original_price || (product.price / 0.7);
+                        const discount = product.original_price
+                            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+                            : 30;
+
+                        if (originalPrice > product.price) {
+                            return (
+                                <>
+                                    <p className="text-[11px] text-gray-400 line-through">
+                                        ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </p>
+                                    <p className="text-[11px] font-bold text-[#2E7D32]">
+                                        (SAVE {discount}%)
+                                    </p>
+                                </>
+                            );
+                        }
+                        return null;
+                    })()}
                 </div>
             </div>
         </div>

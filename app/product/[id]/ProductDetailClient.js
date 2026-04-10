@@ -37,7 +37,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
             "Hand-crafted with premium materials",
             "Hypoallergenic & skin-safe finish",
             "Ethically sourced components",
-            "Free returns within 30 days",
+            "Free returns within 10 days",
             "Complimentary gift wrapping",
         ];
     })();
@@ -126,9 +126,31 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         </h1>
 
                         {/* Price */}
-                        <p className="mt-2 text-[20px] font-bold text-gray-900">
-                            ₹{price}
-                        </p>
+                        <div className="mt-2 flex items-baseline gap-3">
+                            <p className="text-[24px] font-black text-gray-900 leading-none">
+                                ₹{price}
+                            </p>
+                            {(() => {
+                                const originalPrice = product.original_price || (product.price / 0.7);
+                                const discount = product.original_price
+                                    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+                                    : 30;
+
+                                if (originalPrice > product.price) {
+                                    return (
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-[16px] text-gray-400 line-through font-medium">
+                                                ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </p>
+                                            <p className="text-[14px] font-bold text-[#2E7D32]">
+                                                SAVE {discount}%
+                                            </p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
+                        </div>
 
                         {/* Divider */}
                         <div className="mt-5 mb-5 h-px bg-gray-100" />
@@ -262,7 +284,29 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                             {p.name}
                                         </h3>
                                         <span className="text-[11px] text-gray-400 mt-0.5">{cat}</span>
-                                        <p className="text-[13px] font-bold text-[#E91E63] mt-1">₹{pPrice}</p>
+                                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                                            <p className="text-[14px] font-bold text-gray-900">₹{pPrice}</p>
+                                            {(() => {
+                                                const originalPrice = p.original_price || (p.price / 0.7);
+                                                const discount = p.original_price
+                                                    ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
+                                                    : 30;
+
+                                                if (originalPrice > p.price) {
+                                                    return (
+                                                        <>
+                                                            <p className="text-[11px] text-gray-400 line-through">
+                                                                ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                            </p>
+                                                            <p className="text-[11px] font-bold text-[#2E7D32]">
+                                                                (SAVE {discount}%)
+                                                            </p>
+                                                        </>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
+                                        </div>
                                     </Link>
                                 );
                             })}

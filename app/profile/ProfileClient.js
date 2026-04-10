@@ -2,23 +2,17 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useWishlist } from "../context/WishlistContext";
-import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import ProfileHeader from "./ProfileHeader";
 import OrderHistory from "./OrderHistory";
-import WishlistTab from "./WishlistTab";
 import OrderModal from "./OrderModal";
 import { ProfileHeaderSkeleton } from "./ProfileSkeletons";
 
 export default function ProfileClient() {
     const { user, loading: authLoading, signOut } = useAuth();
-    const { wishlist, removeFromWishlist, isInitialized: wishlistInitialized } = useWishlist();
-    const { addToCart } = useCart();
 
     const [orders, setOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState("orders");
     const [selectedOrder, setSelectedOrder] = useState(null);
 
     const fetchUserOrders = useCallback(async () => {
@@ -140,46 +134,27 @@ export default function ProfileClient() {
                 <ProfileHeader
                     user={user}
                     ordersCount={orders.length}
-                    wishlistCount={wishlist.length}
                     signOut={signOut}
                 />
 
-                <div className="flex justify-center md:justify-start gap-12 mb-12 relative">
-                    <button
-                        onClick={() => setActiveTab("orders")}
-                        className={`group pb-6 text-sm font-bold tracking-[0.2em] uppercase transition-all relative ${activeTab === 'orders' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}
-                    >
-                        Order History
-                        <div className={`absolute bottom-0 left-0 h-1 bg-gray-900 transition-all duration-300 ${activeTab === 'orders' ? 'w-full' : 'w-0 group-hover:w-4'}`} />
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("wishlist")}
-                        className={`group pb-6 text-sm font-bold tracking-[0.2em] uppercase transition-all relative ${activeTab === 'wishlist' ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}
-                    >
-                        My Wishlist
-                        <div className={`absolute bottom-0 left-0 h-1 bg-gray-900 transition-all duration-300 ${activeTab === 'wishlist' ? 'w-full' : 'w-0 group-hover:w-4'}`} />
-                    </button>
-                    <div className="absolute bottom-0 left-0 w-full h-px bg-gray-100 -z-10" />
+                <div className="flex flex-col gap-8 mb-12">
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-8">
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Purchase History</h2>
+                            <p className="text-sm text-gray-400 mt-1">Manage and track your signature collection pieces.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="min-h-[500px]">
-                    {activeTab === 'orders' ? (
-                        <OrderHistory
-                            orders={orders}
-                            loading={ordersLoading}
-                            onViewDetails={setSelectedOrder}
-                            getStatusColor={getStatusColor}
-                            onCancelOrder={handleCancelOrder}
-                            onReturnOrder={handleReturnOrder}
-                        />
-                    ) : (
-                        <WishlistTab
-                            wishlist={wishlist}
-                            initialized={wishlistInitialized}
-                            removeFromWishlist={removeFromWishlist}
-                            addToCart={addToCart}
-                        />
-                    )}
+                <div className="min-h-[400px]">
+                    <OrderHistory
+                        orders={orders}
+                        loading={ordersLoading}
+                        onViewDetails={setSelectedOrder}
+                        getStatusColor={getStatusColor}
+                        onCancelOrder={handleCancelOrder}
+                        onReturnOrder={handleReturnOrder}
+                    />
                 </div>
             </div>
 
