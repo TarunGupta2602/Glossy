@@ -77,27 +77,47 @@ export default function Navbar() {
                     {/* Right: Actions */}
                     <div className="flex items-center space-x-3 md:space-x-5">
                         {/* Search Bar */}
-                        <div className="relative flex items-center">
-                            <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-48 sm:w-64 opacity-100" : "w-0 opacity-0 overflow-hidden"}`}>
-                                <input
-                                    type="text"
-                                    placeholder="Search jewelry..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    onKeyDown={handleSearch}
-                                    className="w-full bg-gray-50 border border-gray-100 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:border-[#E91E63] text-gray-800"
-                                />
+                        <div className="flex items-center">
+                            <div className={`
+                                flex items-center transition-all duration-300 overflow-hidden
+                                ${isSearchOpen
+                                    ? "fixed inset-x-0 top-0 h-[72px] bg-white px-4 z-[60] md:relative md:inset-auto md:h-auto md:w-48 lg:w-64 md:opacity-100 md:bg-transparent"
+                                    : "w-0 opacity-0 md:w-0"
+                                }
+                            `}>
+                                <div className="flex items-center w-full max-w-7xl mx-auto gap-3">
+                                    <input
+                                        type="text"
+                                        placeholder="Search jewelry..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onKeyDown={handleSearch}
+                                        className="flex-1 bg-gray-50 border border-gray-100 rounded-full py-2.5 md:py-1.5 px-5 md:px-4 text-sm focus:outline-none focus:border-[#E91E63] text-gray-800"
+                                        autoFocus={isSearchOpen}
+                                    />
+                                    {isSearchOpen && (
+                                        <button
+                                            onClick={() => setIsSearchOpen(false)}
+                                            className="md:hidden p-2 text-gray-400 hover:text-gray-900"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                            <button
-                                className={`text-gray-800 hover:text-[#E91E63] transition-colors p-1 ${isSearchOpen ? "ml-2" : ""}`}
-                                aria-label="Search"
-                                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                            </button>
+
+                            {!isSearchOpen && (
+                                <button
+                                    className="text-gray-800 hover:text-[#E91E63] transition-colors p-1"
+                                    aria-label="Search"
+                                    onClick={() => setIsSearchOpen(true)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                            )}
                         </div>
 
                         {/* Authentication Section */}
