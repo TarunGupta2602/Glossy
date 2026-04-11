@@ -75,14 +75,14 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.png" },
-      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo.png" },
+      { url: "/logo.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/icon.png" },
-      { url: "/icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/logo.png" },
+      { url: "/logo.png", sizes: "180x180", type: "image/png" },
     ],
-    shortcut: "/icon.png",
+    shortcut: "/logo.png",
   },
   manifest: "/manifest.json",
   verification: {
