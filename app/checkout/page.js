@@ -192,14 +192,11 @@ export default function CheckoutPage() {
         return (
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
                 <div className="max-w-md w-full bg-white rounded-[40px] p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
-                    <div className="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-8">
-                        <Image
-                            src="/logo.png"
-                            alt="Logo"
-                            width={40}
-                            height={40}
-                            className="w-10 h-10 object-contain"
-                        />
+                    <div className="flex flex-col items-center leading-none mb-8">
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                        <span className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                            LUXE <span className="font-light text-gray-500">JEWELS</span>
+                        </span>
                     </div>
                     <h1 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Your Signature Awaits.</h1>
                     <p className="text-gray-400 mb-10 text-sm leading-relaxed px-4">Log in to complete your acquisition and track your order every step of the way.</p>

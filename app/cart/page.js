@@ -198,14 +198,11 @@ export default function CartPage() {
                         ) : (
                             <div className="mb-6 bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-10 h-10 bg-pink-50 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <Image
-                                            src="/logo.png"
-                                            alt="Logo"
-                                            width={24}
-                                            height={24}
-                                            className="w-6 h-6 object-contain"
-                                        />
+                                    <div className="flex flex-col items-center leading-none flex-shrink-0">
+                                        <span className="text-[7px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-0.5">THE</span>
+                                        <span className="text-sm font-bold tracking-tight text-gray-900 uppercase">
+                                            LUXE <span className="font-light text-gray-400">JEWELS</span>
+                                        </span>
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-black tracking-tight text-gray-900 leading-none mb-1">Join The Signature Club.</h3>

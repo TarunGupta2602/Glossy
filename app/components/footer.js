@@ -9,24 +9,12 @@ export default function Footer() {
                     {/* Brand Section */}
                     <div className="flex flex-col items-center sm:items-start md:col-span-1">
                         <Link href="/" className="mb-6 group block focus:outline-none">
-                            {/* Desktop Logo (Image) */}
-                            <div className="hidden sm:block">
-                                <Image
-                                    src="/logo.png"
-                                    alt="The luxe jewels Logo"
-                                    width={160}
-                                    height={64}
-                                    className="h-16 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02]"
-                                />
-                            </div>
-                            {/* Mobile Logo (Text) */}
-                            <div className="sm:hidden">
-                                <div className="flex flex-col items-center leading-none">
-                                    <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
-                                    <span className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
-                                        LUXE <span className="font-light text-gray-500">JEWELS</span>
-                                    </span>
-                                </div>
+                            {/* Universal Text Logo */}
+                            <div className="flex flex-col items-center sm:items-start leading-none">
+                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                                <span className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 uppercase">
+                                    LUXE <span className="font-light text-gray-500">JEWELS</span>
+                                </span>
                             </div>
                         </Link>
                         <p className="text-gray-500 text-sm leading-relaxed max-w-[280px] sm:max-w-xs font-medium">

@@ -72,14 +72,11 @@ export default function AdminPage() {
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                     <div className="flex flex-col items-center mb-8 text-center">
-                        <div className="flex flex-col items-center gap-4 mb-4">
-                            <Image
-                                src="/logo.png"
-                                alt="The luxe jewels Logo"
-                                width={160}
-                                height={64}
-                                className="h-16 w-auto object-contain"
-                            />
+                        <div className="flex flex-col items-center leading-none mb-4">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                            <span className="text-3xl font-bold tracking-tight text-gray-900 uppercase">
+                                LUXE <span className="font-light text-gray-500">JEWELS</span>
+                            </span>
                         </div>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
                         {user && profile?.role !== 'admin' && (

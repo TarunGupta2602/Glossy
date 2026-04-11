@@ -24,9 +24,12 @@ export default async function Home() {
     c.slug === 'the-necklace-edit' ||
     c.name?.toLowerCase().includes('neck')
   );
+  const braceletsCat = categories?.find(c =>
+    c.name?.toLowerCase().includes('bracelet')
+  );
 
   // 2. Fetch Products for each category
-  const [earringsRes, necklacesRes] = await Promise.all([
+  const [earringsRes, necklacesRes, braceletsRes] = await Promise.all([
     earringsCat ? supabase
       .from("products")
       .select("*, categories(name, id, slug)")
@@ -38,11 +41,18 @@ export default async function Home() {
       .select("*, categories(name, id, slug)")
       .eq("category_id", necklacesCat.id)
       .order("created_at", { ascending: false })
+      .limit(10) : Promise.resolve({ data: [] }),
+    braceletsCat ? supabase
+      .from("products")
+      .select("*, categories(name, id, slug)")
+      .eq("category_id", braceletsCat.id)
+      .order("created_at", { ascending: false })
       .limit(10) : Promise.resolve({ data: [] })
   ]);
 
   const earrings = earringsRes.data || [];
   const necklaces = necklacesRes.data || [];
+  const bracelets = braceletsRes.data || [];
 
   return (
     <main className="min-h-screen bg-white">
@@ -64,6 +74,13 @@ export default async function Home() {
         title="Necklaces Collection"
         products={necklaces}
         viewAllLink="/necklaces"
+      />
+
+      {/* Bracelets Row */}
+      <ProductRow
+        title="Artisan Cuffs & Bracelets"
+        products={bracelets}
+        viewAllLink="/shop/glimmer-bracelet"
       />
 
       {/* Featured Collections Section */}

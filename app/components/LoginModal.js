@@ -40,14 +40,12 @@ export default function LoginModal({ isOpen, onClose }) {
 
                 <div className="relative flex flex-col items-center text-center space-y-6">
                     {/* Logo instead of Icon */}
-                    <div className="w-48 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-2">
-                        <Image
-                            src="/logo.png"
-                            alt="The luxe jewels Logo"
-                            width={160}
-                            height={64}
-                            className="w-full h-full object-contain"
-                        />
+                    {/* Universal Text Logo */}
+                    <div className="flex flex-col items-center leading-none mb-4">
+                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                        <span className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                            LUXE <span className="font-light text-gray-500">JEWELS</span>
+                        </span>
                     </div>
 
                     {/* Content */}
