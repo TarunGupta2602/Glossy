@@ -5,11 +5,45 @@ import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CartPage() {
     const { cart, cartSubtotal, cartTotal, shippingFee, removeFromCart, updateQuantity, isInitialized } = useCart();
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
+
+    const GoogleBtn = ({ id }) => {
+        useEffect(() => {
+            const renderBtn = () => {
+                if (window.google && window.google.accounts) {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        window.google.accounts.id.renderButton(
+                            btn,
+                            {
+                                theme: 'outline',
+                                size: 'large',
+                                text: 'signin_with',
+                                shape: 'pill',
+                                width: btn.offsetWidth || 300
+                            }
+                        );
+                    }
+                }
+            };
+
+            const interval = setInterval(() => {
+                if (window.google && window.google.accounts) {
+                    renderBtn();
+                    clearInterval(interval);
+                }
+            }, 500);
+
+            return () => clearInterval(interval);
+        }, [id]);
+
+        return null;
+    };
 
     if (!isInitialized) {
         return (
@@ -181,26 +215,11 @@ export default function CartPage() {
                                 <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed">Sign in to track orders, save your favorites, and experience our swiftest checkout flow.</p>
 
                                 {/* Native Branded Google Button */}
-                                <div className="flex justify-center">
-                                    <div id="google-cart-button" className="w-full"></div>
+                                <div className="flex justify-center min-h-[50px] mb-4">
+                                    <div id="google-cart-button" className="w-full h-[50px] flex justify-center"></div>
                                 </div>
 
-                                <script dangerouslySetInnerHTML={{
-                                    __html: `
-                                        (function() {
-                                            const checkGSI = setInterval(() => {
-                                                if (window.google && window.google.accounts) {
-                                                    window.google.accounts.id.renderButton(
-                                                        document.getElementById('google-cart-button'),
-                                                        { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: document.getElementById('google-cart-button')?.offsetWidth || 340 }
-                                                    );
-                                                    clearInterval(checkGSI);
-                                                }
-                                            }, 500);
-                                            setTimeout(() => clearInterval(checkGSI), 5000);
-                                        })();
-                                    `
-                                }} />
+                                <GoogleBtn id="google-cart-button" />
 
                                 <p className="mt-8 text-[10px] text-gray-300 font-medium text-center">
                                     By continuing, you agree to our Terms of Service.

@@ -12,6 +12,40 @@ export default function CheckoutPage() {
     const { user } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
+
+    const GoogleBtn = ({ id }) => {
+        useEffect(() => {
+            const renderBtn = () => {
+                if (window.google && window.google.accounts) {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        window.google.accounts.id.renderButton(
+                            btn,
+                            {
+                                theme: 'outline',
+                                size: 'large',
+                                text: 'continue_with',
+                                shape: 'pill',
+                                width: btn.offsetWidth || 320
+                            }
+                        );
+                    }
+                }
+            };
+
+            const interval = setInterval(() => {
+                if (window.google && window.google.accounts) {
+                    renderBtn();
+                    clearInterval(interval);
+                }
+            }, 500);
+
+            return () => clearInterval(interval);
+        }, [id]);
+
+        return null;
+    };
+
     const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, success, error new
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
@@ -172,25 +206,10 @@ export default function CheckoutPage() {
 
                     {/* Native Branded Google Button */}
                     <div className="flex justify-center min-h-[50px]">
-                        <div id="google-checkout-login" className="w-full"></div>
+                        <div id="google-checkout-login" className="w-full h-[50px] flex justify-center"></div>
                     </div>
 
-                    <script dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                const checkGSI = setInterval(() => {
-                                    if (window.google && window.google.accounts) {
-                                        window.google.accounts.id.renderButton(
-                                            document.getElementById('google-checkout-login'),
-                                            { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: 320 }
-                                        );
-                                        clearInterval(checkGSI);
-                                    }
-                                }, 500);
-                                setTimeout(() => clearInterval(checkGSI), 5000);
-                            })();
-                        `
-                    }} />
+                    <GoogleBtn id="google-checkout-login" />
 
                     <div className="mt-12 flex flex-col gap-4">
                         <Link href="/cart" className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors">
