@@ -90,58 +90,61 @@ export default function ProfileClient() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'processing': return 'bg-amber-100 text-amber-700';
-            case 'confirmed': return 'bg-blue-100 text-blue-700';
-            case 'shipped': return 'bg-indigo-100 text-indigo-700';
-            case 'out for delivery': return 'bg-purple-100 text-purple-700';
-            case 'delivered': return 'bg-green-100 text-green-700';
-            case 'cancelled': return 'bg-red-100 text-red-700';
-            case 'return requested': return 'bg-orange-100 text-orange-700';
-            case 'returned': return 'bg-gray-200 text-gray-700';
-            default: return 'bg-gray-100 text-gray-600';
+            case 'processing': return 'bg-amber-50 text-amber-900 border-amber-100';
+            case 'confirmed': return 'bg-blue-50 text-blue-900 border-blue-100';
+            case 'shipped': return 'bg-indigo-50 text-indigo-900 border-indigo-100';
+            case 'out for delivery': return 'bg-slate-50 text-slate-900 border-slate-100';
+            case 'delivered': return 'bg-emerald-50 text-emerald-900 border-emerald-100';
+            case 'cancelled': return 'bg-rose-50 text-rose-900 border-rose-100';
+            case 'return requested': return 'bg-orange-50 text-orange-900 border-orange-100';
+            case 'returned': return 'bg-gray-50 text-gray-900 border-gray-100';
+            default: return 'bg-gray-50 text-gray-400 border-gray-100';
         }
     };
 
     if (authLoading) {
         return (
-            <div className="min-h-screen bg-[#FAFAFA] pt-32 pb-24">
-                <div className="max-w-6xl mx-auto px-6 lg:px-12">
+            <div className="min-h-screen bg-white">
+                <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-40 pb-24">
                     <ProfileHeaderSkeleton />
-                </div>
+                </main>
             </div>
         );
     }
 
     if (!user) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 pt-20 px-6 text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 text-center">
+                <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-10 overflow-hidden">
+                    <div className="w-12 h-12 border border-gray-200 rounded-full flex items-center justify-center text-gray-300 font-serif italic text-2xl">L</div>
                 </div>
-                <h1 className="text-2xl font-black text-gray-900 mb-2">My Profile</h1>
-                <p className="text-gray-500 mb-8 max-w-xs">Please sign in to view your orders and wishlist.</p>
-                <Link href="/" className="bg-gray-900 text-white px-8 py-4 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all">
-                    Go Back Home
+                <h1 className="text-4xl font-black text-gray-900 mb-4 tracking-tighter uppercase italic">Access Restricted</h1>
+                <p className="text-gray-400 mb-12 max-w-sm text-sm font-medium leading-relaxed tracking-wide uppercase">Authenticate your identity to view your curated acquisitions and signature wishlist.</p>
+                <Link href="/" className="bg-gray-900 text-white px-12 py-5 rounded-full text-[11px] font-black tracking-[0.4em] uppercase hover:bg-black transition-all shadow-xl shadow-gray-900/10">
+                    Return to Boutique
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#FAFAFA] pt-32 pb-24">
-            <div className="max-w-6xl mx-auto px-6 lg:px-12">
-
+        <div className="min-h-screen bg-white">
+            <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-40 pb-32">
                 <ProfileHeader
                     user={user}
                     ordersCount={orders.length}
                     signOut={signOut}
                 />
 
-                <div className="flex flex-col gap-8 mb-12">
-                    <div className="flex items-center justify-between border-b border-gray-100 pb-8">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Purchase History</h2>
-                            <p className="text-sm text-gray-400 mt-1">Manage and track your signature collection pieces.</p>
+                <div className="mt-24 space-y-12">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-12">
+                        <div className="max-w-2xl">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="h-[2px] w-12 bg-[#E91E63]" />
+                                <span className="text-[10px] font-black text-[#E91E63] uppercase tracking-[0.3em]">Client Archives</span>
+                            </div>
+                            <h2 className="text-5xl font-black text-gray-900 tracking-tighter uppercase italic mb-4">Purchase History</h2>
+                            <p className="text-sm text-gray-400 font-medium tracking-wide leading-relaxed">A permanent record of your refined selections. Each piece reflects a moment of uncompromising taste and timeless elegance.</p>
                         </div>
                     </div>
                 </div>
@@ -156,7 +159,7 @@ export default function ProfileClient() {
                         onReturnOrder={handleReturnOrder}
                     />
                 </div>
-            </div>
+            </main>
 
             <OrderModal
                 order={selectedOrder}
@@ -181,6 +184,6 @@ export default function ProfileClient() {
                     background: #E5E7EB;
                 }
             `}</style>
-        </div>
+        </div >
     );
 }

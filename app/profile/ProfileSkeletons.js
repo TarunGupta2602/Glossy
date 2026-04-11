@@ -1,17 +1,16 @@
-
-
 export function ProfileHeaderSkeleton() {
     return (
-        <div className="relative h-[250px] overflow-hidden bg-gray-50 rounded-b-[60px] animate-pulse">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 opacity-50" />
-            <div className="relative h-full flex items-end px-12 pb-12">
-                <div className="flex items-center gap-8 w-full max-w-7xl mx-auto">
-                    <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-xl" />
-                    <div className="space-y-3">
-                        <div className="h-8 w-64 bg-gray-200 rounded-lg" />
-                        <div className="h-4 w-40 bg-gray-200 rounded-lg" />
+        <div className="relative animate-pulse">
+            <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-10">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-12">
+                    <div className="w-40 h-40 rounded-full bg-gray-100 border border-gray-50" />
+                    <div className="space-y-4 text-center md:text-left">
+                        <div className="h-4 w-32 bg-gray-100 rounded-full mx-auto md:mx-0" />
+                        <div className="h-16 w-64 bg-gray-100 rounded-2xl mx-auto md:mx-0" />
+                        <div className="h-4 w-48 bg-gray-100 rounded-full mx-auto md:mx-0" />
                     </div>
                 </div>
+                <div className="w-64 h-32 bg-gray-50 rounded-[40px] border border-gray-100" />
             </div>
         </div>
     );
@@ -19,23 +18,25 @@ export function ProfileHeaderSkeleton() {
 
 export function OrderCardSkeleton() {
     return (
-        <div className="group bg-white rounded-[32px] border border-gray-100 p-8 md:p-10 flex flex-col md:flex-row items-center gap-10 animate-pulse">
-            <div className="space-y-4 min-w-[200px]">
-                <div className="flex gap-2">
-                    <div className="h-5 w-20 bg-gray-100 rounded-full" />
-                    <div className="h-5 w-24 bg-gray-100 rounded-full" />
+        <div className="group bg-white rounded-[40px] border border-gray-50 p-12 flex flex-col xl:flex-row gap-12 animate-pulse">
+            <div className="xl:w-1/4 space-y-6">
+                <div className="flex gap-3">
+                    <div className="h-6 w-20 bg-gray-100 rounded-full" />
+                    <div className="h-6 w-24 bg-gray-100 rounded-full" />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                     <div className="h-3 w-32 bg-gray-50 rounded" />
-                    <div className="h-8 w-24 bg-gray-100 rounded" />
+                    <div className="h-12 w-40 bg-gray-100 rounded-xl" />
                 </div>
             </div>
-            <div className="flex-1 flex gap-4">
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl" />
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl" />
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl" />
+            <div className="flex-1 space-y-8">
+                <div className="flex gap-4">
+                    <div className="w-24 h-24 bg-gray-100 rounded-3xl" />
+                    <div className="w-24 h-24 bg-gray-100 rounded-3xl" />
+                    <div className="w-24 h-24 bg-gray-100 rounded-3xl" />
+                </div>
+                <div className="h-14 w-48 bg-gray-100 rounded-full" />
             </div>
-            <div className="h-14 w-40 bg-gray-100 rounded-2xl" />
         </div>
     );
 }
