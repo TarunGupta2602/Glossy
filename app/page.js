@@ -6,6 +6,8 @@ import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 
+export const revalidate = 60; // Revalidate the page every 60 seconds (ISR)
+
 export default async function Home() {
   const supabase = getServiceClient();
 

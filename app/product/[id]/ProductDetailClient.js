@@ -105,7 +105,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         >
                                             <Image
                                                 src={img}
-                                                alt={`View ${idx + 1}`}
+                                                alt={`${product.name} - Additional View ${idx + 1}`}
                                                 fill
                                                 sizes="15vw"
                                                 className="object-cover"
@@ -274,7 +274,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         >
                                             <Image
                                                 src={p.main_image || "/placeholder.jpg"}
-                                                alt={p.name}
+                                                alt={p.image_alt || p.name}
                                                 fill
                                                 sizes="(max-width: 640px) 50vw, 25vw"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"

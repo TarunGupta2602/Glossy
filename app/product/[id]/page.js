@@ -77,7 +77,7 @@ export default async function ProductPage({ params }) {
     // 3. Related products — same category first, fallback to newest
     const { data: related } = await supabase
         .from("products")
-        .select("id, name, price, main_image, categories(name)")
+        .select("id, name, price, main_image, image_alt, categories(name)")
         .eq("category_id", product.category_id)
         .neq("id", id)
         .order("created_at", { ascending: false })
@@ -89,7 +89,7 @@ export default async function ProductPage({ params }) {
         const excludeIds = [id, ...relatedProducts.map((p) => p.id)];
         const { data: extras } = await supabase
             .from("products")
-            .select("id, name, price, main_image, categories(name)")
+            .select("id, name, price, main_image, image_alt, categories(name)")
             .not("id", "in", `(${excludeIds.join(",")})`)
             .order("created_at", { ascending: false })
             .limit(4 - relatedProducts.length);
