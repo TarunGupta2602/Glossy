@@ -156,8 +156,48 @@ export default function CheckoutPage() {
 
     if (!isInitialized || !user) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-[#E91E63] border-t-transparent rounded-full animate-spin"></div>
+            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
+                <div className="max-w-md w-full bg-white rounded-[40px] p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
+                    <div className="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <Image
+                            src="/logo.png"
+                            alt="Logo"
+                            width={40}
+                            height={40}
+                            className="w-10 h-10 object-contain"
+                        />
+                    </div>
+                    <h1 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Your Signature Awaits.</h1>
+                    <p className="text-gray-400 mb-10 text-sm leading-relaxed px-4">Log in to complete your acquisition and track your order every step of the way.</p>
+
+                    {/* Native Branded Google Button */}
+                    <div className="flex justify-center min-h-[50px]">
+                        <div id="google-checkout-login" className="w-full"></div>
+                    </div>
+
+                    <script dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                const checkGSI = setInterval(() => {
+                                    if (window.google && window.google.accounts) {
+                                        window.google.accounts.id.renderButton(
+                                            document.getElementById('google-checkout-login'),
+                                            { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: 320 }
+                                        );
+                                        clearInterval(checkGSI);
+                                    }
+                                }, 500);
+                                setTimeout(() => clearInterval(checkGSI), 5000);
+                            })();
+                        `
+                    }} />
+
+                    <div className="mt-12 flex flex-col gap-4">
+                        <Link href="/cart" className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors">
+                            Return to Bag
+                        </Link>
+                    </div>
+                </div>
             </div>
         );
     }
