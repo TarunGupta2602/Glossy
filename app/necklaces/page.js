@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
+import ProductCard from "../components/ProductCard";
 
 export const dynamic = "force-dynamic";
 
@@ -46,19 +47,11 @@ export default async function NecklacesPage() {
                     <p className="text-gray-500 max-w-xl mx-auto italic font-medium">Timeless chains. Sustainable luxury. Designed to never fade.</p>
                 </div>
                 {!products || products.length === 0 ? (
-                    <p className="text-center text-gray-500">No products found.</p>
+                    <p className="text-center text-gray-500 font-medium py-12">Coming Soon.</p>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
                         {products.map((product) => (
-                            <Link key={product.id} href={`/product/${product.id}`} className="group block">
-                                <div className="relative aspect-square bg-gray-100 rounded-3xl overflow-hidden shadow-sm border border-gray-50 group-hover:shadow-md transition-all">
-                                    <Image src={product.main_image || "/placeholder.jpg"} alt={product.name} fill className="object-cover group-hover:scale-105 transition duration-700" />
-                                </div>
-                                <div className="mt-5">
-                                    <h3 className="font-bold text-gray-900 text-sm">{product.name}</h3>
-                                    <p className="text-[#E91E63] font-black mt-1 text-sm">₹{product.price}</p>
-                                </div>
-                            </Link>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 )}
