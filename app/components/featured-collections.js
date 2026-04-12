@@ -8,12 +8,34 @@ export default async function FeaturedCollections() {
     const { data: categories, error } = await supabase
         .from("categories")
         .select("*")
-        .limit(4);
+        .order("name", { ascending: true });
 
     if (error || !categories) {
         console.error("Error fetching featured collections:", error);
         return null;
     }
+
+    // Apply custom sorting: Sparkle Jewelry Duo (Second to last), Uniqueness (Last)
+    const sortedCategories = [...categories].sort((a, b) => {
+        const aSlug = a.slug?.toLowerCase();
+        const bSlug = b.slug?.toLowerCase();
+
+        const order = {
+            'the-necklace-edit': -1,
+            'sparkle-jewelry-duo': 1,
+            'uniqueness': 2
+        };
+
+        const aOrder = order[aSlug] || 0;
+        const bOrder = order[bSlug] || 0;
+
+        if (aOrder !== bOrder) {
+            return aOrder - bOrder;
+        }
+
+        // Default alphabetical sort for others
+        return a.name.localeCompare(b.name);
+    });
 
     return (
         <section className="py-24 px-6 md:px-12 bg-white">
@@ -46,9 +68,9 @@ export default async function FeaturedCollections() {
                     </Link>
                 </div>
 
-                {/* Ultra-Clean 2x2 Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                    {categories?.map((category) => {
+                {/* Enhanced Flexible Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    {sortedCategories?.map((category) => {
                         const nameLower = category.name.toLowerCase();
                         const isEarrings = nameLower.includes("earring");
                         const isNecklaces = nameLower.includes("necklace");
