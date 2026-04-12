@@ -38,7 +38,7 @@ export default async function FeaturedCollections() {
     });
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+    <section className="py-24 px-6 md:px-12 bg-gradient-to-br from-white via-[#f8eaf3] to-[#f3f8fa]">
             <div className="max-w-7xl mx-auto">
                 {/* Clean Restored Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -68,9 +68,9 @@ export default async function FeaturedCollections() {
                     </Link>
                 </div>
 
-                {/* Enhanced Flexible Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {sortedCategories?.map((category) => {
+                {/* Enhanced Artistic Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+                    {sortedCategories?.map((category, index) => {
                         const nameLower = category.name.toLowerCase();
                         const isEarrings = nameLower.includes("earring");
                         const isNecklaces = nameLower.includes("necklace");
@@ -83,31 +83,66 @@ export default async function FeaturedCollections() {
                                     isRings ? "Signature Rings" :
                                         category.name;
 
+                        // Grid Logic: 1st is large, 2nd & 3rd are medium, onwards are standard
+                        const gridClass = index === 0
+                            ? "md:col-span-8 md:aspect-[16/9]"
+                            : index === 1 || index === 2
+                                ? "md:col-span-4 md:aspect-[4/5]"
+                                : "md:col-span-6 lg:col-span-4 aspect-[16/11]";
+
                         return (
                             <Link
                                 key={category.id}
                                 href={`/shop/${category.slug}`}
-                                className="group relative block overflow-hidden rounded-[2rem]"
+                                className={`group relative block overflow-hidden rounded-[2.5rem] border border-white/40 shadow-xl hover:shadow-2xl transition-all duration-700 ${gridClass} bg-white/30 backdrop-blur-[6px] hover:bg-white/60`}
+                                style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)' }}
                             >
-                                <div className="relative aspect-[16/11] overflow-hidden">
+                                {/* Floating Badge */}
+                                <div className="absolute top-6 left-6 z-20">
+                                    <span className="inline-block px-4 py-1 rounded-full bg-white/80 text-[#E91E63] text-xs font-bold shadow-md backdrop-blur-sm border border-[#E91E63]/10">
+                                        {displayTitle}
+                                    </span>
+                                </div>
+                                <div className="absolute inset-0 z-0">
                                     <Image
                                         src={category.image_url || "/placeholder.jpg"}
                                         alt={category.name}
                                         fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        className="object-cover transition-all duration-[1.5s] ease-out group-hover:scale-110 group-hover:blur-[1.5px]"
                                     />
+                                    {/* Glassmorphism Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#e91e63]/60 via-white/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-700" />
+                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 group-hover:to-black/80 transition-all duration-700" />
+                                </div>
 
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                                {/* Content Layer */}
+                                <div className="relative z-10 h-full p-8 md:p-12 flex flex-col justify-end">
+                                    <div className="flex justify-between items-end">
+                                        <div className="flex flex-col gap-2">
+                                            <span className="w-10 h-[2px] bg-[#E91E63]/70 group-hover:w-16 group-hover:bg-[#E91E63] transition-all duration-500 rounded-full" />
+                                            <span className="text-[11px] font-black text-white/80 tracking-[0.2em] uppercase drop-shadow">
+                                                Col. 0{index + 1}
+                                            </span>
+                                        </div>
+                                        <div className="h-12 w-12 rounded-full border border-white/20 flex items-center justify-center text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 backdrop-blur-md bg-[#E91E63]/80 shadow-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M5 12h14m-7-7 7 7-7 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
 
-                                    {/* Minimalist Info */}
-                                    <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
-                                        <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-4">
-                                            {displayTitle}
+                                    <div className="mt-8">
+                                        <h3 className="text-2xl md:text-4xl font-black text-white tracking-tighter leading-tight mb-3 drop-shadow-xl">
+                                            {category.name}
                                         </h3>
-                                        <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                            <span>Explore Selection</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+                                        <p className="text-white/80 text-xs md:text-sm font-medium max-w-xs mb-2 drop-shadow">
+                                            {category.description || 'Explore our curated selection.'}
+                                        </p>
+                                        <div className="flex items-center gap-3 overflow-hidden mt-2">
+                                            <span className="text-white/90 text-[11px] font-black tracking-[0.3em] uppercase">
+                                                Discover Selection
+                                            </span>
+                                            <div className="h-[2px] w-0 bg-[#E91E63] group-hover:w-16 transition-all duration-700 delay-100 rounded-full" />
                                         </div>
                                     </div>
                                 </div>
