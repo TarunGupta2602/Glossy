@@ -12,8 +12,17 @@ export default function ProductCard({ product }) {
             {/* Image Container */}
             <Link
                 href={`/product/${product.id}`}
-                className="block relative overflow-hidden rounded-2xl bg-[#F5F5F5] aspect-square w-full"
+                className="block relative overflow-hidden rounded-2xl border border-gray-100 shadow-lg hover:shadow-2xl bg-white/60 backdrop-blur-[2px] aspect-square w-full transition-all duration-700"
+                style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.08)' }}
             >
+                {/* Subtle floating badge for new */}
+                {product.is_new && (
+                    <div className="absolute top-3 left-3 z-20">
+                        <span className="inline-block px-2.5 py-1 rounded-full bg-white/90 text-gray-900 text-[10px] font-bold shadow border border-gray-200 uppercase tracking-widest">
+                            New
+                        </span>
+                    </div>
+                )}
                 <Image
                     src={product.main_image || "/placeholder.jpg"}
                     alt={product.image_alt || product.name}
@@ -21,41 +30,31 @@ export default function ProductCard({ product }) {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-
-                {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Neutral glassmorphism overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-white/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700 rounded-2xl" />
 
                 {/* Quick View CTA */}
-                <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-5 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-400">
-                    <span className="bg-white text-gray-900 text-[11px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full shadow-lg hover:bg-[#E91E63] hover:text-white transition-colors duration-200">
+                <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-5 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-400 z-10">
+                    <span className="bg-white/95 text-gray-900 text-[11px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full shadow hover:bg-gray-900 hover:text-white transition-colors duration-200 border border-gray-200 backdrop-blur-sm">
                         Quick View
                     </span>
                 </div>
-
-                {/* New badge — shown if product is recent */}
-                {product.is_new && (
-                    <div className="absolute top-3 left-3">
-                        <span className="bg-[#E91E63] text-white text-[9px] font-bold tracking-[0.15em] uppercase px-2.5 py-1 rounded-full">
-                            New
-                        </span>
-                    </div>
-                )}
             </Link>
 
             {/* Product Info */}
-            <div className="mt-4 flex flex-col gap-1">
+            <div className="mt-4 flex flex-col gap-1 px-1">
                 <span className="text-[10px] font-semibold tracking-[0.2em] text-gray-400 uppercase">
                     {categoryName}
                 </span>
 
                 <Link href={`/product/${product.id}`}>
-                    <h3 className="text-[14px] font-semibold text-gray-900 leading-snug group-hover:text-[#E91E63] transition-colors duration-200 line-clamp-2 h-10">
+                    <h3 className="text-[15px] font-black text-gray-900 leading-snug group-hover:text-gray-900 transition-colors duration-200 line-clamp-2 min-h-10">
                         {product.name}
                     </h3>
                 </Link>
 
                 <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <p className="text-[14px] font-bold text-gray-900">
+                    <p className="text-[15px] font-bold text-gray-900">
                         ₹{price}
                     </p>
                     {(() => {
@@ -70,7 +69,7 @@ export default function ProductCard({ product }) {
                                     <p className="text-[11px] text-gray-400 line-through">
                                         ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                     </p>
-                                    <p className="text-[11px] font-bold text-[#2E7D32]">
+                                    <p className="text-[11px] font-bold text-green-700">
                                         (SAVE {discount}%)
                                     </p>
                                 </>
