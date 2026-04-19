@@ -8,6 +8,9 @@ export default function ShopSidebar({
     onCategoryChange,
     priceRange,
     onPriceChange,
+    sortBy,
+    onSortChange,
+    totalProducts,
 }) {
     const MAX_PRICE = 5000;
 
@@ -18,16 +21,43 @@ export default function ShopSidebar({
 
     const handleMaxChange = (e) => {
         const val = Math.max(parseInt(e.target.value), priceRange[0] + 100);
-        onPriceChange([val, priceRange[1]]);
-        // Actually set max
-        onPriceChange([priceRange[0], Math.max(parseInt(e.target.value), priceRange[0] + 100)]);
+        onPriceChange([priceRange[0], val]);
     };
 
     const minPercent = (priceRange[0] / MAX_PRICE) * 100;
     const maxPercent = (priceRange[1] / MAX_PRICE) * 100;
 
     return (
-        <aside className="w-full md:w-56 flex-shrink-0 space-y-10">
+        <aside className="space-y-10">
+            {/* Sort & Count Section (Moved from top bar) */}
+            <div className="pb-6 border-b border-gray-100">
+                <div className="mb-4">
+                    <span className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase">
+                        Sort By
+                    </span>
+                    <div className="relative mt-3">
+                        <select
+                            value={sortBy}
+                            onChange={(e) => onSortChange(e.target.value)}
+                            className="w-full text-[13px] font-medium text-gray-700 border border-gray-100 rounded-xl px-4 py-2.5 bg-gray-50/50 hover:bg-white hover:border-[#E91E63] focus:outline-none focus:border-[#E91E63] transition-all cursor-pointer appearance-none pr-10"
+                            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name">Name A–Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase">
+                        Density
+                    </span>
+                    <span className="text-[11px] font-bold text-gray-900 bg-gray-50 px-2 py-0.5 rounded-full">
+                        {totalProducts} Items
+                    </span>
+                </div>
+            </div>
 
             {/* Category Filter */}
             <div>
