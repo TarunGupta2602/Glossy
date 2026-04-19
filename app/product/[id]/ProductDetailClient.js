@@ -77,6 +77,12 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                     <div className="w-full max-w-[520px]">
                         {/* Main Image */}
                         <div className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2]" style={{ aspectRatio: "1/1" }}>
+                            {/* Buy 2 Get 1 Badge */}
+                            <div className="absolute top-4 left-4 z-10">
+                                <span className="inline-block px-3 py-1.5 rounded-full bg-[#E91E63] text-white text-[10px] md:text-[11px] font-black shadow-lg uppercase tracking-wider leading-none">
+                                    Buy 2 Get 1 FREE
+                                </span>
+                            </div>
                             <Image
                                 key={activeIdx}
                                 src={allImages[activeIdx]}
@@ -272,6 +278,11 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                             className="relative w-full overflow-hidden rounded-xl bg-[#F2F2F2] mb-3"
                                             style={{ aspectRatio: "1/1" }}
                                         >
+                                            <div className="absolute top-2 left-2 z-10">
+                                                <span className="inline-block px-2 py-0.5 rounded-full bg-[#E91E63] text-white text-[8px] font-black shadow-md uppercase tracking-wider">
+                                                    Buy 2 Get 1
+                                                </span>
+                                            </div>
                                             <Image
                                                 src={p.main_image || "/placeholder.jpg"}
                                                 alt={p.image_alt || p.name}

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function CartPage() {
-    const { cart, cartSubtotal, cartTotal, shippingFee, removeFromCart, updateQuantity, isInitialized } = useCart();
+    const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized } = useCart();
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
 
@@ -169,17 +169,41 @@ export default function CartPage() {
                                 <span className="text-gray-500 font-medium">Subtotal</span>
                                 <span className="font-bold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
+                            {discountAmount > 0 && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                    <span className="font-medium">Offer Discount (Buy 2 Get 1)</span>
+                                    <span className="font-bold">-₹{discountAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Shipping</span>
                                 <span className={`font-bold ${shippingFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
                                     {shippingFee === 0 ? 'FREE' : `₹${shippingFee.toFixed(2)}`}
                                 </span>
                             </div>
+                            {shippingFee > 0 && (
+                                <p className="text-[10px] text-gray-400 font-medium italic mt-1">
+                                    Add ₹{(1000 - (cartSubtotal - discountAmount)).toFixed(0)} more for free delivery!
+                                </p>
+                            )}
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Estimated Tax</span>
                                 <span className="font-bold text-gray-900">₹0.00</span>
                             </div>
                         </div>
+
+                        {/* Buy 2 Get 1 Nudge */}
+                        {(cartCount % 3 === 2) && (
+                            <div className="mb-6 p-4 rounded-2xl bg-[#E91E63]/5 border border-[#E91E63]/10 flex items-start gap-3">
+                                <span className="text-lg">🎁</span>
+                                <div>
+                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Special Offer Unlock</p>
+                                    <p className="text-xs text-gray-600 font-medium leading-tight">
+                                        Add <span className="font-bold text-gray-900 mx-0.5">1 more item</span> to your bag to get the 3rd one <span className="font-bold text-[#E91E63]">FREE</span>!
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="border-t border-gray-200/60 pt-6 mb-8">
                             <div className="flex justify-between items-end">

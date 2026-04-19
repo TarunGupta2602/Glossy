@@ -81,6 +81,19 @@ export default function Footer() {
                     </div>
                 </div>
 
+                {/* SEO Keyword Narrative - Visually Hidden for SEO only */}
+                <div className="sr-only">
+                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] mb-4">India's Premier Anti-Tarnish Jewelry Destination</h4>
+                    <p className="text-[12px] text-gray-400 leading-relaxed font-medium">
+                        Welcome to <span className="text-gray-900 font-bold text-xs uppercase tracking-tighter">The Luxe Jewels</span>, your ultimate destination for premium <span className="text-gray-600">anti-tarnish jewelry in India</span>.
+                        We specialize in meticulously handcrafted <span className="text-gray-600">waterproof jewelry</span> designed to withstand the rigors of daily life without losing its signature sparkle.
+                        Whether you are looking for <span className="text-gray-600">18k gold plated necklaces</span>, <span className="text-gray-600">luxury earrings</span>, or <span className="text-gray-600">tarnish-free rings</span>,
+                        our collection offers the perfect blend of modern aesthetics and sustainable durability.
+                        Experience the elegance of <span className="text-gray-600">minimalist fine jewelry</span> that is both hypoallergenic and skin-safe.
+                        Shop now for the best <span className="text-gray-600">artificial jewelry online India</span> and enjoy free shipping on orders above ₹1000.
+                    </p>
+                </div>
+
                 {/* Bottom Bar */}
                 <div className="pt-10 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6 text-[12px] font-medium tracking-tight text-gray-400">
                     <p>© {new Date().getFullYear()} The luxe jewels. All rights reserved.</p>

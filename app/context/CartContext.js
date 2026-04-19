@@ -224,9 +224,31 @@ export function CartProvider({ children }) {
         0
     );
 
-    // Rule: ₹10 shipping if subtotal < ₹1000
-    const shippingFee = cartSubtotal > 0 && cartSubtotal < 1000 ? 10 : 0;
-    const cartTotal = cartSubtotal + shippingFee;
+    // Buy 2 Get 1 Free Logic
+    // Logic: Sort all individual items by price descending and every 3rd item is free
+    const calculateDiscount = () => {
+        const allItems = [];
+        cart.forEach(item => {
+            for (let i = 0; i < item.quantity; i++) {
+                allItems.push(item.price);
+            }
+        });
+
+        allItems.sort((a, b) => b - a);
+
+        let discount = 0;
+        for (let i = 2; i < allItems.length; i += 3) {
+            discount += allItems[i];
+        }
+        return discount;
+    };
+
+    const discountAmount = calculateDiscount();
+
+    // Rule: ₹10 shipping if subtotal - discount < ₹1000
+    const finalSubtotal = cartSubtotal - discountAmount;
+    const shippingFee = finalSubtotal > 0 && finalSubtotal < 1000 ? 10 : 0;
+    const cartTotal = finalSubtotal + shippingFee;
 
 
     return (
@@ -239,6 +261,7 @@ export function CartProvider({ children }) {
                 clearCart,
                 cartCount,
                 cartSubtotal,
+                discountAmount, // Added discountAmount
                 shippingFee,
                 cartTotal,
                 isInitialized,

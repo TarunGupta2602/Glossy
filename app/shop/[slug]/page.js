@@ -19,14 +19,21 @@ export async function generateMetadata({ params }) {
     if (!category) return { title: "Collection Not Found" };
 
     return {
-        title: category.name,
-        description: category.description || `Explore our ${category.name} collection at The luxe jewels.`,
+        title: `${category.name} | Premium Anti-Tarnish Collection | The luxe jewels`,
+        description: category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewelry at The luxe jewels India.`,
         alternates: {
             canonical: `/shop/${slug}`,
         },
+        keywords: [
+            `${category.name} jewelry`,
+            `anti tarnish ${category.name}`,
+            `waterproof ${category.name} india`,
+            `18k gold plated ${category.name}`,
+            "The luxe jewels collections"
+        ],
         openGraph: {
-            title: `${category.name} | The luxe jewels`,
-            description: category.description || `Explore our ${category.name} collection.`,
+            title: `${category.name} | Premium Collection | The luxe jewels`,
+            description: category.description || `Explore our premium ${category.name} collection at The luxe jewels.`,
             url: `https://www.theluxejewels.in/shop/${slug}`,
             siteName: "The luxe jewels",
             images: category.image_url ? [{ url: category.image_url }] : [{ url: "/logo.png" }],
@@ -34,7 +41,7 @@ export async function generateMetadata({ params }) {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${category.name} | The luxe jewels`,
+            title: `${category.name} | Custom Jewelry Selection`,
             description: category.description,
             images: category.image_url ? [category.image_url] : ["/logo.png"],
         },

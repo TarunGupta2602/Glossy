@@ -15,14 +15,17 @@ export default function ProductCard({ product }) {
                 className="block relative overflow-hidden rounded-2xl border border-gray-100 shadow-lg hover:shadow-2xl bg-white/60 backdrop-blur-[2px] aspect-square w-full transition-all duration-700"
                 style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.08)' }}
             >
-                {/* Subtle floating badge for new */}
-                {product.is_new && (
-                    <div className="absolute top-3 left-3 z-20">
-                        <span className="inline-block px-2.5 py-1 rounded-full bg-white/90 text-gray-900 text-[10px] font-bold shadow border border-gray-200 uppercase tracking-widest">
+                {/* Subtle floating badge for promotions */}
+                <div className="absolute top-3 left-3 z-30 flex flex-col gap-2">
+                    {product.is_new && (
+                        <span className="inline-block px-2.5 py-1 rounded-full bg-white text-gray-900 text-[10px] font-bold shadow border border-gray-200 uppercase tracking-widest leading-none">
                             New
                         </span>
-                    </div>
-                )}
+                    )}
+                    <span className="inline-block px-2.5 py-1 rounded-full bg-[#E91E63] text-white text-[9px] md:text-[10px] font-black shadow-md uppercase tracking-wider leading-none">
+                        Buy 2 Get 1 FREE
+                    </span>
+                </div>
                 <Image
                     src={product.main_image || "/placeholder.jpg"}
                     alt={product.image_alt || product.name}

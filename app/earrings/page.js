@@ -7,14 +7,23 @@ import ProductCard from "../components/ProductCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Premium Anti-Tarnish Earrings | The luxe jewels",
-    description: "Shop our exclusive collection of 18k gold plated, anti-tarnish earrings. Waterproof and minimalist designs for modern individuals in India.",
+    title: "Premium Anti-Tarnish Earrings | 18k Gold Plated | The luxe jewels",
+    description: "Shop the best anti-tarnish earrings in India. Our collection features waterproof, hypoallergenic 18k gold plated studs, hoops, and statement drops for daily wear.",
     alternates: {
         canonical: "/earrings",
     },
+    keywords: [
+        "anti tarnish earrings india",
+        "gold plated earrings online",
+        "waterproof earrings for daily wear",
+        "hypoallergenic earrings for sensitive skin",
+        "18k gold earrings india",
+        "minimalist earrings brand",
+        "buy luxury earrings online india"
+    ],
     openGraph: {
-        title: "Anti-Tarnish Earrings | The luxe jewels",
-        description: "Ethical and elegant waterproof earrings handcrafted for the modern individual.",
+        title: "Anti-Tarnish Earrings | Waterproof & Hypoallergenic | The luxe jewels",
+        description: "Ethical and elegant waterproof earrings handcrafted for the modern individual. Tarnish-free 18k gold plating.",
         url: "https://www.theluxejewels.in/earrings",
         siteName: "The luxe jewels",
         images: [{ url: "/logo.png" }],

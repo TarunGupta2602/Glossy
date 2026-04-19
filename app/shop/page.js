@@ -6,14 +6,23 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Shop All Fine Jewelry",
-    description: "Explore our full collection of handcrafted fine jewelry. From ethical earrings to designer necklaces, find the perfect addition to your collection.",
+    title: "Shop All Fine Jewelry | Buy Anti-Tarnish & Waterproof Jewelry",
+    description: "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewelry at The luxe jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
     alternates: {
         canonical: "/shop",
     },
+    keywords: [
+        "shop jewelry online india",
+        "buy anti tarnish jewelry",
+        "waterproof jewelry shop",
+        "18k gold plated accessories",
+        "luxury fine jewelry India",
+        "minimalist jewelry collection",
+        "hypoallergenic jewelry store"
+    ],
     openGraph: {
-        title: "Shop All Fine Jewelry | The luxe jewels",
-        description: "Handcrafted ethical fine jewelry. Modern designs, sustainable luxury.",
+        title: "Shop All Fine Jewelry | Premium & Sustainable | The luxe jewels",
+        description: "Handcrafted ethical fine jewelry. Modern designs, sustainable luxury, and waterproof durability.",
         url: "https://www.theluxejewels.in/shop",
         siteName: "The luxe jewels",
         images: [{ url: "/logo.png" }],

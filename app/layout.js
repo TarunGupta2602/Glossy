@@ -18,16 +18,26 @@ const geistMono = Geist_Mono({
 export const metadata = {
   metadataBase: new URL("https://www.theluxejewels.in"),
   title: {
-    default: "The luxe jewels | Premium Anti-Tarnish & Fine Jewelry India",
+    default: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewelry India",
     template: "%s | The luxe jewels"
   },
-  description: "Discover premium anti-tarnish, waterproof jewelry and handcrafted fine jewelry at The luxe jewels. Sustainable, ethically sourced gold and silver pieces designed for modern elegance. Shop now for delivery across India.",
+  description: "Shop The luxe jewels for premium anti-tarnish, waterproof, and hypoallergenic jewelry in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Free delivery on orders over ₹1000.",
   keywords: [
-    "anti tarnish jewelry online", "waterproof jewelry India", "daily wear jewelry",
-    "premium fine jewelry", "ethically sourced gold jewelry", "sustainable jewelry brands",
-    "The luxe jewels", "jewelry India online", "gold earrings online",
-    "designer necklaces India", "minimalist jewelry", "18k gold plated jewelry",
-    "bridal and wedding jewelry India", "women's jewelry accessories", "best jewelry online India"
+    "anti tarnish jewelry online india",
+    "waterproof jewelry india",
+    "buy 18k gold plated jewelry",
+    "hypoallergenic jewelry for sensitive skin",
+    "premium artificial jewelry india",
+    "daily wear jewelry for women",
+    "The luxe jewels india",
+    "gold plated earrings online",
+    "minimalist jewelry brand india",
+    "luxury jewelry affordable price",
+    "waterproof necklaces india",
+    "tarnish resistant jewelry online shop",
+    "signature rings for women",
+    "bridal jewelry india online",
+    "best jewelry box gifts india"
   ],
   authors: [{ name: "The luxe jewels" }],
   creator: "The luxe jewels",
@@ -41,8 +51,8 @@ export const metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "The luxe jewels | Modern Luxury Jewelry",
-    description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
+    title: "The luxe jewels | Premium Waterproof & Anti-Tarnish Jewelry",
+    description: "Handcrafted, hypoallergenic, and tarnish-free jewelry designed for modern luxury. Shop the best of 18k gold plated pieces in India.",
     url: "https://www.theluxejewels.in",
     siteName: "The luxe jewels",
     images: [
@@ -50,7 +60,7 @@ export const metadata = {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "The luxe jewels Logo",
+        alt: "The luxe jewels - Premium Jewelry Collection",
       },
     ],
     locale: "en_IN",
@@ -58,13 +68,14 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The luxe jewels | Modern Luxury Jewelry",
-    description: "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
+    title: "The luxe jewels | Modern Luxury Jewelry India",
+    description: "Defining modern luxury through waterproof and anti-tarnish fine jewelry. Handcrafted with love.",
     images: ["/logo.png"],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: true,
     googleBot: {
       index: true,
       follow: true,

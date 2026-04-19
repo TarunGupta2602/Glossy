@@ -2,11 +2,18 @@ import Image from "next/image";
 
 export const dynamic = "force-static"; // ✅ SSG
 export const metadata = {
-    title: "Our Story",
-    description: "Learn about The luxe jewels, our journey, and our commitment to crafting timeless, luxurious jewelry.",
+    title: "Our Story | Handcrafted Sustainable Jewelry | The luxe jewels",
+    description: "Discover the journey behind The luxe jewels. We are committed to crafting timeless, premium anti-tarnish jewelry with ethical sourcing and intentional design.",
     alternates: {
         canonical: "/our-story",
     },
+    keywords: [
+        "about the luxe jewels",
+        "sustainable jewelry brand india",
+        "ethical jewelry story",
+        "handcrafted fine jewelry india",
+        "luxury jewelry journey"
+    ],
 };
 
 export default function OurStoryPage() {

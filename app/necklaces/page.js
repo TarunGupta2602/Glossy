@@ -7,14 +7,23 @@ import ProductCard from "../components/ProductCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Premium Anti-Tarnish Necklaces | The luxe jewels",
-    description: "Discover our ethical and elegant anti-tarnish necklaces. Waterproof, 18k gold plated chains and pendants for everyday luxury in India.",
+    title: "Premium Anti-Tarnish Necklaces | Waterproof Chains | The luxe jewels",
+    description: "Discover the finest anti-tarnish necklaces in India. Our collection includes waterproof 18k gold plated chains, pendants, and layered sets designed for everyday elegance.",
     alternates: {
         canonical: "/necklaces",
     },
+    keywords: [
+        "anti tarnish necklaces india",
+        "waterproof gold chains india",
+        "gold plated pendants online",
+        "tarnish resistant jewelry brand",
+        "minimalist necklaces for women",
+        "daily wear jewelry india",
+        "ethical fine jewelry online"
+    ],
     openGraph: {
-        title: "Anti-Tarnish Necklaces | The luxe jewels",
-        description: "Luminous accents for every style. Handcrafted waterproof fine necklaces.",
+        title: "Anti-Tarnish Necklaces | Luxury Waterproof Jewelry | The luxe jewels",
+        description: "Luminous accents for every style. Handcrafted waterproof fine necklaces. Designed to never fade.",
         url: "https://www.theluxejewels.in/necklaces",
         siteName: "The luxe jewels",
         images: [{ url: "/logo.png" }],

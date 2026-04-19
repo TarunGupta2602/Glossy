@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function CheckoutPage() {
-    const { cart, cartTotal, isInitialized, clearCart } = useCart();
+    const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart } = useCart();
     const { user } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -58,9 +58,6 @@ export default function CheckoutPage() {
         phone: ""
     });
 
-    const deliveryFee = cartTotal < 1000 ? 20 : 0;
-    const totalCheckoutAmount = cartTotal + deliveryFee;
-
 
     useEffect(() => {
         if (isInitialized && !user) {
@@ -94,7 +91,7 @@ export default function CheckoutPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: totalCheckoutAmount,
+                    amount: cartTotal,
                     currency: "INR",
                 }),
             });
@@ -124,7 +121,7 @@ export default function CheckoutPage() {
                                 user_id: user.id,
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
-                                total_amount: totalCheckoutAmount,
+                                total_amount: cartTotal,
                                 shipping_address: shippingInfo,
                                 contact_phone: shippingInfo.phone,
                                 items: cart
@@ -382,25 +379,31 @@ export default function CheckoutPage() {
 
                             <div className="border-t border-gray-100 mt-8 pt-6 space-y-3">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Cart Total</span>
-                                    <span className="font-bold text-gray-900">₹{cartTotal.toFixed(2)}</span>
+                                    <span className="text-gray-500">Cart Subtotal</span>
+                                    <span className="font-bold text-gray-900">₹{cartSubtotal.toFixed(2)}</span>
                                 </div>
+                                {discountAmount > 0 && (
+                                    <div className="flex justify-between text-sm text-green-600">
+                                        <span className="font-medium">Offer Discount (Buy 2 Get 1)</span>
+                                        <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-500">Small Order Delivery</span>
-                                    <span className={`font-black tracking-widest uppercase ${deliveryFee === 0 ? 'text-green-600' : 'text-gray-900 underline decoration-pink-100 underline-offset-4'}`}>
-                                        {deliveryFee === 0 ? 'Free' : `₹${deliveryFee.toFixed(2)}`}
+                                    <span className="text-gray-500">Shipping</span>
+                                    <span className={`font-black tracking-widest uppercase ${shippingFee === 0 ? 'text-green-600' : 'text-gray-900 underline decoration-pink-100 underline-offset-4'}`}>
+                                        {shippingFee === 0 ? 'Free' : `₹${shippingFee.toFixed(2)}`}
                                     </span>
                                 </div>
-                                {deliveryFee > 0 && (
+                                {shippingFee > 0 && (
                                     <div className="bg-pink-50/50 p-3 rounded-xl border border-pink-100/50">
                                         <p className="text-[10px] text-[#E91E63] font-bold text-center leading-relaxed">
-                                            Shop for ₹{(1000 - cartTotal).toFixed(0)} more to get **Free Delivery**!
+                                            Shop for ₹{(1000 - (cartSubtotal - discountAmount)).toFixed(0)} more to get **Free Delivery**!
                                         </p>
                                     </div>
                                 )}
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
-                                    <span className="text-2xl font-black text-[#E91E63]">₹{totalCheckoutAmount.toFixed(2)}</span>
+                                    <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

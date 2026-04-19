@@ -23,10 +23,26 @@ export default function FAQsPage() {
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": "How long does shipping take?",
+                "name": "Is your jewelry truly anti-tarnish?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Orders are processed within 1–2 days and delivered within 3–7 business days."
+                    "text": "Yes, our jewelry is crafted with high-quality materials and 18k gold plating with a special protective layer that makes it tarnish-resistant for long-lasting wear."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I wear The Luxe Jewels in the shower?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our jewelry is designed to be waterproof. However, to maintain the maximum brilliance of the gold plating, we recommend avoiding prolonged exposure to harsh chemicals or perfumes."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How long does shipping take within India?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prepaid orders are usually delivered within 3–5 business days across major cities in India like Delhi, Mumbai, and Bangalore."
                 }
             },
             {
@@ -34,31 +50,15 @@ export default function FAQsPage() {
                 "name": "Do you offer free shipping?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, we offer free shipping on all prepaid orders across India."
+                    "text": "Yes, we offer free shipping on all orders above ₹1000."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Can I return my order?",
+                "name": "Is the jewelry hypoallergenic and safe for sensitive skin?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, returns are accepted within 7 days of delivery if the item is unused."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How do I track my order?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "You will receive a tracking link via email or SMS once your order is shipped."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How long does a refund take?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Refunds are processed within 5–7 business days after the return is approved."
+                    "text": "Absolutely. All our pieces are nickel-free and lead-free, ensuring they are hypoallergenic and safe for daily wear even on sensitive skin."
                 }
             }
         ]
@@ -86,47 +86,47 @@ export default function FAQsPage() {
                 <div className="divide-y divide-gray-200">
 
                     <div className="py-5">
-                        <h2 className="font-medium text-gray-900">
-                            How long does shipping take?
+                        <h2 className="font-semibold text-gray-900">
+                            Is your jewelry truly anti-tarnish?
                         </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Orders are processed within 1–2 days and delivered within 3–7 business days.
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                            Yes, our jewelry is crafted with high-quality materials and 18k gold plating with a special protective layer that makes it tarnish-resistant for long-lasting wear.
                         </p>
                     </div>
 
                     <div className="py-5">
-                        <h2 className="font-medium text-gray-900">
+                        <h2 className="font-semibold text-gray-900">
+                            Can I wear The Luxe Jewels in the shower?
+                        </h2>
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                            Our jewelry is designed to be waterproof. However, to maintain the maximum brilliance of the gold plating, we recommend avoiding prolonged exposure to harsh chemicals or perfumes.
+                        </p>
+                    </div>
+
+                    <div className="py-5">
+                        <h2 className="font-semibold text-gray-900">
+                            How long does shipping take within India?
+                        </h2>
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                            Orders are processed within 1–2 days and delivered within 3–7 business days. Prepaid orders are usually delivered faster across major cities in India.
+                        </p>
+                    </div>
+
+                    <div className="py-5">
+                        <h2 className="font-semibold text-gray-900">
                             Do you offer free shipping?
                         </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Yes, we offer free shipping on all prepaid orders across India.
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                            Yes, we offer free shipping on all orders above ₹1000 across India.
                         </p>
                     </div>
 
                     <div className="py-5">
-                        <h2 className="font-medium text-gray-900">
-                            Can I return my order?
+                        <h2 className="font-semibold text-gray-900">
+                            Is the jewelry safe for sensitive skin?
                         </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Yes, returns are accepted within 7 days of delivery if the item is unused.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-medium text-gray-900">
-                            How do I track my order?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            You will receive a tracking link via email or SMS once your order is shipped.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-medium text-gray-900">
-                            How long does a refund take?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Refunds are processed within 5–7 business days after the return is approved.
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                            Absolutely. All our pieces are nickel-free and lead-free, ensuring they are hypoallergenic and safe for daily wear even on sensitive skin.
                         </p>
                     </div>
 

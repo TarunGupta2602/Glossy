@@ -6,14 +6,22 @@ import Breadcrumbs from "../components/Breadcrumbs";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Featured Collections",
-    description: "Explore our curated collections of fine jewelry, from statement pieces to timeless classics at The luxe jewels.",
+    title: "Featured Jewelry Collections | Curated Luxury | The luxe jewels",
+    description: "Explore our curated collections of fine jewelry. From anti-tarnish statement pieces to timeless classic earrings and necklaces at The luxe jewels.",
     alternates: {
         canonical: "/collection",
     },
+    keywords: [
+        "jewelry collections india",
+        "curated fine jewelry",
+        "anti tarnish jewelry sets",
+        "luxury jewelry curation",
+        "modern jewelry collections",
+        "sustainable jewelry brand india"
+    ],
     openGraph: {
-        title: "Featured Collections | The luxe jewels",
-        description: "Explore our curated collections of fine jewelry.",
+        title: "Featured Collections | Curated Fine Jewelry | The luxe jewels",
+        description: "Explore our curated collections of fine jewelry. Handcrafted for elegance.",
         url: "https://www.theluxejewels.in/collection",
         siteName: "The luxe jewels",
         images: [{ url: "/logo.png" }],
