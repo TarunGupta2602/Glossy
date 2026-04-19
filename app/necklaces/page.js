@@ -7,7 +7,7 @@ import ProductCard from "../components/ProductCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Premium Anti-Tarnish Necklaces | Waterproof Chains | The luxe jewels",
+    title: "Premium Anti-Tarnish Necklaces | Waterproof Gold Chains",
     description: "Discover the finest anti-tarnish necklaces in India. Our collection includes waterproof 18k gold plated chains, pendants, and layered sets designed for everyday elegance.",
     alternates: {
         canonical: "/necklaces",

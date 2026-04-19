@@ -11,12 +11,12 @@ export async function generateMetadata({ params }) {
 
     const { data: product } = await supabase
         .from("products")
-        .select("name, description, main_image, image_alt, meta_title, meta_description, meta_keywords, original_price, price, categories(name)")
+        .select("*, categories(name)")
         .eq("id", id)
         .single();
 
     if (!product) return {
-        title: "Product Not Found | The luxe jewels",
+        title: "Product Not Found",
         robots: "noindex"
     };
 
@@ -26,8 +26,9 @@ export async function generateMetadata({ params }) {
         : 30;
 
     // SEO Logic: Use custom meta fields if available, otherwise fallback to defaults
-    const seoTitle = product.meta_title || `${product.name} | ${categoryName} | The luxe jewels`;
-    const seoDescription = product.meta_description || product.description || `Shop ${product.name} from our ${categoryName} collection at The luxe jewels. Premium anti-tarnish, waterproof, and hypoallergenic jewelry handcrafted for elegance. Get ${discount}% off today!`;
+    // Note: The template in layout.js will append " | The luxe jewels" automatically
+    const seoTitle = product.meta_title || `${product.name} | ${categoryName}`;
+    const seoDescription = product.meta_description || product.description || `Shop ${product.name} from our ${categoryName} collection at The luxe jewels. Premium anti-tarnish, waterproof, and hypoallergenic jewelry. Get ${discount}% off today!`;
     const seoKeywords = product.meta_keywords || `${product.name}, ${categoryName}, anti-tarnish jewelry, waterproof jewelry india, pure gold plated jewelry, gift for her`;
 
     return {

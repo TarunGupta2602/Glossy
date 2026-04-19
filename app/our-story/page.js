@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export const dynamic = "force-static"; // ✅ SSG
 export const metadata = {
-    title: "Our Story | Handcrafted Sustainable Jewelry | The luxe jewels",
+    title: "Our Story | Handcrafted Sustainable Jewelry",
     description: "Discover the journey behind The luxe jewels. We are committed to crafting timeless, premium anti-tarnish jewelry with ethical sourcing and intentional design.",
     alternates: {
         canonical: "/our-story",

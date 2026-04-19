@@ -7,7 +7,7 @@ import ProductCard from "../components/ProductCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Premium Anti-Tarnish Earrings | 18k Gold Plated | The luxe jewels",
+    title: "Premium Anti-Tarnish Earrings | 18k Gold Plated",
     description: "Shop the best anti-tarnish earrings in India. Our collection features waterproof, hypoallergenic 18k gold plated studs, hoops, and statement drops for daily wear.",
     alternates: {
         canonical: "/earrings",

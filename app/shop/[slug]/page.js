@@ -12,14 +12,14 @@ export async function generateMetadata({ params }) {
 
     const { data: category } = await supabase
         .from("categories")
-        .select("name, description, image_url")
+        .select("*")
         .eq("slug", slug)
         .single();
 
     if (!category) return { title: "Collection Not Found" };
 
     return {
-        title: `${category.name} | Premium Anti-Tarnish Collection | The luxe jewels`,
+        title: `${category.name} | Premium Anti-Tarnish Collection`,
         description: category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewelry at The luxe jewels India.`,
         alternates: {
             canonical: `/shop/${slug}`,
