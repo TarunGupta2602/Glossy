@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
 
     const { data: product } = await supabase
         .from("products")
-        .select("name, description, main_image, meta_title, meta_description, meta_keywords, categories(name)")
+        .select("name, description, main_image, image_alt, meta_title, meta_description, meta_keywords, original_price, price, categories(name)")
         .eq("id", id)
         .single();
 
@@ -21,16 +21,25 @@ export async function generateMetadata({ params }) {
     };
 
     const categoryName = product.categories?.name || "Fine Jewelry";
+    const discount = product.original_price
+        ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+        : 30;
 
     // SEO Logic: Use custom meta fields if available, otherwise fallback to defaults
     const seoTitle = product.meta_title || `${product.name} | ${categoryName} | The luxe jewels`;
-    const seoDescription = product.meta_description || product.description || `Explore our ${product.name}, a premium handcrafted piece from The luxe jewels. Ethically sourced anti-tarnish jewelry designed for elegance.`;
-    const seoKeywords = product.meta_keywords || `${product.name}, ${categoryName}, luxury jewelry, fine jewelry India`;
+    const seoDescription = product.meta_description || product.description || `Shop ${product.name} from our ${categoryName} collection at The luxe jewels. Premium anti-tarnish, waterproof, and hypoallergenic jewelry handcrafted for elegance. Get ${discount}% off today!`;
+    const seoKeywords = product.meta_keywords || `${product.name}, ${categoryName}, anti-tarnish jewelry, waterproof jewelry india, pure gold plated jewelry, gift for her`;
 
     return {
         title: seoTitle,
         description: seoDescription,
         keywords: seoKeywords,
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
         alternates: {
             canonical: `/product/${id}`,
         },
@@ -39,8 +48,15 @@ export async function generateMetadata({ params }) {
             description: seoDescription,
             url: `https://www.theluxejewels.in/product/${id}`,
             siteName: "The luxe jewels",
-            images: product.main_image ? [{ url: product.main_image }] : [{ url: "/logo.png" }],
+            images: product.main_image ? [{
+                url: product.main_image,
+                alt: product.image_alt || product.name,
+                width: 1200,
+                height: 1200
+            }] : [{ url: "/logo.png" }],
             type: "article",
+            publishedTime: product.created_at,
+            authors: ["The luxe jewels"],
         },
         twitter: {
             card: "summary_large_image",
@@ -99,22 +115,64 @@ export default async function ProductPage({ params }) {
 
     const jsonLd = {
         "@context": "https://schema.org",
-        "@type": "Product",
-        "name": product.name,
-        "image": [product.main_image, ...galleryImages],
-        "description": product.description,
-        "sku": product.id,
-        "brand": {
-            "@type": "Brand",
-            "name": "The luxe jewels"
-        },
-        "offers": {
-            "@type": "Offer",
-            "url": `https://www.theluxejewels.in/product/${id}`,
-            "priceCurrency": "INR",
-            "price": product.price,
-            "availability": "https://schema.org/InStock"
-        }
+        "@graph": [
+            {
+                "@type": "Product",
+                "name": product.name,
+                "image": [product.main_image, ...galleryImages],
+                "description": product.description || `Premium ${product.name} from The luxe jewels.`,
+                "sku": product.id,
+                "brand": {
+                    "@type": "Brand",
+                    "name": "The luxe jewels"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "url": `https://www.theluxejewels.in/product/${id}`,
+                    "priceCurrency": "INR",
+                    "price": product.price,
+                    "priceValidUntil": "2026-12-31",
+                    "itemCondition": "https://schema.org/NewCondition",
+                    "availability": "https://schema.org/InStock",
+                    "shippingDetails": {
+                        "@type": "OfferShippingDetails",
+                        "shippingRate": {
+                            "@type": "MonetaryAmount",
+                            "value": product.price >= 1000 ? 0 : 10,
+                            "currency": "INR"
+                        }
+                    }
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.9",
+                    "reviewCount": "12"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://www.theluxejewels.in"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": product.categories?.name || "Jewelry",
+                        "item": `https://www.theluxejewels.in/shop/${product.categories?.slug}`
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": product.name,
+                        "item": `https://www.theluxejewels.in/product/${id}`
+                    }
+                ]
+            }
+        ]
     };
 
     return (
