@@ -86,14 +86,14 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: "/logo.png" },
-      { url: "/logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-symbol.png" },
+      { url: "/favicon-symbol.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/logo.png" },
-      { url: "/logo.png", sizes: "180x180", type: "image/png" },
+      { url: "/favicon-symbol.png" },
+      { url: "/favicon-symbol.png", sizes: "180x180", type: "image/png" },
     ],
-    shortcut: "/logo.png",
+    shortcut: "/favicon-symbol.png",
   },
   manifest: "/manifest.json",
   verification: {
