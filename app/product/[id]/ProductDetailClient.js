@@ -84,7 +84,6 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 </span>
                             </div>
                             <Image
-                                key={activeIdx}
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
@@ -94,33 +93,42 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             />
                         </div>
 
-                        {/* Thumbnail Strip — 2 per row below */}
-                        {allImages.length > 1 && (
-                            <div className="grid grid-cols-3 gap-2 mt-2">
-                                {allImages.slice(1, 4).map((img, i) => {
-                                    const idx = i + 1;
-                                    return (
-                                        <button
-                                            key={idx}
-                                            onClick={() => setActiveIdx(idx)}
-                                            className={`relative w-full rounded-xl overflow-hidden bg-[#F2F2F2] transition-all duration-200 ${activeIdx === idx
-                                                ? "ring-2 ring-[#E91E63] ring-offset-2"
-                                                : "opacity-75 hover:opacity-100"
-                                                }`}
-                                            style={{ aspectRatio: "1/1" }}
-                                        >
-                                            <Image
-                                                src={img}
-                                                alt={`${product.name} - Additional View ${idx + 1}`}
-                                                fill
-                                                sizes="15vw"
-                                                className="object-cover"
-                                            />
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        )}
+                        {/* Thumbnail Strip — Show all images including main one as thumbnails */}
+                        <div className="grid grid-cols-5 gap-2 mt-3">
+                            {allImages.map((img, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setActiveIdx(idx)}
+                                    className={`relative w-full rounded-lg overflow-hidden bg-[#F2F2F2] transition-all duration-200 ${activeIdx === idx
+                                        ? "ring-2 ring-[#E91E63] ring-offset-1"
+                                        : "opacity-60 hover:opacity-100"
+                                        }`}
+                                    style={{ aspectRatio: "1/1" }}
+                                >
+                                    <Image
+                                        src={img}
+                                        alt={`${product.name} - Thumbnail ${idx + 1}`}
+                                        fill
+                                        sizes="10vw"
+                                        className="object-cover"
+                                        loading={idx === 0 ? "eager" : "lazy"}
+                                    />
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Background loading for gallery images */}
+                        <div className="hidden" aria-hidden="true">
+                            {allImages.slice(1).map((img, i) => (
+                                <Image
+                                    key={`preload-${i}`}
+                                    src={img}
+                                    alt="preload"
+                                    width={10}
+                                    height={10}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     {/* ── RIGHT: Product Info ── */}
@@ -287,6 +295,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 src={p.main_image || "/placeholder.jpg"}
                                                 alt={p.image_alt || p.name}
                                                 fill
+                                                priority={p === relatedProducts[0] || p === relatedProducts[1]}
                                                 sizes="(max-width: 640px) 50vw, 25vw"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                             />

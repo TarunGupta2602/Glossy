@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 
@@ -122,7 +123,15 @@ export default function ProductsListPage() {
                                                 <div className="flex items-center space-x-4">
                                                     <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                                                         {product.main_image ? (
-                                                            <img src={product.main_image} alt={product.name} className="w-full h-full object-cover" />
+                                                            <div className="relative w-full h-full">
+                                                                <Image
+                                                                    src={product.main_image}
+                                                                    alt={product.name}
+                                                                    fill
+                                                                    sizes="64px"
+                                                                    className="object-cover"
+                                                                />
+                                                            </div>
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-300">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

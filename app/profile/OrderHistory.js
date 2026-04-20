@@ -74,7 +74,7 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                                         <div className="flex -space-x-6">
                                             {order.items?.slice(0, 4).map((item, idx) => (
                                                 <div key={idx} className="relative w-24 h-24 rounded-3xl overflow-hidden border-4 border-white bg-gray-50 shadow-xl shadow-gray-900/5 group-hover:-translate-y-2 transition-transform duration-500" style={{ transitionDelay: `${idx * 100}ms` }}>
-                                                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                                    <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover" />
                                                 </div>
                                             ))}
                                             {order.items?.length > 4 && (

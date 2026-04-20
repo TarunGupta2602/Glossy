@@ -62,7 +62,7 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                                 {order.items?.map((item, idx) => (
                                     <div key={idx} className="flex gap-10 items-center py-8 group first:pt-0 last:pb-0">
                                         <div className="relative w-32 h-32 rounded-[32px] overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100 shadow-xl shadow-gray-200/50 group-hover:-translate-y-2 transition-transform duration-500">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                            <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
                                         </div>
                                         <div className="flex-1 space-y-2">
                                             <p className="text-[9px] text-[#E91E63] font-black uppercase tracking-[0.2em]">{item.category}</p>

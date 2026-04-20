@@ -17,6 +17,7 @@ export default function ProfileHeader({ user, ordersCount, signOut }) {
                                     src={user.user_metadata?.avatar_url || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                                     alt={user.user_metadata?.full_name || "User"}
                                     fill
+                                    sizes="160px"
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                             </div>

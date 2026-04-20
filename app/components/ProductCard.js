@@ -30,7 +30,7 @@ export default function ProductCard({ product }) {
                     src={product.main_image || "/placeholder.jpg"}
                     alt={product.image_alt || product.name}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 {/* Neutral glassmorphism overlay */}

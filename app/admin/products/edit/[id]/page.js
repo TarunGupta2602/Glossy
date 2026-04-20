@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
 
 export default function EditProductPage({ params }) {
@@ -278,8 +279,8 @@ export default function EditProductPage({ params }) {
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 px-1">Main Cover Image</label>
                             <div className="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl border-2 border-dashed border-gray-100">
                                 {mainImageUrl && (
-                                    <div className="w-32 h-32 rounded-xl overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
-                                        <img src={mainImageUrl} alt="Current" className="w-full h-full object-cover" />
+                                    <div className="w-32 h-32 rounded-xl overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 relative">
+                                        <Image src={mainImageUrl} alt="Current" fill sizes="128px" className="object-cover" />
                                     </div>
                                 )}
                                 <div className="flex-grow w-full">
@@ -304,7 +305,7 @@ export default function EditProductPage({ params }) {
                                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
                                     {galleryImages.map((img) => (
                                         <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50">
-                                            <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
+                                            <Image src={img.image_url} alt="Gallery" fill sizes="150px" className="object-cover" />
                                             <button
                                                 type="button"
                                                 onClick={() => handleDeleteGalleryImage(img.id)}

@@ -37,6 +37,7 @@ export default function HeroSlider() {
                             alt={idx === 0 ? "Premium Anti-Tarnish Necklace Collection | The luxe jewels" : "Handcrafted 18k Gold Plated Earrings and Fine Jewelry"}
                             fill
                             priority={idx === 0}
+                            sizes="100vw"
                             className="object-cover"
                         />
                         <div className="absolute inset-0 bg-black/40 "></div>

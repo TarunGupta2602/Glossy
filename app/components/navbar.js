@@ -121,6 +121,7 @@ export default function Navbar() {
                                                 src={profile?.avatar || user.user_metadata?.avatar_url || "/placeholder.jpg"}
                                                 alt={profile?.name || user.user_metadata?.full_name || "User"}
                                                 fill
+                                                sizes="32px"
                                                 className="object-cover"
                                             />
                                         </div>

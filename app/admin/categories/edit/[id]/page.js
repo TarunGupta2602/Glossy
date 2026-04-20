@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
 
 export default function EditCategoryPage({ params }) {
@@ -134,8 +135,8 @@ export default function EditCategoryPage({ params }) {
 
                             <div className="mt-2 flex items-center space-x-4">
                                 {imageUrl && (
-                                    <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 bg-gray-50">
-                                        <img src={imageUrl} alt="Current" className="w-full h-full object-cover" />
+                                    <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative">
+                                        <Image src={imageUrl} alt="Current" fill sizes="80px" className="object-cover" />
                                     </div>
                                 )}
                                 <div className="flex-grow">

@@ -38,7 +38,7 @@ export default async function FeaturedCollections() {
     });
 
     return (
-    <section className="py-24 px-6 md:px-12 bg-gradient-to-br from-white via-[#f8eaf3] to-[#f3f8fa]">
+        <section className="py-24 px-6 md:px-12 bg-gradient-to-br from-white via-[#f8eaf3] to-[#f3f8fa]">
             <div className="max-w-7xl mx-auto">
                 {/* Clean Restored Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -108,6 +108,7 @@ export default async function FeaturedCollections() {
                                         src={category.image_url || "/placeholder.jpg"}
                                         alt={category.name}
                                         fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         className="object-cover transition-all duration-[1.5s] ease-out group-hover:scale-110 group-hover:blur-[1.5px]"
                                     />
                                     {/* Glassmorphism Gradient Overlay */}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 
@@ -120,7 +121,15 @@ export default function CategoriesListPage() {
                                             <td className="px-6 py-4">
                                                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
                                                     {category.image_url ? (
-                                                        <img src={category.image_url} alt={category.name} className="w-full h-full object-cover" />
+                                                        <div className="relative w-full h-full">
+                                                            <Image
+                                                                src={category.image_url}
+                                                                alt={category.name}
+                                                                fill
+                                                                sizes="48px"
+                                                                className="object-cover"
+                                                            />
+                                                        </div>
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-300">
                                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

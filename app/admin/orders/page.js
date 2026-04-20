@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 
@@ -227,7 +228,7 @@ export default function AdminOrdersPage() {
                                         selectedOrder.items.map((item, index) => (
                                             <div key={index} className="flex gap-4 items-center">
                                                 <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white border border-gray-100 flex-shrink-0">
-                                                    <img src={item.image} alt={item.name} className="object-cover w-full h-full" />
+                                                    <Image src={item.image} alt={item.name} fill sizes="48px" className="object-cover" />
                                                 </div>
                                                 <div className="flex-1">
                                                     <p className="text-sm font-bold text-gray-900">{item.name}</p>

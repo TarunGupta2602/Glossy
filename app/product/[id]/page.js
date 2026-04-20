@@ -141,6 +141,25 @@ export default async function ProductPage({ params }) {
                             "@type": "MonetaryAmount",
                             "value": product.price >= 1000 ? 0 : 10,
                             "currency": "INR"
+                        },
+                        "shippingDestination": {
+                            "@type": "DefinedRegion",
+                            "addressCountry": "IN"
+                        },
+                        "deliveryTime": {
+                            "@type": "ShippingDeliveryTime",
+                            "handlingTime": {
+                                "@type": "QuantitativeValue",
+                                "minValue": 1,
+                                "maxValue": 2,
+                                "unitCode": "DAY"
+                            },
+                            "transitTime": {
+                                "@type": "QuantitativeValue",
+                                "minValue": 3,
+                                "maxValue": 7,
+                                "unitCode": "DAY"
+                            }
                         }
                     }
                 },

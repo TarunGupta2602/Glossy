@@ -70,7 +70,7 @@ export default async function FeaturedCollections() {
                                 href={`/shop/${category.slug}`}
                                 className="group relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-gray-100 block shadow-sm border border-gray-50 transition-all hover:shadow-xl"
                             >
-                                <Image src={category.image_url || "/placeholder.jpg"} alt={category.name} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                <Image src={category.image_url || "/placeholder.jpg"} alt={category.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
                                 <div className="absolute inset-0 p-10 md:p-14 flex flex-col justify-end">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">{displayTitle}</h3>
