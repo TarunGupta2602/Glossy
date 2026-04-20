@@ -62,6 +62,12 @@ export const metadata = {
         height: 630,
         alt: "The luxe jewels - Premium Jewelry Collection",
       },
+      {
+        url: "/favicon-symbol.png",
+        width: 512,
+        height: 512,
+        alt: "The luxe jewels Logo",
+      }
     ],
     locale: "en_IN",
     type: "website",
@@ -70,7 +76,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "The luxe jewels | Modern Luxury Jewelry India",
     description: "Defining modern luxury through waterproof and anti-tarnish fine jewelry. Handcrafted with love.",
-    images: ["/logo.png"],
+    images: ["/logo.png", "/favicon-symbol.png"],
   },
   robots: {
     index: true,
@@ -88,9 +94,11 @@ export const metadata = {
     icon: [
       { url: "/favicon-symbol.png" },
       { url: "/favicon-symbol.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-symbol.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-symbol.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon-symbol.png", sizes: "144x144", type: "image/png" },
     ],
     apple: [
-      { url: "/favicon-symbol.png" },
       { url: "/favicon-symbol.png", sizes: "180x180", type: "image/png" },
     ],
     shortcut: "/favicon-symbol.png",
@@ -107,7 +115,7 @@ export default function RootLayout({ children }) {
     "@type": "Organization",
     "name": "The luxe jewels",
     "url": "https://www.theluxejewels.in",
-    "logo": "https://www.theluxejewels.in/logo.png",
+    "logo": "https://www.theluxejewels.in/favicon-symbol.png",
     "description": "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
     "contactPoint": {
       "@type": "ContactPoint",
