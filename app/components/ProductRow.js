@@ -23,42 +23,49 @@ export default function ProductRow({ title, products, viewAllLink }) {
     const isBestSeller = title.includes("Best Sellers");
 
     return (
-        <section className={`py-10 md:py-16 px-6 md:px-12 overflow-hidden transition-colors duration-500 ${isBestSeller ? 'bg-[#FFF8E1]/30 border-y border-amber-100' : 'bg-white'}`}>
+        <section className={`py-16 md:py-24 px-6 md:px-12 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-end justify-between mb-10">
-                    <div className="flex flex-col gap-3">
-                        <span className={`text-[11px] font-black tracking-[0.3em] uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
-                            {isBestSeller ? 'TRUE TRENDS' : 'COLLECTION'}
-                        </span>
-                        <h2 className={`text-4xl md:text-5xl font-black tracking-tight ${isBestSeller ? 'text-gray-900 flex items-center gap-3' : 'text-gray-900'}`}>
+                {/* Refined Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className={`h-[1px] w-8 ${isBestSeller ? 'bg-amber-400' : 'bg-[#E91E63]'}`} />
+                            <span className={`text-[10px] font-black tracking-[0.4em] uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
+                                {isBestSeller ? 'TRUE TRENDS' : 'COLLECTION'}
+                            </span>
+                        </div>
+                        <h2 className="text-4xl md:text-6xl font-playfair font-bold text-gray-900 tracking-tight leading-none group">
                             {title}
-                            {isBestSeller && <span className="hidden md:block w-12 h-[2px] bg-amber-400 mt-2"></span>}
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-12 self-end md:self-auto">
                         {!isBestSeller && (
                             <Link
                                 href={viewAllLink}
-                                className="group relative text-[12px] font-black tracking-[0.2em] uppercase transition-all pb-1 text-gray-400 hover:text-[#E91E63]"
+                                className="group flex items-center gap-2 text-[11px] font-black tracking-[0.25em] uppercase text-gray-400 hover:text-[#E91E63] transition-all duration-300"
                             >
-                                VIEW ALL
-                                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#E91E63] transition-all group-hover:w-full"></span>
+                                <span className="relative pb-1">
+                                    View All
+                                    <span className="absolute bottom-0 left-0 w-4 h-[1.5px] bg-[#E91E63] transition-all group-hover:w-full"></span>
+                                </span>
                             </Link>
                         )}
 
-                        <div className="hidden md:flex gap-3">
+                        <div className="flex gap-4">
                             <button
                                 onClick={() => scroll('left')}
-                                className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors"
+                                className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-900 hover:bg-gray-50 hover:border-gray-200 transition-all duration-300 group shadow-sm bg-white"
+                                aria-label="Previous"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:-translate-x-0.5 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
                             </button>
                             <button
                                 onClick={() => scroll('right')}
-                                className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors"
+                                className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-900 hover:bg-gray-50 hover:border-gray-200 transition-all duration-300 group shadow-sm bg-white"
+                                aria-label="Next"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:translate-x-0.5 transition-transform"><path d="m9 18 6-6 6-6" /></svg>
                             </button>
                         </div>
                     </div>
@@ -66,12 +73,12 @@ export default function ProductRow({ title, products, viewAllLink }) {
 
                 <div
                     ref={scrollRef}
-                    className="flex items-stretch gap-6 overflow-x-auto pb-6 snap-x snap-mandatory no-scrollbar"
+                    className="flex items-stretch gap-6 md:gap-10 overflow-x-auto pb-10 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
                 >
                     {products.map((product) => (
                         <div
                             key={product.id}
-                            className="shrink-0 w-[260px] md:w-[300px] snap-start"
+                            className="shrink-0 w-[280px] md:w-[340px] snap-start"
                         >
                             <ProductCard product={product} />
                         </div>
@@ -81,3 +88,4 @@ export default function ProductRow({ title, products, viewAllLink }) {
         </section>
     );
 }
+

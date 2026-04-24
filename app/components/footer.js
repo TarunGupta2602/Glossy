@@ -110,7 +110,7 @@ export default function Footer() {
                             <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.25em]">Secure Payments via Razorpay</span>
                             <div className="flex items-center gap-5">
                                 <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" width={32} height={20} className="h-4 w-auto" unoptimized />
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width={28} height={20} className="h-5 w-auto" unoptimized />
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width={28} height={20} className="h-5 w-auto" unoptimized style={{ height: 'auto' }} />
                                 <Image src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" width={24} height={24} className="h-5 w-auto" unoptimized />
                             </div>
                         </div>
