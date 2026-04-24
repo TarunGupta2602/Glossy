@@ -247,7 +247,7 @@ export function CartProvider({ children }) {
 
     // Rule: ₹10 shipping if subtotal - discount < ₹1000
     const finalSubtotal = cartSubtotal - discountAmount;
-    const shippingFee = finalSubtotal > 0 && finalSubtotal < 1000 ? 10 : 0;
+    const shippingFee = 0;
     const cartTotal = finalSubtotal + shippingFee;
 
 

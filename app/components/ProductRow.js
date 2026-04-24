@@ -20,28 +20,34 @@ export default function ProductRow({ title, products, viewAllLink }) {
         }
     };
 
+    const isBestSeller = title.includes("Best Sellers");
+
     return (
-        <section className="py-20 px-6 md:px-12 bg-white overflow-hidden">
+        <section className={`py-20 px-6 md:px-12 overflow-hidden transition-colors duration-500 ${isBestSeller ? 'bg-[#FFF8E1]/30 border-y border-amber-100' : 'bg-white'}`}>
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-end justify-between mb-10">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-[10px] font-bold tracking-[0.25em] text-[#E91E63] uppercase">
-                            COLLECTION
+                    <div className="flex flex-col gap-3">
+                        <span className={`text-[11px] font-black tracking-[0.3em] uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
+                            {isBestSeller ? 'TRUE TRENDS' : 'COLLECTION'}
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                        <h2 className={`text-4xl md:text-5xl font-black tracking-tight ${isBestSeller ? 'text-gray-900 flex items-center gap-3' : 'text-gray-900'}`}>
                             {title}
+                            {isBestSeller && <span className="hidden md:block w-12 h-[2px] bg-amber-400 mt-2"></span>}
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        <Link
-                            href={viewAllLink}
-                            className="text-[11px] font-bold tracking-[0.15em] uppercase text-gray-400 hover:text-[#E91E63] transition-colors"
-                        >
-                            View All
-                        </Link>
+                    <div className="flex items-center gap-8">
+                        {!isBestSeller && (
+                            <Link
+                                href={viewAllLink}
+                                className="group relative text-[12px] font-black tracking-[0.2em] uppercase transition-all pb-1 text-gray-400 hover:text-[#E91E63]"
+                            >
+                                VIEW ALL
+                                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#E91E63] transition-all group-hover:w-full"></span>
+                            </Link>
+                        )}
 
-                        <div className="hidden md:flex gap-2">
+                        <div className="hidden md:flex gap-3">
                             <button
                                 onClick={() => scroll('left')}
                                 className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors"

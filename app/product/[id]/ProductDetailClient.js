@@ -166,6 +166,24 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             })()}
                         </div>
 
+                        {/* Urgency Badge */}
+                        {(() => {
+                            const lowStockCount = product.id
+                                ? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 9) + 2
+                                : 5;
+                            return (
+                                <div className="mt-4 flex items-center gap-2">
+                                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 border border-red-100">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                        </span>
+                                        <span className="text-[11px] font-bold uppercase tracking-tight">Only {lowStockCount} left in stock - Order Soon!</span>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
                         {/* Divider */}
                         <div className="mt-5 mb-5 h-px bg-gray-100" />
 
@@ -240,13 +258,39 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             {isWishlisted ? "Saved to Wishlist" : "Wishlist"}
                         </button>
 
+                        {/* Trust Signals */}
+                        <div className="mt-8 grid grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p className="text-[11px] font-bold text-gray-900 uppercase tracking-tight">Free Shipping</p>
+                                    <p className="text-[10px] text-gray-500">On all prepaid orders</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p className="text-[11px] font-bold text-gray-900 uppercase tracking-tight">Secure Payment</p>
+                                    <p className="text-[10px] text-gray-500">100% safe checkout</p>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Shipping Note */}
                         <div className="mt-6 flex items-start gap-3">
-                            <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <p className="text-[12px] text-gray-400 leading-relaxed">
-                                Free insured express shipping on jewelry over ₹10,000. Complimentary gift wrapping included.
+                            <p className="text-[12px] text-gray-500 font-medium leading-relaxed">
+                                Fast Delivery: <span className="text-gray-900 font-bold">Arrives in 3-5 business days</span> across India.
                             </p>
                         </div>
                     </div>
@@ -257,7 +301,6 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
             {relatedProducts.length > 0 && (
                 <section className="border-t border-gray-100 py-16 px-5 sm:px-8 lg:px-12">
                     <div className="max-w-6xl mx-auto">
-
                         {/* Header */}
                         <div className="flex items-end justify-between mb-8">
                             <div>

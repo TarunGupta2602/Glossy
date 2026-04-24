@@ -4,7 +4,7 @@ import React from "react";
 
 const announcements = [
     { text: "Buy 2 Get 1 Free on All Products", highlight: true },
-    { text: "Free Shipping on Orders Above ₹1000", highlight: false },
+    { text: "Free Shipping on All Prepaid Orders Across India", highlight: false },
     { text: "Premium Anti-Tarnish & Waterproof Jewelry", highlight: false },
     { text: "Handcrafted Luxury for Every Moment", highlight: false },
 ];

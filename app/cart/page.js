@@ -178,15 +178,8 @@ export default function CartPage() {
                             )}
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Shipping</span>
-                                <span className={`font-bold ${shippingFee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
-                                    {shippingFee === 0 ? 'FREE' : `₹${shippingFee.toFixed(2)}`}
-                                </span>
+                                <span className="font-bold text-green-600">FREE</span>
                             </div>
-                            {shippingFee > 0 && (
-                                <p className="text-[10px] text-gray-400 font-medium italic mt-1">
-                                    Add ₹{(1000 - (cartSubtotal - discountAmount)).toFixed(0)} more for free delivery!
-                                </p>
-                            )}
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Estimated Tax</span>
                                 <span className="font-bold text-gray-900">₹0.00</span>

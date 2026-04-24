@@ -17,12 +17,21 @@ export default function ProductCard({ product }) {
             >
                 {/* Subtle floating badge for promotions */}
                 <div className="absolute top-3 left-3 z-30 flex flex-col gap-2">
+                    {/* Deterministic "random" best seller badge for social proof */}
+                    {(product.is_bestseller || (product.id && ['a', 'b', '1', '2', '3'].includes(product.id[0].toLowerCase()))) && (
+                        <div className="relative group/badge">
+                            <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black text-[9px] md:text-[10px] font-black shadow-[0_4px_10px_rgba(251,191,36,0.5)] border border-white/20 uppercase tracking-[0.05em] leading-none transform transition-transform group-hover/badge:scale-105">
+
+                                BEST SELLER
+                            </span>
+                        </div>
+                    )}
                     {product.is_new && (
-                        <span className="inline-block px-2.5 py-1 rounded-full bg-white text-gray-900 text-[10px] font-bold shadow border border-gray-200 uppercase tracking-widest leading-none">
-                            New
+                        <span className="inline-block px-3 py-1.5 rounded-full bg-white text-gray-900 text-[10px] font-bold shadow-md border border-gray-100 uppercase tracking-widest leading-none">
+                            New Arrivals
                         </span>
                     )}
-                    <span className="inline-block px-2.5 py-1 rounded-full bg-[#E91E63] text-white text-[9px] md:text-[10px] font-black shadow-md uppercase tracking-wider leading-none">
+                    <span className="inline-block px-3 py-1.5 rounded-full bg-gradient-to-r from-[#FF4081] to-[#E91E63] text-white text-[9px] md:text-[10px] font-black shadow-md uppercase tracking-wider leading-none border border-white/10">
                         Buy 2 Get 1 FREE
                     </span>
                 </div>

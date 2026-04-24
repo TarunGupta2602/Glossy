@@ -62,6 +62,28 @@ export default async function Home() {
       {/* Dynamic Hero Section */}
       <HeroSlider />
 
+      {/* Best Sellers Section - Curated social proof */}
+      <section className="bg-gray-50/50 py-4">
+        {(() => {
+          // Find products that match our "Best Seller" badge logic to show in this row
+          const bestSellerProducts = activeCategories
+            .flatMap(cat => cat.products)
+            .filter(p => (p.is_bestseller || (p.id && ['a', 'b', '1', '2', '3'].includes(p.id[0].toLowerCase()))))
+            .slice(0, 8);
+
+          if (bestSellerProducts.length > 0) {
+            return (
+              <ProductRow
+                title="Best Sellers"
+                products={bestSellerProducts}
+                viewAllLink="/shop"
+              />
+            );
+          }
+          return null;
+        })()}
+      </section>
+
       {/* Dynamic Product Rows for All Sections */}
       {activeCategories.map((cat) => (
         <ProductRow

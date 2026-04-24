@@ -390,17 +390,8 @@ export default function CheckoutPage() {
                                 )}
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className={`font-black tracking-widest uppercase ${shippingFee === 0 ? 'text-green-600' : 'text-gray-900 underline decoration-pink-100 underline-offset-4'}`}>
-                                        {shippingFee === 0 ? 'Free' : `₹${shippingFee.toFixed(2)}`}
-                                    </span>
+                                    <span className="font-black tracking-widest uppercase text-green-600">Free</span>
                                 </div>
-                                {shippingFee > 0 && (
-                                    <div className="bg-pink-50/50 p-3 rounded-xl border border-pink-100/50">
-                                        <p className="text-[10px] text-[#E91E63] font-bold text-center leading-relaxed">
-                                            Shop for ₹{(1000 - (cartSubtotal - discountAmount)).toFixed(0)} more to get **Free Delivery**!
-                                        </p>
-                                    </div>
-                                )}
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
                                     <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>
