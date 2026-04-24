@@ -20,11 +20,12 @@ export default async function sitemap() {
         "/privacy",
         "/terms",
         "/shipping-returns",
+        "/blog",
     ].map((route) => ({
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
-        changeFrequency: route === "" || route === "/shop" ? "daily" : "weekly",
-        priority: route === "" ? 1.0 : route === "/shop" ? 0.9 : 0.8,
+        changeFrequency: route === "" || route === "/shop" ? "daily" : route === "/blog" ? "daily" : "weekly",
+        priority: route === "" ? 1.0 : route === "/shop" ? 0.9 : route === "/blog" ? 0.8 : 0.8,
     }));
 
     // 2. Dynamic Category Pages
@@ -52,5 +53,19 @@ export default async function sitemap() {
         priority: 0.7,
     }));
 
-    return [...staticPages, ...categoryPages, ...productPages];
+    // 4. Dynamic Blog Pages
+    const { data: blogs } = await supabase
+        .from("blogs")
+        .select("slug, updated_at, date_posted")
+        .order("date_posted", { ascending: false });
+
+    const blogPages = (blogs || []).map((blog) => ({
+        url: `${baseUrl}/blog/${blog.slug}`,
+        lastModified: blog.updated_at ? new Date(blog.updated_at) : new Date(),
+        changeFrequency: "monthly",
+        priority: 0.7,
+    }));
+
+    return [...staticPages, ...categoryPages, ...productPages, ...blogPages];
 }
+

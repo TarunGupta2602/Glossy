@@ -25,22 +25,7 @@ export default function Footer() {
                             Curating the finest anti-tarnish, waterproof jewelry that celebrates your unique sparkle. Modern luxury designed for every day.
                         </p>
 
-                        <div className="flex items-center gap-4 mt-auto">
-                            <div className="flex flex-col">
-                                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3">TRUSTED QUALITY</span>
-                                <div className="flex gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm" title="Anti-Tarnish">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E91E63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm" title="Waterproof">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E91E63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></svg>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm" title="Ethically Sourced">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E91E63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     {/* Navigation Columns */}
@@ -107,11 +92,11 @@ export default function Footer() {
                     {/* Payment Indicators */}
                     <div className="flex items-center gap-6 order-1 md:order-2 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
                         <div className="flex flex-col items-center md:items-end gap-3">
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.25em]">Secure Payments via Razorpay</span>
+                            <span className="text-[9px] font-black text-black uppercase tracking-[0.25em]">Secure Payments via Razorpay</span>
                             <div className="flex items-center gap-5">
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" width={32} height={20} className="h-4 w-auto" unoptimized />
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width={28} height={20} className="h-5 w-auto" unoptimized style={{ height: 'auto' }} />
-                                <Image src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" width={24} height={24} className="h-5 w-auto" unoptimized />
+
+
+                                <Image src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" width={32} height={24} className="h-10 w-auto" unoptimized />
                             </div>
                         </div>
                     </div>

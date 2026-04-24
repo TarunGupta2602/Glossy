@@ -56,6 +56,9 @@ export default function Navbar() {
                         <Link href="/necklaces" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
                             Necklaces
                         </Link>
+                        <Link href="/blog" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
+                            Blog
+                        </Link>
                         <Link href="/our-story" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
                             Our Story
                         </Link>
@@ -243,6 +246,9 @@ export default function Navbar() {
                         </Link>
                         <Link href="/necklaces" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                             Necklaces
+                        </Link>
+                        <Link href="/blog" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
+                            Blog
                         </Link>
                         <Link href="/our-story" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                             Our Story
