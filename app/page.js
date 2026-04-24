@@ -63,7 +63,7 @@ export default async function Home() {
       <HeroSlider />
 
       {/* Best Sellers Section - Curated social proof */}
-      <section className="bg-gray-50/50 py-4">
+      <section className="bg-gray-50/50 py-0">
         {(() => {
           // Find products that match our "Best Seller" badge logic to show in this row
           const bestSellerProducts = activeCategories

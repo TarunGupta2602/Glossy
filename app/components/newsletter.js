@@ -49,7 +49,7 @@ export default function Newsletter() {
     }
 
     return (
-        <section className="py-28 bg-white text-center">
+        <section className="py-16 md:py-20 bg-white text-center">
             <div className="max-w-3xl mx-auto px-6">
 
                 <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
