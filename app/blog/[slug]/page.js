@@ -14,18 +14,19 @@ export async function generateMetadata({ params }) {
 
     const { data: blog } = await supabase
         .from("blogs")
-        .select("title, meta_title, meta_description, meta_keywords, description, image, slug")
+        .select("title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author")
         .eq("slug", slug)
         .single();
 
     if (!blog) {
         return {
-            title: "Blog Not Found",
+            title: "Article Not Found | The Luxe Jewels",
+            description: "The requested article could not be found.",
         };
     }
 
     const title = blog.meta_title || blog.title;
-    const description = blog.meta_description || blog.description || "";
+    const description = (blog.meta_description || blog.description || "").slice(0, 160);
     const keywords = blog.meta_keywords
         ? blog.meta_keywords.split(",").map((k) => k.trim()).filter(Boolean)
         : [];
@@ -42,15 +43,18 @@ export async function generateMetadata({ params }) {
             description,
             url: `https://www.theluxejewels.in/blog/${blog.slug}`,
             type: "article",
+            publishedTime: blog.date_posted,
+            modifiedTime: blog.updated_at || blog.date_posted,
+            authors: [blog.author || "The Luxe Jewels"],
             images: blog.image
                 ? [
-                      {
-                          url: blog.image,
-                          width: 1200,
-                          height: 630,
-                          alt: title,
-                      },
-                  ]
+                    {
+                        url: blog.image,
+                        width: 1200,
+                        height: 630,
+                        alt: title,
+                    },
+                ]
                 : [],
         },
         twitter: {
@@ -58,6 +62,18 @@ export async function generateMetadata({ params }) {
             title,
             description,
             images: blog.image ? [blog.image] : [],
+            creator: "@theluxejewels",
+        },
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+                'max-video-preview': -1,
+                'max-image-preview': 'large',
+                'max-snippet': -1,
+            },
         },
     };
 }
@@ -92,10 +108,13 @@ function getMarkdownHeadings(content) {
         }));
 }
 
+import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
+
 export default async function BlogDetailPage({ params }) {
     const { slug } = await params;
     const supabase = getServiceClient();
 
+    // Fetch current blog
     const { data: blog } = await supabase
         .from("blogs")
         .select("*")
@@ -106,6 +125,14 @@ export default async function BlogDetailPage({ params }) {
         notFound();
     }
 
+    // Fetch related articles (latest 3 excluding current)
+    const { data: relatedPosts } = await supabase
+        .from("blogs")
+        .select("id, title, slug, image, date_posted, author")
+        .neq("slug", slug)
+        .order("date_posted", { ascending: false })
+        .limit(3);
+
     const keywords = blog.meta_keywords
         ? blog.meta_keywords.split(",").map((k) => k.trim()).filter(Boolean)
         : [];
@@ -115,14 +142,33 @@ export default async function BlogDetailPage({ params }) {
     const readMinutes = Math.max(1, Math.ceil(wordCount / 220));
 
     const tocItems = blog.content ? getMarkdownHeadings(blog.content) : [];
-    const renderer = new marked.Renderer();
-    renderer.heading = (text, level, raw) => {
-        const slug = createSlug(raw || text);
-        return `<h${level} id="${slug}">${text}</h${level}>`;
+
+    // Custom renderer for marked v12+
+    const renderer = {
+        heading({ tokens, depth, raw }) {
+            const text = this.parser.parseInline(tokens);
+            // Remove the hashes from the raw text for slugging
+            const cleanRaw = raw.replace(/^#+\s+/, '').trim();
+            const slug = createSlug(cleanRaw || text);
+            return `<h${depth} id="${slug}" class="scroll-mt-24 group flex items-center">
+                ${text}
+                <a href="#${slug}" class="ml-2 opacity-0 group-hover:opacity-100 text-pink-300 hover:text-pink-600 transition-all" aria-hidden="true">#</a>
+            </h${depth}>`;
+        },
+        link({ href, title, tokens }) {
+            const text = this.parser.parseInline(tokens);
+            const isExternal = href.startsWith('http') && !href.includes('theluxejewels.in');
+            return `<a href="${href}" 
+                ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} 
+                class="text-pink-600 hover:text-pink-700 font-bold underline decoration-pink-200 decoration-2 underline-offset-4 hover:decoration-pink-500 transition-all"
+                ${title ? `title="${title}"` : ''}>${text}</a>`;
+        }
     };
 
+    marked.use({ renderer });
+
     const htmlContent = blog.content
-        ? marked.parse(blog.content, { renderer, mangle: false, headerIds: false })
+        ? await marked.parse(blog.content)
         : "";
 
     // Structured data - Article Schema
@@ -130,11 +176,11 @@ export default async function BlogDetailPage({ params }) {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: blog.meta_title || blog.title,
-        description: blog.meta_description || blog.description || "",
+        description: (blog.meta_description || blog.description || "").slice(0, 160),
         image: blog.image || "",
         author: {
             "@type": "Person",
-            name: blog.author,
+            name: blog.author || "The Luxe Jewels Team",
         },
         publisher: {
             "@type": "Organization",
@@ -142,7 +188,7 @@ export default async function BlogDetailPage({ params }) {
             url: "https://www.theluxejewels.in",
             logo: {
                 "@type": "ImageObject",
-                url: "https://www.theluxejewels.in/favicon-symbol.png",
+                url: "https://www.theluxejewels.in/logo.png",
             },
         },
         datePublished: blog.date_posted,
@@ -151,23 +197,9 @@ export default async function BlogDetailPage({ params }) {
             "@type": "WebPage",
             "@id": `https://www.theluxejewels.in/blog/${blog.slug}`,
         },
+        wordCount: wordCount,
+        keywords: keywords.join(", "),
     };
-
-    const faqJsonLd =
-        blog.faqs && blog.faqs.length > 0
-            ? {
-                  "@context": "https://schema.org",
-                  "@type": "FAQPage",
-                  mainEntity: blog.faqs.map((faq) => ({
-                      "@type": "Question",
-                      name: faq.question,
-                      acceptedAnswer: {
-                          "@type": "Answer",
-                          text: faq.answer,
-                      },
-                  })),
-              }
-            : null;
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -194,11 +226,32 @@ export default async function BlogDetailPage({ params }) {
         ],
     };
 
+    const faqJsonLd =
+        blog.faqs && blog.faqs.length > 0
+            ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: blog.faqs.map((faq) => ({
+                    "@type": "Question",
+                    name: faq.question,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: faq.answer,
+                    },
+                })),
+            }
+            : null;
+
     return (
-        <>
+        <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-pink-100 selection:text-pink-900">
+            {/* Structured Data */}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             {faqJsonLd && (
                 <script
@@ -206,170 +259,190 @@ export default async function BlogDetailPage({ params }) {
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
                 />
             )}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-            />
 
-            <div className="min-h-screen bg-linear-to-br from-white via-pink-50 to-pink-100 pb-16">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
-                    <div className="rounded-4xl border border-pink-100 bg-white/90 shadow-[0_28px_80px_-32px_rgba(219,39,119,0.25)] p-6 md:p-8 lg:p-10 mb-8">
-                        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                            <Link href="/" className="hover:text-[#E91E63] transition-colors">
-                                Home
-                            </Link>
-                            <span>/</span>
-                            <Link href="/blog" className="hover:text-[#E91E63] transition-colors">
-                                Blog
-                            </Link>
-                            <span>/</span>
-                            <span className="text-gray-700 font-semibold truncate max-w-60">
-                                {blog.title}
-                            </span>
-                        </nav>
+            {/* Reading Progress Indicator (Client-side would be better, but we can do a stationary one or just skip) */}
 
-                        <div className="grid gap-8 lg:items-end mt-8">
-                            <div>
-                                <div className="inline-flex items-center gap-3 rounded-full border border-pink-100 bg-pink-50/80 px-4 py-2 text-sm text-[#9c27b0] shadow-sm">
-                                    <span>{blog.author || "The Luxe Jewels Team"}</span>
-                                    <span>•</span>
-                                    <time dateTime={blog.date_posted}>{formatDate(blog.date_posted)}</time>
-                                    <span>•</span>
-                                    <span>{readMinutes} min read</span>
-                                </div>
-                                <h1
-                                    className="mt-5 text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight"
-                                    style={{ fontFamily: "var(--font-playfair)" }}
-                                >
-                                    {blog.title}
-                                </h1>
-                                {blog.description && (
-                                    <p className="mt-6 max-w-3xl text-lg md:text-xl text-gray-600 leading-relaxed">
-                                        {blog.description}
-                                    </p>
-                                )}
-                                {keywords.length > 0 && (
-                                    <div className="mt-6 flex flex-wrap gap-3">
-                                        {keywords.map((keyword) => (
-                                            <span
-                                                key={keyword}
-                                                className="rounded-full border border-pink-200 bg-pink-50 px-3 py-1 text-sm font-medium text-[#c2185b]"
-                                            >
-                                                {keyword}
-                                            </span>
-                                        ))}
-                                    </div>
-                                )}
+            <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+                {/* Breadcrumbs */}
+                <nav className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 overflow-hidden whitespace-nowrap">
+                    <Link href="/" className="hover:text-pink-600 transition-colors">Home</Link>
+                    <span className="text-slate-300">/</span>
+                    <Link href="/blog" className="hover:text-pink-600 transition-colors">Journal</Link>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-900 truncate">Article Detail</span>
+                </nav>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Main Content */}
+                    <main className="lg:col-span-8 space-y-8">
+                        <header className="space-y-6">
+                            <div className="flex flex-wrap items-center gap-3">
+                                {keywords.slice(0, 1).map((tag) => (
+                                    <span key={tag} className="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-pink-700">
+                                        {tag}
+                                    </span>
+                                ))}
+                                <span className="text-slate-400 font-medium">•</span>
+                                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                                    {readMinutes} min read
+                                </span>
                             </div>
-                        </div>
-                    </div>
 
-                    {blog.image && (
-                        <div className="mb-10 overflow-hidden rounded-4xl border border-pink-100 bg-white shadow-[0_28px_80px_-38px_rgba(233,30,99,0.16)]">
-                            <div className="relative aspect-video">
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-slate-900 leading-[1.1]" style={{ fontFamily: "var(--font-playfair)" }}>
+                                {blog.title}
+                            </h1>
+
+                            <div className="flex items-center gap-4 py-4 border-y border-slate-200">
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-slate-900">
+                                        Written by <span className="text-pink-600 underline underline-offset-4">{blog.author || "The Luxe Jewels"}</span>
+                                    </p>
+                                    <time className="text-xs font-medium text-slate-500" dateTime={blog.date_posted}>
+                                        Published on {formatDate(blog.date_posted)}
+                                    </time>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {/* Share Buttons */}
+                                    <ShareButtons title={blog.title} />
+                                </div>
+                            </div>
+                        </header>
+
+                        {blog.image && (
+                            <figure className="relative w-full aspect-16/10 rounded-3xl overflow-hidden shadow-2xl group">
                                 <Image
                                     src={blog.image}
-                                    alt={blog.meta_title || blog.title}
+                                    alt={blog.title}
                                     fill
-                                    sizes="(max-width: 1024px) 100vw, 1200px"
-                                    className="object-cover"
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
                                     priority
                                 />
+                            </figure>
+                        )}
+
+                        <article className="prose prose-slate prose-lg md:prose-xl max-w-none 
+                            prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-900
+                            prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b prose-h2:border-pink-100
+                            prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:mt-8 prose-h3:mb-4
+                            prose-p:text-slate-600 prose-p:leading-relaxed md:prose-p:leading-loose prose-p:mb-8
+                            prose-strong:text-slate-900 prose-strong:font-black prose-strong:text-pink-600/90
+                            prose-a:text-pink-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-8 prose-a:decoration-2 transition-all
+                            prose-ul:list-disc prose-ul:pl-6 prose-li:mb-4 prose-li:text-slate-600
+                            prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-4
+                            prose-blockquote:border-l-8 prose-blockquote:border-pink-400 prose-blockquote:bg-linear-to-r prose-blockquote:from-pink-50 prose-blockquote:to-white prose-blockquote:p-8 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-10 prose-blockquote:shadow-sm
+                            prose-img:rounded-4xl prose-img:shadow-2xl prose-img:border prose-img:border-slate-100 prose-img:my-12
+                            ">
+                            <div
+                                style={{ fontFamily: "var(--font-playfair)" }}
+                                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                            />
+                        </article>
+
+                        {/* FAQs Section */}
+                        {blog.faqs && blog.faqs.length > 0 && (
+                            <section className="pt-16 border-t border-slate-200">
+                                <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-8">Frequently Asked Questions</h2>
+                                <div className="space-y-4">
+                                    {blog.faqs.map((faq, idx) => (
+                                        <details key={idx} className="group border border-slate-200 rounded-2xl bg-white overflow-hidden transition-all hover:border-pink-200">
+                                            <summary className="flex items-center justify-between p-5 cursor-pointer list-none">
+                                                <span className="font-bold text-slate-900 pr-4">{faq.question}</span>
+                                                <span className="shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-300">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                                </span>
+                                            </summary>
+                                            <div className="p-5 pt-0 text-slate-600 leading-relaxed border-t border-slate-50">
+                                                {faq.answer}
+                                            </div>
+                                        </details>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Tag Cloud */}
+                        {keywords.length > 0 && (
+                            <div className="pt-10 flex flex-wrap gap-2">
+                                <span className="w-full text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Article Tags</span>
+                                {keywords.map((tag) => (
+                                    <span key={tag} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600 hover:border-pink-600 hover:text-pink-600 transition-all cursor-default">
+                                        #{tag}
+                                    </span>
+                                ))}
                             </div>
+                        )}
+                    </main>
+
+                    {/* Sidebar */}
+                    <aside className="lg:col-span-4 space-y-10">
+                        {/* Table of Contents */}
+                        {tocItems.length > 0 && (
+                            <div className="sticky top-24 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm lg:block hidden">
+                                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                                    Table of contents
+                                </h3>
+                                <nav className="space-y-4">
+                                    {tocItems.map((item) => (
+                                        <a
+                                            key={item.slug}
+                                            href={`#${item.slug}`}
+                                            className={`block text-sm font-medium transition-all hover:translate-x-1 ${item.depth === 2 ? 'text-slate-600 hover:text-pink-600' : 'text-slate-400 hover:text-pink-600 pl-4 border-l border-slate-100'}`}
+                                        >
+                                            {item.text}
+                                        </a>
+                                    ))}
+                                </nav>
+                            </div>
+                        )}
+
+                        {/* Related Posts */}
+                        {relatedPosts && relatedPosts.length > 0 && (
+                            <div className="space-y-6">
+                                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-slate-900"></span>
+                                    Keep Reading
+                                </h3>
+                                <div className="space-y-6">
+                                    {relatedPosts.map((post) => (
+                                        <Link key={post.id} href={`/blog/${post.slug}`} className="group flex gap-4 items-start">
+                                            <div className="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
+                                                <Image
+                                                    src={post.image || '/placeholder-blog.png'}
+                                                    alt={post.title}
+                                                    fill
+                                                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <h4 className="text-sm font-black text-slate-900 leading-snug group-hover:text-pink-600 transition-colors line-clamp-2">
+                                                    {post.title}
+                                                </h4>
+                                                <time className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                                    {formatDate(post.date_posted)}
+                                                </time>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Newsletter CTA */}
+                        <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                            <h3 className="text-xl font-black mb-4 relative z-10">Luxury in your inbox.</h3>
+                            <p className="text-slate-400 text-sm mb-6 relative z-10 font-medium">Join 5,000+ others for exclusive styling tips, trend reports, and VIP access.</p>
+                            <Link href="/account" className="inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-slate-900 text-sm font-bold uppercase tracking-widest hover:bg-pink-50 transition-colors relative z-10">
+                                Join The Club
+                            </Link>
                         </div>
-                    )}
-
-                    <div className="grid gap-10 xl:grid-cols-[1.55fr_0.95fr]">
-                        <div className="space-y-10">
-                            <article className="rounded-4xl border border-gray-100 bg-white/90 shadow-[0_20px_80px_-36px_rgba(15,23,42,0.08)] p-6 md:p-8">
-                                <div
-                                    className="prose prose-lg prose-gray max-w-none prose-headings:font-semibold prose-headings:text-gray-900 prose-a:text-[#E91E63] prose-a:no-underline hover:prose-a:underline prose-ul:pl-6 prose-ol:pl-6 prose-img:rounded-3xl prose-img:shadow-lg prose-blockquote:border-l-[#E91E63] prose-blockquote:bg-pink-50/70 prose-code:bg-pink-50 prose-code:text-[#c2185b]"
-                                    style={{ fontFamily: "var(--font-playfair)" }}
-                                    dangerouslySetInnerHTML={{ __html: htmlContent }}
-                                />
-                            </article>
-
-                            {blog.faqs && blog.faqs.length > 0 && (
-                                <section className="rounded-4xl border border-pink-100 bg-white/90 p-6 md:p-8 shadow-[0_20px_80px_-36px_rgba(219,39,119,0.16)]">
-                                    <h2
-                                        className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6"
-                                        style={{ fontFamily: "var(--font-playfair)" }}
-                                    >
-                                        Frequently Asked Questions
-                                    </h2>
-                                    <div className="space-y-4 divide-y divide-gray-200/60">
-                                        {blog.faqs.map((faq, index) => (
-                                            <details
-                                                key={index}
-                                                className="group py-5 first:pt-0 last:pb-0"
-                                            >
-                                                <summary className="flex justify-between items-center cursor-pointer list-none select-none gap-4 text-gray-900 font-semibold">
-                                                    <span>{faq.question}</span>
-                                                    <span className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-pink-50 text-pink-600 border border-pink-100 transition-all duration-300 group-open:rotate-180">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                        </svg>
-                                                    </span>
-                                                </summary>
-                                                <p className="mt-4 text-gray-600 leading-relaxed text-sm md:text-base">
-                                                    {faq.answer}
-                                                </p>
-                                            </details>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-
-                            <div className="rounded-4xl border border-gray-100 bg-white/90 p-6 md:p-8 shadow-[0_20px_80px_-36px_rgba(15,23,42,0.08)]">
-                                <Link
-                                    href="/blog"
-                                    className="inline-flex items-center gap-2 rounded-full bg-[#E91E63] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-200 transition hover:bg-[#c2185b]"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                    Back to all articles
-                                </Link>
-                            </div>
-                        </div>
-
-                        <aside className="space-y-6">
-                            <div className="hidden xl:block sticky top-24 rounded-4xl border border-gray-100 bg-white/90 p-6 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.08)]">
-                                <h2 className="text-xl font-semibold text-gray-900 mb-4">Table of contents</h2>
-                                {tocItems.length > 0 ? (
-                                    <ul className="space-y-3">
-                                        {tocItems.map((item) => (
-                                            <li key={item.slug} className={item.depth === 3 ? "pl-5" : "pl-0"}>
-                                                <a
-                                                    href={`#${item.slug}`}
-                                                    className="text-sm text-gray-600 hover:text-[#E91E63] transition-colors"
-                                                >
-                                                    {item.text}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-sm text-gray-500">Add headings to the blog content to generate an auto table of contents.</p>
-                                )}
-                            </div>
-
-                            <div className="rounded-4xl border border-pink-100 bg-pink-50/80 p-6 shadow-[0_20px_60px_-30px_rgba(219,39,119,0.18)]">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-3">Need expert help?</h3>
-                                <p className="text-sm text-gray-700 leading-relaxed mb-5">
-                                    Discover more jewelry styling, care advice, and trend updates on our blog.
-                                </p>
-                                <Link
-                                    href="/blog"
-                                    className="inline-flex w-full items-center justify-center rounded-full bg-[#E91E63] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#c2185b]"
-                                >
-                                    Explore more stories
-                                </Link>
-                            </div>
-                        </aside>
-                    </div>
+                    </aside>
                 </div>
             </div>
-        </>
+
+            {/* Bottom Sticky CTA for Mobile */}
+            <MobileStickyCTA title={blog.title} />
+        </div>
     );
 }
