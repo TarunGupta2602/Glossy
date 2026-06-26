@@ -22,7 +22,7 @@ export default function LayoutWrapper({ children }) {
 
             {/* WhatsApp Floating Button */}
             <a
-                href="https://wa.me/919953267974?text=Hi!%20I%20have%20a%20question%20about%20a%20product."
+                href="https://wa.me/917456096455?text=Hi!%20I%20have%20a%20question%20about%20a%20product."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="fixed bottom-6 right-6 z-[9999] group"
