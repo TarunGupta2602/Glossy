@@ -36,7 +36,7 @@ export default function ProductCard({ product }) {
                     </span>
                 </div>
                 <Image
-                    src={product.main_image || "/placeholder.jpg"}
+                    src={product.main_image || "/logo.png"}
                     alt={product.image_alt || product.name}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"

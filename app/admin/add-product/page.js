@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
@@ -75,14 +74,20 @@ export default function AddProductPage() {
 
             let finalMainImageUrl = "";
 
-            // 2. Upload main image to storage
+            // 2. Upload main image via server-side API (bypasses client StorageApiError)
             if (mainImage) {
-                const fileName = `${product.id}/main-${Date.now()}`;
-                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, mainImage);
-                if (uploadError) throw uploadError;
+                const formData = new FormData();
+                formData.append("file", mainImage);
+                formData.append("path", `${product.id}/main-${Date.now()}`);
 
-                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
-                finalMainImageUrl = data.publicUrl;
+                const uploadRes = await fetch("/api/products/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const uploadData = await uploadRes.json();
+                if (!uploadData.success) throw new Error(uploadData.error || "Failed to upload main image");
+
+                finalMainImageUrl = uploadData.url;
 
                 // Update product with main image via API
                 await fetch(`/api/products/${product.id}`, {
@@ -95,14 +100,20 @@ export default function AddProductPage() {
             // 3. Upload other images
             const imageObjects = [];
             for (let file of otherImages) {
-                const fileName = `${product.id}/${Date.now()}-${file.name}`;
-                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, file);
-                if (uploadError) throw uploadError;
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("path", `${product.id}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`);
 
-                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                const uploadRes = await fetch("/api/products/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const uploadData = await uploadRes.json();
+                if (!uploadData.success) throw new Error(uploadData.error || "Failed to upload gallery image");
+
                 imageObjects.push({
                     product_id: product.id,
-                    image_url: data.publicUrl,
+                    image_url: uploadData.url,
                 });
             }
 

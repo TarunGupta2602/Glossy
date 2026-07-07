@@ -16,7 +16,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
         ...(product.main_image ? [product.main_image] : []),
         ...galleryImages.filter((img) => img !== product.main_image),
     ];
-    if (allImages.length === 0) allImages.push("/placeholder.jpg");
+    if (allImages.length === 0) allImages.push("/logo.png");
 
     const [activeIdx, setActiveIdx] = useState(0);
     const [qty, setQty] = useState(1);
@@ -47,7 +47,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
             id: product.id,
             name: product.name,
             price: product.price || 0,
-            image: product.main_image || "/placeholder.jpg",
+            image: product.main_image || "/logo.png",
             category: categoryName
         }, qty);
 
@@ -240,7 +240,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 id: product.id,
                                 name: product.name,
                                 price: product.price || 0,
-                                image: product.main_image || "/placeholder.jpg",
+                                image: product.main_image || "/logo.png",
                                 category: categoryName
                             })}
                             className={`mt-3 w-full h-[50px] rounded-xl text-[12px] font-semibold tracking-[0.1em] uppercase border transition-all duration-200 flex items-center justify-center gap-2 ${isWishlisted
@@ -335,7 +335,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 </span>
                                             </div>
                                             <Image
-                                                src={p.main_image || "/placeholder.jpg"}
+                                                src={p.main_image || "/logo.png"}
                                                 alt={p.image_alt || p.name}
                                                 fill
                                                 priority={p === relatedProducts[0] || p === relatedProducts[1]}

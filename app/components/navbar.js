@@ -121,7 +121,7 @@ export default function Navbar() {
                                     >
                                         <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-100 group-hover:border-[#E91E63] transition-colors">
                                             <Image
-                                                src={profile?.avatar || user.user_metadata?.avatar_url || "/placeholder.jpg"}
+                                                src={profile?.avatar || user.user_metadata?.avatar_url || "/logo.png"}
                                                 alt={profile?.name || user.user_metadata?.full_name || "User"}
                                                 fill
                                                 sizes="32px"

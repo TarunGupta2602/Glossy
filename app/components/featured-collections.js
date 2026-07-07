@@ -90,7 +90,7 @@ export default async function FeaturedCollections() {
                             >
                                 <div className="absolute inset-0 z-0">
                                     <Image
-                                        src={category.image_url || "/placeholder.jpg"}
+                                        src={category.image_url || "/logo.png"}
                                         alt={category.name}
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

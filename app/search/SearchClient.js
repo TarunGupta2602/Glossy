@@ -33,7 +33,7 @@ export default function SearchClient({ query, products = [] }) {
                             >
                                 <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 mb-4">
                                     <Image
-                                        src={product.main_image || "/placeholder.jpg"}
+                                        src={product.main_image || "/logo.png"}
                                         alt={product.name}
                                         fill
                                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"

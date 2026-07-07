@@ -34,7 +34,7 @@ export async function GET(req) {
                 id: item.product.id,
                 name: item.product.name,
                 price: item.product.price,
-                image: item.product.main_image || "/placeholder.jpg",
+                image: item.product.main_image || "/logo.png",
                 category: item.product.categories?.name || "Jewelry"
             }));
 

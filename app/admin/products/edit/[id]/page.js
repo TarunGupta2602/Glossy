@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -91,12 +90,12 @@ export default function EditProductPage({ params }) {
         if (!imgToDelete) return;
 
         try {
-            // 1. Optional: Delete from storage
-            const urlParts = imgToDelete.image_url.split('/product-images/');
-            if (urlParts.length > 1) {
-                const storagePath = urlParts[1];
-                await supabase.storage.from("product-images").remove([storagePath]);
-            }
+            // 1. Optional: Delete from storage via server API
+            await fetch("/api/products/upload", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imageUrl: imgToDelete.image_url }),
+            });
 
             // 2. Delete from database
             const res = await fetch("/api/admin/product-images", {
@@ -125,20 +124,21 @@ export default function EditProductPage({ params }) {
 
             // 1. Handle Main Image Update
             if (newMainImage) {
+                const formData = new FormData();
+                formData.append("file", newMainImage);
+                formData.append("path", `${id}/main-${Date.now()}`);
                 if (mainImageUrl) {
-                    const urlParts = mainImageUrl.split('/product-images/');
-                    if (urlParts.length > 1) {
-                        const oldPath = urlParts[1];
-                        await supabase.storage.from("product-images").remove([oldPath]);
-                    }
+                    formData.append("oldImageUrl", mainImageUrl);
                 }
 
-                const fileName = `${id}/main-${Date.now()}`;
-                const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, newMainImage);
-                if (uploadError) throw uploadError;
+                const uploadRes = await fetch("/api/products/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const uploadData = await uploadRes.json();
+                if (!uploadData.success) throw new Error(uploadData.error || "Failed to upload main image");
 
-                const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
-                finalMainImageUrl = data.publicUrl;
+                finalMainImageUrl = uploadData.url;
             }
 
             // 2. Update Product record via API
@@ -165,14 +165,20 @@ export default function EditProductPage({ params }) {
             if (newGalleryImages.length > 0) {
                 const imageObjects = [];
                 for (let file of newGalleryImages) {
-                    const fileName = `${id}/gallery-${Date.now()}-${file.name}`;
-                    const { error: uploadError } = await supabase.storage.from("product-images").upload(fileName, file);
-                    if (uploadError) throw uploadError;
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("path", `${id}/gallery-${Date.now()}-${file.name.replace(/\s+/g, "-")}`);
 
-                    const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+                    const uploadRes = await fetch("/api/products/upload", {
+                        method: "POST",
+                        body: formData,
+                    });
+                    const uploadData = await uploadRes.json();
+                    if (!uploadData.success) throw new Error(uploadData.error || "Failed to upload gallery image");
+
                     imageObjects.push({
                         product_id: id,
-                        image_url: data.publicUrl
+                        image_url: uploadData.url
                     });
                 }
 

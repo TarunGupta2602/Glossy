@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -56,8 +55,11 @@ export default function ProductsListPage() {
             // 1. Delete images from storage
             // Note: In a real app, you'd also want to delete 'otherImages' from product_images table and storage
             if (mainImageUrl) {
-                const fileName = mainImageUrl.split("/").pop();
-                await supabase.storage.from("product-images").remove([fileName]);
+                await fetch("/api/products/upload", {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ imageUrl: mainImageUrl }),
+                });
             }
 
             // 2. Delete product from database via API
