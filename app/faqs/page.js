@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "FAQs",
+    title: "FAQs | Shipping, Returns & Order Help | The luxe jewels",
     description:
         "Find answers to common questions about shipping, returns, delivery time, and orders at The luxe jewels.",
     alternates: {

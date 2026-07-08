@@ -3,7 +3,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Shipping & Returns",
+    title: "Shipping & Returns | The luxe jewels",
     description: "Learn about our shipping times, delivery process, and easy return policy at The luxe jewels.",
     alternates: {
         canonical: "/shipping-returns",

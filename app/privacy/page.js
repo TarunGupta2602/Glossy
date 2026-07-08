@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Privacy Policy",
+    title: "Privacy Policy | The luxe jewels",
     description:
         "Learn how The luxe jewels collects, uses, and protects your personal information when you use our website.",
     alternates: {

@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Terms of Service",
+    title: "Terms of Service | The luxe jewels",
     description:
         "Read the terms and conditions for using The luxe jewels website, including orders, payments, and user responsibilities.",
     alternates: {

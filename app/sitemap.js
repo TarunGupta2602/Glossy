@@ -43,11 +43,11 @@ export default async function sitemap() {
     // 3. Dynamic Product Pages
     const { data: products } = await supabase
         .from("products")
-        .select("id, created_at")
+        .select("id, slug, created_at")
         .order("created_at", { ascending: false });
 
     const productPages = (products || []).map((product) => ({
-        url: `${baseUrl}/product/${product.id}`,
+        url: `${baseUrl}/product/${product.slug || product.id}`,
         lastModified: product.created_at ? new Date(product.created_at) : new Date(),
         changeFrequency: "weekly",
         priority: 0.7,

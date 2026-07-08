@@ -1,118 +1,31 @@
-"use client";
+import ContactForm from "../components/ContactForm";
 
-import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+export const metadata = {
+    title: "Contact The luxe jewels | Jewelry Support & Custom Enquiries",
+    description: "Get in touch with The luxe jewels for jewelry support, order help, custom enquiries, and shipping questions across India.",
+    alternates: {
+        canonical: "/contact",
+    },
+    keywords: [
+        "contact the luxe jewels",
+        "jewelry support india",
+        "custom jewelry enquiry",
+        "order support jewelry",
+    ],
+    openGraph: {
+        title: "Contact The luxe jewels",
+        description: "Reach out for support, custom orders, or shipping help with premium anti-tarnish jewelry in India.",
+        url: "https://www.theluxejewels.in/contact",
+        siteName: "The luxe jewels",
+        type: "website",
+    },
+};
 
 export default function ContactPage() {
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        message: "",
-    });
-
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const response = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: form.name,
-                email: form.email,
-                message: form.message,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error(data.error);
-            alert("Something went wrong: " + (data.error || "Unknown error"));
-        } else {
-            setSuccess(true);
-            setForm({ name: "", email: "", message: "" });
-        }
-
-        setLoading(false);
-    };
-
     return (
         <section className="bg-white py-20 px-6">
             <div className="max-w-3xl mx-auto">
-
-                {/* Heading */}
-                <div className="text-center mb-12">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
-                        Contact Us
-                    </h1>
-                    <p className="text-gray-500 text-sm">
-                        Have a question? We&apos;d love to hear from you.
-                    </p>
-                </div>
-
-                {/* Success Message */}
-                {success && (
-                    <p className="text-green-600 text-center mb-6">
-                        ✅ Message sent successfully!
-                    </p>
-                )}
-
-                {/* Form  new*/}
-                <form onSubmit={handleSubmit} className="space-y-6">
-
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Your name"
-                        value={form.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 outline-none"
-                    />
-
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Your email"
-                        value={form.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 outline-none"
-                    />
-
-                    <textarea
-                        name="message"
-                        placeholder="Your message"
-                        value={form.message}
-                        onChange={handleChange}
-                        required
-                        rows="4"
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 outline-none"
-                    />
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full py-3 bg-black text-white rounded-xl font-medium hover:opacity-90 transition"
-                    >
-                        {loading ? "Sending..." : "Send Message"}
-                    </button>
-
-                </form>
-
-                {/* Info */}
-                <div className="mt-10 text-center text-sm text-gray-500">
-                    <p>Email: support@theluxejewels.in</p>
-                </div>
-
+                <ContactForm />
             </div>
         </section>
     );

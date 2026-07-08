@@ -6,8 +6,8 @@ import Breadcrumbs from "../components/Breadcrumbs";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Featured Jewelry Collections | Curated Luxury",
-    description: "Explore our curated collections of fine jewelry. From anti-tarnish statement pieces to timeless classic earrings and necklaces at The luxe jewels.",
+    title: "Featured Jewelry Collections | Curated Luxury Jewelry India",
+    description: "Explore curated fine jewelry collections at The luxe jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
     alternates: {
         canonical: "/collection",
     },

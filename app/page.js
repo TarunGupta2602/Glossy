@@ -6,6 +6,19 @@ import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 
+export const metadata = {
+  title: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewelry India",
+  description: "Shop anti-tarnish, waterproof, and hypoallergenic jewelry in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The luxe jewels.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "The luxe jewels | Premium Jewelry for Everyday Luxury",
+    description: "Discover handcrafted anti-tarnish jewelry made for daily wear, gifting, and modern styling in India.",
+    url: "https://www.theluxejewels.in",
+    siteName: "The luxe jewels",
+    type: "website",
+  },
+};
+
 export const revalidate = 60; // Revalidate the page every 60 seconds (ISR)
 
 export default async function Home() {

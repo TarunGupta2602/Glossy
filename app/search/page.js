@@ -4,7 +4,8 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Search Results",
+    title: "Search Results | The luxe jewels",
+    description: "Search for anti-tarnish, waterproof, and premium jewelry across The luxe jewels collections.",
     robots: {
         index: false,
         follow: true,
