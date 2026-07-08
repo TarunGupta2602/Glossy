@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getProductPath } from "@/lib/seo";
 import { WishlistSkeleton } from "./ProfileSkeletons";
 
 export default function WishlistTab({ wishlist, initialized, removeFromWishlist, addToCart }) {
@@ -84,7 +85,7 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 </button>
                                 <div className="flex items-center justify-between px-1 mt-1">
                                     <Link
-                                        href={`/product/${item.id}`}
+                                        href={getProductPath(item)}
                                         className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors"
                                     >
                                         Details

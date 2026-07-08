@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
+import { getProductPath } from "@/lib/seo";
 import { useEffect, useState } from "react";
 
 export default function CartPage() {
@@ -133,7 +134,7 @@ export default function CartPage() {
                         {cart.map((item) => (
                             <div key={item.id} className="flex gap-6 pb-8 border-b border-gray-100 last:border-0 group">
                                 {/* Product Image */}
-                                <Link href={`/product/${item.id}`} className="relative w-32 sm:w-44 aspect-[4/5] rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
+                                <Link href={getProductPath(item)} className="relative w-32 sm:w-44 aspect-[4/5] rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
                                     <Image
                                         src={item.image}
                                         alt={item.name}
@@ -148,7 +149,7 @@ export default function CartPage() {
                                     <div>
                                         <div className="flex justify-between items-start mb-1">
                                             <div className="flex flex-col gap-1">
-                                                <Link href={`/product/${item.id}`} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
+                                                <Link href={getProductPath(item)} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
                                                     {item.name}
                                                 </Link>
                                                 {promo.freeProductIds?.includes(item.id) && (

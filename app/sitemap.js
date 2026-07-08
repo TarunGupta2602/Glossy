@@ -43,35 +43,24 @@ export default async function sitemap() {
     // 3. Dynamic Product Pages
     const { data: products, error: productError } = await supabase
         .from("products")
-        .select("id, slug, created_at")
+        .select("slug, created_at")
+        .not("slug", "is", null)
         .order("created_at", { ascending: false });
 
     let productRows = products;
     if (productError) {
         console.error("Sitemap product query failed:", productError);
-        if (productError.message?.includes("slug")) {
-            const { data: fallbackProducts, error: fallbackError } = await supabase
-                .from("products")
-                .select("id, created_at")
-                .order("created_at", { ascending: false });
-
-            if (fallbackError) {
-                console.error("Sitemap fallback query failed:", fallbackError);
-                productRows = [];
-            } else {
-                productRows = fallbackProducts;
-            }
-        } else {
-            productRows = [];
-        }
+        productRows = [];
     }
 
-    const productPages = (productRows || []).map((product) => ({
-        url: `${baseUrl}/product/${product.slug || product.id}`,
-        lastModified: product.created_at ? new Date(product.created_at) : new Date(),
-        changeFrequency: "weekly",
-        priority: 0.7,
-    }));
+    const productPages = (productRows || [])
+        .filter((product) => product?.slug)
+        .map((product) => ({
+            url: `${baseUrl}/product/${product.slug}`,
+            lastModified: product.created_at ? new Date(product.created_at) : new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+        }));
 
     // 4. Dynamic Blog Pages
     const { data: blogs } = await supabase

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getProductPath } from "@/lib/seo";
 
 export default function SearchClient({ query, products = [] }) {
     return (
@@ -28,7 +29,7 @@ export default function SearchClient({ query, products = [] }) {
                         return (
                             <Link
                                 key={product.id}
-                                href={`/product/${product.id}`}
+                                href={getProductPath(product)}
                                 className="group flex flex-col"
                             >
                                 <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 mb-4">

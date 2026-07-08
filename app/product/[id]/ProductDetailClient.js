@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { getProductPath } from "@/lib/seo";
 
 export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
     const categoryName = product.categories?.name || "Jewelry";
@@ -318,7 +319,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                     : "0.00";
 
                                 return (
-                                    <Link key={p.id} href={`/product/${p.id}`} className="group flex flex-col">
+                                    <Link key={p.id} href={getProductPath(p)} className="group flex flex-col">
                                         <div
                                             className="relative w-full overflow-hidden rounded-xl bg-[#F2F2F2] mb-3"
                                             style={{ aspectRatio: "1/1" }}

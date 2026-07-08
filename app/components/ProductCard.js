@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getProductPath } from "@/lib/seo";
 
 export default function ProductCard({ product }) {
     const categoryName = product.categories?.name || "Jewelry";
@@ -11,7 +12,7 @@ export default function ProductCard({ product }) {
         <div className="group flex flex-col h-full">
             {/* Image Container */}
             <Link
-                href={`/product/${product.id}`}
+                href={getProductPath(product)}
                 className="block relative overflow-hidden rounded-2xl border border-gray-100 shadow-lg hover:shadow-2xl bg-white/60 backdrop-blur-[2px] aspect-square w-full transition-all duration-700"
                 style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.08)' }}
             >
@@ -56,7 +57,7 @@ export default function ProductCard({ product }) {
                     {categoryName}
                 </span>
 
-                <Link href={`/product/${product.id}`}>
+                <Link href={getProductPath(product)}>
                     <h3 className="text-[15px] font-black text-gray-900 leading-snug group-hover:text-gray-900 transition-colors duration-200 line-clamp-2 min-h-10">
                         {product.name}
                     </h3>

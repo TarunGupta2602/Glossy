@@ -18,6 +18,7 @@ export async function GET(req) {
                 quantity,
                 product:products (
                     *,
+                    slug,
                     categories(name)
                 )
             `)
@@ -32,6 +33,7 @@ export async function GET(req) {
             .filter(item => item.product)
             .map(item => ({
                 id: item.product.id,
+                slug: item.product.slug,
                 name: item.product.name,
                 price: item.product.price,
                 description: item.product.description,
