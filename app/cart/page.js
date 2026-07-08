@@ -5,12 +5,54 @@ import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function CartPage() {
-    const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized } = useCart();
+    const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
+    const [freeGiftProducts, setFreeGiftProducts] = useState([]);
+
+    useEffect(() => {
+        const loadFreeGiftProducts = async () => {
+            if (!promo?.freeProductIds?.length) {
+                setFreeGiftProducts([]);
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/products");
+                const data = await response.json();
+                if (data?.success) {
+                    const productMap = new Map((data.products || []).map((product) => [product.id, {
+                        name: product.name,
+                        image: product.main_image || product.image || "/logo.png",
+                        category: product.categories?.name || "Jewelry",
+                    }]));
+                    setFreeGiftProducts(
+                        promo.freeProductIds.map((productId) => {
+                            const resolved = productMap.get(productId);
+                            return {
+                                id: productId,
+                                name: resolved?.name || productId,
+                                image: resolved?.image || "/logo.png",
+                                category: resolved?.category || "Free Gift",
+                            };
+                        })
+                    );
+                    return;
+                }
+            } catch (error) {
+                console.error("Failed to load free gift product names", error);
+            }
+
+            setFreeGiftProducts(
+                promo.freeProductIds.map((productId) => ({ id: productId, name: productId }))
+            );
+        };
+
+        loadFreeGiftProducts();
+    }, [promo?.freeProductIds]);
 
     const GoogleBtn = ({ id }) => {
         useEffect(() => {
@@ -105,9 +147,16 @@ export default function CartPage() {
                                 <div className="flex-1 flex flex-col justify-between py-1">
                                     <div>
                                         <div className="flex justify-between items-start mb-1">
-                                            <Link href={`/product/${item.id}`} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
-                                                {item.name}
-                                            </Link>
+                                            <div className="flex flex-col gap-1">
+                                                <Link href={`/product/${item.id}`} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
+                                                    {item.name}
+                                                </Link>
+                                                {promo.freeProductIds?.includes(item.id) && (
+                                                    <span className="inline-flex w-fit items-center rounded-full bg-[#E91E63]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#E91E63]">
+                                                        Free Gift
+                                                    </span>
+                                                )}
+                                            </div>
                                             <p className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                         </div>
                                         <p className="text-[10px] font-bold tracking-[0.2em] text-[#E91E63] uppercase mb-3">{item.category}</p>
@@ -172,7 +221,7 @@ export default function CartPage() {
                             </div>
                             {discountAmount > 0 && (
                                 <div className="flex justify-between text-sm text-green-600">
-                                    <span className="font-medium">Offer Discount (Buy 2 Get 1)</span>
+                                    <span className="font-medium">Offer Discount (Buy 2 products, get the 3rd one free)</span>
                                     <span className="font-bold">-₹{discountAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                                 </div>
                             )}
@@ -187,14 +236,33 @@ export default function CartPage() {
                         </div>
 
                         {/* Buy 2 Get 1 Nudge */}
-                        {(cartCount % 3 === 2) && (
+                        {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
                             <div className="mb-6 p-4 rounded-2xl bg-[#E91E63]/5 border border-[#E91E63]/10 flex items-start gap-3">
                                 <span className="text-lg">🎁</span>
                                 <div>
-                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Special Offer Unlock</p>
+                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Your free gift</p>
                                     <p className="text-xs text-gray-600 font-medium leading-tight">
-                                        Add <span className="font-bold text-gray-900 mx-0.5">1 more item</span> to your bag to get the 3rd one <span className="font-bold text-[#E91E63]">FREE</span>!
+                                        Buy 2 items and unlock 1 free gift from our offer collection.
                                     </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
+                            <div className="mb-6 p-4 rounded-2xl bg-white border border-gray-100">
+                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">Free item selected</p>
+                                <div className="space-y-3">
+                                    {freeGiftProducts.map((product, index) => (
+                                        <div key={`${product.id}-${index}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                                            <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-white border border-gray-100">
+                                                <Image src={product.image} alt={product.name} fill sizes="48px" className="object-cover" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-[12px] font-bold text-gray-900">{product.name}</p>
+                                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">Set {index + 1}</p>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}

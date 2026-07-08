@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./AuthContext";
+import { calculateBuy2Get1Free, FREE_ITEM_PRODUCT_IDS } from "@/lib/promo";
 
 const CartContext = createContext();
 
@@ -224,32 +225,13 @@ export function CartProvider({ children }) {
         0
     );
 
-    // Buy 2 Get 1 Free Logic
-    // Logic: Sort all individual items by price descending and every 3rd item is free
-    const calculateDiscount = () => {
-        const allItems = [];
-        cart.forEach(item => {
-            for (let i = 0; i < item.quantity; i++) {
-                allItems.push(item.price);
-            }
-        });
-
-        allItems.sort((a, b) => b - a);
-
-        let discount = 0;
-        for (let i = 2; i < allItems.length; i += 3) {
-            discount += allItems[i];
-        }
-        return discount;
-    };
-
-    const discountAmount = calculateDiscount();
+    const promo = useMemo(() => calculateBuy2Get1Free(cart, FREE_ITEM_PRODUCT_IDS), [cart]);
+    const discountAmount = promo.discountAmount;
 
     // Rule: ₹10 shipping if subtotal - discount < ₹1000
     const finalSubtotal = cartSubtotal - discountAmount;
     const shippingFee = 0;
     const cartTotal = finalSubtotal + shippingFee;
-
 
     return (
         <CartContext.Provider
@@ -261,10 +243,11 @@ export function CartProvider({ children }) {
                 clearCart,
                 cartCount,
                 cartSubtotal,
-                discountAmount, // Added discountAmount
+                discountAmount,
                 shippingFee,
                 cartTotal,
                 isInitialized,
+                promo,
             }}
         >
             {children}

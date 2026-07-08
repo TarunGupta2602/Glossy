@@ -31,9 +31,6 @@ export default function ProductCard({ product }) {
                             New Arrivals
                         </span>
                     )}
-                    <span className="inline-block px-3 py-1.5 rounded-full bg-gradient-to-r from-[#FF4081] to-[#E91E63] text-white text-[9px] md:text-[10px] font-black shadow-md uppercase tracking-wider leading-none border border-white/10">
-                        Buy 2 Get 1 FREE
-                    </span>
                 </div>
                 <Image
                     src={product.main_image || "/logo.png"}

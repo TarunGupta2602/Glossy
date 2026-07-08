@@ -60,12 +60,19 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                             </h4>
                             <div className="divide-y divide-gray-50">
                                 {order.items?.map((item, idx) => (
-                                    <div key={idx} className="flex gap-10 items-center py-8 group first:pt-0 last:pb-0">
+                                    <div key={`${item.id || idx}-${item.isFreeGift ? 'free' : 'item'}`} className="flex gap-10 items-center py-8 group first:pt-0 last:pb-0">
                                         <div className="relative w-32 h-32 rounded-[32px] overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100 shadow-xl shadow-gray-200/50 group-hover:-translate-y-2 transition-transform duration-500">
-                                            <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
+                                            <Image src={item.image || "/logo.png"} alt={item.name} fill sizes="128px" className="object-cover" />
                                         </div>
                                         <div className="flex-1 space-y-2">
-                                            <p className="text-[9px] text-[#E91E63] font-black uppercase tracking-[0.2em]">{item.category}</p>
+                                            <div className="flex items-center gap-3">
+                                                <p className="text-[9px] text-[#E91E63] font-black uppercase tracking-[0.2em]">{item.category || (item.isFreeGift ? "Free Gift" : "Purchased")}</p>
+                                                {item.isFreeGift && (
+                                                    <span className="rounded-full bg-[#E91E63]/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-[#E91E63]">
+                                                        Complimentary
+                                                    </span>
+                                                )}
+                                            </div>
                                             <p className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.name}</p>
                                             <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
                                                 <span>Qty {item.quantity}</span>

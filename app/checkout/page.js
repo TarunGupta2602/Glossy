@@ -8,10 +8,83 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function CheckoutPage() {
-    const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart } = useCart();
+    const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
     const { user } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [freeGiftProducts, setFreeGiftProducts] = useState([]);
+    const [checkoutItems, setCheckoutItems] = useState([]);
+
+    useEffect(() => {
+        const loadFreeGiftProducts = async () => {
+            if (!promo?.freeProductIds?.length) {
+                setFreeGiftProducts([]);
+                setCheckoutItems(
+                    cart.map((item) => ({
+                        ...item,
+                        quantity: item.quantity || 1,
+                        price: Number(item.price) || 0,
+                        isFreeGift: false,
+                    }))
+                );
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/products");
+                const data = await response.json();
+                if (data?.success) {
+                    const productMap = new Map((data.products || []).map((product) => [product.id, {
+                        name: product.name,
+                        image: product.main_image || product.image || "/logo.png",
+                        category: product.categories?.name || "Jewelry",
+                    }]));
+                    const resolvedProducts = promo.freeProductIds.map((productId) => {
+                        const resolved = productMap.get(productId);
+                        return {
+                            id: productId,
+                            name: resolved?.name || productId,
+                            image: resolved?.image || "/logo.png",
+                            category: resolved?.category || "Free Gift",
+                        };
+                    });
+                    setFreeGiftProducts(resolvedProducts);
+                    return;
+                }
+            } catch (error) {
+                console.error("Failed to load free gift product names", error);
+            }
+
+            setFreeGiftProducts(
+                promo.freeProductIds.map((productId) => ({ id: productId, name: productId, image: "/logo.png" }))
+            );
+        };
+
+        loadFreeGiftProducts();
+    }, [promo?.freeProductIds]);
+
+    useEffect(() => {
+        const items = cart.map((item) => ({
+            ...item,
+            quantity: item.quantity || 1,
+            price: Number(item.price) || 0,
+            isFreeGift: false,
+        }));
+
+        const freeGiftItems = freeGiftProducts.map((product, index) => ({
+            id: product.id,
+            name: product.name,
+            price: 0,
+            quantity: 1,
+            currency: "INR",
+            category: "Free Gift",
+            image: product.image || "/logo.png",
+            isFreeGift: true,
+            freeGiftSet: index + 1,
+        }));
+
+        setCheckoutItems([...items, ...freeGiftItems]);
+    }, [cart, freeGiftProducts]);
 
     const GoogleBtn = ({ id }) => {
         useEffect(() => {
@@ -124,7 +197,7 @@ export default function CheckoutPage() {
                                 total_amount: cartTotal,
                                 shipping_address: shippingInfo,
                                 contact_phone: shippingInfo.phone,
-                                items: cart
+                                items: checkoutItems
                             }),
                         });
 
@@ -360,14 +433,21 @@ export default function CheckoutPage() {
                         <div className="bg-white rounded-3xl p-8 shadow-sm">
                             <h2 className="text-xl font-bold mb-6">Your Order</h2>
                             <div className="space-y-6">
-                                {cart.map((item) => (
-                                    <div key={item.id} className="flex gap-4">
+                                {checkoutItems.map((item) => (
+                                    <div key={`${item.id}-${item.isFreeGift ? 'free' : 'cart'}-${item.freeGiftSet || 0}`} className="flex gap-4">
                                         <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
-                                            <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
+                                            <Image src={item.image || "/logo.png"} alt={item.name} fill sizes="80px" className="object-cover" />
                                         </div>
                                         <div className="flex-1">
-                                            <h4 className="text-sm font-bold text-gray-900">{item.name}</h4>
-                                            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-1">{item.category}</p>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="text-sm font-bold text-gray-900">{item.name}</h4>
+                                                {item.isFreeGift && (
+                                                    <span className="rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#E91E63]">
+                                                        Free Gift
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-1">{item.category || (item.isFreeGift ? "Free Gift" : "Purchased")}</p>
                                             <div className="flex justify-between items-center mt-1">
                                                 <span className="text-xs text-gray-500 font-semibold">Qty: {item.quantity}</span>
                                                 <span className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toFixed(2)}</span>
@@ -384,8 +464,21 @@ export default function CheckoutPage() {
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-sm text-green-600">
-                                        <span className="font-medium">Offer Discount (Buy 2 Get 1)</span>
+                                        <span className="font-medium">Offer Discount (Buy 2 products, get the 3rd one free)</span>
                                         <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
+                                    <div className="rounded-2xl border border-[#E91E63]/10 bg-[#E91E63]/5 p-4 text-sm text-gray-700">
+                                        <p className="font-semibold text-[#E91E63] mb-2">Free gift(s) included</p>
+                                        <ul className="space-y-1">
+                                            {freeGiftProducts.map((product, index) => (
+                                                <li key={`${product.id}-${index}`} className="flex items-center justify-between gap-3">
+                                                    <span>Gift {index + 1}</span>
+                                                    <span className="font-semibold text-gray-900">{product.name}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center text-sm">

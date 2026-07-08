@@ -73,8 +73,13 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                                     <div className="flex flex-wrap gap-4 items-center">
                                         <div className="flex -space-x-6">
                                             {order.items?.slice(0, 4).map((item, idx) => (
-                                                <div key={idx} className="relative w-24 h-24 rounded-3xl overflow-hidden border-4 border-white bg-gray-50 shadow-xl shadow-gray-900/5 group-hover:-translate-y-2 transition-transform duration-500" style={{ transitionDelay: `${idx * 100}ms` }}>
-                                                    <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover" />
+                                                <div key={`${item.id || idx}-${item.isFreeGift ? 'free' : 'item'}`} className="relative w-24 h-24 rounded-3xl overflow-hidden border-4 border-white bg-gray-50 shadow-xl shadow-gray-900/5 group-hover:-translate-y-2 transition-transform duration-500" style={{ transitionDelay: `${idx * 100}ms` }}>
+                                                    <Image src={item.image || "/logo.png"} alt={item.name} fill sizes="96px" className="object-cover" />
+                                                    {item.isFreeGift && (
+                                                        <div className="absolute inset-x-0 bottom-0 bg-[#E91E63]/90 px-2 py-1 text-[8px] font-black uppercase tracking-[0.2em] text-white text-center">
+                                                            Free
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ))}
                                             {order.items?.length > 4 && (

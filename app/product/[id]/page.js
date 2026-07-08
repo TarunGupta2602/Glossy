@@ -1,35 +1,35 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
+import { fetchProductBySlugOrId } from "@/lib/productQueries";
+import {
+    BASE_URL,
+    formatPageTitle,
+    getProductCanonicalUrl,
+    getProductPath,
+    isUuid,
+} from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
-    const { id } = await params;
-    const supabase = getServiceClient();
+    const { id: param } = await params;
+    const product = await fetchProductBySlugOrId(param);
 
-    const { data: product } = await supabase
-        .from("products")
-        .select("*, categories(name)")
-        .eq("id", id)
-        .single();
-
-    if (!product) return {
-        title: "Product Not Found",
-        robots: "noindex"
-    };
+    if (!product) {
+        return { title: "Product Not Found", robots: { index: false, follow: false } };
+    }
 
     const categoryName = product.categories?.name || "Fine Jewelry";
-    const discount = product.original_price
-        ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-        : 30;
-
-    // SEO Logic: Use custom meta fields if available, otherwise fallback to defaults
-    // Note: The template in layout.js will append " | The luxe jewels" automatically
-    const seoTitle = product.meta_title || `${product.name} | ${categoryName}`;
-    const seoDescription = product.meta_description || product.description || `Shop ${product.name} from our ${categoryName} collection at The luxe jewels. Premium anti-tarnish, waterproof, and hypoallergenic jewelry. Get ${discount}% off today!`;
-    const seoKeywords = product.meta_keywords || `${product.name}, ${categoryName}, anti-tarnish jewelry, waterproof jewelry india, pure gold plated jewelry, gift for her`;
+    const seoTitle = formatPageTitle(product.meta_title || `${product.name} | ${categoryName}`);
+    const seoDescription =
+        product.meta_description ||
+        product.description ||
+        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewelry with free shipping across India.`;
+    const seoKeywords =
+        product.meta_keywords ||
+        `${product.name}, ${categoryName}, anti-tarnish jewelry, waterproof jewelry india, the luxe jewels`;
+    const canonicalPath = getProductPath(product);
 
     return {
         title: seoTitle,
@@ -38,26 +38,19 @@ export async function generateMetadata({ params }) {
         robots: {
             index: true,
             follow: true,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
         },
-        alternates: {
-            canonical: `/product/${id}`,
-        },
+        alternates: { canonical: canonicalPath },
         openGraph: {
             title: seoTitle,
             description: seoDescription,
-            url: `https://www.theluxejewels.in/product/${id}`,
+            url: `${BASE_URL}${canonicalPath}`,
             siteName: "The luxe jewels",
-            images: product.main_image ? [{
-                url: product.main_image,
-                alt: product.image_alt || product.name,
-                width: 1200,
-                height: 1200
-            }] : [{ url: "/logo.png" }],
-            type: "article",
-            publishedTime: product.created_at,
-            authors: ["The luxe jewels"],
+            images: product.main_image
+                ? [{ url: product.main_image, alt: product.image_alt || product.name, width: 1200, height: 1200 }]
+                : [{ url: "/logo.png" }],
+            type: "website",
         },
         twitter: {
             card: "summary_large_image",
@@ -69,20 +62,19 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-    const { id } = await params;
+    const { id: param } = await params;
+    const product = await fetchProductBySlugOrId(param);
 
+    if (!product) notFound();
+
+    // Redirect UUID URLs to slug URLs for SEO when slug is available
+    if (isUuid(param) && product.slug && product.slug !== param) {
+        redirect(getProductPath(product));
+    }
+
+    const id = product.id;
     const supabase = getServiceClient();
 
-    // 1. Fetch main product with category
-    const { data: product, error } = await supabase
-        .from("products")
-        .select("*, categories(name, id, slug)")
-        .eq("id", id)
-        .single();
-
-    if (error || !product) notFound();
-
-    // 2. Fetch gallery images
     const { data: galleryRows } = await supabase
         .from("product_images")
         .select("image_url")
@@ -91,10 +83,9 @@ export default async function ProductPage({ params }) {
 
     const galleryImages = (galleryRows || []).map((r) => r.image_url).filter(Boolean);
 
-    // 3. Related products — same category first, fallback to newest
     const { data: related } = await supabase
         .from("products")
-        .select("id, name, price, main_image, image_alt, categories(name)")
+        .select("id, name, price, main_image, image_alt, slug, categories(name)")
         .eq("category_id", product.category_id)
         .neq("id", id)
         .order("created_at", { ascending: false })
@@ -106,7 +97,7 @@ export default async function ProductPage({ params }) {
         const excludeIds = [id, ...relatedProducts.map((p) => p.id)];
         const { data: extras } = await supabase
             .from("products")
-            .select("id, name, price, main_image, image_alt, categories(name)")
+            .select("id, name, price, main_image, image_alt, slug, categories(name)")
             .not("id", "in", `(${excludeIds.join(",")})`)
             .order("created_at", { ascending: false })
             .limit(4 - relatedProducts.length);
@@ -114,85 +105,63 @@ export default async function ProductPage({ params }) {
         relatedProducts = [...relatedProducts, ...(extras || [])];
     }
 
+    const productUrl = getProductCanonicalUrl(product);
+    const images = [product.main_image, ...galleryImages].filter(Boolean);
+
     const jsonLd = {
         "@context": "https://schema.org",
         "@graph": [
             {
                 "@type": "Product",
-                "name": product.name,
-                "image": [product.main_image, ...galleryImages],
-                "description": product.description || `Premium ${product.name} from The luxe jewels.`,
-                "sku": product.id,
-                "brand": {
-                    "@type": "Brand",
-                    "name": "The luxe jewels"
-                },
-                "offers": {
+                name: product.name,
+                image: images.length ? images : [`${BASE_URL}/logo.png`],
+                description:
+                    product.meta_description ||
+                    product.description ||
+                    `Premium ${product.name} from The Luxe Jewels.`,
+                sku: product.id,
+                mpn: product.slug || product.id,
+                brand: { "@type": "Brand", name: "The luxe jewels" },
+                category: product.categories?.name,
+                offers: {
                     "@type": "Offer",
-                    "url": `https://www.theluxejewels.in/product/${id}`,
-                    "priceCurrency": "INR",
-                    "price": product.price,
-                    "priceValidUntil": "2026-12-31",
-                    "itemCondition": "https://schema.org/NewCondition",
-                    "availability": "https://schema.org/InStock",
-                    "shippingDetails": {
+                    url: productUrl,
+                    priceCurrency: "INR",
+                    price: product.price,
+                    priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split("T")[0],
+                    itemCondition: "https://schema.org/NewCondition",
+                    availability: "https://schema.org/InStock",
+                    seller: { "@type": "Organization", name: "The luxe jewels" },
+                    shippingDetails: {
                         "@type": "OfferShippingDetails",
-                        "shippingRate": {
+                        shippingRate: {
                             "@type": "MonetaryAmount",
-                            "value": product.price >= 1000 ? 0 : 10,
-                            "currency": "INR"
+                            value: 0,
+                            currency: "INR",
                         },
-                        "shippingDestination": {
+                        shippingDestination: {
                             "@type": "DefinedRegion",
-                            "addressCountry": "IN"
+                            addressCountry: "IN",
                         },
-                        "deliveryTime": {
-                            "@type": "ShippingDeliveryTime",
-                            "handlingTime": {
-                                "@type": "QuantitativeValue",
-                                "minValue": 1,
-                                "maxValue": 2,
-                                "unitCode": "DAY"
-                            },
-                            "transitTime": {
-                                "@type": "QuantitativeValue",
-                                "minValue": 3,
-                                "maxValue": 7,
-                                "unitCode": "DAY"
-                            }
-                        }
-                    }
+                    },
                 },
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.9",
-                    "reviewCount": "12"
-                }
             },
             {
                 "@type": "BreadcrumbList",
-                "itemListElement": [
+                itemListElement: [
+                    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
                     {
                         "@type": "ListItem",
-                        "position": 1,
-                        "name": "Home",
-                        "item": "https://www.theluxejewels.in"
+                        position: 2,
+                        name: product.categories?.name || "Jewelry",
+                        item: `${BASE_URL}/shop/${product.categories?.slug || ""}`,
                     },
-                    {
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": product.categories?.name || "Jewelry",
-                        "item": `https://www.theluxejewels.in/shop/${product.categories?.slug}`
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 3,
-                        "name": product.name,
-                        "item": `https://www.theluxejewels.in/product/${id}`
-                    }
-                ]
-            }
-        ]
+                    { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+                ],
+            },
+        ],
     };
 
     return (
