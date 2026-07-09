@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductPath } from "@/lib/seo";
+import ReviewList from "../../components/ReviewList";
+import ReviewForm from "../../components/ReviewForm";
 
 export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
     const categoryName = product.categories?.name || "Jewelry";
@@ -23,6 +25,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     const [qty, setQty] = useState(1);
     const isWishlisted = isInWishlist(product.id);
     const [addedToBag, setAddedToBag] = useState(false);
+    const [showReviewForm, setShowReviewForm] = useState(false);
 
     const price = product.price
         ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
@@ -289,6 +292,35 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             </p>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* ── Reviews Section ── */}
+            <section className="border-t border-gray-100 py-8 px-5 sm:px-8 lg:px-12">
+                <div className="max-w-6xl mx-auto">
+                    <div className="flex items-center justify-end mb-4">
+                        <button
+                            onClick={() => setShowReviewForm(!showReviewForm)}
+                            className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors"
+                        >
+                            {showReviewForm ? "Cancel" : "Write a Review"}
+                        </button>
+                    </div>
+
+                    {showReviewForm && (
+                        <div className="mb-4">
+                            <ReviewForm
+                                productId={product.id}
+                                productName={product.name}
+                                onSuccess={() => {
+                                    setShowReviewForm(false);
+                                    window.location.reload();
+                                }}
+                            />
+                        </div>
+                    )}
+
+                    <ReviewList productId={product.id} />
                 </div>
             </section>
 

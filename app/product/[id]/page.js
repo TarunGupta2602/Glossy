@@ -108,6 +108,21 @@ export default async function ProductPage({ params }) {
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages].filter(Boolean);
 
+    // Fetch reviews for JSON-LD
+    const { data: reviews } = await supabase
+        .from("reviews")
+        .select("rating, comment, user_name, created_at")
+        .eq("product_id", id)
+        .eq("is_approved", true)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+    // Calculate aggregate rating
+    const totalReviews = reviews?.length || 0;
+    const avgRating = totalReviews > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+        : 0;
+
     const jsonLd = {
         "@context": "https://schema.org",
         "@graph": [
@@ -123,6 +138,30 @@ export default async function ProductPage({ params }) {
                 mpn: product.slug || product.id,
                 brand: { "@type": "Brand", name: "The luxe jewels" },
                 category: product.categories?.name,
+                ...(totalReviews > 0 && {
+                    aggregateRating: {
+                        "@type": "AggregateRating",
+                        ratingValue: avgRating.toFixed(1),
+                        reviewCount: totalReviews,
+                        bestRating: "5",
+                        worstRating: "1",
+                    },
+                    review: reviews?.map((review) => ({
+                        "@type": "Review",
+                        reviewRating: {
+                            "@type": "Rating",
+                            ratingValue: review.rating,
+                            bestRating: "5",
+                            worstRating: "1",
+                        },
+                        author: {
+                            "@type": "Person",
+                            name: review.user_name,
+                        },
+                        reviewBody: review.comment,
+                        datePublished: review.created_at,
+                    })) || [],
+                }),
                 offers: {
                     "@type": "Offer",
                     url: productUrl,

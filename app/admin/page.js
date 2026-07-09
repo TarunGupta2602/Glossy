@@ -13,6 +13,7 @@ export default function AdminPage() {
     const [loginLoading, setLoginLoading] = useState(false);
     const [error, setError] = useState("");
     const [orderCount, setOrderCount] = useState(0);
+    const [reviewCount, setReviewCount] = useState(0);
 
     // Fetch stats if user is an admin
     const fetchStats = useCallback(async () => {
@@ -24,6 +25,16 @@ export default function AdminPage() {
             }
         } catch (error) {
             console.error("Error fetching stats:", error);
+        }
+
+        try {
+            const response = await fetch("/api/reviews/admin?status=pending");
+            const data = await response.json();
+            if (data.success) {
+                setReviewCount(data.reviews?.length || 0);
+            }
+        } catch (error) {
+            console.error("Error fetching review stats:", error);
         }
     }, []);
 
@@ -231,6 +242,33 @@ export default function AdminPage() {
                             <p className="text-gray-500 text-sm flex-grow">Create, edit, and manage blog posts. Boost SEO with content marketing and FAQs.</p>
                             <div className="mt-6 flex items-center text-purple-600 font-semibold text-sm">
                                 View All Blogs
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* Manage Reviews Card */}
+                    <Link href="/admin/reviews" className="group">
+                        <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all border-l-4 border-l-amber-500 h-full flex flex-col">
+                            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                </svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-3">Manage Reviews</h2>
+                            <p className="text-gray-500 text-sm flex-grow">Approve, reject, or delete customer reviews. Moderate user feedback to maintain quality.</p>
+
+                            {reviewCount > 0 && (
+                                <div className="mt-4 flex items-center gap-2">
+                                    <span className="text-2xl font-black text-amber-500">{reviewCount}</span>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pending</span>
+                                </div>
+                            )}
+
+                            <div className="mt-6 flex items-center text-amber-500 font-semibold text-sm">
+                                View All Reviews
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
