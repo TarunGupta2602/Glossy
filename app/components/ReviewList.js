@@ -8,7 +8,7 @@ export default function ReviewList({ productId }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [showAllReviews, setShowAllReviews] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const [lightboxImage, setLightboxImage] = useState(null);
     const [lightboxImages, setLightboxImages] = useState([]);
     const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -170,14 +170,21 @@ export default function ReviewList({ productId }) {
     return (
         <div className="space-y-4">
             {/* Header with Toggle */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-[16px] font-bold text-gray-900">Customer Reviews</h2>
-                    {stats && (
-                        <p className="text-[11px] text-gray-500 mt-0.5">
-                            {stats.totalReviews} review{stats.totalReviews !== 1 ? "s" : ""} · {stats.avgRating.toFixed(1)} average
-                        </p>
-                    )}
+            <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#E91E63] flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 className="text-[14px] font-bold text-gray-900">Customer Reviews</h2>
+                        {stats && (
+                            <p className="text-[11px] text-gray-500">
+                                {stats.totalReviews} review{stats.totalReviews !== 1 ? "s" : ""} · {stats.avgRating.toFixed(1)} average
+                            </p>
+                        )}
+                    </div>
                 </div>
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
@@ -205,12 +212,12 @@ export default function ReviewList({ productId }) {
                 <>
                     {/* Rating Summary - Compact */}
                     {stats && (
-                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-                            <div className="flex items-center gap-4">
+                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-4 border border-pink-100">
+                            <div className="flex items-center gap-6">
                                 {/* Average Rating */}
                                 <div className="flex-shrink-0 text-center">
                                     <div className="flex items-baseline gap-1 justify-center">
-                                        <span className="text-3xl font-black text-gray-900">
+                                        <span className="text-4xl font-black text-gray-900">
                                             {stats.avgRating.toFixed(1)}
                                         </span>
                                     </div>
@@ -220,7 +227,7 @@ export default function ReviewList({ productId }) {
                                 </div>
 
                                 {/* Rating Breakdown - Compact */}
-                                <div className="flex-1 space-y-1">
+                                <div className="flex-1 space-y-1.5">
                                     {[5, 4, 3, 2, 1].map((star) => {
                                         const count = stats.ratingCounts[star] || 0;
                                         const percentage = stats.totalReviews > 0
@@ -228,16 +235,16 @@ export default function ReviewList({ productId }) {
                                             : 0;
                                         return (
                                             <div key={star} className="flex items-center gap-2">
-                                                <span className="text-[10px] font-bold text-gray-700 w-3">
+                                                <span className="text-[11px] font-bold text-gray-700 w-4">
                                                     {star}
                                                 </span>
-                                                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                <div className="flex-1 h-2 bg-white rounded-full overflow-hidden shadow-sm">
                                                     <div
                                                         className="h-full bg-[#E91E63] rounded-full transition-all duration-500"
                                                         style={{ width: `${percentage}%` }}
                                                     />
                                                 </div>
-                                                <span className="text-[10px] text-gray-500 w-5 text-right">
+                                                <span className="text-[11px] text-gray-500 w-6 text-right">
                                                     {count}
                                                 </span>
                                             </div>
@@ -249,37 +256,37 @@ export default function ReviewList({ productId }) {
                     )}
 
                     {/* Reviews List - Compact */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {(showAllReviews ? reviews : reviews.slice(0, 3)).map((review, index) => (
                             <div
                                 key={review.id}
-                                className="bg-white rounded-lg p-3 shadow-sm border border-gray-100"
+                                className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                             >
                                 {/* Review Header */}
-                                <div className="flex items-center gap-2 mb-1.5">
+                                <div className="flex items-center gap-3 mb-2">
                                     {/* Avatar */}
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0">
-                                        <span className="text-[10px] font-bold text-[#E91E63]">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E91E63] to-[#C2185B] flex items-center justify-center flex-shrink-0 shadow-md">
+                                        <span className="text-sm font-bold text-white">
                                             {review.user_name?.charAt(0).toUpperCase() || "U"}
                                         </span>
                                     </div>
                                     
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-1.5">
-                                            <p className="font-semibold text-gray-900 text-xs truncate">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold text-gray-900 text-sm truncate">
                                                 {review.user_name}
                                             </p>
                                             {review.is_verified_purchase && (
-                                                <span className="inline-flex items-center px-1 py-0.5 rounded text-[8px] font-bold text-green-700 bg-green-50 border border-green-200 flex-shrink-0">
-                                                    ✓
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 flex-shrink-0">
+                                                    ✓ Verified
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                        <div className="flex items-center gap-2 mt-0.5">
                                             <div className="flex gap-0.5">
                                                 {renderStars(review.rating)}
                                             </div>
-                                            <span className="text-[10px] text-gray-400">
+                                            <span className="text-[11px] text-gray-400">
                                                 {formatDate(review.created_at)}
                                             </span>
                                         </div>
@@ -288,21 +295,21 @@ export default function ReviewList({ productId }) {
 
                                 {/* Review Content */}
                                 {review.title && (
-                                    <h4 className="font-semibold text-gray-900 text-xs mb-0.5">
+                                    <h4 className="font-semibold text-gray-900 text-sm mb-1">
                                         {review.title}
                                     </h4>
                                 )}
-                                <p className="text-gray-600 text-xs leading-relaxed mb-1.5 line-clamp-2">
+                                <p className="text-gray-600 text-sm leading-relaxed mb-2">
                                     {review.comment}
                                 </p>
 
-                                {/* Review Images - Tiny thumbnails */}
+                                {/* Review Images - Small thumbnails */}
                                 {review.images && review.images.length > 0 && (
-                                    <div className="flex gap-1.5">
-                                        {review.images.slice(0, 3).map((imageUrl, imgIndex) => (
+                                    <div className="flex gap-2">
+                                        {review.images.slice(0, 4).map((imageUrl, imgIndex) => (
                                             <div
                                                 key={imgIndex}
-                                                className="w-8 h-8 rounded overflow-hidden border border-gray-200 flex-shrink-0 cursor-pointer hover:border-[#E91E63] transition-colors"
+                                                className="w-12 h-12 rounded-lg overflow-hidden border-2 border-gray-200 flex-shrink-0 cursor-pointer hover:border-[#E91E63] hover:shadow-md transition-all"
                                                 onClick={() => openLightbox(imageUrl, review.images, imgIndex)}
                                             >
                                                 <img
@@ -312,12 +319,12 @@ export default function ReviewList({ productId }) {
                                                 />
                                             </div>
                                         ))}
-                                        {review.images.length > 3 && (
+                                        {review.images.length > 4 && (
                                             <span 
-                                                className="text-[10px] text-gray-400 self-center cursor-pointer hover:text-[#E91E63]"
-                                                onClick={() => openLightbox(review.images[3], review.images, 3)}
+                                                className="text-[11px] text-gray-400 self-center cursor-pointer hover:text-[#E91E63]"
+                                                onClick={() => openLightbox(review.images[4], review.images, 4)}
                                             >
-                                                +{review.images.length - 3}
+                                                +{review.images.length - 4} more
                                             </span>
                                         )}
                                     </div>
@@ -329,7 +336,7 @@ export default function ReviewList({ productId }) {
                         {reviews.length > 3 && !showAllReviews && (
                             <button
                                 onClick={() => setShowAllReviews(true)}
-                                className="w-full py-2 text-[11px] font-bold uppercase tracking-wider text-[#E91E63] hover:text-[#C2185B] transition-colors border border-gray-200 rounded-lg hover:border-[#E91E63]"
+                                className="w-full py-3 text-[11px] font-bold uppercase tracking-wider text-[#E91E63] hover:text-[#C2185B] transition-colors border-2 border-gray-200 rounded-xl hover:border-[#E91E63] hover:bg-pink-50"
                             >
                                 Show All {reviews.length} Reviews
                             </button>
@@ -341,15 +348,15 @@ export default function ReviewList({ productId }) {
             {/* Lightbox Modal */}
             {lightboxImage && (
                 <div 
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md"
                     onClick={closeLightbox}
                 >
                     {/* Close Button */}
                     <button
                         onClick={closeLightbox}
-                        className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+                        className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                     >
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -361,9 +368,9 @@ export default function ReviewList({ productId }) {
                                 e.stopPropagation();
                                 goToPrevious();
                             }}
-                            className="absolute left-4 text-white hover:text-gray-300 transition-colors z-10"
+                            className="absolute left-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                         >
-                            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
@@ -371,16 +378,16 @@ export default function ReviewList({ productId }) {
 
                     {/* Image */}
                     <div 
-                        className="max-w-[90vw] max-h-[90vh] relative"
+                        className="max-w-[95vw] max-h-[95vh] relative"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img
                             src={lightboxImage}
                             alt="Review image"
-                            className="max-w-full max-h-[85vh] object-contain rounded-lg"
+                            className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
                         />
                         {lightboxImages.length > 1 && (
-                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
+                            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-sm px-4 py-2 rounded-full backdrop-blur-sm">
                                 {lightboxIndex + 1} / {lightboxImages.length}
                             </div>
                         )}
@@ -393,9 +400,9 @@ export default function ReviewList({ productId }) {
                                 e.stopPropagation();
                                 goToNext();
                             }}
-                            className="absolute right-4 text-white hover:text-gray-300 transition-colors z-10"
+                            className="absolute right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                         >
-                            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </button>

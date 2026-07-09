@@ -61,10 +61,8 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
     return (
         <div className="bg-white min-h-screen">
-
-            {/* ── Product Section ── */}
-            <section className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 pt-10 pb-24">
-
+            <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-10 pb-20">
+                
                 {/* Breadcrumb */}
                 <nav className="mb-8 flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-400">
                     <Link href="/shop" className="hover:text-gray-700 transition-colors">Jewelry</Link>
@@ -75,7 +73,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                 </nav>
 
                 {/* Main Grid: Images left, Info right */}
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 xl:gap-16 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 xl:gap-16 items-start mb-16">
 
                     {/* ── LEFT: Gallery ── */}
                     <div className="w-full max-w-[520px]">
@@ -293,11 +291,9 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         </div>
                     </div>
                 </div>
-            </section>
 
-            {/* ── Reviews Section ── */}
-            <section className="border-t border-gray-100 py-8 px-5 sm:px-8 lg:px-12">
-                <div className="max-w-6xl mx-auto">
+                {/* ── Reviews Section ── */}
+                <div className="mb-16">
                     <div className="flex items-center justify-end mb-4">
                         <button
                             onClick={() => setShowReviewForm(!showReviewForm)}
@@ -322,12 +318,10 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                     <ReviewList productId={product.id} />
                 </div>
-            </section>
 
-            {/* ── Complete the Look ── */}
-            {relatedProducts.length > 0 && (
-                <section className="border-t border-gray-100 py-16 px-5 sm:px-8 lg:px-12">
-                    <div className="max-w-6xl mx-auto">
+                {/* ── Complete the Look ── */}
+                {relatedProducts.length > 0 && (
+                    <div className="pt-8 border-t border-gray-100">
                         {/* Header */}
                         <div className="flex items-end justify-between mb-8">
                             <div>
@@ -353,7 +347,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 return (
                                     <Link key={p.id} href={getProductPath(p)} className="group flex flex-col">
                                         <div
-                                            className="relative w-full overflow-hidden rounded-xl bg-[#F2F2F2] mb-3"
+                                            className="relative w-full overflow-hidden rounded-2xl bg-[#F2F2F2] mb-4 shadow-sm hover:shadow-md transition-shadow"
                                             style={{ aspectRatio: "1/1" }}
                                         >
                                                 <Image
@@ -365,12 +359,12 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
                                         </div>
-                                        <h3 className="text-[13px] font-semibold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-snug line-clamp-1">
+                                        <h3 className="text-[14px] font-semibold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-snug line-clamp-1">
                                             {p.name}
                                         </h3>
-                                        <span className="text-[11px] text-gray-400 mt-0.5">{cat}</span>
+                                        <span className="text-[12px] text-gray-400 mt-0.5">{cat}</span>
                                         <div className="mt-1 flex flex-wrap items-center gap-2">
-                                            <p className="text-[14px] font-bold text-gray-900">₹{pPrice}</p>
+                                            <p className="text-[15px] font-bold text-gray-900">₹{pPrice}</p>
                                             {(() => {
                                                 const originalPrice = p.original_price || (p.price / 0.7);
                                                 const discount = p.original_price
@@ -380,10 +374,10 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 if (originalPrice > p.price) {
                                                     return (
                                                         <>
-                                                            <p className="text-[11px] text-gray-400 line-through">
+                                                            <p className="text-[12px] text-gray-400 line-through">
                                                                 ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                             </p>
-                                                            <p className="text-[11px] font-bold text-[#2E7D32]">
+                                                            <p className="text-[12px] font-bold text-[#2E7D32]">
                                                                 (SAVE {discount}%)
                                                             </p>
                                                         </>
@@ -403,8 +397,8 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             </Link>
                         </div>
                     </div>
-                </section>
-            )}
+                )}
+            </div>
         </div>
     );
 }
