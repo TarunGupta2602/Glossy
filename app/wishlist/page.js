@@ -6,6 +6,15 @@ import { useCart } from "../context/CartContext";
 import WishlistTab from "../profile/WishlistTab";
 import Breadcrumbs from "../components/Breadcrumbs";
 
+export const metadata = {
+    title: "My Wishlist | The luxe jewels",
+    description: "View your saved jewelry pieces at The luxe jewels.",
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
+
 export default function WishlistPage() {
     const { wishlist, removeFromWishlist, isInitialized } = useWishlist();
     const { addToCart } = useCart();

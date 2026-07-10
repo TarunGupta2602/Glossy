@@ -21,6 +21,12 @@ export const metadata = {
         "daily wear jewelry india",
         "ethical fine jewelry online"
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Anti-Tarnish Necklaces | Luxury Waterproof Jewelry | The luxe jewels",
         description: "Luminous accents for every style. Handcrafted waterproof fine necklaces. Designed to never fade.",

@@ -12,6 +12,12 @@ export const metadata = {
         "custom jewelry enquiry",
         "order support jewelry",
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Contact The luxe jewels",
         description: "Reach out for support, custom orders, or shipping help with premium anti-tarnish jewelry in India.",

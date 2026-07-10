@@ -7,6 +7,12 @@ export const metadata = {
     alternates: {
         canonical: "/terms",
     },
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
 };
 
 export default function TermsPage() {

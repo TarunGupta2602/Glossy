@@ -31,6 +31,12 @@ export async function generateMetadata({ params }) {
             `18k gold plated ${category.name}`,
             "The luxe jewels collections"
         ],
+        robots: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
         openGraph: {
             title: `${category.name} | Premium Collection | The luxe jewels`,
             description: category.description || `Explore our premium ${category.name} collection at The luxe jewels.`,

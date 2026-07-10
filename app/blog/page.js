@@ -22,6 +22,12 @@ export const metadata = {
     alternates: {
         canonical: "/blog",
     },
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Blog | Jewelry Tips & Styling Guides | The Luxe Jewels",
         description:

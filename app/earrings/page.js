@@ -21,6 +21,12 @@ export const metadata = {
         "minimalist earrings brand",
         "buy luxury earrings online india"
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Anti-Tarnish Earrings | Waterproof & Hypoallergenic | The luxe jewels",
         description: "Ethical and elegant waterproof earrings handcrafted for the modern individual. Tarnish-free 18k gold plating.",

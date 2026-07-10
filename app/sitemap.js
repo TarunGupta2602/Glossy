@@ -43,8 +43,9 @@ export default async function sitemap() {
     // 3. Dynamic Product Pages
     const { data: products, error: productError } = await supabase
         .from("products")
-        .select("slug, created_at")
+        .select("slug, created_at, updated_at")
         .not("slug", "is", null)
+        .eq("is_active", true)
         .order("created_at", { ascending: false });
 
     let productRows = products;
@@ -57,9 +58,9 @@ export default async function sitemap() {
         .filter((product) => product?.slug)
         .map((product) => ({
             url: `${baseUrl}/product/${product.slug}`,
-            lastModified: product.created_at ? new Date(product.created_at) : new Date(),
+            lastModified: product.updated_at ? new Date(product.updated_at) : (product.created_at ? new Date(product.created_at) : new Date()),
             changeFrequency: "weekly",
-            priority: 0.7,
+            priority: 0.8,
         }));
 
     // 4. Dynamic Blog Pages

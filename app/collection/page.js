@@ -19,6 +19,12 @@ export const metadata = {
         "modern jewelry collections",
         "sustainable jewelry brand india"
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Featured Collections | Curated Fine Jewelry | The luxe jewels",
         description: "Explore our curated collections of fine jewelry. Handcrafted for elegance.",

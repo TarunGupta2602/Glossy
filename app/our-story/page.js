@@ -14,6 +14,12 @@ export const metadata = {
         "handcrafted fine jewelry india",
         "luxury jewelry journey"
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
 };
 
 export default function OurStoryPage() {

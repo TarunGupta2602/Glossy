@@ -20,6 +20,12 @@ export const metadata = {
         "minimalist jewelry collection",
         "hypoallergenic jewelry store"
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
     openGraph: {
         title: "Shop All Fine Jewelry | Premium & Sustainable | The luxe jewels",
         description: "Handcrafted ethical fine jewelry. Modern designs, sustainable luxury, and waterproof durability.",

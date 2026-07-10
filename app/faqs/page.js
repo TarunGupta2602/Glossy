@@ -14,6 +14,12 @@ export const metadata = {
         "jewelry delivery",
         "order help",
     ],
+    robots: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+    },
 };
 
 export default function FAQsPage() {
