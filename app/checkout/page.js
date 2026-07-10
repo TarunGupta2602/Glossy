@@ -7,15 +7,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export const metadata = {
-    title: "Checkout | The luxe jewels",
-    description: "Secure checkout for your jewelry purchase at The luxe jewels.",
-    robots: {
-        index: false,
-        follow: false,
-    },
-};
-
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
     const { user } = useAuth();

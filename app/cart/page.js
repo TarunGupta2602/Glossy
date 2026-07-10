@@ -8,15 +8,6 @@ import { useRouter } from "next/navigation";
 import { getProductPath } from "@/lib/seo";
 import { useEffect, useState } from "react";
 
-export const metadata = {
-    title: "Shopping Bag | The luxe jewels",
-    description: "View your shopping bag and proceed to checkout at The luxe jewels.",
-    robots: {
-        index: false,
-        follow: false,
-    },
-};
-
 export default function CartPage() {
     const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
     const { user, signInWithGoogle } = useAuth();
