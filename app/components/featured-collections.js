@@ -127,7 +127,7 @@ export default function FeaturedCollections({ categories }) {
                                 <div className="max-w-2xl">
                                     <div className="flex items-center gap-4 mb-4">
                                         <span className="text-[10px] font-black text-white/60 tracking-[0.4em] uppercase drop-shadow-sm">
-                                            Edition 2024
+                                            Edition 2026
                                         </span>
                                         <span className="text-2xl md:text-3xl font-playfair italic text-white/30">
                                             {String(index + 1).padStart(2, '0')}
