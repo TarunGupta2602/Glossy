@@ -21,26 +21,26 @@ export default function Testimonials() {
     ];
 
     return (
-        <section className="py-20 px-6 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
-            <div className="max-w-7xl mx-auto">
+        <section className="py-12 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
+            <div className="w-full">
 
                 {/* Header Section */}
-                <div className="text-center mb-16">
-                    <span className="text-[11px] font-black tracking-[0.4em] text-[#E91E63] uppercase mb-4 block">
+                <div className="text-center mb-10 md:mb-12">
+                    <span className="text-[11px] font-black tracking-[0.4em] text-[#E91E63] uppercase mb-3 block">
                         OUR PATREONS
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">
+                    <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">
                         What Our Community Says
                     </h2>
                     <div className="w-16 h-[2px] bg-[#E91E63] mx-auto rounded-full opacity-30"></div>
                 </div>
 
                 {/* Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {reviews.map((review, index) => (
                         <div
                             key={index}
-                            className="bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_15px_40px_-15px_rgba(31,38,135,0.08)] border border-gray-50 flex flex-col items-center text-center hover:-translate-y-2 transition-all duration-500 group"
+                            className="bg-white rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 shadow-[0_15px_40px_-15px_rgba(31,38,135,0.08)] border border-gray-50 flex flex-col items-center text-center hover:-translate-y-2 transition-all duration-500 group"
                         >
                             {/* Avatar/Initial Case */}
                             <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#E91E63] to-[#FF80AB] flex items-center justify-center text-white font-black text-lg mb-6 shadow-lg shadow-[#FF80AB]/20 group-hover:scale-110 transition-transform duration-300">

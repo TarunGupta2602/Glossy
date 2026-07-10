@@ -23,18 +23,18 @@ export default function ProductRow({ title, products, viewAllLink }) {
     const isBestSeller = title.includes("Best Sellers");
 
     return (
-        <section className={`py-16 md:py-24 px-6 md:px-12 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
-            <div className="max-w-7xl mx-auto">
+        <section className={`py-10 md:py-14 px-4 md:px-8 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
+            <div className="w-full">
                 {/* Refined Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-                    <div className="flex flex-col gap-4">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-10 gap-6">
+                    <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
                             <div className={`h-[1px] w-8 ${isBestSeller ? 'bg-amber-400' : 'bg-[#E91E63]'}`} />
                             <span className={`text-[10px] font-black tracking-[0.4em] uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
                                 {isBestSeller ? 'TRUE TRENDS' : 'COLLECTION'}
                             </span>
                         </div>
-                        <h2 className="text-4xl md:text-6xl font-playfair font-bold text-gray-900 tracking-tight leading-none group">
+                        <h2 className="text-3xl md:text-5xl font-playfair font-bold text-gray-900 tracking-tight leading-none group">
                             {title}
                         </h2>
                     </div>

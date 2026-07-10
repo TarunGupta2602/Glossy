@@ -27,7 +27,7 @@ export default async function Home() {
   // 1. Fetch Categories to get IDs
   const { data: categories } = await supabase
     .from("categories")
-    .select("id, name, slug");
+    .select("*");
 
   // 2. Fetch Products for all categories
   const categoryProducts = await Promise.all(
@@ -75,6 +75,9 @@ export default async function Home() {
       {/* Dynamic Hero Section */}
       <HeroSlider />
 
+      {/* Featured Collections Section */}
+      <FeaturedCollections categories={categories || []} />
+
       {/* Best Sellers Section - Curated social proof */}
       <section className="bg-gray-50/50 py-0">
         {(() => {
@@ -106,9 +109,6 @@ export default async function Home() {
           viewAllLink={`/shop/${cat.slug}`}
         />
       ))}
-
-      {/* Featured Collections Section */}
-      <FeaturedCollections />
 
       {/* SEO Content Section - Visually Hidden */}
       <section className="sr-only">
