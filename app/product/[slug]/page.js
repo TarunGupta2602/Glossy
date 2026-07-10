@@ -13,7 +13,7 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
-    const { id: param } = await params;
+    const { slug: param } = await params;
     const product = await fetchProductBySlugOrId(param);
 
     if (!product) {
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-    const { id: param } = await params;
+    const { slug: param } = await params;
     const product = await fetchProductBySlugOrId(param);
 
     if (!product) notFound();
