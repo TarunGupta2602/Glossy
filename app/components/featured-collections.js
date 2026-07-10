@@ -106,13 +106,17 @@ export default function FeaturedCollections({ categories }) {
                         >
                             <div className="absolute inset-0 z-0">
                                 <Image
-                                    src={category.image_url || "/logo.png"}
+                                    src={category.image_url || category.image || "/logo.png"}
                                     alt={category.name}
                                     fill
                                     sizes="100vw"
                                     className="object-cover transition-all duration-[2s] ease-out"
                                     priority={index === 0}
                                     unoptimized={true}
+                                    onError={(e) => {
+                                        console.error("Image failed to load:", category.image_url || category.image);
+                                        e.target.src = "/logo.png";
+                                    }}
                                 />
                                 {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />

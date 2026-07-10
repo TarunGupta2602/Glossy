@@ -41,19 +41,26 @@ export default function AddCategoryPage() {
         try {
             let imageUrl = "";
 
-            // 1. Upload Image
+            // 1. Upload Image via API
             if (image) {
-                const fileName = `category-${Date.now()}-${image.name}`;
+                console.log("Starting image upload via API...");
+                const formData = new FormData();
+                formData.append('file', image);
 
-                await supabase.storage
-                    .from("category-images")
-                    .upload(fileName, image);
+                const uploadRes = await fetch('/api/upload-category-image', {
+                    method: 'POST',
+                    body: formData,
+                });
 
-                const { data } = supabase.storage
-                    .from("category-images")
-                    .getPublicUrl(fileName);
+                const uploadData = await uploadRes.json();
+                console.log("Upload API response:", uploadData);
 
-                imageUrl = data.publicUrl;
+                if (!uploadData.success) {
+                    throw new Error(uploadData.error || 'Upload failed');
+                }
+
+                imageUrl = uploadData.publicUrl;
+                console.log("Image uploaded successfully:", imageUrl);
             }
 
             // 2. Insert Category via API

@@ -56,21 +56,31 @@ export default function EditCategoryPage({ params }) {
         try {
             let finalImageUrl = imageUrl;
 
-            // 1. Upload new image if provided
+            // 1. Upload new image if provided via API
             if (imageFile) {
-                // Optional: Delete old image if it exists
-                if (imageUrl) {
-                    const oldFileName = imageUrl.split("/").pop();
-                    await supabase.storage.from("category-images").remove([oldFileName]);
+                console.log("Starting image upload via API...");
+                const formData = new FormData();
+                formData.append('file', imageFile);
+                formData.append('oldImageUrl', imageUrl || '');
+
+                const uploadRes = await fetch('/api/upload-category-image', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const uploadData = await uploadRes.json();
+                console.log("Upload API response:", uploadData);
+
+                if (!uploadData.success) {
+                    throw new Error(uploadData.error || 'Upload failed');
                 }
 
-                const fileName = `category-${Date.now()}-${imageFile.name}`;
-                await supabase.storage.from("category-images").upload(fileName, imageFile);
-                const { data } = supabase.storage.from("category-images").getPublicUrl(fileName);
-                finalImageUrl = data.publicUrl;
+                finalImageUrl = uploadData.publicUrl;
+                console.log("Image uploaded successfully:", finalImageUrl);
             }
 
             // 2. Update Category via API
+            console.log("Updating category in database...");
             const res = await fetch(`/api/categories/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
@@ -82,13 +92,15 @@ export default function EditCategoryPage({ params }) {
             });
             const data = await res.json();
 
+            console.log("API response:", data);
+
             if (!data.success) throw new Error(data.error || "Failed to update category");
 
             alert("Category updated successfully 🚀");
             router.push("/admin/categories");
         } catch (err) {
-            console.error(err);
-            alert("Error updating category");
+            console.error("Full error:", err);
+            alert(`Error updating category: ${err.message}`);
         }
 
         setIsUpdating(false);
