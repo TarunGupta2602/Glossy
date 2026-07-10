@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function HeroSlider() {
     const slides = [
         {
-            image: "/hero2.jpg",
+            image: "/iloveimg-resized/hero1.jpg",
             subtitle: "The New Season",
             title: "Lustre & Light",
             description: "Handcrafted anti-tarnish jewelry designed for your daily brilliance.",
@@ -16,13 +16,40 @@ export default function HeroSlider() {
             isSale: false
         },
         {
-            image: "/hero3.jpg",
+            image: "/iloveimg-resized/hero2.jpg",
             subtitle: "Limited Time Offer",
             title: "The Luxe Sale",
             description: "Curated favorites, now available at exceptional price points.",
             buttonText: "Explore the Sale",
             buttonLink: "/shop",
             isSale: true
+        },
+        {
+            image: "/iloveimg-resized/hero3.png",
+            subtitle: "Everyday Elegance",
+            title: "Timeless Beauty",
+            description: "Discover pieces that transition seamlessly from day to night.",
+            buttonText: "Discover More",
+            buttonLink: "/shop",
+            isSale: false
+        },
+        {
+            image: "/iloveimg-resized/hero4.png",
+            subtitle: "New Arrivals",
+            title: "Golden Hour",
+            description: "Warm tones and radiant designs for the modern woman.",
+            buttonText: "Shop New",
+            buttonLink: "/shop",
+            isSale: false
+        },
+        {
+            image: "/iloveimg-resized/hero5.png",
+            subtitle: "Signature Collection",
+            title: "Pure Luxury",
+            description: "Exquisite craftsmanship meets sustainable elegance.",
+            buttonText: "View Collection",
+            buttonLink: "/shop",
+            isSale: false
         }
     ];
 
