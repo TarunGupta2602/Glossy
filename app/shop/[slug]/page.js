@@ -71,8 +71,67 @@ export default async function CollectionDetails({ params }) {
         .eq("category_id", category.id)
         .order("created_at", { ascending: false });
 
+    // Collection Schema
+    const collectionJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": category.name,
+        "description": category.description || `Explore our ${category.name} collection at The luxe jewels.`,
+        "url": `https://www.theluxejewels.in/shop/${slug}`,
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": products?.map((product, index) => ({
+                "@type": "ListItem",
+                "position": index + 1,
+                "item": {
+                    "@type": "Product",
+                    "name": product.name,
+                    "url": `https://www.theluxejewels.in/product/${product.slug}`,
+                    "image": product.main_image,
+                    "price": product.price,
+                    "priceCurrency": "INR",
+                    "category": category.name
+                }
+            })) || []
+        }
+    };
+
+    // Breadcrumb Schema
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.theluxejewels.in"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://www.theluxejewels.in/shop"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": category.name,
+                "item": `https://www.theluxejewels.in/shop/${slug}`
+            }
+        ]
+    };
+
     return (
         <section className="py-24 px-6 md:px-12 bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold mb-10 text-center">{category.name}</h1>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">

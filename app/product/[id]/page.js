@@ -48,8 +48,8 @@ export async function generateMetadata({ params }) {
             url: `${BASE_URL}${canonicalPath}`,
             siteName: "The luxe jewels",
             images: product.main_image
-                ? [{ url: product.main_image, alt: product.image_alt || product.name, width: 1200, height: 1200 }]
-                : [{ url: "/logo.png" }],
+                ? [{ url: product.main_image, alt: product.image_alt || product.name, width: 1200, height: 630 }]
+                : [{ url: "/logo.png", width: 1200, height: 630 }],
             type: "website",
         },
         twitter: {
@@ -122,6 +122,54 @@ export default async function ProductPage({ params }) {
     const avgRating = totalReviews > 0
         ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
         : 0;
+
+    // FAQ Schema for common jewelry questions
+    const faqJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+            {
+                "@type": "Question",
+                name: "Is this jewelry waterproof and tarnish-resistant?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, all our jewelry is designed to be waterproof and anti-tarnish. The 18k gold plating ensures long-lasting shine even with daily wear."
+                }
+            },
+            {
+                "@type": "Question",
+                name: "What materials are used in this jewelry?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "We use high-quality materials including recycled silver, 18k gold plating, and hypoallergenic metals. All pieces are crafted for sensitive skin."
+                }
+            },
+            {
+                "@type": "Question",
+                name: "Do you offer free shipping in India?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we offer free shipping across India on all orders. Standard delivery takes 5-7 business days."
+                }
+            },
+            {
+                "@type": "Question",
+                name: "What is your return policy?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "We offer a 7-day return policy for unused items in original packaging. Contact us at +91-7456096455 for return assistance."
+                }
+            },
+            {
+                "@type": "Question",
+                name: "How should I care for this jewelry?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "To maintain shine, avoid contact with perfumes, lotions, and harsh chemicals. Clean gently with a soft cloth and store in the provided pouch."
+                }
+            }
+        ]
+    };
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -200,6 +248,7 @@ export default async function ProductPage({ params }) {
                     { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
                 ],
             },
+            faqJsonLd
         ],
     };
 

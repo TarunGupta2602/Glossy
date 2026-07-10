@@ -38,8 +38,32 @@ export default async function ShopPage() {
         supabase.from("products").select("*, categories(name, id, slug)").order("created_at", { ascending: false }),
     ]);
 
+    // Breadcrumb Schema
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.theluxejewels.in"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://www.theluxejewels.in/shop"
+            }
+        ]
+    };
+
     return (
         <main className="min-h-screen bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             <section className="pt-10 px-6 md:px-12 max-w-7xl mx-auto">
                 <Breadcrumbs items={[{ label: "Shop All Collections" }]} />
             </section>

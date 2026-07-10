@@ -115,7 +115,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const jsonLd = {
+  const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "The luxe jewels",
@@ -124,12 +124,60 @@ export default function RootLayout({ children }) {
     "description": "Defining modern luxury through intentional design and sustainable practices in fine jewelry.",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "",
-      "contactType": "customer service"
+      "telephone": "+91-7456096455",
+      "contactType": "customer service",
+      "areaServed": "IN"
     },
     "sameAs": [
       "https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
     ]
+  };
+
+  const webSiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The luxe jewels",
+    "url": "https://www.theluxejewels.in",
+    "description": "Shop premium anti-tarnish, waterproof, and hypoallergenic jewelry in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.theluxejewels.in/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "The luxe jewels",
+      "url": "https://www.theluxejewels.in",
+      "logo": "https://www.theluxejewels.in/favicon-symbol.png"
+    }
+  };
+
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "The luxe jewels",
+    "description": "Premium anti-tarnish and waterproof jewelry store in India. Shop 18k gold plated earrings, necklaces, and fine jewelry.",
+    "url": "https://www.theluxejewels.in",
+    "telephone": "+91-7456096455",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IN"
+    },
+    "priceRange": "₹₹₹",
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "00:00",
+      "closes": "23:59"
+    }
   };
 
   return (
@@ -137,7 +185,15 @@ export default function RootLayout({ children }) {
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
         />
         <script src="https://accounts.google.com/gsi/client" async defer></script>
       </head>
