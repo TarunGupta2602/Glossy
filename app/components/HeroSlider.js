@@ -10,7 +10,7 @@ export default function HeroSlider() {
             image: "/iloveimg-resized/hero1.jpg",
             subtitle: "The New Season",
             title: "Lustre & Light",
-            description: "Handcrafted anti-tarnish jewelry designed for your daily brilliance.",
+            description: "Handcrafted anti-tarnish jewellery designed for your daily brilliance.",
             buttonText: "Shop the Collection",
             buttonLink: "/shop",
             isSale: false
