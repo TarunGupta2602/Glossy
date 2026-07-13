@@ -20,15 +20,15 @@ export async function generateMetadata({ params }) {
         return { title: "Product Not Found", robots: { index: false, follow: false } };
     }
 
-    const categoryName = product.categories?.name || "Fine Jewelry";
+    const categoryName = product.categories?.name || "Fine Jewellery";
     const seoTitle = formatPageTitle(product.meta_title || `${product.name} | ${categoryName}`);
     const seoDescription =
         product.meta_description ||
         product.description ||
-        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewelry with free shipping across India.`;
+        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with free shipping across India.`;
     const seoKeywords =
         product.meta_keywords ||
-        `${product.name}, ${categoryName}, anti-tarnish jewelry, waterproof jewelry india, the luxe jewels`;
+        `${product.name}, ${categoryName}, anti-tarnish jewellery, waterproof jewellery india, the luxe jewels`;
     const canonicalPath = getProductPath(product);
 
     return {
@@ -123,22 +123,22 @@ export default async function ProductPage({ params }) {
         ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
         : 0;
 
-    // FAQ Schema for common jewelry questions
+    // FAQ Schema for common jewellery questions
     const faqJsonLd = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         mainEntity: [
             {
                 "@type": "Question",
-                name: "Is this jewelry waterproof and tarnish-resistant?",
+                name: "Is this jewellery waterproof and tarnish-resistant?",
                 acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Yes, all our jewelry is designed to be waterproof and anti-tarnish. The 18k gold plating ensures long-lasting shine even with daily wear."
+                    text: "Yes, all our jewellery is designed to be waterproof and anti-tarnish. The 18k gold plating ensures long-lasting shine even with daily wear."
                 }
             },
             {
                 "@type": "Question",
-                name: "What materials are used in this jewelry?",
+                name: "What materials are used in this jewellery?",
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: "We use high-quality materials including recycled silver, 18k gold plating, and hypoallergenic metals. All pieces are crafted for sensitive skin."
@@ -162,7 +162,7 @@ export default async function ProductPage({ params }) {
             },
             {
                 "@type": "Question",
-                name: "How should I care for this jewelry?",
+                name: "How should I care for this jewellery?",
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: "To maintain shine, avoid contact with perfumes, lotions, and harsh chemicals. Clean gently with a soft cloth and store in the provided pouch."
@@ -242,7 +242,7 @@ export default async function ProductPage({ params }) {
                     {
                         "@type": "ListItem",
                         position: 2,
-                        name: product.categories?.name || "Jewelry",
+                        name: product.categories?.name || "Jewellery",
                         item: `${BASE_URL}/shop/${product.categories?.slug || ""}`,
                     },
                     { "@type": "ListItem", position: 3, name: product.name, item: productUrl },

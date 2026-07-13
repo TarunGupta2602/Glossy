@@ -28,7 +28,7 @@ export default function CartPage() {
                     const productMap = new Map((data.products || []).map((product) => [product.id, {
                         name: product.name,
                         image: product.main_image || product.image || "/logo.png",
-                        category: product.categories?.name || "Jewelry",
+                        category: product.categories?.name || "Jewellery",
                     }]));
                     setFreeGiftProducts(
                         promo.freeProductIds.map((productId) => {

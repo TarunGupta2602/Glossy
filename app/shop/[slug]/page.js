@@ -20,12 +20,12 @@ export async function generateMetadata({ params }) {
 
     return {
         title: `${category.name} | Premium Anti-Tarnish Collection`,
-        description: category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewelry at The luxe jewels India.`,
+        description: category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The luxe jewels India.`,
         alternates: {
             canonical: `/shop/${slug}`,
         },
         keywords: [
-            `${category.name} jewelry`,
+            `${category.name} jewellery`,
             `anti tarnish ${category.name}`,
             `waterproof ${category.name} india`,
             `18k gold plated ${category.name}`,
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }) {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${category.name} | Custom Jewelry Selection`,
+            title: `${category.name} | Custom Jewellery Selection`,
             description: category.description,
             images: category.image_url ? [category.image_url] : ["/logo.png"],
         },

@@ -7,12 +7,12 @@ import ProductRow from "./components/ProductRow";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 export const metadata = {
-  title: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewelry India",
-  description: "Shop anti-tarnish, waterproof, and hypoallergenic jewelry in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The luxe jewels.",
+  title: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
+  description: "Shop anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The luxe jewels.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "The luxe jewels | Premium Jewelry for Everyday Luxury",
-    description: "Discover handcrafted anti-tarnish jewelry made for daily wear, gifting, and modern styling in India.",
+    title: "The luxe jewels | Premium Jewellery for Everyday Luxury",
+    description: "Discover handcrafted anti-tarnish jewellery made for daily wear, gifting, and modern styling in India.",
     url: "https://www.theluxejewels.in",
     siteName: "The luxe jewels",
     type: "website",
@@ -46,13 +46,13 @@ export default async function Home() {
   const activeCategories = categoryProducts
     .filter(cat => cat.products.length > 0)
     .sort((a, b) => {
-      // Custom order: Sparkle Jewelry Duo (Second to last), Uniqueness (Last)
+      // Custom order: Sparkle Jewellery Duo (Second to last), Uniqueness (Last)
       const aSlug = a.slug?.toLowerCase();
       const bSlug = b.slug?.toLowerCase();
 
       const order = {
         'the-necklace-edit': -1,
-        'sparkle-jewelry-duo': 1,
+        'sparkle-jewellery-duo': 1,
         'uniqueness': 2
       };
 
@@ -70,7 +70,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hidden H1 for SEO */}
-      <h1 className="sr-only">The luxe jewels | Premium Anti-Tarnish & Fine Jewelry India</h1>
+      <h1 className="sr-only">The luxe jewels | Premium Anti-Tarnish & Fine Jewellery India</h1>
 
       {/* Dynamic Hero Section */}
       <HeroSlider />
@@ -112,10 +112,10 @@ export default async function Home() {
 
       {/* SEO Content Section - Visually Hidden */}
       <section className="sr-only">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 tracking-tight">The luxe jewels: Defining Premium Anti-Tarnish & Fine Jewelry</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 tracking-tight">The luxe jewels: Defining Premium Anti-Tarnish & Fine Jewellery</h2>
         <p className="text-lg text-gray-600 leading-relaxed mb-10">
           Welcome to <Link href="/" className="text-gray-900 font-bold border-b border-gray-900">The luxe jewels</Link>,
-          India&apos;s premier destination for **anti-tarnish jewelry**, waterproof accessories, and handcrafted fine jewelry.
+          India&apos;s premier destination for **anti-tarnish jewellery**, waterproof accessories, and handcrafted fine jewellery.
           We specialize in <Link href="/earrings" className="hover:text-[#E91E63] transition-colors font-medium mx-1">18k gold plated earrings</Link>,
           <Link href="/necklaces" className="hover:text-[#E91E63] transition-colors font-medium mx-1">designer fine necklaces</Link>,
           and timeless everyday essentials. Our commitment to sustainable luxury ensures every piece is as ethically sourced as it is stunning.

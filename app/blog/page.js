@@ -7,16 +7,16 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata = {
-    title: "Blog | Jewelry Tips, Styling Guides & Latest Trends",
+    title: "Blog | Jewellery Tips, Styling Guides & Latest Trends",
     description:
-        "Explore The Luxe Jewels blog for expert jewelry tips, styling guides, care advice, and the latest trends in luxury anti-tarnish and waterproof jewelry.",
+        "Explore The Luxe Jewels blog for expert jewellery tips, styling guides, care advice, and the latest trends in luxury anti-tarnish and waterproof jewellery.",
     keywords: [
-        "jewelry blog",
-        "jewelry styling tips",
-        "luxury jewelry trends",
-        "jewelry care guide",
-        "anti tarnish jewelry tips",
-        "waterproof jewelry blog",
+        "jewellery blog",
+        "jewellery styling tips",
+        "luxury jewellery trends",
+        "jewellery care guide",
+        "anti tarnish jewellery tips",
+        "waterproof jewellery blog",
         "The luxe jewels blog",
     ],
     alternates: {
@@ -29,9 +29,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Blog | Jewelry Tips & Styling Guides | The Luxe Jewels",
+        title: "Blog | Jewellery Tips & Styling Guides | The Luxe Jewels",
         description:
-            "Explore expert jewelry tips, styling guides, and the latest trends from The Luxe Jewels.",
+            "Explore expert jewellery tips, styling guides, and the latest trends from The Luxe Jewels.",
         url: "https://www.theluxejewels.in/blog",
         type: "website",
     },
@@ -145,10 +145,10 @@ export default async function BlogPage({ searchParams }) {
                         The Luxe Journal
                     </p>
                     <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-5 tracking-tight drop-shadow-sm" style={{ fontFamily: "var(--font-playfair)" }}>
-                        Stories, styling tips, and jewelry inspiration.
+                        Stories, styling tips, and jewellery inspiration.
                     </h1>
                     <p className="mx-auto max-w-2xl text-sm md:text-base text-gray-500 font-medium leading-7">
-                        Dive into our latest articles to discover jewelry care advice, seasonal styling ideas, and the newest trends in luxury accessories.
+                        Dive into our latest articles to discover jewellery care advice, seasonal styling ideas, and the newest trends in luxury accessories.
                     </p>
                     <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 sm:gap-4">
                         <span className="rounded-full border border-pink-100 bg-white/80 px-4 py-2 font-semibold text-[#c2185b] shadow-sm">

@@ -37,7 +37,7 @@ export default function CheckoutPage() {
                     const productMap = new Map((data.products || []).map((product) => [product.id, {
                         name: product.name,
                         image: product.main_image || product.image || "/logo.png",
-                        category: product.categories?.name || "Jewelry",
+                        category: product.categories?.name || "Jewellery",
                     }]));
                     const resolvedProducts = promo.freeProductIds.map((productId) => {
                         const resolved = productMap.get(productId);
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                 amount: orderData.amount,
                 currency: orderData.currency,
                 name: "The luxe jewels",
-                description: "Jewelry Purchase",
+                description: "Jewellery Purchase",
                 image: "/logo.png",
                 order_id: orderData.id,
                 handler: async function (response) {

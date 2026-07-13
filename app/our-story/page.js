@@ -2,17 +2,17 @@ import Image from "next/image";
 
 export const dynamic = "force-static"; // ✅ SSG
 export const metadata = {
-    title: "Our Story | Handcrafted Sustainable Jewelry",
-    description: "Discover the journey behind The luxe jewels. We are committed to crafting timeless, premium anti-tarnish jewelry with ethical sourcing and intentional design.",
+    title: "Our Story | Handcrafted Sustainable Jewellery",
+    description: "Discover the journey behind The luxe jewels. We are committed to crafting timeless, premium anti-tarnish jewellery with ethical sourcing and intentional design.",
     alternates: {
         canonical: "/our-story",
     },
     keywords: [
         "about the luxe jewels",
-        "sustainable jewelry brand india",
-        "ethical jewelry story",
-        "handcrafted fine jewelry india",
-        "luxury jewelry journey"
+        "sustainable jewellery brand india",
+        "ethical jewellery story",
+        "handcrafted fine jewellery india",
+        "luxury jewellery journey"
     ],
     robots: {
         index: true,
@@ -41,7 +41,7 @@ export default function OurStoryPage() {
                 {/* Content */}
                 <div className="space-y-8 text-gray-600 leading-relaxed text-lg">
                     <p>
-                        At The luxe jewels, we believe jewelry is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
+                        At The luxe jewels, we believe jewellery is more than an accessory — it’s a statement of identity, confidence, and timeless beauty.
                     </p>
 
                     <p>

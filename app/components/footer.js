@@ -22,7 +22,7 @@ export default function Footer() {
                         </Link>
 
                         <p className="text-gray-500 text-base leading-relaxed max-w-sm font-medium mb-8">
-                            Curating the finest anti-tarnish, waterproof jewelry that celebrates your unique sparkle. Modern luxury designed for every day.
+                            Curating the finest anti-tarnish, waterproof jewellery that celebrates your unique sparkle. Modern luxury designed for every day.
                         </p>
 
                         
@@ -105,8 +105,8 @@ export default function Footer() {
 
             {/* SEO Disclaimer (SR Only) */}
             <div className="sr-only">
-                <h2 className="text-[10px] uppercase font-black">India's Premier Anti-Tarnish Jewelry Destination</h2>
-                <p>Welcome to The Luxe Jewels, your ultimate destination for premium anti-tarnish jewelry in India. We specialize in handcrafted waterproof jewelry designed to withstand daily life without losing sparkle. Explore 18k gold plated necklaces, luxury earrings, and tarnish-free rings.</p>
+                <h2 className="text-[10px] uppercase font-black">India's Premier Anti-Tarnish Jewellery Destination</h2>
+                <p>Welcome to The Luxe Jewels, your ultimate destination for premium anti-tarnish jewellery in India. We specialize in handcrafted waterproof jewellery designed to withstand daily life without losing sparkle. Explore 18k gold plated necklaces, luxury earrings, and tarnish-free rings.</p>
             </div>
         </footer>
     );

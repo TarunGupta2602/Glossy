@@ -6,18 +6,18 @@ import Breadcrumbs from "../components/Breadcrumbs";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-    title: "Featured Jewelry Collections | Curated Luxury Jewelry India",
-    description: "Explore curated fine jewelry collections at The luxe jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
+    title: "Featured Jewellery Collections | Curated Luxury Jewellery India",
+    description: "Explore curated fine jewellery collections at The luxe jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
     alternates: {
         canonical: "/collection",
     },
     keywords: [
-        "jewelry collections india",
-        "curated fine jewelry",
-        "anti tarnish jewelry sets",
-        "luxury jewelry curation",
-        "modern jewelry collections",
-        "sustainable jewelry brand india"
+        "jewellery collections india",
+        "curated fine jewellery",
+        "anti tarnish jewellery sets",
+        "luxury jewellery curation",
+        "modern jewellery collections",
+        "sustainable jewellery brand india"
     ],
     robots: {
         index: true,
@@ -26,8 +26,8 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Featured Collections | Curated Fine Jewelry | The luxe jewels",
-        description: "Explore our curated collections of fine jewelry. Handcrafted for elegance.",
+        title: "Featured Collections | Curated Fine Jewellery | The luxe jewels",
+        description: "Explore our curated collections of fine jewellery. Handcrafted for elegance.",
         url: "https://www.theluxejewels.in/collection",
         siteName: "The luxe jewels",
         images: [{ url: "/logo.png" }],

@@ -15,7 +15,7 @@ export default function Testimonials() {
         {
             name: "Ishani Mehta",
             location: "Mumbai",
-            text: "The 'Sparkle Jewelry Duo' is my new absolute favorite. It matches perfectly with both my kurtis and western dresses. The packaging was lovely and the delivery was ahead of schedule.",
+            text: "The 'Sparkle Jewellery Duo' is my new absolute favorite. It matches perfectly with both my kurtis and western dresses. The packaging was lovely and the delivery was ahead of schedule.",
             initials: "IM"
         },
     ];

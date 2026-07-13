@@ -7,14 +7,14 @@ import Image from "next/image";
 export default function FeaturedCollections({ categories }) {
     const [currentIdx, setCurrentIdx] = useState(0);
 
-    // Apply custom sorting: Sparkle Jewelry Duo (Second to last), Uniqueness (Last)
+    // Apply custom sorting: Sparkle Jewellery Duo (Second to last), Uniqueness (Last)
     const sortedCategories = [...categories].sort((a, b) => {
         const aSlug = a.slug?.toLowerCase();
         const bSlug = b.slug?.toLowerCase();
 
         const order = {
             'the-necklace-edit': -1,
-            'sparkle-jewelry-duo': 1,
+            'sparkle-jewellery-duo': 1,
             'uniqueness': 2
         };
 
@@ -76,7 +76,7 @@ export default function FeaturedCollections({ categories }) {
                             <span className="text-gray-300 italic">Collections</span>
                         </h2>
                         <p className="text-sm md:text-base text-gray-500 font-medium max-w-xl leading-relaxed">
-                            A curated dialogue between tradition and modernity. Explore narratives woven into fine anti-tarnish jewelry.
+                            A curated dialogue between tradition and modernity. Explore narratives woven into fine anti-tarnish jewellery.
                         </p>
                     </div>
                     <Link
@@ -139,7 +139,7 @@ export default function FeaturedCollections({ categories }) {
                                     </h3>
 
                                     <p className="text-sm md:text-base text-white/80 font-medium max-w-lg mb-6 leading-relaxed">
-                                        {category.description || 'Defining the contemporary jewelry landscape with intentional design.'}
+                                        {category.description || 'Defining the contemporary jewellery landscape with intentional design.'}
                                     </p>
 
                                     <div className="flex items-center gap-4">

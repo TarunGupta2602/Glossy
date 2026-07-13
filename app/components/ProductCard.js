@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getProductPath } from "@/lib/seo";
 
 export default function ProductCard({ product }) {
-    const categoryName = product.categories?.name || "Jewelry";
+    const categoryName = product.categories?.name || "Jewellery";
     const price = product.price
         ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
         : "0.00";

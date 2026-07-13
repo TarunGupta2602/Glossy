@@ -10,7 +10,7 @@ import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
 
 export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
-    const categoryName = product.categories?.name || "Jewelry";
+    const categoryName = product.categories?.name || "Jewellery";
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -65,7 +65,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                 
                 {/* Breadcrumb */}
                 <nav className="mb-8 flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-400">
-                    <Link href="/shop" className="hover:text-gray-700 transition-colors">Jewelry</Link>
+                    <Link href="/shop" className="hover:text-gray-700 transition-colors">Jewellery</Link>
                     <svg className="w-3 h-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -332,14 +332,14 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 href="/shop"
                                 className="hidden sm:block text-[11px] font-bold tracking-[0.18em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors"
                             >
-                                Shop All Jewelry
+                                Shop All Jewellery
                             </Link>
                         </div>
 
                         {/* Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-8">
                             {relatedProducts.slice(0, 4).map((p) => {
-                                const cat = p.categories?.name || "Jewelry";
+                                const cat = p.categories?.name || "Jewellery";
                                 const pPrice = p.price
                                     ? p.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     : "0.00";
@@ -393,7 +393,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                         <div className="mt-8 text-center sm:hidden">
                             <Link href="/shop" className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#E91E63]">
-                                Shop All Jewelry →
+                                Shop All Jewellery →
                             </Link>
                         </div>
                     </div>

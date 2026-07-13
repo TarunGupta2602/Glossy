@@ -88,7 +88,7 @@ export default function ShopSidebar({
                                 : "text-gray-400 group-hover:text-gray-700"
                                 }`}
                         >
-                            All Jewelry
+                            All Jewellery
                         </span>
                     </div>
 

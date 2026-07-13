@@ -38,7 +38,7 @@ export async function GET(req) {
                 price: item.product.price,
                 description: item.product.description,
                 image: item.product.main_image || "/logo.png",
-                category: item.product.categories?.name || "Jewelry",
+                category: item.product.categories?.name || "Jewellery",
                 quantity: item.quantity
             }));
 

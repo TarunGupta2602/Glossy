@@ -37,7 +37,7 @@ export async function GET(req) {
                 name: item.product.name,
                 price: item.product.price,
                 image: item.product.main_image || "/logo.png",
-                category: item.product.categories?.name || "Jewelry"
+                category: item.product.categories?.name || "Jewellery"
             }));
 
         return NextResponse.json({ success: true, wishlist: formattedWishlist });

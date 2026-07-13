@@ -16,10 +16,10 @@ export const metadata = {
         "anti tarnish necklaces india",
         "waterproof gold chains india",
         "gold plated pendants online",
-        "tarnish resistant jewelry brand",
+        "tarnish resistant jewellery brand",
         "minimalist necklaces for women",
-        "daily wear jewelry india",
-        "ethical fine jewelry online"
+        "daily wear jewellery india",
+        "ethical fine jewellery online"
     ],
     robots: {
         index: true,
@@ -28,7 +28,7 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Anti-Tarnish Necklaces | Luxury Waterproof Jewelry | The luxe jewels",
+        title: "Anti-Tarnish Necklaces | Luxury Waterproof Jewellery | The luxe jewels",
         description: "Luminous accents for every style. Handcrafted waterproof fine necklaces. Designed to never fade.",
         url: "https://www.theluxejewels.in/necklaces",
         siteName: "The luxe jewels",
@@ -108,12 +108,12 @@ export default async function NecklacesPage() {
                 <p>
                     Shop our exclusive curation of **anti-tarnish necklaces** at The luxe jewels.
                     From delicate 18k gold plated chains meant for layering to bold statement pendants, each design is realized with a focus on sustainable luxury.
-                    Our jewelry is designed in India and crafted to be **waterproof and sweat-proof**, ensuring your shine lasts a lifetime.
+                    Our jewellery is designed in India and crafted to be **waterproof and sweat-proof**, ensuring your shine lasts a lifetime.
                 </p>
-                <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Sustainable Luxury Fine Jewelry India</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Sustainable Luxury Fine Jewellery India</h2>
                 <p>
                     At <Link href="/" className="text-gray-900 font-bold underline decoration-pink-100 underline-offset-4">The luxe jewels</Link>, we believe in beauty that lasts.
-                    Explore our <Link href="/shop" className="text-gray-900 transition-colors font-semibold">fine jewelry collections</Link> and find pieces that
+                    Explore our <Link href="/shop" className="text-gray-900 transition-colors font-semibold">fine jewellery collections</Link> and find pieces that
                     resonate with your personal style. Pair your necklace with our <Link href="/earrings" className="text-gray-900 transition-colors font-semibold">premium earrings</Link>
                     for a complete, sophisticated look.
                 </p>

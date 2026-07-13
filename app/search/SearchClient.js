@@ -24,7 +24,7 @@ export default function SearchClient({ query, products = [] }) {
                         const price = product.price
                             ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
                             : "0.00";
-                        const category = product.categories?.name || "Jewelry";
+                        const category = product.categories?.name || "Jewellery";
 
                         return (
                             <Link
@@ -71,7 +71,7 @@ export default function SearchClient({ query, products = [] }) {
                         href="/shop"
                         className="bg-gray-900 text-white px-8 py-3.5 rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-black transition-all"
                     >
-                        Browse All Jewelry
+                        Browse All Jewellery
                     </Link>
                 </div>
             )}
