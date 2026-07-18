@@ -130,10 +130,7 @@ export default function RootLayout({ children }) {
       "telephone": "+91-7456096455",
       "contactType": "customer service",
       "areaServed": "IN"
-    },
-    "sameAs": [
-      "https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
-    ]
+    }
   };
 
   const webSiteJsonLd = {

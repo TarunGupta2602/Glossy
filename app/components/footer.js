@@ -53,25 +53,6 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* Connection Section */}
-                        <div className="flex flex-col items-center md:items-start col-span-2 lg:col-span-1 border-t md:border-t-0 pt-10 md:pt-0 border-gray-100">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Connect</h3>
-                            <p className="text-gray-400 text-sm font-medium mb-6 text-center md:text-left">
-                                Join our community on Instagram for styling tips and exclusive updates.
-                            </p>
-                            <div className="flex items-center gap-4">
-                                <a
-                                    href="https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-6 py-3 rounded-2xl bg-white border border-gray-100 flex items-center gap-3 text-gray-900 hover:bg-[#E91E63] hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-sm font-bold text-sm"
-                                    aria-label="Instagram"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                                    Instagram
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
