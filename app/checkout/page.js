@@ -423,14 +423,14 @@ export default function CheckoutPage() {
                                         <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
                                     </div>
                                 )}
-                                {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
+                                {promo.completeSets > 0 && promo.freeGiftSelections?.length > 0 && (
                                     <div className="rounded-2xl border border-[#E91E63]/10 bg-[#E91E63]/5 p-4 text-sm text-gray-700">
                                         <p className="font-semibold text-[#E91E63] mb-2">Free gift(s) included</p>
                                         <ul className="space-y-1">
-                                            {freeGiftProducts.map((product, index) => (
-                                                <li key={`${product.id}-${index}`} className="flex items-center justify-between gap-3">
-                                                    <span>Gift {index + 1}</span>
-                                                    <span className="font-semibold text-gray-900">{product.name}</span>
+                                            {promo.freeGiftSelections.map((selection) => (
+                                                <li key={`${selection.productId}-${selection.setNumber}`} className="flex items-center justify-between gap-3">
+                                                    <span>Gift {selection.setNumber}</span>
+                                                    <span className="font-semibold text-gray-900">{selection.name}</span>
                                                 </li>
                                             ))}
                                         </ul>
