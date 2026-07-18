@@ -43,7 +43,8 @@ const PAGE_SIZE = 6;
 
 export default async function BlogPage({ searchParams }) {
     const supabase = getServiceClient();
-    const page = parseInt(searchParams?.page || "1", 10);
+    const params = await searchParams;
+    const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/blog?page=1");
 
     // Get total count
@@ -195,6 +196,7 @@ export default async function BlogPage({ searchParams }) {
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                     priority={index < 3}
+                                                    unoptimized
                                                 />
                                             ) : (
                                                 <div className="flex h-full items-center justify-center bg-linear-to-br from-gray-100 to-gray-50">

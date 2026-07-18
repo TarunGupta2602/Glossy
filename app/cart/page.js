@@ -12,48 +12,6 @@ export default function CartPage() {
     const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
     const { user, signInWithGoogle } = useAuth();
     const router = useRouter();
-    const [freeGiftProducts, setFreeGiftProducts] = useState([]);
-
-    useEffect(() => {
-        const loadFreeGiftProducts = async () => {
-            if (!promo?.freeProductIds?.length) {
-                setFreeGiftProducts([]);
-                return;
-            }
-
-            try {
-                const response = await fetch("/api/products");
-                const data = await response.json();
-                if (data?.success) {
-                    const productMap = new Map((data.products || []).map((product) => [product.id, {
-                        name: product.name,
-                        image: product.main_image || product.image || "/logo.png",
-                        category: product.categories?.name || "Jewellery",
-                    }]));
-                    setFreeGiftProducts(
-                        promo.freeProductIds.map((productId) => {
-                            const resolved = productMap.get(productId);
-                            return {
-                                id: productId,
-                                name: resolved?.name || productId,
-                                image: resolved?.image || "/logo.png",
-                                category: resolved?.category || "Free Gift",
-                            };
-                        })
-                    );
-                    return;
-                }
-            } catch (error) {
-                console.error("Failed to load free gift product names", error);
-            }
-
-            setFreeGiftProducts(
-                promo.freeProductIds.map((productId) => ({ id: productId, name: productId }))
-            );
-        };
-
-        loadFreeGiftProducts();
-    }, [promo?.freeProductIds]);
 
     const GoogleBtn = ({ id }) => {
         useEffect(() => {
@@ -237,30 +195,30 @@ export default function CartPage() {
                         </div>
 
                         {/* Buy 2 Get 1 Nudge */}
-                        {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
+                        {promo.completeSets > 0 && promo.cheapestFreeItem && (
                             <div className="mb-6 p-4 rounded-2xl bg-[#E91E63]/5 border border-[#E91E63]/10 flex items-start gap-3">
                                 <span className="text-lg">🎁</span>
                                 <div>
                                     <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Your free gift</p>
                                     <p className="text-xs text-gray-600 font-medium leading-tight">
-                                        Buy 2 items and unlock 1 free gift from our offer collection.
+                                        Buy 2 items and get the cheapest product from our collection as a free gift. You've unlocked {promo.completeSets} free item{promo.completeSets > 1 ? 's' : ''}!
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {promo.completeSets > 0 && promo.freeProductIds?.length > 0 && (
+                        {promo.completeSets > 0 && promo.cheapestFreeItem && (
                             <div className="mb-6 p-4 rounded-2xl bg-white border border-gray-100">
                                 <p className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">Free item selected</p>
                                 <div className="space-y-3">
-                                    {freeGiftProducts.map((product, index) => (
-                                        <div key={`${product.id}-${index}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                                    {promo.freeGiftSelections.map((selection) => (
+                                        <div key={`${selection.productId}-${selection.setNumber}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
                                             <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-white border border-gray-100">
-                                                <Image src={product.image} alt={product.name} fill sizes="48px" className="object-cover" />
+                                                <Image src={selection.image} alt={selection.name} fill sizes="48px" className="object-cover" />
                                             </div>
                                             <div className="flex-1">
-                                                <p className="text-[12px] font-bold text-gray-900">{product.name}</p>
-                                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">Set {index + 1}</p>
+                                                <p className="text-[12px] font-bold text-gray-900">{selection.name}</p>
+                                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">Set {selection.setNumber} • FREE</p>
                                             </div>
                                         </div>
                                     ))}

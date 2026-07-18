@@ -1,10 +1,26 @@
 import Link from "next/link";
-import FeaturedCollections from "./components/featured-collections";
-import Testimonials from "./components/testimonials";
-import Newsletter from "./components/newsletter";
-import HeroSlider from "./components/HeroSlider";
-import ProductRow from "./components/ProductRow";
+import dynamic from "next/dynamic";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+
+const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
+  loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
+});
+
+const Testimonials = dynamic(() => import("./components/testimonials"), {
+  loading: () => <div className="h-[300px] bg-gray-50 animate-pulse" />
+});
+
+const Newsletter = dynamic(() => import("./components/newsletter"), {
+  loading: () => <div className="h-[200px] bg-gray-50 animate-pulse" />
+});
+
+const HeroSlider = dynamic(() => import("./components/HeroSlider"), {
+  loading: () => <div className="h-[65vh] md:h-[85vh] bg-gray-50 animate-pulse" />
+});
+
+const ProductRow = dynamic(() => import("./components/ProductRow"), {
+  loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
+});
 
 export const metadata = {
   title: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewellery India",

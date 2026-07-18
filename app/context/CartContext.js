@@ -10,6 +10,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [allProducts, setAllProducts] = useState([]);
     const { user } = useAuth();
 
     // Fetch cart from database for authenticated users
@@ -93,6 +94,22 @@ export function CartProvider({ children }) {
             localStorage.setItem("theluxejewels-cart", JSON.stringify(cart));
         }
     }, [cart, isInitialized, user]);
+
+    // Fetch all products for promo calculation
+    useEffect(() => {
+        const fetchAllProducts = async () => {
+            try {
+                const response = await fetch("/api/products");
+                const data = await response.json();
+                if (data?.success) {
+                    setAllProducts(data.products || []);
+                }
+            } catch (error) {
+                console.error("Failed to fetch all products for promo", error);
+            }
+        };
+        fetchAllProducts();
+    }, []);
 
 
     const addToCart = async (product, quantity = 1) => {
@@ -225,7 +242,7 @@ export function CartProvider({ children }) {
         0
     );
 
-    const promo = useMemo(() => calculateBuy2Get1Free(cart, FREE_ITEM_PRODUCT_IDS), [cart]);
+    const promo = useMemo(() => calculateBuy2Get1Free(cart, allProducts, FREE_ITEM_PRODUCT_IDS), [cart, allProducts]);
     const discountAmount = promo.discountAmount;
 
     // Rule: ₹10 shipping if subtotal - discount < ₹1000

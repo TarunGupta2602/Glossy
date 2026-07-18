@@ -12,58 +12,10 @@ export default function CheckoutPage() {
     const { user } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
-    const [freeGiftProducts, setFreeGiftProducts] = useState([]);
     const [checkoutItems, setCheckoutItems] = useState([]);
 
     useEffect(() => {
-        const loadFreeGiftProducts = async () => {
-            if (!promo?.freeProductIds?.length) {
-                setFreeGiftProducts([]);
-                setCheckoutItems(
-                    cart.map((item) => ({
-                        ...item,
-                        quantity: item.quantity || 1,
-                        price: Number(item.price) || 0,
-                        isFreeGift: false,
-                    }))
-                );
-                return;
-            }
-
-            try {
-                const response = await fetch("/api/products");
-                const data = await response.json();
-                if (data?.success) {
-                    const productMap = new Map((data.products || []).map((product) => [product.id, {
-                        name: product.name,
-                        image: product.main_image || product.image || "/logo.png",
-                        category: product.categories?.name || "Jewellery",
-                    }]));
-                    const resolvedProducts = promo.freeProductIds.map((productId) => {
-                        const resolved = productMap.get(productId);
-                        return {
-                            id: productId,
-                            name: resolved?.name || productId,
-                            image: resolved?.image || "/logo.png",
-                            category: resolved?.category || "Free Gift",
-                        };
-                    });
-                    setFreeGiftProducts(resolvedProducts);
-                    return;
-                }
-            } catch (error) {
-                console.error("Failed to load free gift product names", error);
-            }
-
-            setFreeGiftProducts(
-                promo.freeProductIds.map((productId) => ({ id: productId, name: productId, image: "/logo.png" }))
-            );
-        };
-
-        loadFreeGiftProducts();
-    }, [promo?.freeProductIds]);
-
-    useEffect(() => {
+        // Prepare checkout items with free gift logic
         const items = cart.map((item) => ({
             ...item,
             quantity: item.quantity || 1,
@@ -71,20 +23,23 @@ export default function CheckoutPage() {
             isFreeGift: false,
         }));
 
-        const freeGiftItems = freeGiftProducts.map((product, index) => ({
-            id: product.id,
-            name: product.name,
-            price: 0,
-            quantity: 1,
-            currency: "INR",
-            category: "Free Gift",
-            image: product.image || "/logo.png",
-            isFreeGift: true,
-            freeGiftSet: index + 1,
-        }));
+        // Add free gifts from promo selections
+        if (promo.freeGiftSelections?.length > 0) {
+            promo.freeGiftSelections.forEach((selection) => {
+                items.push({
+                    id: selection.productId,
+                    name: selection.name,
+                    image: selection.image,
+                    category: selection.category,
+                    quantity: 1,
+                    price: 0,
+                    isFreeGift: true,
+                });
+            });
+        }
 
-        setCheckoutItems([...items, ...freeGiftItems]);
-    }, [cart, freeGiftProducts]);
+        setCheckoutItems(items);
+    }, [cart, promo.freeGiftSelections]);
 
     const GoogleBtn = ({ id }) => {
         useEffect(() => {

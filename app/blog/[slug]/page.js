@@ -316,6 +316,7 @@ export default async function BlogDetailPage({ params }) {
                                     fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
                                     priority
+                                    unoptimized
                                 />
                             </figure>
                         )}
@@ -412,6 +413,7 @@ export default async function BlogDetailPage({ params }) {
                                                     alt={post.title}
                                                     fill
                                                     className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    unoptimized
                                                 />
                                             </div>
                                             <div className="space-y-1">
