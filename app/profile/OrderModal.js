@@ -46,7 +46,7 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                             </div>
                             <div className="text-left md:text-right">
                                 <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mb-1">Total Valuation</p>
-                                <p className="text-4xl font-black text-gray-900 tracking-tighter">₹{parseFloat(order.total_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                <p className="text-4xl font-black text-gray-900 tracking-tighter">₹{parseFloat(order.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                             </div>
                         </div>
                     </div>
@@ -77,11 +77,11 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                                             <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
                                                 <span>Qty {item.quantity}</span>
                                                 <div className="w-1 h-1 rounded-full bg-gray-200" />
-                                                <p>₹{parseFloat(item.price).toLocaleString()}/ea</p>
+                                                <p>₹{parseFloat(item.price).toLocaleString(undefined, { maximumFractionDigits: 0 })}/ea</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-2xl font-black text-gray-900 tracking-tighter">₹{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                            <p className="text-2xl font-black text-gray-900 tracking-tighter">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                         </div>
                                     </div>
                                 ))}

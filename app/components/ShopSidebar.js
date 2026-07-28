@@ -139,12 +139,12 @@ export default function ShopSidebar({
                 <div className="flex items-center justify-between mb-4">
                     <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-center">
                         <span className="text-[11px] text-gray-400 block leading-none mb-0.5">MIN</span>
-                        <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[0].toLocaleString()}</span>
+                        <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[0].toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="h-px w-4 bg-gray-200" />
                     <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-center">
                         <span className="text-[11px] text-gray-400 block leading-none mb-0.5">MAX</span>
-                        <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[1].toLocaleString()}</span>
+                        <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[1].toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                 </div>
 

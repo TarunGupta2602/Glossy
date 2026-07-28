@@ -22,8 +22,8 @@ export default function SearchClient({ query, products = [] }) {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6">
                     {products.map((product) => {
                         const price = product.price
-                            ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
-                            : "0.00";
+                            ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
+                            : "0";
                         const category = product.categories?.name || "Jewellery";
 
                         return (

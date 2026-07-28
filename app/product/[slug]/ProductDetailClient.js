@@ -28,8 +28,8 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     const [showReviewForm, setShowReviewForm] = useState(false);
 
     const price = product.price
-        ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
-        : "0.00";
+        ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
+        : "0";
 
     const features = (() => {
         if (product.features) {
@@ -150,7 +150,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                     return (
                                         <div className="flex items-center gap-2">
                                             <p className="text-[16px] text-gray-400 line-through font-medium">
-                                                ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                             </p>
                                             <p className="text-[14px] font-bold text-[#2E7D32]">
                                                 SAVE {discount}%
@@ -341,8 +341,8 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             {relatedProducts.slice(0, 4).map((p) => {
                                 const cat = p.categories?.name || "Jewellery";
                                 const pPrice = p.price
-                                    ? p.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
-                                    : "0.00";
+                                    ? p.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
+                                    : "0";
 
                                 return (
                                     <Link key={p.id} href={getProductPath(p)} className="group flex flex-col">
@@ -375,7 +375,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                     return (
                                                         <>
                                                             <p className="text-[12px] text-gray-400 line-through">
-                                                                ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                                ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                             </p>
                                                             <p className="text-[12px] font-bold text-[#2E7D32]">
                                                                 (SAVE {discount}%)

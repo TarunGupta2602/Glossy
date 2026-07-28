@@ -63,7 +63,7 @@ export default function OrderHistory({ orders, loading, onViewDetails, getStatus
                                 </div>
                                 <div className="pt-2">
                                     <p className="text-[10px] font-black text-[#E91E63] uppercase tracking-[0.2em] mb-1">Total Valuation</p>
-                                    <p className="text-4xl font-black text-gray-900 tracking-tighter italic">₹{parseFloat(order.total_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <p className="text-4xl font-black text-gray-900 tracking-tighter italic">₹{parseFloat(order.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                 </div>
                             </div>
 

@@ -71,8 +71,8 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 <p className="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">{item.category}</p>
                                 <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 leading-tight line-clamp-1">{item.name}</h3>
                                 <div className="flex flex-wrap items-center gap-2">
-                                    <p className="text-base md:text-lg font-black text-gray-900 italic">₹{price.toLocaleString()}</p>
-                                    <p className="text-[10px] md:text-[12px] text-gray-300 line-through">₹{originalPrice.toLocaleString()}</p>
+                                    <p className="text-base md:text-lg font-black text-gray-900 italic">₹{price.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                    <p className="text-[10px] md:text-[12px] text-gray-300 line-through">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                 </div>
                             </div>
 

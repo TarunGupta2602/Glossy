@@ -5,8 +5,8 @@ import { getProductPath } from "@/lib/seo";
 export default function ProductCard({ product }) {
     const categoryName = product.categories?.name || "Jewellery";
     const price = product.price
-        ? product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })
-        : "0.00";
+        ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
+        : "0";
 
     return (
         <div className="group flex flex-col h-full">
@@ -78,7 +78,7 @@ export default function ProductCard({ product }) {
                             return (
                                 <>
                                     <p className="text-[11px] text-gray-400 line-through">
-                                        ₹{originalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                     </p>
                                     <p className="text-[11px] font-bold text-green-700">
                                         (SAVE {discount}%)

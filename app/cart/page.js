@@ -116,7 +116,7 @@ export default function CartPage() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                            <p className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                         </div>
                                         <p className="text-[10px] font-bold tracking-[0.2em] text-[#E91E63] uppercase mb-3">{item.category}</p>
                                         {item.description && (
@@ -176,12 +176,12 @@ export default function CartPage() {
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Subtotal</span>
-                                <span className="font-bold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="font-bold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                             </div>
                             {discountAmount > 0 && (
                                 <div className="flex justify-between text-sm text-green-600">
                                     <span className="font-medium">Offer Discount (Buy 2 products, get the 3rd one free)</span>
-                                    <span className="font-bold">-₹{discountAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    <span className="font-bold">-₹{discountAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-sm">
@@ -229,7 +229,7 @@ export default function CartPage() {
                         <div className="border-t border-gray-200/60 pt-6 mb-8">
                             <div className="flex justify-between items-end">
                                 <span className="text-base font-bold text-gray-900">Total</span>
-                                <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                             </div>
                         </div>
 
