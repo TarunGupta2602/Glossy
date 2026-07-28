@@ -112,7 +112,8 @@ export default function FeaturedCollections({ categories }) {
                                     sizes="100vw"
                                     className="object-cover transition-all duration-[2s] ease-out"
                                     priority={index === 0}
-                                    quality={85}
+                                    quality={75}
+                                    loading={index === 0 ? "eager" : "lazy"}
                                     onError={(e) => {
                                         console.error("Image failed to load:", category.image_url || category.image);
                                         e.target.src = "/logo.png";

@@ -83,15 +83,16 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
-                                priority
+                                priority={false}
                                 sizes="(max-width: 1024px) 90vw, 45vw"
+                                quality={80}
                                 className="object-cover"
                             />
                         </div>
 
                         {/* Thumbnail Strip — Show all images including main one as thumbnails */}
                         <div className="grid grid-cols-5 gap-2 mt-3">
-                            {allImages.map((img, idx) => (
+                            {allImages.slice(0, 5).map((img, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setActiveIdx(idx)}
@@ -106,23 +107,11 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         alt={`${product.name} - Thumbnail ${idx + 1}`}
                                         fill
                                         sizes="10vw"
+                                        quality={60}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
                                     />
                                 </button>
-                            ))}
-                        </div>
-
-                        {/* Background loading for gallery images */}
-                        <div className="hidden" aria-hidden="true">
-                            {allImages.slice(1).map((img, i) => (
-                                <Image
-                                    key={`preload-${i}`}
-                                    src={img}
-                                    alt="preload"
-                                    width={10}
-                                    height={10}
-                                />
                             ))}
                         </div>
                     </div>
@@ -165,7 +154,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         {/* Urgency Badge */}
                         {(() => {
                             const lowStockCount = product.id
-                                ? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 9) + 2
+                                ? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 14) + 2
                                 : 5;
                             return (
                                 <div className="mt-4 flex items-center gap-2">
@@ -354,8 +343,10 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 src={p.main_image || "/logo.png"}
                                                 alt={p.image_alt || p.name}
                                                 fill
-                                                priority={p === relatedProducts[0] || p === relatedProducts[1]}
+                                                priority={false}
                                                 sizes="(max-width: 640px) 50vw, 25vw"
+                                                quality={75}
+                                                loading="lazy"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
                                         </div>

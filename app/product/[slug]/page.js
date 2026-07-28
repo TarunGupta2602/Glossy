@@ -75,24 +75,33 @@ export default async function ProductPage({ params }) {
     const id = product.id;
     const supabase = getServiceClient();
 
-    const { data: galleryRows } = await supabase
-        .from("product_images")
-        .select("image_url")
-        .eq("product_id", id)
-        .order("created_at", { ascending: true });
+    // Parallel queries for better performance
+    const [galleryRows, related, reviews] = await Promise.all([
+        supabase
+            .from("product_images")
+            .select("image_url")
+            .eq("product_id", id)
+            .order("created_at", { ascending: true }),
+        supabase
+            .from("products")
+            .select("id, name, price, main_image, image_alt, slug, categories(name)")
+            .eq("category_id", product.category_id)
+            .neq("id", id)
+            .order("created_at", { ascending: false })
+            .limit(4),
+        supabase
+            .from("reviews")
+            .select("rating, comment, user_name, created_at")
+            .eq("product_id", id)
+            .eq("is_approved", true)
+            .order("created_at", { ascending: false })
+            .limit(50)
+    ]);
 
-    const galleryImages = (galleryRows || []).map((r) => r.image_url).filter(Boolean);
+    const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean);
+    let relatedProducts = related?.data || [];
 
-    const { data: related } = await supabase
-        .from("products")
-        .select("id, name, price, main_image, image_alt, slug, categories(name)")
-        .eq("category_id", product.category_id)
-        .neq("id", id)
-        .order("created_at", { ascending: false })
-        .limit(4);
-
-    let relatedProducts = related || [];
-
+    // Fallback query for related products if needed
     if (relatedProducts.length < 4) {
         const excludeIds = [id, ...relatedProducts.map((p) => p.id)];
         const { data: extras } = await supabase
@@ -107,15 +116,6 @@ export default async function ProductPage({ params }) {
 
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages].filter(Boolean);
-
-    // Fetch reviews for JSON-LD
-    const { data: reviews } = await supabase
-        .from("reviews")
-        .select("rating, comment, user_name, created_at")
-        .eq("product_id", id)
-        .eq("is_approved", true)
-        .order("created_at", { ascending: false })
-        .limit(50);
 
     // Calculate aggregate rating
     const totalReviews = reviews?.length || 0;

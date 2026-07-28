@@ -77,7 +77,8 @@ export default function HeroSlider() {
                             fill
                             priority={idx === 0}
                             sizes="100vw"
-                            quality={85}
+                            quality={75}
+                            loading={idx === 0 ? "eager" : "lazy"}
                             className="object-cover"
                         />
                         {/* Subtle Overlay - lighter than before to show photographic quality */}
