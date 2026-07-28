@@ -75,10 +75,10 @@ export default function HeroSlider() {
                             src={slide.image}
                             alt={slide.title}
                             fill
-                            priority={idx === 0}
+                            priority={false}
                             sizes="100vw"
                             quality={75}
-                            loading={idx === 0 ? "eager" : "lazy"}
+                            loading="lazy"
                             className="object-cover"
                         />
                         {/* Subtle Overlay - lighter than before to show photographic quality */}

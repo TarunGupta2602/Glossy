@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import ProductCard from "../../components/ProductCard";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
@@ -77,6 +78,14 @@ export default async function CollectionDetails({ params }) {
         .eq("category_id", category.id)
         .order("created_at", { ascending: false });
 
+    // Calculate discounts server-side for each product
+    const productsWithDiscounts = (products || []).map(product => ({
+        ...product,
+        calculated_discount: product.original_price
+            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+            : calculateDiscount(product.id)
+    }));
+
     // Collection Schema
     const collectionJsonLd = {
         "@context": "https://schema.org",
@@ -141,7 +150,7 @@ export default async function CollectionDetails({ params }) {
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold mb-10 text-center">{category.name}</h1>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-                    {products?.map((product) => (
+                    {productsWithDiscounts?.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>

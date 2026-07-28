@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getProductPath } from "@/lib/seo";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 export default function ProductCard({ product }) {
     const categoryName = product.categories?.name || "Jewellery";
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
         : "0";
+    
+    // Use server-calculated discount if available, otherwise calculate client-side
+    const discount = product.calculated_discount || calculateDiscount(product.id);
 
     return (
         <div className="group flex flex-col h-full">
@@ -71,9 +75,9 @@ export default function ProductCard({ product }) {
                     </p>
                     {(() => {
                         const originalPrice = product.original_price || (product.price / 0.7);
-                        const discount = product.original_price
+                        const displayDiscount = product.original_price
                             ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-                            : 30;
+                            : discount;
 
                         if (originalPrice > product.price) {
                             return (
@@ -82,7 +86,7 @@ export default function ProductCard({ product }) {
                                         ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                     </p>
                                     <p className="text-[11px] font-bold text-green-700">
-                                        (SAVE {discount}%)
+                                        (SAVE {displayDiscount}%)
                                     </p>
                                 </>
                             );

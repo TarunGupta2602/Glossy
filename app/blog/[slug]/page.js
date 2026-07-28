@@ -430,15 +430,7 @@ export default async function BlogDetailPage({ params }) {
                             </div>
                         )}
 
-                        {/* Newsletter CTA */}
-                        <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                            <h3 className="text-xl font-black mb-4 relative z-10">Luxury in your inbox.</h3>
-                            <p className="text-slate-400 text-sm mb-6 relative z-10 font-medium">Join 5,000+ others for exclusive styling tips, trend reports, and VIP access.</p>
-                            <Link href="/account" className="inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-slate-900 text-sm font-bold uppercase tracking-widest hover:bg-pink-50 transition-colors relative z-10">
-                                Join The Club
-                            </Link>
-                        </div>
+                        
                     </aside>
                 </div>
             </div>

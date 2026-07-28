@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getProductPath } from "@/lib/seo";
+import { calculateDiscount } from "@/lib/discountUtils";
 import { WishlistSkeleton } from "./ProfileSkeletons";
 
 export default function WishlistTab({ wishlist, initialized, removeFromWishlist, addToCart }) {
@@ -31,14 +32,22 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
         );
     }
 
+    // Calculate discounts for wishlist items
+    const wishlistWithDiscounts = wishlist.map(item => ({
+        ...item,
+        calculated_discount: item.original_price
+            ? Math.round(((item.original_price - item.price) / item.original_price) * 100)
+            : calculateDiscount(item.id)
+    }));
+
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {wishlist.map((item) => {
+            {wishlistWithDiscounts.map((item) => {
                 const price = item.price || 0;
                 const originalPrice = item.original_price || (price / 0.7);
-                const discount = item.original_price
+                const displayDiscount = item.original_price
                     ? Math.round(((item.original_price - price) / item.original_price) * 100)
-                    : 30;
+                    : item.calculated_discount;
 
                 return (
                     <div key={item.id} className="group flex flex-col h-full bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500">
@@ -49,6 +58,7 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 fill
                                 sizes="(max-width: 640px) 50vw, 33vw"
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                loading="lazy"
                             />
 
                             <button
@@ -61,7 +71,7 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
 
                             <div className="absolute bottom-3 left-3">
                                 <span className="bg-[#2E7D32] text-white text-[8px] md:text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-md shadow-sm">
-                                    SAVE {discount}%
+                                    SAVE {displayDiscount}%
                                 </span>
                             </div>
                         </div>

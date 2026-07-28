@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductPath } from "@/lib/seo";
+import { calculateDiscount } from "@/lib/discountUtils";
 import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
 
@@ -13,6 +14,9 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     const categoryName = product.categories?.name || "Jewellery";
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
+
+    // Use server-calculated discount if available, otherwise calculate client-side
+    const discount = product.calculated_discount || calculateDiscount(product.id);
 
     // Build full image list: main image first, then gallery extras
     const allImages = [
@@ -83,10 +87,11 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
-                                priority={false}
+                                priority={true}
                                 sizes="(max-width: 1024px) 90vw, 45vw"
-                                quality={80}
+                                quality={75}
                                 className="object-cover"
+                                unoptimized
                             />
                         </div>
 
@@ -107,9 +112,10 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         alt={`${product.name} - Thumbnail ${idx + 1}`}
                                         fill
                                         sizes="10vw"
-                                        quality={60}
+                                        quality={75}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
+                                        unoptimized
                                     />
                                 </button>
                             ))}
@@ -131,9 +137,9 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             </p>
                             {(() => {
                                 const originalPrice = product.original_price || (product.price / 0.7);
-                                const discount = product.original_price
+                                const displayDiscount = product.original_price
                                     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-                                    : 30;
+                                    : discount;
 
                                 if (originalPrice > product.price) {
                                     return (
@@ -142,7 +148,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                             </p>
                                             <p className="text-[14px] font-bold text-[#2E7D32]">
-                                                SAVE {discount}%
+                                                SAVE {displayDiscount}%
                                             </p>
                                         </div>
                                     );
@@ -348,6 +354,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 quality={75}
                                                 loading="lazy"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                unoptimized
                                             />
                                         </div>
                                         <h3 className="text-[14px] font-semibold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-snug line-clamp-1">
@@ -358,9 +365,9 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                             <p className="text-[15px] font-bold text-gray-900">₹{pPrice}</p>
                                             {(() => {
                                                 const originalPrice = p.original_price || (p.price / 0.7);
-                                                const discount = p.original_price
+                                                const displayDiscount = p.original_price
                                                     ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
-                                                    : 30;
+                                                    : (p.calculated_discount || calculateDiscount(p.id));
 
                                                 if (originalPrice > p.price) {
                                                     return (
@@ -369,7 +376,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                                 ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                             </p>
                                                             <p className="text-[12px] font-bold text-[#2E7D32]">
-                                                                (SAVE {discount}%)
+                                                                (SAVE {displayDiscount}%)
                                                             </p>
                                                         </>
                                                     );

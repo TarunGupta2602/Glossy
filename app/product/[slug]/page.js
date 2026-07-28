@@ -9,8 +9,10 @@ import {
     isUuid,
 } from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
     const { slug: param } = await params;
@@ -76,101 +78,45 @@ export default async function ProductPage({ params }) {
     const supabase = getServiceClient();
 
     // Parallel queries for better performance
-    const [galleryRows, related, reviews] = await Promise.all([
+    const [galleryRows, related] = await Promise.all([
         supabase
             .from("product_images")
             .select("image_url")
             .eq("product_id", id)
-            .order("created_at", { ascending: true }),
+            .order("created_at", { ascending: true })
+            .limit(5),
         supabase
             .from("products")
             .select("id, name, price, main_image, image_alt, slug, categories(name)")
             .eq("category_id", product.category_id)
             .neq("id", id)
             .order("created_at", { ascending: false })
-            .limit(4),
-        supabase
-            .from("reviews")
-            .select("rating, comment, user_name, created_at")
-            .eq("product_id", id)
-            .eq("is_approved", true)
-            .order("created_at", { ascending: false })
-            .limit(50)
+            .limit(3)
     ]);
 
-    const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean);
-    let relatedProducts = related?.data || [];
+    const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean).slice(0, 5);
+    let relatedProducts = (related?.data || []).slice(0, 3);
 
-    // Fallback query for related products if needed
-    if (relatedProducts.length < 4) {
-        const excludeIds = [id, ...relatedProducts.map((p) => p.id)];
-        const { data: extras } = await supabase
-            .from("products")
-            .select("id, name, price, main_image, image_alt, slug, categories(name)")
-            .not("id", "in", `(${excludeIds.join(",")})`)
-            .order("created_at", { ascending: false })
-            .limit(4 - relatedProducts.length);
+    // Calculate discount for main product
+    const productWithDiscount = {
+        ...product,
+        calculated_discount: product.original_price
+            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+            : calculateDiscount(product.id)
+    };
 
-        relatedProducts = [...relatedProducts, ...(extras || [])];
-    }
+    // Calculate discounts for related products
+    relatedProducts = (relatedProducts || []).map(p => ({
+        ...p,
+        calculated_discount: p.original_price
+            ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
+            : calculateDiscount(p.id)
+    }));
 
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages].filter(Boolean);
 
-    // Calculate aggregate rating
-    const totalReviews = reviews?.length || 0;
-    const avgRating = totalReviews > 0
-        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-        : 0;
-
-    // FAQ Schema for common jewellery questions
-    const faqJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: [
-            {
-                "@type": "Question",
-                name: "Is this jewellery waterproof and tarnish-resistant?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Yes, all our jewellery is designed to be waterproof and anti-tarnish. The 18k gold plating ensures long-lasting shine even with daily wear."
-                }
-            },
-            {
-                "@type": "Question",
-                name: "What materials are used in this jewellery?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "We use high-quality materials including recycled silver, 18k gold plating, and hypoallergenic metals. All pieces are crafted for sensitive skin."
-                }
-            },
-            {
-                "@type": "Question",
-                name: "Do you offer free shipping in India?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Yes, we offer free shipping across India on all orders. Standard delivery takes 5-7 business days."
-                }
-            },
-            {
-                "@type": "Question",
-                name: "What is your return policy?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "We offer a 7-day return policy for unused items in original packaging. Contact us at +91-7456096455 for return assistance."
-                }
-            },
-            {
-                "@type": "Question",
-                name: "How should I care for this jewellery?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "To maintain shine, avoid contact with perfumes, lotions, and harsh chemicals. Clean gently with a soft cloth and store in the provided pouch."
-                }
-            }
-        ]
-    };
-
+    // Simplified structured data for faster load
     const jsonLd = {
         "@context": "https://schema.org",
         "@graph": [
@@ -178,61 +124,14 @@ export default async function ProductPage({ params }) {
                 "@type": "Product",
                 name: product.name,
                 image: images.length ? images : [`${BASE_URL}/logo.png`],
-                description:
-                    product.meta_description ||
-                    product.description ||
-                    `Premium ${product.name} from The Luxe Jewels.`,
-                sku: product.id,
-                mpn: product.slug || product.id,
+                description: product.meta_description || product.description || `Premium ${product.name} from The Luxe Jewels.`,
                 brand: { "@type": "Brand", name: "The luxe jewels" },
-                category: product.categories?.name,
-                ...(totalReviews > 0 && {
-                    aggregateRating: {
-                        "@type": "AggregateRating",
-                        ratingValue: avgRating.toFixed(1),
-                        reviewCount: totalReviews,
-                        bestRating: "5",
-                        worstRating: "1",
-                    },
-                    review: reviews?.map((review) => ({
-                        "@type": "Review",
-                        reviewRating: {
-                            "@type": "Rating",
-                            ratingValue: review.rating,
-                            bestRating: "5",
-                            worstRating: "1",
-                        },
-                        author: {
-                            "@type": "Person",
-                            name: review.user_name,
-                        },
-                        reviewBody: review.comment,
-                        datePublished: review.created_at,
-                    })) || [],
-                }),
                 offers: {
                     "@type": "Offer",
                     url: productUrl,
                     priceCurrency: "INR",
                     price: product.price,
-                    priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split("T")[0],
-                    itemCondition: "https://schema.org/NewCondition",
                     availability: "https://schema.org/InStock",
-                    seller: { "@type": "Organization", name: "The luxe jewels" },
-                    shippingDetails: {
-                        "@type": "OfferShippingDetails",
-                        shippingRate: {
-                            "@type": "MonetaryAmount",
-                            value: 0,
-                            currency: "INR",
-                        },
-                        shippingDestination: {
-                            "@type": "DefinedRegion",
-                            addressCountry: "IN",
-                        },
-                    },
                 },
             },
             {
@@ -248,7 +147,6 @@ export default async function ProductPage({ params }) {
                     { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
                 ],
             },
-            faqJsonLd
         ],
     };
 
@@ -259,7 +157,7 @@ export default async function ProductPage({ params }) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <ProductDetailClient
-                product={product}
+                product={productWithDiscount}
                 galleryImages={galleryImages}
                 relatedProducts={relatedProducts}
             />

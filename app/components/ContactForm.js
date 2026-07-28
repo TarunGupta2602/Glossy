@@ -101,7 +101,7 @@ export default function ContactForm() {
             </form>
 
             <div className="mt-10 text-center text-sm text-gray-500">
-                <p>Email: support@theluxejewels.in</p>
+                <p>Email: supporttheluxejewels@gmail.com</p>
             </div>
         </>
     );

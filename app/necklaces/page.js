@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import ProductCard from "../components/ProductCard";
+import { redirect } from "next/navigation";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -37,8 +39,14 @@ export const metadata = {
     },
 };
 
-export default async function NecklacesPage() {
+// Pagination settings
+const PAGE_SIZE = 12;
+
+export default async function NecklacesPage({ searchParams }) {
     const supabase = getServiceClient();
+    const params = await searchParams;
+    const page = parseInt(params?.page || "1", 10);
+    if (isNaN(page) || page < 1) redirect("/necklaces?page=1");
     const slug = "the-necklace-edit";
 
     const { data: category } = await supabase
@@ -47,11 +55,31 @@ export default async function NecklacesPage() {
         .eq("slug", slug)
         .single();
 
+    // Get total count
+    const { count } = await supabase
+        .from("products")
+        .select("id", { count: "exact", head: true })
+        .eq("category_id", category?.id);
+
+    // Get paginated products
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data: products } = await supabase
         .from("products")
         .select("*, categories(name, id, slug)")
         .eq("category_id", category?.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+    // Calculate discounts server-side for each product
+    const productsWithDiscounts = (products || []).map(product => ({
+        ...product,
+        calculated_discount: product.original_price
+            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+            : calculateDiscount(product.id)
+    }));
+
+    const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
     // Breadcrumb Schema
     const breadcrumbJsonLd = {
@@ -95,12 +123,53 @@ export default async function NecklacesPage() {
                     <p className="text-center text-gray-500 font-medium py-12">Coming Soon.</p>
                 ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-                        {products.map((product) => (
+                        {productsWithDiscounts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 )}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <section className="pt-12">
+                    <nav className="flex justify-center" aria-label="Pagination">
+                        <ul className="inline-flex items-center gap-1 bg-white/80 rounded-full px-4 py-2 shadow border border-gray-100">
+                            <li>
+                                <Link
+                                    href={`/necklaces?page=${page - 1}`}
+                                    aria-disabled={page === 1}
+                                    tabIndex={page === 1 ? -1 : 0}
+                                    className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
+                                >
+                                    Prev
+                                </Link>
+                            </li>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                                <li key={n}>
+                                    <Link
+                                        href={`/necklaces?page=${n}`}
+                                        aria-current={n === page ? "page" : undefined}
+                                        className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${n === page ? "bg-[#E91E63] text-white shadow" : "text-[#E91E63] hover:bg-pink-50"}`}
+                                    >
+                                        {n}
+                                    </Link>
+                                </li>
+                            ))}
+                            <li>
+                                <Link
+                                    href={`/necklaces?page=${page + 1}`}
+                                    aria-disabled={page === totalPages}
+                                    tabIndex={page === totalPages ? -1 : 0}
+                                    className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
+                                >
+                                    Next
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </section>
+            )}
 
             {/* SEO Footnote - Visually Hidden */}
             <div className="sr-only">

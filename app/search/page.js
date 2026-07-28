@@ -1,5 +1,6 @@
 import SearchClient from "./SearchClient";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,13 @@ export default async function SearchPage({ searchParams }) {
             .order("created_at", { ascending: false });
 
         if (!error && data) {
-            products = data;
+            // Calculate discounts server-side for each product
+            products = data.map(product => ({
+                ...product,
+                calculated_discount: product.original_price
+                    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+                    : calculateDiscount(product.id)
+            }));
         } else if (error) {
             console.error("Search error:", error);
         }

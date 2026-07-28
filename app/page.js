@@ -1,6 +1,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { calculateDiscount } from "@/lib/discountUtils";
 
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
@@ -53,8 +54,17 @@ export default async function Home() {
         .select("*, categories(name, id, slug)")
         .eq("category_id", cat.id)
         .order("created_at", { ascending: false })
-        .limit(10);
-      return { ...cat, products: products || [] };
+        .limit(6);
+      
+      // Calculate discounts server-side for each product
+      const productsWithDiscounts = (products || []).map(product => ({
+        ...product,
+        calculated_discount: product.original_price
+          ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+          : calculateDiscount(product.id)
+      }));
+      
+      return { ...cat, products: productsWithDiscounts };
     })
   );
 
