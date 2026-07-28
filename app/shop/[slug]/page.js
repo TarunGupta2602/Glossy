@@ -4,6 +4,8 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 import ProductCard from "../../components/ProductCard";
 import { calculateDiscount } from "@/lib/discountUtils";
 
+const PAGE_SIZE = 12;
+
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
@@ -55,8 +57,10 @@ export async function generateMetadata({ params }) {
     };
 }
 
-export default async function CollectionDetails({ params }) {
+export default async function CollectionDetails({ params, searchParams }) {
     const { slug } = await params;
+    const resolvedSearchParams = await searchParams;
+    const page = parseInt(resolvedSearchParams?.page || "1", 10);
 
     const supabase = getServiceClient();
 
@@ -71,12 +75,21 @@ export default async function CollectionDetails({ params }) {
         return <div className="text-center py-20">Collection not found</div>;
     }
 
-    // 2. Get products by category_id
+    // 2. Get total count
+    const { count } = await supabase
+        .from("products")
+        .select("id", { count: "exact", head: true })
+        .eq("category_id", category.id);
+
+    // 3. Get paginated products
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data: products } = await supabase
         .from("products")
         .select("*, categories(name, id, slug)")
         .eq("category_id", category.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
     // Calculate discounts server-side for each product
     const productsWithDiscounts = (products || []).map(product => ({
@@ -85,6 +98,8 @@ export default async function CollectionDetails({ params }) {
             ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
             : calculateDiscount(product.id)
     }));
+
+    const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
     // Collection Schema
     const collectionJsonLd = {
@@ -154,6 +169,62 @@ export default async function CollectionDetails({ params }) {
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-12">
+                        <Link
+                            href={`/shop/${slug}?page=${Math.max(1, page - 1)}`}
+                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                page === 1
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-900 text-white hover:bg-black"
+                            }`}
+                            aria-disabled={page === 1}
+                        >
+                            Previous
+                        </Link>
+
+                        {Array.from({ length: totalPages }, (_, i) => {
+                            const pageNum = i + 1;
+                            const isCurrentPage = pageNum === page;
+                            const showPage = pageNum === 1 || pageNum === totalPages || (pageNum >= page - 1 && pageNum <= page + 1);
+
+                            if (!showPage) {
+                                if (pageNum === page - 2 || pageNum === page + 2) {
+                                    return <span key={pageNum} className="px-2">...</span>;
+                                }
+                                return null;
+                            }
+
+                            return (
+                                <Link
+                                    key={pageNum}
+                                    href={`/shop/${slug}?page=${pageNum}`}
+                                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                        isCurrentPage
+                                            ? "bg-pink-600 text-white"
+                                            : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                    }`}
+                                >
+                                    {pageNum}
+                                </Link>
+                            );
+                        })}
+
+                        <Link
+                            href={`/shop/${slug}?page=${Math.min(totalPages, page + 1)}`}
+                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                page === totalPages
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-900 text-white hover:bg-black"
+                            }`}
+                            aria-disabled={page === totalPages}
+                        >
+                            Next
+                        </Link>
+                    </div>
+                )}
             </div>
         </section>
     );
