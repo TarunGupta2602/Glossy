@@ -239,9 +239,36 @@ export default function ReviewList({ productId }) {
                                         {formatDate(review.created_at)}
                                     </span>
                                 </div>
-                                <p className="text-gray-600 text-xs leading-relaxed">
+                                <p className="text-gray-600 text-xs leading-relaxed mb-2">
                                     {review.comment}
                                 </p>
+
+                                {/* Review Images - Compact */}
+                                {review.images && review.images.length > 0 && (
+                                    <div className="flex gap-2">
+                                        {review.images.slice(0, 4).map((imageUrl, imgIndex) => (
+                                            <div
+                                                key={imgIndex}
+                                                className="w-10 h-10 rounded overflow-hidden border border-gray-200 flex-shrink-0 cursor-pointer hover:border-[#E91E63] transition-all"
+                                                onClick={() => openLightbox(imageUrl, review.images, imgIndex)}
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={`Review ${imgIndex + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        ))}
+                                        {review.images.length > 4 && (
+                                            <span 
+                                                className="text-xs text-gray-400 self-center cursor-pointer hover:text-[#E91E63]"
+                                                onClick={() => openLightbox(review.images[4], review.images, 4)}
+                                            >
+                                                +{review.images.length - 4}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))}
 
