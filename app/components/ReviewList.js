@@ -168,167 +168,80 @@ export default function ReviewList({ productId }) {
     }
 
     return (
-        <div className="space-y-4">
-            {/* Header with Toggle */}
-            <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#E91E63] flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 className="text-[14px] font-bold text-gray-900">Customer Reviews</h2>
-                        {stats && (
-                            <p className="text-[11px] text-gray-500">
-                                {stats.totalReviews} review{stats.totalReviews !== 1 ? "s" : ""} · {stats.avgRating.toFixed(1)} average
-                            </p>
-                        )}
-                    </div>
-                </div>
-                <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#E91E63] hover:text-[#C2185B] transition-colors"
-                >
-                    {isExpanded ? (
-                        <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
-                            </svg>
-                            Hide
-                        </>
-                    ) : (
-                        <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                            Show
-                        </>
-                    )}
-                </button>
+        <div className="space-y-3">
+            {/* Header - Compact */}
+            <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-gray-900">Reviews</h2>
+                {stats && (
+                    <span className="text-xs text-gray-500">
+                        {stats.totalReviews} · {stats.avgRating.toFixed(1)}★
+                    </span>
+                )}
             </div>
 
             {isExpanded && (
                 <>
-                    {/* Rating Summary - Compact */}
+                    {/* Rating Summary - Very Compact */}
                     {stats && (
-                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-4 border border-pink-100">
-                            <div className="flex items-center gap-6">
-                                {/* Average Rating */}
-                                <div className="flex-shrink-0 text-center">
-                                    <div className="flex items-baseline gap-1 justify-center">
-                                        <span className="text-4xl font-black text-gray-900">
-                                            {stats.avgRating.toFixed(1)}
-                                        </span>
-                                    </div>
-                                    <div className="flex gap-0.5 mt-1 justify-center">
-                                        {renderStars(Math.round(stats.avgRating))}
-                                    </div>
+                        <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-3 border border-gray-100">
+                            <div className="text-center">
+                                <span className="text-2xl font-black text-gray-900">
+                                    {stats.avgRating.toFixed(1)}
+                                </span>
+                                <div className="flex gap-0.5 mt-1 justify-center">
+                                    {renderStars(Math.round(stats.avgRating))}
                                 </div>
-
-                                {/* Rating Breakdown - Compact */}
-                                <div className="flex-1 space-y-1.5">
-                                    {[5, 4, 3, 2, 1].map((star) => {
-                                        const count = stats.ratingCounts[star] || 0;
-                                        const percentage = stats.totalReviews > 0
-                                            ? (count / stats.totalReviews) * 100
-                                            : 0;
-                                        return (
-                                            <div key={star} className="flex items-center gap-2">
-                                                <span className="text-[11px] font-bold text-gray-700 w-4">
-                                                    {star}
-                                                </span>
-                                                <div className="flex-1 h-2 bg-white rounded-full overflow-hidden shadow-sm">
-                                                    <div
-                                                        className="h-full bg-[#E91E63] rounded-full transition-all duration-500"
-                                                        style={{ width: `${percentage}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-[11px] text-gray-500 w-6 text-right">
-                                                    {count}
-                                                </span>
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count = stats.ratingCounts[star] || 0;
+                                    const percentage = stats.totalReviews > 0
+                                        ? (count / stats.totalReviews) * 100
+                                        : 0;
+                                    return (
+                                        <div key={star} className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-gray-700 w-3">
+                                                {star}
+                                            </span>
+                                            <div className="flex-1 h-1.5 bg-white rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-[#E91E63] rounded-full"
+                                                    style={{ width: `${percentage}%` }}
+                                                />
                                             </div>
-                                        );
-                                    })}
-                                </div>
+                                            <span className="text-xs text-gray-400 w-4 text-right">
+                                                {count}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
 
                     {/* Reviews List - Compact */}
-                    <div className="space-y-3">
-                        {(showAllReviews ? reviews : reviews.slice(0, 3)).map((review, index) => (
+                    <div className="space-y-2">
+                        {(showAllReviews ? reviews : reviews.slice(0, 3)).map((review) => (
                             <div
                                 key={review.id}
-                                className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                                className="bg-white rounded-lg p-3 border border-gray-100"
                             >
-                                {/* Review Header */}
-                                <div className="flex items-center gap-3 mb-2">
-                                    {/* Avatar */}
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E91E63] to-[#C2185B] flex items-center justify-center flex-shrink-0 shadow-md">
-                                        <span className="text-sm font-bold text-white">
-                                            {review.user_name?.charAt(0).toUpperCase() || "U"}
+                                <div className="flex items-center justify-between mb-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-semibold text-gray-900">
+                                            {review.user_name}
                                         </span>
-                                    </div>
-                                    
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-semibold text-gray-900 text-sm truncate">
-                                                {review.user_name}
-                                            </p>
-                                            {review.is_verified_purchase && (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 flex-shrink-0">
-                                                    ✓ Verified
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <div className="flex gap-0.5">
-                                                {renderStars(review.rating)}
-                                            </div>
-                                            <span className="text-[11px] text-gray-400">
-                                                {formatDate(review.created_at)}
-                                            </span>
+                                        <div className="flex gap-0.5">
+                                            {renderStars(review.rating)}
                                         </div>
                                     </div>
+                                    <span className="text-xs text-gray-400">
+                                        {formatDate(review.created_at)}
+                                    </span>
                                 </div>
-
-                                {/* Review Content */}
-                                {review.title && (
-                                    <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                                        {review.title}
-                                    </h4>
-                                )}
-                                <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                                <p className="text-gray-600 text-xs leading-relaxed">
                                     {review.comment}
                                 </p>
-
-                                {/* Review Images - Small thumbnails */}
-                                {review.images && review.images.length > 0 && (
-                                    <div className="flex gap-2">
-                                        {review.images.slice(0, 4).map((imageUrl, imgIndex) => (
-                                            <div
-                                                key={imgIndex}
-                                                className="w-12 h-12 rounded-lg overflow-hidden border-2 border-gray-200 flex-shrink-0 cursor-pointer hover:border-[#E91E63] hover:shadow-md transition-all"
-                                                onClick={() => openLightbox(imageUrl, review.images, imgIndex)}
-                                            >
-                                                <img
-                                                    src={imageUrl}
-                                                    alt={`Review ${imgIndex + 1}`}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                        ))}
-                                        {review.images.length > 4 && (
-                                            <span 
-                                                className="text-[11px] text-gray-400 self-center cursor-pointer hover:text-[#E91E63]"
-                                                onClick={() => openLightbox(review.images[4], review.images, 4)}
-                                            >
-                                                +{review.images.length - 4} more
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         ))}
 
@@ -336,14 +249,22 @@ export default function ReviewList({ productId }) {
                         {reviews.length > 3 && !showAllReviews && (
                             <button
                                 onClick={() => setShowAllReviews(true)}
-                                className="w-full py-3 text-[11px] font-bold uppercase tracking-wider text-[#E91E63] hover:text-[#C2185B] transition-colors border-2 border-gray-200 rounded-xl hover:border-[#E91E63] hover:bg-pink-50"
+                                className="w-full py-2 text-xs font-bold uppercase tracking-wider text-[#E91E63] hover:text-[#C2185B] transition-colors border border-gray-200 rounded-lg hover:border-[#E91E63]"
                             >
-                                Show All {reviews.length} Reviews
+                                Show All ({reviews.length})
                             </button>
                         )}
                     </div>
                 </>
             )}
+
+            {/* Toggle Button */}
+            <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-full py-2 text-xs font-bold uppercase tracking-wider text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:border-gray-300"
+            >
+                {isExpanded ? "Hide Reviews" : "Show Reviews"}
+            </button>
 
             {/* Lightbox Modal */}
             {lightboxImage && (

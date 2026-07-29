@@ -65,7 +65,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
     return (
         <div className="bg-white min-h-screen">
-            <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-10 pb-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">
                 
                 {/* Breadcrumb */}
                 <nav className="mb-8 flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-400">
@@ -288,18 +288,18 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                 </div>
 
                 {/* ── Reviews Section ── */}
-                <div className="mb-16">
-                    <div className="flex items-center justify-end mb-4">
+                <div className="mb-8">
+                    <div className="flex items-center justify-end mb-3">
                         <button
                             onClick={() => setShowReviewForm(!showReviewForm)}
-                            className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors"
+                            className="text-xs font-bold tracking-[0.18em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors"
                         >
                             {showReviewForm ? "Cancel" : "Write a Review"}
                         </button>
                     </div>
 
                     {showReviewForm && (
-                        <div className="mb-4">
+                        <div className="mb-3">
                             <ReviewForm
                                 productId={product.id}
                                 productName={product.name}

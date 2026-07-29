@@ -38,8 +38,7 @@ export const metadata = {
     },
 };
 
-// Pagination settings
-const PAGE_SIZE = 12;
+// Pagination settings (removed - pagination handled client-side)
 
 export default async function ShopPage({ searchParams }) {
     const supabase = getServiceClient();
@@ -47,17 +46,10 @@ export default async function ShopPage({ searchParams }) {
     const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/shop?page=1");
 
-    // Get total count
-    const { count } = await supabase
-        .from("products")
-        .select("id", { count: "exact", head: true });
-
-    // Get paginated products
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
+    // Fetch ALL products for client-side filtering (no pagination on server)
     const [{ data: categories }, { data: products }] = await Promise.all([
         supabase.from("categories").select("*").order("name", { ascending: true }),
-        supabase.from("products").select("*, categories(name, id, slug)").order("created_at", { ascending: false }).range(from, to),
+        supabase.from("products").select("*, categories(name, id, slug)").order("created_at", { ascending: false }),
     ]);
 
     // Calculate discounts server-side for each product
@@ -67,8 +59,6 @@ export default async function ShopPage({ searchParams }) {
             ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
             : calculateDiscount(product.id)
     }));
-
-    const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
     // Breadcrumb Schema
     const breadcrumbJsonLd = {
@@ -118,49 +108,6 @@ export default async function ShopPage({ searchParams }) {
                     />
                 </div>
             </section>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <section className="pb-16 px-6 md:px-12">
-                    <div className="max-w-7xl mx-auto">
-                        <nav className="flex justify-center" aria-label="Pagination">
-                            <ul className="inline-flex items-center gap-1 bg-white/80 rounded-full px-4 py-2 shadow border border-gray-100">
-                                <li>
-                                    <Link
-                                        href={`/shop?page=${page - 1}`}
-                                        aria-disabled={page === 1}
-                                        tabIndex={page === 1 ? -1 : 0}
-                                        className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                    >
-                                        Prev
-                                    </Link>
-                                </li>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                                    <li key={n}>
-                                        <Link
-                                            href={`/shop?page=${n}`}
-                                            aria-current={n === page ? "page" : undefined}
-                                            className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${n === page ? "bg-[#E91E63] text-white shadow" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                        >
-                                            {n}
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li>
-                                    <Link
-                                        href={`/shop?page=${page + 1}`}
-                                        aria-disabled={page === totalPages}
-                                        tabIndex={page === totalPages ? -1 : 0}
-                                        className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                    >
-                                        Next
-                                    </Link>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </section>
-            )}
 
             {/* SEO Footnote - Visually Hidden */}
             <section className="sr-only">
