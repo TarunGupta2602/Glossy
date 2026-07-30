@@ -89,9 +89,10 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 fill
                                 priority={true}
                                 sizes="(max-width: 1024px) 90vw, 45vw"
-                                quality={40}
+                                quality={80}
+                                placeholder="blur"
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
                                 className="object-cover"
-                                unoptimized
                             />
                         </div>
 
@@ -112,10 +113,11 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         alt={`${product.name} - Thumbnail ${idx + 1}`}
                                         fill
                                         sizes="10vw"
-                                        quality={30}
+                                        quality={60}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
-                                        unoptimized
+                                        placeholder="blur"
+                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
                                     />
                                 </button>
                             ))}
@@ -351,10 +353,11 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 fill
                                                 priority={false}
                                                 sizes="(max-width: 640px) 50vw, 25vw"
-                                                quality={40}
+                                                quality={75}
                                                 loading="lazy"
+                                                placeholder="blur"
+                                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                                unoptimized
                                             />
                                         </div>
                                         <h3 className="text-[14px] font-semibold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-snug line-clamp-1">
