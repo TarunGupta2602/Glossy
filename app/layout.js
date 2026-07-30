@@ -51,9 +51,9 @@ export const metadata = {
   creator: "The luxe jewels",
   publisher: "The luxe jewels",
   formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+    email: true,
+    address: true,
+    telephone: true,
   },
   alternates: {
     canonical: "/",
@@ -164,6 +164,10 @@ export default function RootLayout({ children }) {
     "telephone": "+91-7456096455",
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": "Dhaulana",
+      "addressLocality": "Hapur",
+      "addressRegion": "Uttar Pradesh",
+      "postalCode": "245301",
       "addressCountry": "IN"
     },
     "priceRange": "₹₹₹",

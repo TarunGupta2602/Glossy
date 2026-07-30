@@ -50,8 +50,19 @@ export async function generateMetadata({ params }) {
             url: `${BASE_URL}${canonicalPath}`,
             siteName: "The luxe jewels",
             images: product.main_image
-                ? [{ url: product.main_image, alt: product.image_alt || product.name, width: 1200, height: 630 }]
-                : [{ url: "/logo.png", width: 1200, height: 630 }],
+                ? [{ 
+                    url: product.main_image, 
+                    alt: product.image_alt || product.name, 
+                    width: 1200, 
+                    height: 630,
+                    type: "image/jpeg"
+                }]
+                : [{ 
+                    url: "/logo.png", 
+                    width: 1200, 
+                    height: 630,
+                    type: "image/png"
+                }],
             type: "website",
         },
         twitter: {
@@ -78,7 +89,7 @@ export default async function ProductPage({ params }) {
     const supabase = getServiceClient();
 
     // Parallel queries for better performance
-    const [galleryRows, related] = await Promise.all([
+    const [galleryRows, related, reviewsData] = await Promise.all([
         supabase
             .from("product_images")
             .select("image_url")
@@ -91,11 +102,18 @@ export default async function ProductPage({ params }) {
             .eq("category_id", product.category_id)
             .neq("id", id)
             .order("created_at", { ascending: false })
-            .limit(3)
+            .limit(3),
+        supabase
+            .from("reviews")
+            .select("*")
+            .eq("product_id", id)
+            .eq("is_approved", true)
+            .order("created_at", { ascending: false })
     ]);
 
     const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean).slice(0, 5);
     let relatedProducts = (related?.data || []).slice(0, 3);
+    const reviews = reviewsData?.data || [];
 
     // Calculate discount for main product
     const productWithDiscount = {
@@ -116,6 +134,28 @@ export default async function ProductPage({ params }) {
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages].filter(Boolean);
 
+    // Calculate review statistics for schema
+    const totalReviews = reviews.length;
+    const avgRating = totalReviews > 0 
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews 
+        : 0;
+
+    // Build review schema
+    const reviewSchema = reviews.slice(0, 10).map(review => ({
+        "@type": "Review",
+        author: {
+            "@type": "Person",
+            name: review.name || "Anonymous"
+        },
+        reviewRating: {
+            "@type": "Rating",
+            ratingValue: review.rating,
+            bestRating: "5"
+        },
+        reviewBody: review.comment || "",
+        datePublished: review.created_at
+    }));
+
     // Simplified structured data for faster load
     const jsonLd = {
         "@context": "https://schema.org",
@@ -126,6 +166,18 @@ export default async function ProductPage({ params }) {
                 image: images.length ? images : [`${BASE_URL}/logo.png`],
                 description: product.meta_description || product.description || `Premium ${product.name} from The Luxe Jewels.`,
                 brand: { "@type": "Brand", name: "The luxe jewels" },
+                ...(totalReviews > 0 && {
+                    aggregateRating: {
+                        "@type": "AggregateRating",
+                        ratingValue: parseFloat(avgRating.toFixed(1)),
+                        reviewCount: totalReviews,
+                        bestRating: "5",
+                        worstRating: "1"
+                    }
+                }),
+                ...(reviewSchema.length > 0 && {
+                    review: reviewSchema
+                }),
                 offers: {
                     "@type": "Offer",
                     url: productUrl,

@@ -95,9 +95,6 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Hidden H1 for SEO */}
-      <h1 className="sr-only">The luxe jewels | Premium Anti-Tarnish & Fine Jewellery India</h1>
-
       {/* Dynamic Hero Section */}
       <HeroSlider />
 
