@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
+    const [year, setYear] = useState(2026);
+
+    useEffect(() => {
+        setYear(new Date().getFullYear());
+    }, []);
+
     return (
         <footer className="relative bg-gradient-to-b from-white via-[#fffafa] to-[#f9f9fb] border-t border-gray-100/50 pt-24 pb-12 overflow-hidden">
             {/* Decorative element */}
@@ -96,7 +105,7 @@ export default function Footer() {
                     {/* Copyright & Links */}
                     <div className="flex flex-col items-center md:items-start gap-3 order-2 md:order-1">
                         <p className="text-[13px] font-bold text-gray-900 tracking-tight">
-                            © {new Date().getFullYear()} The luxe jewels. <span className="text-gray-400 font-medium">Crafted for the modern muse.</span>
+                            © {year} The luxe jewels. <span className="text-gray-400 font-medium">Crafted for the modern muse.</span>
                         </p>
                         <div className="flex items-center gap-6">
                             <Link href="/privacy" className="text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 transition-colors">Privacy</Link>

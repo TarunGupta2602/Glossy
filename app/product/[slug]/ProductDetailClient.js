@@ -89,7 +89,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 fill
                                 priority={true}
                                 sizes="(max-width: 1024px) 90vw, 45vw"
-                                quality={75}
+                                quality={40}
                                 className="object-cover"
                                 unoptimized
                             />
@@ -112,7 +112,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         alt={`${product.name} - Thumbnail ${idx + 1}`}
                                         fill
                                         sizes="10vw"
-                                        quality={75}
+                                        quality={30}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
                                         unoptimized
@@ -351,7 +351,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                                 fill
                                                 priority={false}
                                                 sizes="(max-width: 640px) 50vw, 25vw"
-                                                quality={75}
+                                                quality={40}
                                                 loading="lazy"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                                 unoptimized

@@ -42,8 +42,9 @@ export default function ProductCard({ product }) {
                     alt={product.image_alt || product.name}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={75}
+                    quality={40}
                     loading="lazy"
+                    unoptimized
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 {/* Neutral glassmorphism overlay */}

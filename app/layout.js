@@ -189,6 +189,8 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://accounts.google.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://wsrbnmovzebjxvsacgvb.supabase.co" />
+        <link rel="dns-prefetch" href="https://wsrbnmovzebjxvsacgvb.supabase.co" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
