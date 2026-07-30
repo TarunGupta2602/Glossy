@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F6E27A"/>
+      <stop offset="45%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9C7A24"/>
+    </linearGradient>
+    <linearGradient id="goldSoft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F6E27A"/>
+      <stop offset="100%" stop-color="#C9A227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="8" y="8" width="496" height="496" rx="106" fill="none" stroke="#D4AF37" stroke-opacity="0.35" stroke-width="3"/>
+
+  <!-- small diamond accent -->
+  <g transform="translate(256,118)">
+    <path d="M0,-22 L20,0 L0,22 L-20,0 Z" fill="url(#goldSoft)"/>
+    <path d="M0,-22 L20,0 L0,4 Z" fill="#F8ECAF" opacity="0.55"/>
+  </g>
+
+  <!-- monogram LJ -->
+  <text x="256" y="378" text-anchor="middle"
+        font-family="Liberation Serif, Georgia, serif"
+        font-size="240" font-weight="700"
+        fill="url(#gold)"
+        letter-spacing="-8">LJ</text>
+
+  <!-- underline flourish -->
+  <line x1="150" y1="404" x2="362" y2="404" stroke="url(#goldSoft)" stroke-width="4" stroke-linecap="round"/>
+</svg>

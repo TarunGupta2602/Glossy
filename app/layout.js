@@ -99,19 +99,15 @@ export const metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: "/favicon-symbol.png" },
-      { url: "/favicon-symbol.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-symbol.png", sizes: "48x48", type: "image/png" },
-      { url: "/favicon-symbol.png", sizes: "96x96", type: "image/png" },
-      { url: "/favicon-symbol.png", sizes: "144x144", type: "image/png" },
+   icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/favicon-symbol.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon-180x180.png", sizes: "180x180", type: "image/png" },
     ],
-    shortcut: "/favicon-symbol.png",
   },
-  manifest: "/manifest.json",
+  manifest: "/site.webmanifest",
   verification: {
     google: "UtTE7g1RfX5oNGZhiC88Lxr-Pcbh5DuxIVljwgxC4YY",
   },
