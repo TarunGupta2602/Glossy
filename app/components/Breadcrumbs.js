@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Breadcrumbs({ items }) {
     return (
-        <nav className="flex items-center gap-2 text-[10px] font-bold tracking-[0.1em] uppercase text-gray-400 mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
+        <nav className="flex items-center gap-2 text-[10px] font-bold tracking-wide uppercase text-gray-600 mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
             <Link href="/" className="hover:text-gray-900 transition-colors">Home</Link>
             {items.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">

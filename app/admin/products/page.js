@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function ProductsListPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -55,7 +56,7 @@ export default function ProductsListPage() {
             // 1. Delete images from storage
             // Note: In a real app, you'd also want to delete 'otherImages' from product_images table and storage
             if (mainImageUrl) {
-                await fetch("/api/products/upload", {
+                await adminFetch("/api/products/upload", {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ imageUrl: mainImageUrl }),
@@ -63,7 +64,7 @@ export default function ProductsListPage() {
             }
 
             // 2. Delete product from database via API
-            const res = await fetch(`/api/products/${id}`, {
+            const res = await adminFetch(`/api/products/${id}`, {
                 method: "DELETE",
             });
             const data = await res.json();

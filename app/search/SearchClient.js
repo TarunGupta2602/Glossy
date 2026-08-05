@@ -1,10 +1,28 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { getProductPath } from "@/lib/seo";
+import { useEffect } from "react";
+import ProductCard from "../components/ProductCard";
+import CategoryPagination from "../components/CategoryPagination";
+import { PAGE_SIZE } from "@/lib/shopQueries";
+import { trackSearch } from "@/lib/gtag";
 
-export default function SearchClient({ query, products = [] }) {
+export default function SearchClient({
+    query,
+    products = [],
+    reviewCounts = {},
+    totalCount = 0,
+    totalPages = 0,
+    currentPage = 1,
+}) {
+    const showingFrom = totalCount === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+    const showingTo = Math.min(currentPage * PAGE_SIZE, totalCount);
+
+    useEffect(() => {
+        if (query?.trim()) {
+            trackSearch(query.trim(), totalCount);
+        }
+    }, [query, totalCount]);
+
     return (
         <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
             <header className="mb-12">
@@ -12,55 +30,32 @@ export default function SearchClient({ query, products = [] }) {
                     {query ? `Search results for "${query}"` : "Search results"}
                 </h1>
                 <p className="text-gray-500 font-medium">
-                    {products.length === 0
+                    {totalCount === 0
                         ? "We couldn't find any products matching your search."
-                        : `Showing ${products.length} elegant products.`}
+                        : totalPages > 1
+                          ? `Showing ${showingFrom}–${showingTo} of ${totalCount} products`
+                          : `Showing ${totalCount} product${totalCount === 1 ? "" : "s"}.`}
                 </p>
             </header>
 
             {products.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6">
-                    {products.map((product) => {
-                        const price = product.price
-                            ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
-                            : "0";
-                        const category = product.categories?.name || "Jewellery";
-
-                        return (
-                            <Link
+                <>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                        {products.map((product) => (
+                            <ProductCard
                                 key={product.id}
-                                href={getProductPath(product)}
-                                className="group flex flex-col"
-                            >
-                                <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 mb-4">
-                                    <Image
-                                        src={product.main_image || "/logo.png"}
-                                        alt={product.name}
-                                        fill
-                                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                        quality={75}
-                                        loading="lazy"
-                                        placeholder="blur"
-                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
-                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                </div>
-
-                                <div className="flex flex-col space-y-1">
-                                    <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-tight">
-                                        {product.name}
-                                    </h3>
-                                    <p className="text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                                        {category}
-                                    </p>
-                                    <p className="text-sm font-black text-[#E91E63]">
-                                        ₹{price}
-                                    </p>
-                                </div>
-                            </Link>
-                        );
-                    })}
-                </div>
+                                product={product}
+                                reviewCount={reviewCounts[product.id] || 0}
+                            />
+                        ))}
+                    </div>
+                    <CategoryPagination
+                        basePath="/search"
+                        page={currentPage}
+                        totalPages={totalPages}
+                        queryParams={{ q: query }}
+                    />
+                </>
             ) : (
                 <div className="py-20 flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
@@ -69,14 +64,14 @@ export default function SearchClient({ query, products = [] }) {
                         </svg>
                     </div>
                     <p className="text-gray-500 max-w-sm mb-8">
-                        Try searching for diamond necklaces, gold earrings, or emerald rings.
+                        Try searching for earrings, necklaces, or anti-tarnish jewellery.
                     </p>
-                    <Link
+                    <a
                         href="/shop"
                         className="bg-gray-900 text-white px-8 py-3.5 rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-black transition-all"
                     >
                         Browse All Jewellery
-                    </Link>
+                    </a>
                 </div>
             )}
         </div>

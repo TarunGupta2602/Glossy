@@ -7,9 +7,12 @@ import {
     getProductCanonicalUrl,
     getProductPath,
     isUuid,
+    SITE_NAME,
 } from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { getProductAvailability } from "@/lib/productAvailability";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { getReviewCounts } from "@/lib/reviewCounts";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -28,15 +31,11 @@ export async function generateMetadata({ params }) {
         product.meta_description ||
         product.description ||
         `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with free shipping across India.`;
-    const seoKeywords =
-        product.meta_keywords ||
-        `${product.name}, ${categoryName}, anti-tarnish jewellery, waterproof jewellery india, the luxe jewels`;
     const canonicalPath = getProductPath(product);
 
     return {
         title: seoTitle,
         description: seoDescription,
-        keywords: seoKeywords,
         robots: {
             index: true,
             follow: true,
@@ -48,7 +47,7 @@ export async function generateMetadata({ params }) {
             title: seoTitle,
             description: seoDescription,
             url: `${BASE_URL}${canonicalPath}`,
-            siteName: "The luxe jewels",
+            siteName: SITE_NAME,
             images: product.main_image
                 ? [{ 
                     url: product.main_image, 
@@ -64,6 +63,9 @@ export async function generateMetadata({ params }) {
                     type: "image/png"
                 }],
             type: "website",
+        },
+        other: {
+            "og:type": "product",
         },
         twitter: {
             card: "summary_large_image",
@@ -102,7 +104,7 @@ export default async function ProductPage({ params }) {
             .eq("category_id", product.category_id)
             .neq("id", id)
             .order("created_at", { ascending: false })
-            .limit(3),
+            .limit(4),
         supabase
             .from("reviews")
             .select("*")
@@ -112,24 +114,15 @@ export default async function ProductPage({ params }) {
     ]);
 
     const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean).slice(0, 5);
-    let relatedProducts = (related?.data || []).slice(0, 3);
+    let relatedProducts = (related?.data || []).slice(0, 4);
     const reviews = reviewsData?.data || [];
 
     // Calculate discount for main product
-    const productWithDiscount = {
-        ...product,
-        calculated_discount: product.original_price
-            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-            : calculateDiscount(product.id)
-    };
+    const productWithDiscount = withCalculatedDiscount(product);
 
     // Calculate discounts for related products
-    relatedProducts = (relatedProducts || []).map(p => ({
-        ...p,
-        calculated_discount: p.original_price
-            ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
-            : calculateDiscount(p.id)
-    }));
+    relatedProducts = (relatedProducts || []).map(withCalculatedDiscount);
+    const relatedReviewCounts = await getReviewCounts(relatedProducts.map((p) => p.id));
 
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages].filter(Boolean);
@@ -145,7 +138,7 @@ export default async function ProductPage({ params }) {
         "@type": "Review",
         author: {
             "@type": "Person",
-            name: review.name || "Anonymous"
+            name: review.user_name || "Anonymous"
         },
         reviewRating: {
             "@type": "Rating",
@@ -163,9 +156,11 @@ export default async function ProductPage({ params }) {
             {
                 "@type": "Product",
                 name: product.name,
+                sku: product.slug || product.id,
                 image: images.length ? images : [`${BASE_URL}/logo.png`],
-                description: product.meta_description || product.description || `Premium ${product.name} from The Luxe Jewels.`,
-                brand: { "@type": "Brand", name: "The luxe jewels" },
+                description: product.meta_description || product.description || `Premium ${product.name} from ${SITE_NAME}.`,
+                brand: { "@type": "Brand", name: SITE_NAME },
+                category: product.categories?.name,
                 ...(totalReviews > 0 && {
                     aggregateRating: {
                         "@type": "AggregateRating",
@@ -183,7 +178,38 @@ export default async function ProductPage({ params }) {
                     url: productUrl,
                     priceCurrency: "INR",
                     price: product.price,
-                    availability: "https://schema.org/InStock",
+                    availability: getProductAvailability(product),
+                    itemCondition: "https://schema.org/NewCondition",
+                    shippingDetails: {
+                        "@type": "OfferShippingDetails",
+                        shippingDestination: {
+                            "@type": "DefinedRegion",
+                            addressCountry: "IN",
+                        },
+                        deliveryTime: {
+                            "@type": "ShippingDeliveryTime",
+                            handlingTime: {
+                                "@type": "QuantitativeValue",
+                                minValue: 1,
+                                maxValue: 2,
+                                unitCode: "DAY",
+                            },
+                            transitTime: {
+                                "@type": "QuantitativeValue",
+                                minValue: 3,
+                                maxValue: 5,
+                                unitCode: "DAY",
+                            },
+                        },
+                    },
+                    hasMerchantReturnPolicy: {
+                        "@type": "MerchantReturnPolicy",
+                        applicableCountry: "IN",
+                        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        merchantReturnDays: 10,
+                        returnMethod: "https://schema.org/ReturnByMail",
+                        returnFees: "https://schema.org/FreeReturn",
+                    },
                 },
             },
             {
@@ -212,6 +238,7 @@ export default async function ProductPage({ params }) {
                 product={productWithDiscount}
                 galleryImages={galleryImages}
                 relatedProducts={relatedProducts}
+                relatedReviewCounts={relatedReviewCounts}
             />
         </main>
     );

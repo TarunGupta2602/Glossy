@@ -1,22 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
-import { getProductPath } from "@/lib/seo";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { getProductDiscountInfo } from "@/lib/discountUtils";
+import { getCategoryHref } from "@/lib/categoryLanding";
+import PincodeChecker from "../../components/PincodeChecker";
 import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
+import TrustStrip from "../../components/TrustStrip";
+import ProductCard from "../../components/ProductCard";
+import { trackViewItem } from "@/lib/gtag";
+import { trackMetaViewContent } from "@/lib/metaPixel";
 
-export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [] }) {
+export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [], relatedReviewCounts = {} }) {
     const categoryName = product.categories?.name || "Jewellery";
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
 
     // Use server-calculated discount if available, otherwise calculate client-side
-    const discount = product.calculated_discount || calculateDiscount(product.id);
+    const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(product);
 
     // Build full image list: main image first, then gallery extras
     const allImages = [
@@ -27,9 +32,26 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
     const [activeIdx, setActiveIdx] = useState(0);
     const [qty, setQty] = useState(1);
+    const [isZoomed, setIsZoomed] = useState(false);
+    const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
     const isWishlisted = isInWishlist(product.id);
     const [addedToBag, setAddedToBag] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState(false);
+
+    useEffect(() => {
+        trackViewItem({
+            id: product.id,
+            name: product.name,
+            price: product.price || 0,
+            category: categoryName,
+        });
+        trackMetaViewContent({
+            id: product.id,
+            name: product.name,
+            value: product.price || 0,
+            category: categoryName,
+        });
+    }, [product.id, product.name, product.price, categoryName]);
 
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
@@ -63,8 +85,19 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
         setTimeout(() => setAddedToBag(false), 2200);
     };
 
+    const handleImageMouseMove = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        setZoomOrigin({ x, y });
+    };
+
+    const categoryHref = product.categories?.slug
+        ? getCategoryHref(product.categories)
+        : "/shop";
+
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white min-h-screen pb-28 lg:pb-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">
                 
                 {/* Breadcrumb */}
@@ -73,7 +106,13 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                     <svg className="w-3 h-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span className="text-gray-700">{categoryName}</span>
+                    {product.categories?.slug ? (
+                        <Link href={categoryHref} className="hover:text-gray-700 transition-colors">
+                            {categoryName}
+                        </Link>
+                    ) : (
+                        <span className="text-gray-700">{categoryName}</span>
+                    )}
                 </nav>
 
                 {/* Main Grid: Images left, Info right */}
@@ -82,7 +121,31 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                     {/* ── LEFT: Gallery ── */}
                     <div className="w-full max-w-[520px]">
                         {/* Main Image */}
-                        <div className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2]" style={{ aspectRatio: "1/1" }}>
+                        <div
+                            className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] cursor-zoom-in hidden lg:block"
+                            style={{ aspectRatio: "1/1" }}
+                            onMouseEnter={() => setIsZoomed(true)}
+                            onMouseLeave={() => setIsZoomed(false)}
+                            onMouseMove={handleImageMouseMove}
+                        >
+                            <Image
+                                src={allImages[activeIdx]}
+                                alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
+                                fill
+                                priority={true}
+                                sizes="(max-width: 1024px) 90vw, 45vw"
+                                quality={80}
+                                placeholder="blur"
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
+                                className="object-cover transition-transform duration-200 ease-out"
+                                style={{
+                                    transform: isZoomed ? "scale(1.75)" : "scale(1)",
+                                    transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                                }}
+                            />
+                        </div>
+
+                        <div className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] lg:hidden" style={{ aspectRatio: "1/1" }}>
                             <Image
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
@@ -137,45 +200,27 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             <p className="text-[24px] font-black text-gray-900 leading-none">
                                 ₹{price}
                             </p>
-                            {(() => {
-                                const originalPrice = product.original_price || (product.price / 0.7);
-                                const displayDiscount = product.original_price
-                                    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-                                    : discount;
-
-                                if (originalPrice > product.price) {
-                                    return (
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-[16px] text-gray-400 line-through font-medium">
-                                                ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                            </p>
-                                            <p className="text-[14px] font-bold text-[#2E7D32]">
-                                                SAVE {displayDiscount}%
-                                            </p>
-                                        </div>
-                                    );
-                                }
-                                return null;
-                            })()}
+                            {hasDiscount && (
+                                <div className="flex items-center gap-2">
+                                    <p className="text-[16px] text-gray-400 line-through font-medium">
+                                        ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                    </p>
+                                    <p className="text-[14px] font-bold text-[#2E7D32]">
+                                        SAVE {discountPercent}%
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Urgency Badge */}
-                        {(() => {
-                            const lowStockCount = product.id
-                                ? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 14) + 2
-                                : 5;
-                            return (
-                                <div className="mt-4 flex items-center gap-2">
-                                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 border border-red-100">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                        </span>
-                                        <span className="text-[11px] font-bold uppercase tracking-tight">Only {lowStockCount} left in stock - Order Soon!</span>
-                                    </div>
+                        {product.stock_count != null && product.stock_count > 0 && product.stock_count <= 10 && (
+                            <div className="mt-4 flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 border border-red-100">
+                                    <span className="text-[11px] font-bold uppercase tracking-tight">
+                                        Only {product.stock_count} left in stock
+                                    </span>
                                 </div>
-                            );
-                        })()}
+                            </div>
+                        )}
 
                         {/* Divider */}
                         <div className="mt-5 mb-5 h-px bg-gray-100" />
@@ -252,38 +297,38 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         </button>
 
                         {/* Trust Signals */}
-                        <div className="mt-8 grid grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-gray-900 uppercase tracking-tight">Free Shipping</p>
-                                    <p className="text-[10px] text-gray-500">On all prepaid orders</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-gray-900 uppercase tracking-tight">Secure Payment</p>
-                                    <p className="text-[10px] text-gray-500">100% safe checkout</p>
-                                </div>
-                            </div>
-                        </div>
+                        <TrustStrip className="mt-8" />
 
-                        {/* Shipping Note */}
+                        <PincodeChecker />
+
+                        {/* Product Details */}
+                        {(product.material || product.plating || product.care_instructions || product.weight || product.size_info) && (
+                            <div className="mt-8 p-5 rounded-xl bg-gray-50 border border-gray-100 space-y-3">
+                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-tight">Product Details</p>
+                                {product.material && (
+                                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-900">Material:</span> {product.material}</p>
+                                )}
+                                {product.plating && (
+                                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-900">Plating:</span> {product.plating}</p>
+                                )}
+                                {product.weight && (
+                                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-900">Weight:</span> {product.weight}</p>
+                                )}
+                                {product.size_info && (
+                                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-900">Size:</span> {product.size_info}</p>
+                                )}
+                                {product.care_instructions && (
+                                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-900">Care:</span> {product.care_instructions}</p>
+                                )}
+                            </div>
+                        )}
+
                         <div className="mt-6 flex items-start gap-3">
                             <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <p className="text-[12px] text-gray-500 font-medium leading-relaxed">
-                                Fast Delivery: <span className="text-gray-900 font-bold">Arrives in 3-5 business days</span> across India.
+                                Fast Delivery: <span className="text-gray-900 font-bold">Arrives in 3–5 business days</span> across India. Secure prepaid checkout only.
                             </p>
                         </div>
                     </div>
@@ -335,61 +380,13 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                         {/* Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-8">
-                            {relatedProducts.slice(0, 4).map((p) => {
-                                const cat = p.categories?.name || "Jewellery";
-                                const pPrice = p.price
-                                    ? p.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
-                                    : "0";
-
-                                return (
-                                    <Link key={p.id} href={getProductPath(p)} className="group flex flex-col">
-                                        <div
-                                            className="relative w-full overflow-hidden rounded-2xl bg-[#F2F2F2] mb-4 shadow-sm hover:shadow-md transition-shadow"
-                                            style={{ aspectRatio: "1/1" }}
-                                        >
-                                                <Image
-                                                src={p.main_image || "/logo.png"}
-                                                alt={p.image_alt || p.name}
-                                                fill
-                                                priority={false}
-                                                sizes="(max-width: 640px) 50vw, 25vw"
-                                                quality={75}
-                                                loading="lazy"
-                                                placeholder="blur"
-                                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
-                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
-                                        </div>
-                                        <h3 className="text-[14px] font-semibold text-gray-900 group-hover:text-[#E91E63] transition-colors leading-snug line-clamp-1">
-                                            {p.name}
-                                        </h3>
-                                        <span className="text-[12px] text-gray-400 mt-0.5">{cat}</span>
-                                        <div className="mt-1 flex flex-wrap items-center gap-2">
-                                            <p className="text-[15px] font-bold text-gray-900">₹{pPrice}</p>
-                                            {(() => {
-                                                const originalPrice = p.original_price || (p.price / 0.7);
-                                                const displayDiscount = p.original_price
-                                                    ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
-                                                    : (p.calculated_discount || calculateDiscount(p.id));
-
-                                                if (originalPrice > p.price) {
-                                                    return (
-                                                        <>
-                                                            <p className="text-[12px] text-gray-400 line-through">
-                                                                ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                                            </p>
-                                                            <p className="text-[12px] font-bold text-[#2E7D32]">
-                                                                (SAVE {displayDiscount}%)
-                                                            </p>
-                                                        </>
-                                                    );
-                                                }
-                                                return null;
-                                            })()}
-                                        </div>
-                                    </Link>
-                                );
-                            })}
+                            {relatedProducts.slice(0, 4).map((p) => (
+                                <ProductCard
+                                    key={p.id}
+                                    product={p}
+                                    reviewCount={relatedReviewCounts[p.id] || 0}
+                                />
+                            ))}
                         </div>
 
                         <div className="mt-8 text-center sm:hidden">
@@ -399,6 +396,22 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         </div>
                     </div>
                 )}
+            </div>
+
+            {/* Mobile sticky add-to-bag bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+                <div className="flex-shrink-0">
+                    <p className="text-lg font-black text-gray-900">₹{price}</p>
+                    {hasDiscount && (
+                        <p className="text-xs text-gray-400 line-through">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                    )}
+                </div>
+                <button
+                    onClick={handleAddToBag}
+                    className={`flex-1 h-12 rounded-xl text-[11px] font-bold tracking-[0.12em] uppercase transition-all ${addedToBag ? "bg-gray-900 text-white" : "bg-[#E91E63] text-white"}`}
+                >
+                    {addedToBag ? "✓ Added" : "Add to Bag"}
+                </button>
             </div>
         </div>
     );

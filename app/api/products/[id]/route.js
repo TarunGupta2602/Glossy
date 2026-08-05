@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { buildProductSeo, generateProductSlug, isUuid } from "@/lib/seo";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 async function enrichProductPayload(body, supabase, existingProduct) {
     const payload = { ...body };
@@ -102,6 +103,9 @@ export async function GET(req, { params }) {
 
 export async function PATCH(req, { params }) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { id } = await params;
         const body = await req.json();
         const supabaseService = getServiceClient();
@@ -148,6 +152,9 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { id } = await params;
         const supabaseService = getServiceClient();
 

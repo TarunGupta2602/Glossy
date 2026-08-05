@@ -2,5 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /profile
+Disallow: /order/
 
 Sitemap: https://www.theluxejewels.in/sitemap.xml

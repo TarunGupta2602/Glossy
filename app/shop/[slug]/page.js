@@ -1,8 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import ProductCard from "../../components/ProductCard";
-import { calculateDiscount } from "@/lib/discountUtils";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import SeoIntro from "../../components/SeoIntro";
+import CategoryPagination from "../../components/CategoryPagination";
+import { notFound, redirect } from "next/navigation";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { getReviewCounts } from "@/lib/reviewCounts";
+import { buildLandingRedirect, getCategoryHref, getDedicatedLandingPath } from "@/lib/categoryLanding";
 
 const PAGE_SIZE = 12;
 
@@ -19,21 +25,19 @@ export async function generateMetadata({ params }) {
         .eq("slug", slug)
         .single();
 
-    if (!category) return { title: "Collection Not Found" };
+    if (!category) {
+        return { title: "Collection Not Found", robots: { index: false, follow: false } };
+    }
+
+    const title = category.meta_title || `${category.name} | Premium Anti-Tarnish Collection`;
+    const description = category.meta_description || category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`;
 
     return {
-        title: `${category.name} | Premium Anti-Tarnish Collection`,
-        description: category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The luxe jewels India.`,
+        title,
+        description,
         alternates: {
             canonical: `/shop/${slug}`,
         },
-        keywords: [
-            `${category.name} jewellery`,
-            `anti tarnish ${category.name}`,
-            `waterproof ${category.name} india`,
-            `18k gold plated ${category.name}`,
-            "The luxe jewels collections"
-        ],
         robots: {
             index: true,
             follow: true,
@@ -41,17 +45,17 @@ export async function generateMetadata({ params }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: `${category.name} | Premium Collection | The luxe jewels`,
-            description: category.description || `Explore our premium ${category.name} collection at The luxe jewels.`,
+            title: `${category.name} | Premium Collection | The Luxe Jewels`,
+            description,
             url: `https://www.theluxejewels.in/shop/${slug}`,
-            siteName: "The luxe jewels",
+            siteName: "The Luxe Jewels",
             images: category.image_url ? [{ url: category.image_url }] : [{ url: "/logo.png" }],
             type: "website",
         },
         twitter: {
             card: "summary_large_image",
             title: `${category.name} | Custom Jewellery Selection`,
-            description: category.description,
+            description,
             images: category.image_url ? [category.image_url] : ["/logo.png"],
         },
     };
@@ -60,28 +64,30 @@ export async function generateMetadata({ params }) {
 export default async function CollectionDetails({ params, searchParams }) {
     const { slug } = await params;
     const resolvedSearchParams = await searchParams;
+
+    const landingPath = getDedicatedLandingPath(slug);
+    if (landingPath) {
+        redirect(buildLandingRedirect(landingPath, resolvedSearchParams));
+    }
+
     const page = parseInt(resolvedSearchParams?.page || "1", 10);
 
     const supabase = getServiceClient();
 
-    // 1. Get category by slug
-    const { data: category, error: catError } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("slug", slug)
-        .single();
+    const [{ data: category, error: catError }, { data: allCategories }] = await Promise.all([
+        supabase.from("categories").select("*").eq("slug", slug).single(),
+        supabase.from("categories").select("id, name, slug, image_url").order("name"),
+    ]);
 
     if (catError || !category) {
-        return <div className="text-center py-20">Collection not found</div>;
+        notFound();
     }
 
-    // 2. Get total count
     const { count } = await supabase
         .from("products")
         .select("id", { count: "exact", head: true })
         .eq("category_id", category.id);
 
-    // 3. Get paginated products
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     const { data: products } = await supabase
@@ -91,22 +97,16 @@ export default async function CollectionDetails({ params, searchParams }) {
         .order("created_at", { ascending: false })
         .range(from, to);
 
-    // Calculate discounts server-side for each product
-    const productsWithDiscounts = (products || []).map(product => ({
-        ...product,
-        calculated_discount: product.original_price
-            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-            : calculateDiscount(product.id)
-    }));
-
+    const productsWithDiscounts = (products || []).map(withCalculatedDiscount);
     const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+    const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
+    const otherCategories = (allCategories || []).filter((c) => c.id !== category.id);
 
-    // Collection Schema
     const collectionJsonLd = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": category.name,
-        "description": category.description || `Explore our ${category.name} collection at The luxe jewels.`,
+        "description": category.description || `Explore our ${category.name} collection at The Luxe Jewels.`,
         "url": `https://www.theluxejewels.in/shop/${slug}`,
         "mainEntity": {
             "@type": "ItemList",
@@ -126,7 +126,6 @@ export default async function CollectionDetails({ params, searchParams }) {
         }
     };
 
-    // Breadcrumb Schema
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -153,7 +152,7 @@ export default async function CollectionDetails({ params, searchParams }) {
     };
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+        <section className="pb-24 bg-white">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
@@ -162,70 +161,80 @@ export default async function CollectionDetails({ params, searchParams }) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
-            <div className="max-w-7xl mx-auto">
-                <h1 className="text-4xl font-bold mb-10 text-center">{category.name}</h1>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-                    {productsWithDiscounts?.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+
+            {category.image_url && (
+                <div className="relative w-full h-48 md:h-64 overflow-hidden bg-gray-100">
+                    <Image
+                        src={category.image_url}
+                        alt={category.name}
+                        fill
+                        priority
+                        sizes="100vw"
+                        className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                </div>
+            )}
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
+                <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: category.name }]} />
+                <div className="text-center mb-12 mt-6">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 tracking-tight">{category.name}</h1>
+                    {category.description && (
+                        <p className="text-gray-500 max-w-xl mx-auto italic font-medium">{category.description}</p>
+                    )}
+                    {count > 0 && (
+                        <p className="text-sm text-gray-400 mt-4 font-medium">
+                            Showing {productsWithDiscounts.length} of {count} piece{count === 1 ? "" : "s"}
+                        </p>
+                    )}
                 </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-12">
+                {productsWithDiscounts.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                            {productsWithDiscounts.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    reviewCount={reviewCounts[product.id] || 0}
+                                />
+                            ))}
+                        </div>
+                        <CategoryPagination basePath={`/shop/${slug}`} page={page} totalPages={totalPages} />
+                    </>
+                ) : (
+                    <div className="text-center py-20 px-6 border border-dashed border-gray-200 rounded-3xl">
+                        <p className="text-gray-500 font-medium mb-2">This collection is being curated.</p>
+                        <p className="text-sm text-gray-400 mb-8">Explore our other collections while we add new pieces.</p>
+                        {otherCategories.length > 0 && (
+                            <div className="flex flex-wrap justify-center gap-3">
+                                {otherCategories.slice(0, 6).map((cat) => (
+                                    <Link
+                                        key={cat.id}
+                                        href={getCategoryHref(cat)}
+                                        className="px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                                    >
+                                        {cat.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
                         <Link
-                            href={`/shop/${slug}?page=${Math.max(1, page - 1)}`}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                                page === 1
-                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                    : "bg-gray-900 text-white hover:bg-black"
-                            }`}
-                            aria-disabled={page === 1}
+                            href="/shop"
+                            className="inline-block mt-8 text-[#E91E63] font-bold text-sm uppercase tracking-widest hover:underline"
                         >
-                            Previous
-                        </Link>
-
-                        {Array.from({ length: totalPages }, (_, i) => {
-                            const pageNum = i + 1;
-                            const isCurrentPage = pageNum === page;
-                            const showPage = pageNum === 1 || pageNum === totalPages || (pageNum >= page - 1 && pageNum <= page + 1);
-
-                            if (!showPage) {
-                                if (pageNum === page - 2 || pageNum === page + 2) {
-                                    return <span key={pageNum} className="px-2">...</span>;
-                                }
-                                return null;
-                            }
-
-                            return (
-                                <Link
-                                    key={pageNum}
-                                    href={`/shop/${slug}?page=${pageNum}`}
-                                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                                        isCurrentPage
-                                            ? "bg-pink-600 text-white"
-                                            : "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    {pageNum}
-                                </Link>
-                            );
-                        })}
-
-                        <Link
-                            href={`/shop/${slug}?page=${Math.min(totalPages, page + 1)}`}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                                page === totalPages
-                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                    : "bg-gray-900 text-white hover:bg-black"
-                            }`}
-                            aria-disabled={page === totalPages}
-                        >
-                            Next
+                            Browse All Jewellery →
                         </Link>
                     </div>
                 )}
             </div>
+
+            {category.description && (
+                <SeoIntro title={`About ${category.name}`}>
+                    <p>{category.description}</p>
+                </SeoIntro>
+            )}
         </section>
     );
 }

@@ -1,7 +1,10 @@
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { getReviewCounts } from "@/lib/reviewCounts";
+import { getFeaturedReviews } from "@/lib/featuredReviews";
+import { getSiteReviewStats } from "@/lib/reviewStats";
+import SeoIntro from "./components/SeoIntro";
 
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
@@ -15,6 +18,10 @@ const Newsletter = dynamic(() => import("./components/newsletter"), {
   loading: () => <div className="h-[200px] bg-gray-50 animate-pulse" />
 });
 
+const InstagramFeed = dynamic(() => import("./components/InstagramFeed"), {
+  loading: () => <div className="h-[300px] bg-gray-50 animate-pulse" />
+});
+
 const HeroSlider = dynamic(() => import("./components/HeroSlider"), {
   loading: () => <div className="h-[65vh] md:h-[85vh] bg-gray-50 animate-pulse" />
 });
@@ -24,14 +31,14 @@ const ProductRow = dynamic(() => import("./components/ProductRow"), {
 });
 
 export const metadata = {
-  title: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
-  description: "Shop anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The luxe jewels.",
+  title: "The Luxe Jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
+  description: "Shop anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The Luxe Jewels.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "The luxe jewels | Premium Jewellery for Everyday Luxury",
+    title: "The Luxe Jewels | Premium Jewellery for Everyday Luxury",
     description: "Discover handcrafted anti-tarnish jewellery made for daily wear, gifting, and modern styling in India.",
     url: "https://www.theluxejewels.in",
-    siteName: "The luxe jewels",
+    siteName: "The Luxe Jewels",
     type: "website",
   },
 };
@@ -57,12 +64,7 @@ export default async function Home() {
         .limit(6);
       
       // Calculate discounts server-side for each product
-      const productsWithDiscounts = (products || []).map(product => ({
-        ...product,
-        calculated_discount: product.original_price
-          ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-          : calculateDiscount(product.id)
-      }));
+      const productsWithDiscounts = (products || []).map(withCalculatedDiscount);
       
       return { ...cat, products: productsWithDiscounts };
     })
@@ -93,6 +95,13 @@ export default async function Home() {
       return a.name.localeCompare(b.name);
     });
 
+  const allProductIds = [
+    ...new Set(activeCategories.flatMap((cat) => cat.products.map((p) => p.id))),
+  ];
+  const reviewCounts = await getReviewCounts(allProductIds);
+  const featuredReviews = await getFeaturedReviews(3);
+  const reviewStats = await getSiteReviewStats();
+
   return (
     <main className="min-h-screen bg-white">
       {/* Dynamic Hero Section */}
@@ -107,7 +116,7 @@ export default async function Home() {
           // Find products that match our "Best Seller" badge logic to show in this row
           const bestSellerProducts = activeCategories
             .flatMap(cat => cat.products)
-            .filter(p => (p.is_bestseller || (p.id && ['a', 'b', '1', '2', '3'].includes(p.id[0].toLowerCase()))))
+            .filter(p => p.is_bestseller)
             .slice(0, 8);
 
           if (bestSellerProducts.length > 0) {
@@ -116,12 +125,21 @@ export default async function Home() {
                 title="Best Sellers"
                 products={bestSellerProducts}
                 viewAllLink="/shop"
+                reviewCounts={reviewCounts}
               />
             );
           }
           return null;
         })()}
       </section>
+
+      {reviewStats.count > 0 && (
+        <div className="text-center py-8 px-6">
+          <p className="text-sm font-semibold text-gray-700">
+            Loved by our community — <span className="text-amber-500">{reviewStats.average}★</span> from {reviewStats.count} verified review{reviewStats.count === 1 ? "" : "s"}
+          </p>
+        </div>
+      )}
 
       {/* Dynamic Product Rows for All Sections */}
       {activeCategories.map((cat) => (
@@ -130,28 +148,28 @@ export default async function Home() {
           title={cat.name}
           products={cat.products}
           viewAllLink={`/shop/${cat.slug}`}
+          reviewCounts={reviewCounts}
         />
       ))}
 
-      {/* SEO Content Section - Visually Hidden */}
-      <section className="sr-only">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 tracking-tight">The luxe jewels: Defining Premium Anti-Tarnish & Fine Jewellery</h2>
-        <p className="text-lg text-gray-600 leading-relaxed mb-10">
-          Welcome to <Link href="/" className="text-gray-900 font-bold border-b border-gray-900">The luxe jewels</Link>,
-          India&apos;s premier destination for **anti-tarnish jewellery**, waterproof accessories, and handcrafted fine jewellery.
-          We specialize in <Link href="/earrings" className="hover:text-[#E91E63] transition-colors font-medium mx-1">18k gold plated earrings</Link>,
-          <Link href="/necklaces" className="hover:text-[#E91E63] transition-colors font-medium mx-1">designer fine necklaces</Link>,
-          and timeless everyday essentials. Our commitment to sustainable luxury ensures every piece is as ethically sourced as it is stunning.
+      <SeoIntro
+        title="Premium Anti-Tarnish & Fine Jewellery in India"
+        links={[
+          { href: "/shop", label: "Shop All Collection" },
+          { href: "/earrings", label: "Anti-Tarnish Earrings" },
+          { href: "/necklaces", label: "Gold Plated Necklaces" },
+        ]}
+      >
+        <p>
+          Welcome to The Luxe Jewels, India&apos;s destination for anti-tarnish jewellery, waterproof accessories, and handcrafted fine jewellery.
+          We specialise in 18k gold plated earrings, designer necklaces, and timeless everyday essentials crafted for modern luxury.
         </p>
-        <div className="flex flex-wrap justify-center gap-6 text-sm font-black uppercase tracking-widest text-[#E91E63]">
-          <Link href="/shop" className="hover:underline">Shop All Collection</Link>
-          <Link href="/earrings" className="hover:underline">Anti-Tarnish Earrings</Link>
-          <Link href="/necklaces" className="hover:underline">Gold Plated Necklaces</Link>
-        </div>
-      </section>
+      </SeoIntro>
 
       {/* Testimonials Section */}
-      <Testimonials />
+      <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
+
+      <InstagramFeed />
 
       {/* Newsletter Section */}
       <Newsletter />

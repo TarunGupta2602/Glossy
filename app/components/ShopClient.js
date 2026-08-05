@@ -1,228 +1,231 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import ProductCard from "./ProductCard";
 import ShopSidebar from "./ShopSidebar";
+import { PAGE_SIZE } from "@/lib/shopQueries";
 
-export default function ShopClient({ initialProducts, categories }) {
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [priceRange, setPriceRange] = useState([0, 5000]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [sortBy, setSortBy] = useState("newest");
+function buildShopUrl({ page = 1, sort = "newest", categories = [], min = 0, max = 5000 }) {
+    const params = new URLSearchParams();
+    params.set("page", String(page));
+    if (sort !== "newest") params.set("sort", sort);
+    if (categories.length) params.set("category", categories.join(","));
+    if (min > 0) params.set("min", String(min));
+    if (max < 5000) params.set("max", String(max));
+    return `/shop?${params.toString()}`;
+}
+
+export default function ShopClient({
+    products,
+    categories,
+    totalCount,
+    totalPages,
+    currentPage,
+    sortBy,
+    selectedCategories,
+    priceRange,
+    reviewCounts = {},
+}) {
+    const router = useRouter();
+    const [minPrice, maxPrice] = priceRange;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const itemsPerPage = 9;
 
-    const handleCategoryChange = (id) => {
-        if (id === "all") {
-            setSelectedCategories([]);
-        } else {
-            setSelectedCategories((prev) =>
-                prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-            );
-        }
-        setCurrentPage(1);
+    const navigate = (updates) => {
+        router.push(
+            buildShopUrl({
+                page: updates.page ?? 1,
+                sort: updates.sort ?? sortBy,
+                categories: updates.categories ?? selectedCategories,
+                min: updates.min ?? minPrice,
+                max: updates.max ?? maxPrice,
+            })
+        );
     };
 
-    const filteredProducts = useMemo(() => {
-        let result = initialProducts.filter((product) => {
-            const matchCategory =
-                selectedCategories.length === 0 ||
-                selectedCategories.includes(product.category_id);
-            const matchPrice =
-                product.price >= priceRange[0] && product.price <= priceRange[1];
-            return matchCategory && matchPrice;
-        });
+    const hasActiveFilters =
+        selectedCategories.length > 0 || minPrice > 0 || maxPrice < 5000 || sortBy !== "newest";
 
-        if (sortBy === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
-        else if (sortBy === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
-        else if (sortBy === "name") result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    const sortOptions = [
+        { value: "newest", label: "Newest" },
+        { value: "price-asc", label: "Price ↑" },
+        { value: "price-desc", label: "Price ↓" },
+    ];
 
-        return result;
-    }, [initialProducts, selectedCategories, priceRange, sortBy]);
-
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-    const paginatedProducts = filteredProducts.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-
-    const hasActiveFilters = selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000;
+    const showingFrom = totalCount === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+    const showingTo = Math.min(currentPage * PAGE_SIZE, totalCount);
 
     return (
         <div className="flex flex-col md:flex-row gap-8 lg:gap-24 relative">
-
-            {/* Mobile Filter Button - "Smart" Floating Action Button at Bottom */}
             <div className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[90]">
                 <button
                     onClick={() => setIsSidebarOpen(true)}
                     className="flex items-center gap-2.5 bg-gray-950 text-white pl-5 pr-6 py-3.5 rounded-full text-[13px] font-bold tracking-tight shadow-2xl shadow-black/20 active:scale-95 transition-all border border-white/10"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
                     Filter & Sort
                 </button>
             </div>
 
-            {/* Top mobile status - minimal */}
-            <div className="md:hidden flex items-center justify-between mb-6">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                    Collection
-                </div>
-                <div className="text-[11px] font-bold text-gray-900 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 italic">
-                    {filteredProducts.length} items found
+            <div className="md:hidden flex items-center justify-between mb-4">
+                <div className="text-[10px] font-black text-gray-600 uppercase tracking-wide">Collection</div>
+                <div className="text-[11px] font-bold text-gray-900 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+                    {totalCount > 0 ? `Showing ${showingFrom}–${showingTo} of ${totalCount}` : "0 items"}
                 </div>
             </div>
 
-            {/* Sidebar - Drawer for mobile, Static for desktop */}
-            <div className={`
-                fixed inset-0 z-[100] md:relative md:inset-auto md:z-30 md:block
-                ${isSidebarOpen ? "block" : "hidden md:block"}
-            `}>
-                {/* Backdrop for mobile */}
-                <div
-                    className="absolute inset-0 bg-black/40 backdrop-blur-sm md:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
+            {categories.length > 0 && (
+                <div className="md:hidden flex gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide -mx-1 px-1">
+                    <button
+                        onClick={() => navigate({ categories: [], page: 1 })}
+                        className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-colors ${selectedCategories.length === 0 ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
+                    >
+                        All
+                    </button>
+                    {categories.map((cat) => {
+                        const isActive = selectedCategories.includes(String(cat.id));
+                        return (
+                            <button
+                                key={cat.id}
+                                onClick={() => {
+                                    const id = String(cat.id);
+                                    const next = isActive
+                                        ? selectedCategories.filter((c) => c !== id)
+                                        : [...selectedCategories, id];
+                                    navigate({ categories: next, page: 1 });
+                                }}
+                                className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-colors ${isActive ? "bg-[#E91E63] text-white" : "bg-gray-100 text-gray-600"}`}
+                            >
+                                {cat.name}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
 
-                <div className={`
-                    absolute left-0 top-0 bottom-0 w-[85%] max-w-xs bg-white p-8 overflow-y-auto 
-                    md:relative md:w-56 md:p-0 md:bg-transparent md:overflow-visible
-                    transition-transform duration-300 ease-out
-                    md:sticky md:top-32 md:h-fit
-                    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-                `}>
+            <div className="md:hidden sticky top-[52px] z-40 -mx-6 px-6 py-3 bg-white/95 backdrop-blur border-b border-gray-100 mb-4 flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-gray-500">Sort by</span>
+                <div className="flex gap-2">
+                    {sortOptions.map((opt) => (
+                        <button
+                            key={opt.value}
+                            onClick={() => navigate({ sort: opt.value, page: 1 })}
+                            className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors ${sortBy === opt.value ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
+                        >
+                            {opt.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className={`fixed inset-0 z-[100] md:relative md:inset-auto md:z-30 md:block ${isSidebarOpen ? "block" : "hidden md:block"}`}>
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm md:hidden" onClick={() => setIsSidebarOpen(false)} />
+                <div className={`absolute left-0 top-0 bottom-0 w-[85%] max-w-xs bg-white p-8 overflow-y-auto md:relative md:w-56 md:p-0 md:bg-transparent md:overflow-visible transition-transform duration-300 ease-out md:sticky md:top-32 md:h-fit ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
                     <div className="flex items-center justify-between mb-8 md:hidden">
                         <h2 className="text-lg font-bold">Filters</h2>
-                        <button onClick={() => setIsSidebarOpen(false)} className="p-2 -mr-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>
+                        <button onClick={() => setIsSidebarOpen(false)} className="p-2 -mr-2">✕</button>
                     </div>
 
                     <ShopSidebar
                         categories={categories}
                         selectedCategories={selectedCategories}
-                        onCategoryChange={handleCategoryChange}
-                        priceRange={priceRange}
-                        onPriceChange={(val) => {
-                            setPriceRange(val);
-                            setCurrentPage(1);
+                        onCategoryChange={(id) => {
+                            const next =
+                                id === "all"
+                                    ? []
+                                    : selectedCategories.includes(id)
+                                      ? selectedCategories.filter((c) => c !== id)
+                                      : [...selectedCategories, id];
+                            navigate({ categories: next, page: 1 });
                         }}
+                        priceRange={priceRange}
+                        onPriceChange={(val) => navigate({ min: val[0], max: val[1], page: 1 })}
                         sortBy={sortBy}
-                        onSortChange={(val) => { setSortBy(val); setCurrentPage(1); }}
-                        totalProducts={filteredProducts.length}
+                        onSortChange={(val) => navigate({ sort: val, page: 1 })}
+                        totalProducts={totalCount}
                     />
 
-                    {/* Show results button for mobile */}
-                    <button
-                        onClick={() => setIsSidebarOpen(false)}
-                        className="w-full bg-[#E91E63] text-white py-4 rounded-xl font-bold mt-10 md:hidden"
-                    >
-                        Show {filteredProducts.length} Results
+                    <button onClick={() => setIsSidebarOpen(false)} className="w-full bg-[#E91E63] text-white py-4 rounded-xl font-bold mt-10 md:hidden">
+                        Show {totalCount} Results
                     </button>
                 </div>
             </div>
 
-            {/* Main Content Area */}
             <div className="flex-1 min-w-0 relative">
-
-                {/* Top bar: count + sort - Hide on mobile (now in drawer) */}
                 <div className="hidden md:flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                        <p className="text-[13px] text-gray-400">
-                            <span className="text-gray-900 font-semibold">{filteredProducts.length}</span> products
+                        <p className="text-[13px] text-gray-600">
+                            {totalCount > 0 ? (
+                                <>Showing <span className="text-gray-900 font-semibold">{showingFrom}–{showingTo}</span> of <span className="text-gray-900 font-semibold">{totalCount}</span> products</>
+                            ) : (
+                                <>No products found</>
+                            )}
                         </p>
                         {hasActiveFilters && (
                             <button
-                                onClick={() => { setSelectedCategories([]); setPriceRange([0, 5000]); setSortBy("newest"); }}
+                                onClick={() => router.push("/shop?page=1")}
                                 className="text-[11px] text-[#E91E63] font-semibold tracking-wide hover:underline underline-offset-2"
                             >
                                 Clear filters
                             </button>
                         )}
                     </div>
-
-                    <div className="hidden md:block">
-                        <select
-                            value={sortBy}
-                            onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                            className="text-[12px] text-gray-600 border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-[#E91E63] cursor-pointer appearance-none pr-8"
-                            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center" }}
-                        >
-                            <option value="newest">Newest First</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="name">Name A–Z</option>
-                        </select>
-                    </div>
                 </div>
 
-                {paginatedProducts.length > 0 ? (
+                {products.length > 0 ? (
                     <>
                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-                            {paginatedProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
+                            {products.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    reviewCount={reviewCounts[product.id] || 0}
+                                />
                             ))}
                         </div>
 
-                        {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="mt-20 flex items-center justify-center gap-2">
-                                {/* Prev */}
-                                <button
-                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                    disabled={currentPage === 1}
-                                    className={`w-9 h-9 flex items-center justify-center rounded-lg border border-gray-100 transition-colors ${currentPage === 1 ? "opacity-30 cursor-not-allowed" : "hover:border-[#E91E63] text-gray-600 hover:text-[#E91E63]"}`}
+                            <div className="mt-20 flex items-center justify-center gap-2 flex-wrap">
+                                <Link
+                                    href={buildShopUrl({ page: Math.max(1, currentPage - 1), sort: sortBy, categories: selectedCategories, min: minPrice, max: maxPrice })}
+                                    className={`w-9 h-9 flex items-center justify-center rounded-lg border border-gray-100 transition-colors ${currentPage === 1 ? "opacity-30 pointer-events-none" : "hover:border-[#E91E63] text-gray-600 hover:text-[#E91E63]"}`}
+                                    aria-disabled={currentPage === 1}
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
+                                    ‹
+                                </Link>
 
-                                {[...Array(totalPages)].map((_, i) => {
-                                    const page = i + 1;
-                                    if (totalPages > 7 && page !== 1 && page !== totalPages && Math.abs(page - currentPage) > 2) {
-                                        if (page === 2 || page === totalPages - 1) {
-                                            return <span key={page} className="text-gray-300 px-1">…</span>;
-                                        }
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                                    if (totalPages > 7 && pageNum !== 1 && pageNum !== totalPages && Math.abs(pageNum - currentPage) > 2) {
+                                        if (pageNum === 2 || pageNum === totalPages - 1) return <span key={pageNum} className="text-gray-300 px-1">…</span>;
                                         return null;
                                     }
                                     return (
-                                        <button
-                                            key={page}
-                                            onClick={() => setCurrentPage(page)}
-                                            className={`w-9 h-9 flex items-center justify-center rounded-lg text-[13px] font-semibold transition-all ${currentPage === page ? "bg-[#E91E63] text-white shadow-md" : "text-gray-500 border border-gray-100 hover:border-[#E91E63] hover:text-[#E91E63]"}`}
+                                        <Link
+                                            key={pageNum}
+                                            href={buildShopUrl({ page: pageNum, sort: sortBy, categories: selectedCategories, min: minPrice, max: maxPrice })}
+                                            className={`w-9 h-9 flex items-center justify-center rounded-lg text-[13px] font-semibold transition-all ${currentPage === pageNum ? "bg-[#E91E63] text-white shadow-md" : "text-gray-500 border border-gray-100 hover:border-[#E91E63] hover:text-[#E91E63]"}`}
                                         >
-                                            {page}
-                                        </button>
+                                            {pageNum}
+                                        </Link>
                                     );
                                 })}
 
-                                {/* Next */}
-                                <button
-                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className={`w-9 h-9 flex items-center justify-center rounded-lg border border-gray-100 transition-colors ${currentPage === totalPages ? "opacity-30 cursor-not-allowed" : "hover:border-[#E91E63] text-gray-600 hover:text-[#E91E63]"}`}
+                                <Link
+                                    href={buildShopUrl({ page: Math.min(totalPages, currentPage + 1), sort: sortBy, categories: selectedCategories, min: minPrice, max: maxPrice })}
+                                    className={`w-9 h-9 flex items-center justify-center rounded-lg border border-gray-100 transition-colors ${currentPage === totalPages ? "opacity-30 pointer-events-none" : "hover:border-[#E91E63] text-gray-600 hover:text-[#E91E63]"}`}
+                                    aria-disabled={currentPage === totalPages}
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </button>
+                                    ›
+                                </Link>
                             </div>
                         )}
                     </>
                 ) : (
                     <div className="text-center py-24 px-6 border border-dashed border-gray-200 rounded-3xl">
-                        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center">
-                            <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
                         <p className="text-gray-500 font-medium text-[14px]">No products match your selection.</p>
-                        <button
-                            onClick={() => { setSelectedCategories([]); setPriceRange([0, 5000]); }}
-                            className="mt-4 text-[#E91E63] font-bold text-[13px] underline underline-offset-4"
-                        >
+                        <Link href="/shop?page=1" className="mt-4 inline-block text-[#E91E63] font-bold text-[13px] underline underline-offset-4">
                             Clear all filters
-                        </button>
+                        </Link>
                     </div>
                 )}
             </div>

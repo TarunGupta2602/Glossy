@@ -32,7 +32,7 @@ export default function ShopSidebar({
             {/* Sort & Count Section (Moved from top bar) */}
             <div className="pb-6 border-b border-gray-100">
                 <div className="mb-4">
-                    <span className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase">
+                    <span className="text-[10px] font-bold tracking-wide text-gray-600 uppercase">
                         Sort By
                     </span>
                     <div className="relative mt-3">
@@ -42,6 +42,7 @@ export default function ShopSidebar({
                             className="w-full text-[13px] font-medium text-gray-700 border border-gray-100 rounded-xl px-4 py-2.5 bg-gray-50/50 hover:bg-white hover:border-[#E91E63] focus:outline-none focus:border-[#E91E63] transition-all cursor-pointer appearance-none pr-10"
                             style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
                         >
+                            <option value="popular">Best Sellers First</option>
                             <option value="newest">Newest First</option>
                             <option value="price-asc">Price: Low to High</option>
                             <option value="price-desc">Price: High to Low</option>
@@ -50,7 +51,7 @@ export default function ShopSidebar({
                     </div>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase">
+                    <span className="text-[10px] font-bold tracking-wide text-gray-600 uppercase">
                         Density
                     </span>
                     <span className="text-[11px] font-bold text-gray-900 bg-gray-50 px-2 py-0.5 rounded-full">
@@ -61,7 +62,7 @@ export default function ShopSidebar({
 
             {/* Category Filter */}
             <div>
-                <h3 className="text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase mb-5">
+                <h3 className="text-[10px] font-bold tracking-wide text-gray-600 uppercase mb-5">
                     Category
                 </h3>
                 <div className="space-y-3">
@@ -85,7 +86,7 @@ export default function ShopSidebar({
                         <span
                             className={`text-[13px] transition-colors leading-none ${selectedCategories.length === 0
                                 ? "text-gray-900 font-semibold"
-                                : "text-gray-400 group-hover:text-gray-700"
+                                : "text-gray-600 group-hover:text-gray-800"
                                 }`}
                         >
                             All Jewellery
@@ -114,7 +115,7 @@ export default function ShopSidebar({
                             <span
                                 className={`text-[13px] transition-colors leading-none ${selectedCategories.includes(category.id)
                                     ? "text-gray-900 font-semibold"
-                                    : "text-gray-400 group-hover:text-gray-700"
+                                    : "text-gray-600 group-hover:text-gray-800"
                                     }`}
                             >
                                 {category.name}
@@ -138,12 +139,12 @@ export default function ShopSidebar({
                 {/* Price Labels */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-center">
-                        <span className="text-[11px] text-gray-400 block leading-none mb-0.5">MIN</span>
+                        <span className="text-[11px] text-gray-600 block leading-none mb-0.5">MIN</span>
                         <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[0].toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="h-px w-4 bg-gray-200" />
                     <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-center">
-                        <span className="text-[11px] text-gray-400 block leading-none mb-0.5">MAX</span>
+                        <span className="text-[11px] text-gray-600 block leading-none mb-0.5">MAX</span>
                         <span className="text-[13px] font-semibold text-gray-800">₹{priceRange[1].toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                 </div>

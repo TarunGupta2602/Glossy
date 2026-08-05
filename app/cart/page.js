@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { getProductPath } from "@/lib/seo";
-import { useEffect, useState } from "react";
+import CheckoutSteps from "../components/CheckoutSteps";
+import TrustStrip from "../components/TrustStrip";
+import EmptyCartSuggestions from "../components/EmptyCartSuggestions";
 
 export default function CartPage() {
     const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
@@ -56,7 +59,7 @@ export default function CartPage() {
 
     if (cart.length === 0) {
         return (
-            <div className="bg-white min-h-[80vh] flex flex-col items-center justify-center px-6">
+            <div className="bg-white min-h-[80vh] flex flex-col items-center justify-center px-6 pb-16">
                 <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
@@ -72,6 +75,7 @@ export default function CartPage() {
                 >
                     Start Shopping
                 </Link>
+                <EmptyCartSuggestions />
             </div>
         );
     }
@@ -79,12 +83,19 @@ export default function CartPage() {
     return (
         <div className="bg-white min-h-screen pb-24">
             <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 pt-16">
-                <div className="flex items-center justify-between mb-10">
+                <CheckoutSteps current={1} />
+                <div className="flex items-center justify-between mb-6">
                     <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>
                     <Link href="/shop" className="text-xs font-bold text-[#E91E63] tracking-widest uppercase border-b border-[#E91E63] pb-1 hover:text-[#C2185B] hover:border-[#C2185B] transition-all">
                         Continue Shopping
                     </Link>
                 </div>
+
+                <div className="mb-8 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-blue-900">
+                    <span className="font-bold">Secure online payment</span> via UPI, cards, and net banking. All orders are prepaid for faster dispatch.
+                </div>
+
+                <TrustStrip className="mb-10" />
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
                     {/* Items List */}

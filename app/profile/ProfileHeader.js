@@ -1,79 +1,81 @@
 
 import Image from "next/image";
+import Link from "next/link";
 
-export default function ProfileHeader({ user, ordersCount, signOut }) {
+export default function ProfileHeader({ user, profile, ordersCount, wishlistCount, signOut }) {
+    const displayName = profile?.name || user.user_metadata?.full_name || "Member";
+    const firstName = displayName.split(" ")[0];
+    const avatar = profile?.avatar || user.user_metadata?.avatar_url;
+
     return (
-        <div className="relative mb-20">
-            {/* Background Decorative Element */}
-            <div className="absolute -top-20 -left-20 w-96 h-96 bg-gray-100/50 rounded-full blur-[100px] -z-10" />
+        <div className="relative overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br from-[#FFF5F8] via-white to-white p-6 md:p-10">
+            <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-[#E91E63]/5 blur-3xl" />
 
-            <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-10">
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-12">
-                    {/* Profile Image with Ring */}
-                    <div className="relative group">
-                        <div className="w-40 h-40 rounded-full overflow-hidden border border-gray-100 p-2 bg-white shadow-2xl relative z-10">
-                            <div className="w-full h-full rounded-full overflow-hidden relative">
-                                <Image
-                                    src={user.user_metadata?.avatar_url || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
-                                    alt={user.user_metadata?.full_name || "User"}
-                                    fill
-                                    sizes="160px"
-                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                            </div>
-                        </div>
-                        <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gray-900 rounded-full border-4 border-[#FAFAFA] flex items-center justify-center z-20 shadow-xl">
-                            <span className="text-[14px] font-black text-white italic">L</span>
-                        </div>
+            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
+                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-white shadow-lg ring-2 ring-[#E91E63]/10">
+                        <Image
+                            src={avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                            alt={displayName}
+                            fill
+                            sizes="96px"
+                            className="object-cover"
+                        />
                     </div>
 
-                    <div className="text-center md:text-left flex flex-col justify-center">
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
-                            <span className="bg-[#E91E63]/10 text-[#E91E63] text-[9px] font-black uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border border-[#E91E63]/20">
-                                Signature Member
-                            </span>
-                            <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">
-                                Exclusive Access Enabled
-                            </span>
-                        </div>
-
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-gray-900 leading-[0.9] mb-6">
-                            Greetings, <br className="hidden md:block" />
-                            <span className="text-[#E91E63]">{user.user_metadata?.full_name?.split(' ')[0] || "Friend"}</span>
+                    <div className="text-center sm:text-left">
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-[#E91E63] mb-2">
+                            My Account
+                        </p>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                            Hello, {firstName}
                         </h1>
-
-                        <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <p className="text-gray-400 font-medium text-xs tracking-wide">{user.email}</p>
-                            </div>
-                            <button
-                                onClick={signOut}
-                                className="text-[10px] font-black text-gray-900 hover:text-[#E91E63] uppercase tracking-[0.2em] transition-all border-b-2 border-gray-100 hover:border-[#E91E63] pb-1"
+                        <p className="mt-2 text-sm text-gray-500">{user.email}</p>
+                        {profile?.role === "admin" && (
+                            <Link
+                                href="/admin"
+                                className="inline-flex mt-3 items-center rounded-full bg-amber-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-800 border border-amber-100 hover:bg-amber-100 transition-colors"
                             >
-                                Logout Session
-                            </button>
-                        </div>
+                                Admin dashboard →
+                            </Link>
+                        )}
                     </div>
                 </div>
 
-                {/* Stats Card */}
-                <div className="shrink-0">
-                    <div className="bg-white border border-gray-100 p-10 rounded-[40px] shadow-2xl shadow-gray-200/40 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-pink-50/30 rounded-full blur-3xl -z-10 transition-transform duration-700 group-hover:scale-150" />
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Portfolio Value</p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-black text-gray-900 tracking-tighter italic">{ordersCount}</span>
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{ordersCount === 1 ? 'Acquisition' : 'Acquisitions'}</span>
-                        </div>
-                        <div className="mt-6 flex items-center gap-2 text-[8px] font-black text-[#E91E63] uppercase tracking-[0.2em]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                            Lifetime Warranty Active
-                        </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:min-w-[280px]">
+                    <div className="rounded-2xl bg-white border border-gray-100 px-5 py-4 text-center shadow-sm">
+                        <p className="text-2xl font-black text-gray-900">{ordersCount}</p>
+                        <p className="text-[11px] font-semibold text-gray-500 mt-1">Orders</p>
+                    </div>
+                    <div className="rounded-2xl bg-white border border-gray-100 px-5 py-4 text-center shadow-sm">
+                        <p className="text-2xl font-black text-gray-900">{wishlistCount}</p>
+                        <p className="text-[11px] font-semibold text-gray-500 mt-1">Saved items</p>
                     </div>
                 </div>
+            </div>
+
+            <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3 border-t border-gray-100 pt-6 sm:justify-between">
+                <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
+                    <Link
+                        href="/shop"
+                        className="rounded-xl bg-gray-900 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-black transition-colors"
+                    >
+                        Continue shopping
+                    </Link>
+                    <Link
+                        href="/wishlist"
+                        className="rounded-xl border border-gray-200 px-5 py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-colors"
+                    >
+                        View wishlist
+                    </Link>
+                </div>
+                <button
+                    onClick={signOut}
+                    className="text-[11px] font-semibold text-gray-400 hover:text-[#E91E63] uppercase tracking-widest transition-colors"
+                >
+                    Sign out
+                </button>
             </div>
         </div>
     );
 }
-

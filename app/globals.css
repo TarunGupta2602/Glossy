@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
-
-
+/* Keyboard focus ring for interactive elements */
+:focus-visible {
+  outline: 2px solid #E91E63;
+  outline-offset: 2px;
+}
 
 @keyframes fade-in-up {
   from {

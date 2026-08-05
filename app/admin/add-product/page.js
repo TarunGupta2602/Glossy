@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function AddProductPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -17,6 +18,15 @@ export default function AddProductPage() {
     const [metaDescription, setMetaDescription] = useState("");
     const [metaKeywords, setMetaKeywords] = useState("");
     const [imageAlt, setImageAlt] = useState("");
+    const [originalPrice, setOriginalPrice] = useState("");
+    const [isBestseller, setIsBestseller] = useState(false);
+    const [isNew, setIsNew] = useState(false);
+    const [material, setMaterial] = useState("");
+    const [plating, setPlating] = useState("");
+    const [careInstructions, setCareInstructions] = useState("");
+    const [stockCount, setStockCount] = useState("");
+    const [weight, setWeight] = useState("");
+    const [sizeInfo, setSizeInfo] = useState("");
 
     const [mainImage, setMainImage] = useState(null);
     const [otherImages, setOtherImages] = useState([]);
@@ -37,7 +47,7 @@ export default function AddProductPage() {
     // Fetch categories
     const fetchCategories = async () => {
         try {
-            const response = await fetch("/api/categories");
+            const response = await adminFetch("/api/categories");
             const data = await response.json();
             if (data.success) {
                 setCategories(data.categories || []);
@@ -53,7 +63,7 @@ export default function AddProductPage() {
 
         try {
             // 1. Insert product record via API
-            const productRes = await fetch("/api/products", {
+            const productRes = await adminFetch("/api/products", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -65,6 +75,15 @@ export default function AddProductPage() {
                     meta_description: metaDescription,
                     meta_keywords: metaKeywords,
                     image_alt: imageAlt,
+                    original_price: originalPrice ? parseFloat(originalPrice) : null,
+                    is_bestseller: isBestseller,
+                    is_new: isNew,
+                    material: material || null,
+                    plating: plating || null,
+                    care_instructions: careInstructions || null,
+                    stock_count: stockCount !== "" ? parseInt(stockCount, 10) : null,
+                    weight: weight || null,
+                    size_info: sizeInfo || null,
                 }),
             });
             const productData = await productRes.json();
@@ -80,7 +99,7 @@ export default function AddProductPage() {
                 formData.append("file", mainImage);
                 formData.append("path", `${product.id}/main-${Date.now()}`);
 
-                const uploadRes = await fetch("/api/products/upload", {
+                const uploadRes = await adminFetch("/api/products/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -90,7 +109,7 @@ export default function AddProductPage() {
                 finalMainImageUrl = uploadData.url;
 
                 // Update product with main image via API
-                await fetch(`/api/products/${product.id}`, {
+                await adminFetch(`/api/products/${product.id}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ main_image: finalMainImageUrl }),
@@ -104,7 +123,7 @@ export default function AddProductPage() {
                 formData.append("file", file);
                 formData.append("path", `${product.id}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`);
 
-                const uploadRes = await fetch("/api/products/upload", {
+                const uploadRes = await adminFetch("/api/products/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -119,7 +138,7 @@ export default function AddProductPage() {
 
             // Save gallery images via API
             if (imageObjects.length > 0) {
-                const galleryRes = await fetch("/api/admin/product-images", {
+                const galleryRes = await adminFetch("/api/admin/product-images", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(imageObjects),
@@ -204,6 +223,83 @@ export default function AddProductPage() {
                                     ))}
                                 </select>
                             </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Original Price (MRP)</label>
+                                <input
+                                    type="number"
+                                    placeholder="Leave empty if no discount"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                    value={originalPrice}
+                                    onChange={(e) => setOriginalPrice(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Stock Count</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="Optional"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                    value={stockCount}
+                                    onChange={(e) => setStockCount(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="md:col-span-2 flex flex-wrap gap-6">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                    <input type="checkbox" checked={isBestseller} onChange={(e) => setIsBestseller(e.target.checked)} />
+                                    Best Seller
+                                </label>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                    <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} />
+                                    New Arrival
+                                </label>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Material</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Brass, Recycled Silver"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                    value={material}
+                                    onChange={(e) => setMaterial(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Plating</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. 18k Gold Plated"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                    value={plating}
+                                    onChange={(e) => setPlating(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Care Instructions</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Avoid harsh chemicals"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                    value={careInstructions}
+                                    onChange={(e) => setCareInstructions(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Weight</label>
+                                <input type="text" placeholder="e.g. 4g per pair" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none transition-all" value={weight} onChange={(e) => setWeight(e.target.value)} />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Size</label>
+                                <input type="text" placeholder="e.g. 1.2 cm diameter" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none transition-all" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} />
+                            </div>
                         </div>
 
                         {/* Description */}
@@ -271,7 +367,7 @@ export default function AddProductPage() {
                                     <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Meta Keywords</label>
                                     <input
                                         type="text"
-                                        placeholder="jewelry, diamond, luxury..."
+                                        placeholder="jewellery, diamond, luxury..."
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
                                         value={metaKeywords}
                                         onChange={(e) => setMetaKeywords(e.target.value)}

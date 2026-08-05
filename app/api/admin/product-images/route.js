@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 export async function POST(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const body = await req.json(); // Expected [{product_id, image_url}, ...]
         const supabaseService = getServiceClient();
 
@@ -25,6 +29,9 @@ export async function POST(req) {
 
 export async function DELETE(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { id } = await req.json(); // Image ID
         const supabaseService = getServiceClient();
 

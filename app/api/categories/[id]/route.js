@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 export async function GET(req, { params }) {
     try {
@@ -25,6 +26,9 @@ export async function GET(req, { params }) {
 
 export async function PATCH(req, { params }) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { id } = await params;
         const body = await req.json();
         const supabaseService = getServiceClient();
@@ -50,6 +54,9 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { id } = await params;
         const supabaseService = getServiceClient();
 

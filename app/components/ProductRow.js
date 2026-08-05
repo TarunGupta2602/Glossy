@@ -4,7 +4,7 @@ import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { useRef } from "react";
 
-export default function ProductRow({ title, products, viewAllLink }) {
+export default function ProductRow({ title, products, viewAllLink, reviewCounts = {} }) {
     const scrollRef = useRef(null);
 
     if (!products || products.length === 0) return null;
@@ -30,7 +30,7 @@ export default function ProductRow({ title, products, viewAllLink }) {
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
                             <div className={`h-[1px] w-8 ${isBestSeller ? 'bg-amber-400' : 'bg-[#E91E63]'}`} />
-                            <span className={`text-[10px] font-black tracking-[0.4em] uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
+                            <span className={`text-[10px] font-black tracking-wider uppercase ${isBestSeller ? 'text-amber-600' : 'text-[#E91E63]'}`}>
                                 {isBestSeller ? 'TRUE TRENDS' : 'COLLECTION'}
                             </span>
                         </div>
@@ -43,7 +43,7 @@ export default function ProductRow({ title, products, viewAllLink }) {
                         {!isBestSeller && (
                             <Link
                                 href={viewAllLink}
-                                className="group flex items-center gap-2 text-[11px] font-black tracking-[0.25em] uppercase text-gray-400 hover:text-[#E91E63] transition-all duration-300"
+                                className="group flex items-center gap-2 text-[11px] font-black tracking-wide uppercase text-gray-600 hover:text-[#E91E63] transition-all duration-300"
                             >
                                 <span className="relative pb-1">
                                     View All
@@ -80,7 +80,7 @@ export default function ProductRow({ title, products, viewAllLink }) {
                             key={product.id}
                             className="shrink-0 w-[280px] md:w-[340px] snap-start"
                         >
-                            <ProductCard product={product} />
+                            <ProductCard product={product} reviewCount={reviewCounts[product.id] || 0} />
                         </div>
                     ))}
                 </div>

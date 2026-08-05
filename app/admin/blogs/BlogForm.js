@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish Blog Post" }) {
     const [title, setTitle] = useState(initialData?.title || "");
@@ -72,7 +73,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                     formData.append("oldImageUrl", initialData.image);
                 }
 
-                const uploadRes = await fetch("/api/blogs/upload", {
+                const uploadRes = await adminFetch("/api/blogs/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -261,7 +262,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                         </label>
                         <input
                             type="text"
-                            placeholder="jewelry tips, necklace guide, luxury jewelry..."
+                            placeholder="jewellery tips, necklace guide, luxury jewellery..."
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
                             value={metaKeywords}
                             onChange={(e) => setMetaKeywords(e.target.value)}
@@ -314,7 +315,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                                         </label>
                                         <input
                                             type="text"
-                                            placeholder="e.g. How do I maintain my jewelry?"
+                                            placeholder="e.g. How do I maintain my jewellery?"
                                             className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all text-sm"
                                             value={faq.question}
                                             onChange={(e) => updateFaq(index, "question", e.target.value)}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function AdminBlogsPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -35,7 +36,7 @@ export default function AdminBlogsPage() {
     const fetchBlogs = async () => {
         setLoading(true);
         try {
-            const response = await fetch("/api/blogs");
+            const response = await adminFetch("/api/blogs");
             const data = await response.json();
             if (data.success) {
                 setBlogs(data.blogs || []);
@@ -56,7 +57,7 @@ export default function AdminBlogsPage() {
             const url = imageUrl
                 ? `/api/blogs/${id}?imageUrl=${encodeURIComponent(imageUrl)}`
                 : `/api/blogs/${id}`;
-            const res = await fetch(url, { method: "DELETE" });
+            const res = await adminFetch(url, { method: "DELETE" });
             const data = await res.json();
 
             if (!data.success) throw new Error(data.error || "Failed to delete blog");

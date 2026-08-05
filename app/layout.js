@@ -4,6 +4,9 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import LayoutWrapper from "./components/LayoutWrapper";
+import GoogleAnalytics from "./components/GoogleAnalytics";
+import MetaPixel from "./components/MetaPixel";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,33 +26,37 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE } from "@/lib/constants";
+
+function buildSiteVerification() {
+    const verification = {
+        google: "UtTE7g1RfX5oNGZhiC88Lxr-Pcbh5DuxIVljwgxC4YY",
+    };
+
+    const other = {};
+    if (process.env.BING_SITE_VERIFICATION) {
+        other["msvalidate.01"] = process.env.BING_SITE_VERIFICATION;
+    }
+    if (process.env.PINTEREST_SITE_VERIFICATION) {
+        other["p:domain_verify"] = process.env.PINTEREST_SITE_VERIFICATION;
+    }
+    if (Object.keys(other).length > 0) {
+        verification.other = other;
+    }
+
+    return verification;
+}
+
 export const metadata = {
-  metadataBase: new URL("https://www.theluxejewels.in"),
+  metadataBase: new URL(BRAND_URL),
   title: {
-    default: "The luxe jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
-    template: "%s | The luxe jewels"
+    default: "The Luxe Jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
+    template: "%s | The Luxe Jewels"
   },
-  description: "Shop The luxe jewels for premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Free delivery on orders over ₹1000.",
-  keywords: [
-    "anti tarnish jewellery online india",
-    "waterproof jewellery india",
-    "buy 18k gold plated jewellery",
-    "hypoallergenic jewellery for sensitive skin",
-    "premium artificial jewellery india",
-    "daily wear jewellery for women",
-    "The luxe jewels india",
-    "gold plated earrings online",
-    "minimalist jewellery brand india",
-    "luxury jewellery affordable price",
-    "waterproof necklaces india",
-    "tarnish resistant jewellery online shop",
-    "signature rings for women",
-    "bridal jewellery india online",
-    "best jewellery box gifts india"
-  ],
-  authors: [{ name: "The luxe jewels" }],
-  creator: "The luxe jewels",
-  publisher: "The luxe jewels",
+  description: "Shop The Luxe Jewels for premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Free delivery on orders over ₹1000.",
+  authors: [{ name: BRAND_NAME }],
+  creator: BRAND_NAME,
+  publisher: BRAND_NAME,
   formatDetection: {
     email: true,
     address: true,
@@ -59,22 +66,22 @@ export const metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "The luxe jewels | Premium Waterproof & Anti-Tarnish Jewellery",
+    title: "The Luxe Jewels | Premium Waterproof & Anti-Tarnish Jewellery",
     description: "Handcrafted, hypoallergenic, and tarnish-free jewellery designed for modern luxury. Shop the best of 18k gold plated pieces in India.",
-    url: "https://www.theluxejewels.in",
-    siteName: "The luxe jewels",
-    images: [
+    url: BRAND_URL,
+    siteName: BRAND_NAME,
+        images: [
       {
-        url: "/logo.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "The luxe jewels - Premium Jewellery Collection",
+        alt: "The Luxe Jewels - Premium Jewellery Collection",
       },
       {
         url: "/favicon-symbol.png",
         width: 512,
         height: 512,
-        alt: "The luxe jewels Logo",
+        alt: "The Luxe Jewels Logo",
       }
     ],
     locale: "en_IN",
@@ -82,14 +89,13 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The luxe jewels | Modern Luxury Jewellery India",
+    title: "The Luxe Jewels | Modern Luxury Jewellery India",
     description: "Defining modern luxury through waterproof and anti-tarnish fine jewellery. Handcrafted with love.",
-    images: ["/logo.png", "/favicon-symbol.png"],
+    images: ["/og-image.png", "/favicon-symbol.png"],
   },
   robots: {
     index: true,
     follow: true,
-    nocache: true,
     googleBot: {
       index: true,
       follow: true,
@@ -108,22 +114,20 @@ export const metadata = {
     ],
   },
   manifest: "/site.webmanifest",
-  verification: {
-    google: "UtTE7g1RfX5oNGZhiC88Lxr-Pcbh5DuxIVljwgxC4YY",
-  },
+  verification: buildSiteVerification(),
 };
 
 export default function RootLayout({ children }) {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "The luxe jewels",
-    "url": "https://www.theluxejewels.in",
-    "logo": "https://www.theluxejewels.in/favicon-symbol.png",
+    "name": BRAND_NAME,
+    "url": BRAND_URL,
+    "logo": `${BRAND_URL}/favicon-symbol.png`,
     "description": "Defining modern luxury through intentional design and sustainable practices in fine jewellery.",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+91-7456096455",
+      "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
       "contactType": "customer service",
       "areaServed": "IN"
     },
@@ -135,29 +139,29 @@ export default function RootLayout({ children }) {
   const webSiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "The luxe jewels",
-    "url": "https://www.theluxejewels.in",
+    "name": BRAND_NAME,
+    "url": BRAND_URL,
     "description": "Shop premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings.",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://www.theluxejewels.in/search?q={search_term_string}",
+      "target": `${BRAND_URL}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "The luxe jewels",
-      "url": "https://www.theluxejewels.in",
-      "logo": "https://www.theluxejewels.in/favicon-symbol.png"
+      "name": BRAND_NAME,
+      "url": BRAND_URL,
+      "logo": `${BRAND_URL}/favicon-symbol.png`
     }
   };
 
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "The luxe jewels",
+    "name": BRAND_NAME,
     "description": "Premium anti-tarnish and waterproof jewellery store in India. Shop 18k gold plated earrings, necklaces, and fine jewellery.",
-    "url": "https://www.theluxejewels.in",
-    "telephone": "+91-7456096455",
+    "url": BRAND_URL,
+    "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Dhaulana",
@@ -169,17 +173,9 @@ export default function RootLayout({ children }) {
     "priceRange": "₹₹₹",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
-      ],
-      "opens": "00:00",
-      "closes": "23:59"
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "10:00",
+      "closes": "19:00"
     }
   };
 
@@ -208,6 +204,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
       >
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+          <MetaPixel />
+        </Suspense>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>

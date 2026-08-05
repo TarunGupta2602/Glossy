@@ -1,9 +1,12 @@
 export const dynamic = "force-static";
 
+import { SUPPORT_EMAIL } from "@/lib/constants";
+import LegalPageLayout, { LegalSection } from "../components/LegalPageLayout";
+
 export const metadata = {
-    title: "Terms of Service | The luxe jewels",
+    title: "Terms of Service",
     description:
-        "Read the terms and conditions for using The luxe jewels website, including orders, payments, and user responsibilities.",
+        "Read the terms and conditions for using The Luxe Jewels website, including orders, payments, and user responsibilities.",
     alternates: {
         canonical: "/terms",
     },
@@ -17,123 +20,75 @@ export const metadata = {
 
 export default function TermsPage() {
     return (
-        <section className="bg-white py-20 px-6">
-            <div className="max-w-3xl mx-auto">
-
-                {/* Heading */}
-                <div className="mb-12 text-center">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
-                        Terms of Service
-                    </h1>
-                    <p className="text-gray-500 text-sm">
-                        Please read these terms carefully before using our website.
-                    </p>
-                </div>
-
-                {/* Content */}
-                <div className="space-y-8 text-gray-700 text-sm leading-relaxed">
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Use of Website
-                        </h2>
-                        <p>
-                            By accessing our website, you agree to use it only for lawful purposes and in a way
-                            that does not infringe the rights of others or restrict their use of the site.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Product Information
-                        </h2>
-                        <p>
-                            We strive to display accurate product descriptions, pricing, and images. However,
-                            we do not guarantee that all information is completely error-free.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Orders & Payments
-                        </h2>
-                        <p>
-                            All orders are subject to availability and confirmation. We reserve the right to
-                            cancel or refuse any order at our discretion. Payments must be completed before
-                            order processing.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Shipping & Delivery
-                        </h2>
-                        <p>
-                            Delivery timelines are estimates and may vary depending on location and external
-                            factors. We are not responsible for delays caused by courier services.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Returns & Refunds
-                        </h2>
-                        <p>
-                            Returns are accepted as per our return policy. Refunds will be processed after
-                            inspection of returned items.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Intellectual Property
-                        </h2>
-                        <p>
-                            All content on this website, including images, text, and branding, is the property
-                            of The luxe jewels and may not be used without permission.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Limitation of Liability
-                        </h2>
-                        <p>
-                            We are not liable for any indirect, incidental, or consequential damages arising
-                            from the use of our website or products.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Changes to Terms
-                        </h2>
-                        <p>
-                            We reserve the right to update these terms at any time. Continued use of the
-                            website means you accept the updated terms.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Contact Us
-                        </h2>
-                        <p>
-                            If you have any questions about these Terms, please contact us at{" "}
-                            <span className="text-gray-900 font-medium">
-                                support@theluxejewels.in
-                            </span>.
-                        </p>
-                    </div>
-
-                </div>
-
-                {/* Footer Note */}
-                <p className="text-xs text-gray-400 mt-12 text-center">
-                    Last updated: March 2026
+        <LegalPageLayout
+            title="Terms of Service"
+            description="Please read these terms carefully before using our website or placing an order."
+        >
+            <LegalSection title="Use of Website">
+                <p>
+                    By accessing our website, you agree to use it only for lawful purposes and in a way
+                    that does not infringe the rights of others or restrict their use of the site.
                 </p>
+            </LegalSection>
 
-            </div>
-        </section>
+            <LegalSection title="Product Information">
+                <p>
+                    We strive to display accurate product descriptions, pricing, and images. However,
+                    we do not guarantee that all information is completely error-free.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Orders & Payments">
+                <p>
+                    All orders are subject to availability and confirmation. We reserve the right to
+                    cancel or refuse any order at our discretion. All payments must be completed online
+                    before order processing — we do not offer cash on delivery.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Shipping & Delivery">
+                <p>
+                    Delivery timelines are estimates and may vary depending on location and external
+                    factors. We are not responsible for delays caused by courier services.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Returns & Refunds">
+                <p>
+                    Returns are accepted as per our return policy. Refunds will be processed to the
+                    original payment method after inspection of returned items.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Intellectual Property">
+                <p>
+                    All content on this website, including images, text, and branding, is the property
+                    of The Luxe Jewels and may not be used without permission.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Limitation of Liability">
+                <p>
+                    We are not liable for any indirect, incidental, or consequential damages arising
+                    from the use of our website or products.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Changes to Terms">
+                <p>
+                    We reserve the right to update these terms at any time. Continued use of the
+                    website means you accept the updated terms.
+                </p>
+            </LegalSection>
+
+            <LegalSection title="Contact Us">
+                <p>
+                    If you have any questions about these Terms, please contact us at{" "}
+                    <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium text-gray-900 hover:text-[#E91E63] transition-colors">
+                        {SUPPORT_EMAIL}
+                    </a>.
+                </p>
+            </LegalSection>
+        </LegalPageLayout>
     );
 }

@@ -10,15 +10,6 @@ export const metadata = {
     title: "Blog | Jewellery Tips, Styling Guides & Latest Trends",
     description:
         "Explore The Luxe Jewels blog for expert jewellery tips, styling guides, care advice, and the latest trends in luxury anti-tarnish and waterproof jewellery.",
-    keywords: [
-        "jewellery blog",
-        "jewellery styling tips",
-        "luxury jewellery trends",
-        "jewellery care guide",
-        "anti tarnish jewellery tips",
-        "waterproof jewellery blog",
-        "The luxe jewels blog",
-    ],
     alternates: {
         canonical: "/blog",
     },
@@ -38,7 +29,7 @@ export const metadata = {
 };
 
 
-// Pagination settings
+// Blog listing — keep PAGE_SIZE in sync with lib/blogQueries.js
 const PAGE_SIZE = 6;
 
 export default async function BlogPage({ searchParams }) {
@@ -159,7 +150,7 @@ export default async function BlogPage({ searchParams }) {
                             {totalPages} page{totalPages === 1 ? "" : "s"}
                         </span>
                         <span className="rounded-full border border-gray-100 bg-white/80 px-4 py-2 font-medium">
-                            Updated weekly
+                            New articles added regularly
                         </span>
                     </div>
                 </div>

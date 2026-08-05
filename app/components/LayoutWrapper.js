@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { WHATSAPP_URL } from "@/lib/constants";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import AnnouncementBar from "./AnnouncementBar";
@@ -20,15 +21,13 @@ export default function LayoutWrapper({ children }) {
             {children}
             <Footer />
 
-            {/* WhatsApp Floating Button */}
             <a
-                href="https://wa.me/917456096455?text=Hi!%20I%20have%20a%20question%20about%20a%20product."
+                href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="fixed bottom-6 right-6 z-[9999] group"
                 aria-label="Chat on WhatsApp"
             >
-                {/* Tooltip */}
                 <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     Need help? Chat with us!
                 </span>

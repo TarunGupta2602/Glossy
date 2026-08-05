@@ -2,15 +2,26 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
+import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import ProfileHeader from "./ProfileHeader";
 import OrderHistory from "./OrderHistory";
 import OrderModal from "./OrderModal";
+import WishlistTab from "./WishlistTab";
 import { ProfileHeaderSkeleton } from "./ProfileSkeletons";
 
-export default function ProfileClient() {
-    const { user, loading: authLoading, signOut } = useAuth();
+const TABS = [
+    { id: "orders", label: "My Orders" },
+    { id: "wishlist", label: "Saved Items" },
+];
 
+export default function ProfileClient() {
+    const { user, profile, loading: authLoading, signOut } = useAuth();
+    const { wishlist, removeFromWishlist, isInitialized: wishlistReady } = useWishlist();
+    const { addToCart } = useCart();
+
+    const [activeTab, setActiveTab] = useState("orders");
     const [orders, setOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -65,7 +76,7 @@ export default function ProfileClient() {
     };
 
     const handleReturnOrder = async (orderId) => {
-        if (!confirm("Are you sure you want to request a return for this order? Our policy allows returns within 7 days of delivery.")) return;
+        if (!confirm("Request a return for this order? Returns are accepted within 10 days of delivery.")) return;
 
         try {
             const response = await fetch("/api/orders", {
@@ -78,7 +89,7 @@ export default function ProfileClient() {
             if (data.success) {
                 fetchUserOrders();
                 setSelectedOrder(null);
-                alert("Return request submitted successfully. Our team will contact you shortly.");
+                alert("Return request submitted. Our team will contact you shortly.");
             } else {
                 alert("Failed to request return: " + data.error);
             }
@@ -90,22 +101,22 @@ export default function ProfileClient() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'processing': return 'bg-amber-50 text-amber-900 border-amber-100';
-            case 'confirmed': return 'bg-blue-50 text-blue-900 border-blue-100';
-            case 'shipped': return 'bg-indigo-50 text-indigo-900 border-indigo-100';
-            case 'out for delivery': return 'bg-slate-50 text-slate-900 border-slate-100';
-            case 'delivered': return 'bg-emerald-50 text-emerald-900 border-emerald-100';
-            case 'cancelled': return 'bg-rose-50 text-rose-900 border-rose-100';
-            case 'return requested': return 'bg-orange-50 text-orange-900 border-orange-100';
-            case 'returned': return 'bg-gray-50 text-gray-900 border-gray-100';
-            default: return 'bg-gray-50 text-gray-400 border-gray-100';
+            case "processing": return "bg-amber-50 text-amber-800 border-amber-100";
+            case "confirmed": return "bg-blue-50 text-blue-800 border-blue-100";
+            case "shipped": return "bg-indigo-50 text-indigo-800 border-indigo-100";
+            case "out for delivery": return "bg-slate-50 text-slate-800 border-slate-100";
+            case "delivered": return "bg-emerald-50 text-emerald-800 border-emerald-100";
+            case "cancelled": return "bg-rose-50 text-rose-800 border-rose-100";
+            case "return requested": return "bg-orange-50 text-orange-800 border-orange-100";
+            case "returned": return "bg-gray-50 text-gray-700 border-gray-100";
+            default: return "bg-gray-50 text-gray-500 border-gray-100";
         }
     };
 
     if (authLoading) {
         return (
-            <div className="min-h-screen bg-white">
-                <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-40 pb-24">
+            <div className="min-h-screen bg-[#FAFAFA]">
+                <main className="max-w-5xl mx-auto px-5 sm:px-8 pt-28 pb-24">
                     <ProfileHeaderSkeleton />
                 </main>
             </div>
@@ -114,50 +125,76 @@ export default function ProfileClient() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 text-center">
-                <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-10 overflow-hidden">
-                    <div className="w-12 h-12 border border-gray-200 rounded-full flex items-center justify-center text-gray-300 font-serif italic text-2xl">L</div>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA] px-6 text-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 border border-gray-100 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                 </div>
-                <h1 className="text-4xl font-black text-gray-900 mb-4 tracking-tighter uppercase italic">Access Restricted</h1>
-                <p className="text-gray-400 mb-12 max-w-sm text-sm font-medium leading-relaxed tracking-wide uppercase">Authenticate your identity to view your curated acquisitions and signature wishlist.</p>
-                <Link href="/" className="bg-gray-900 text-white px-12 py-5 rounded-full text-[11px] font-black tracking-[0.4em] uppercase hover:bg-black transition-all shadow-xl shadow-gray-900/10">
-                    Return to Boutique
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">Sign in to view your account</h1>
+                <p className="text-gray-500 mb-8 max-w-sm text-sm">Track orders, manage saved items, and update your details.</p>
+                <Link href="/" className="bg-[#E91E63] text-white px-8 py-3.5 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-[#C2185B] transition-colors">
+                    Go to homepage
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-40 pb-32">
+        <div className="min-h-screen bg-[#FAFAFA]">
+            <main className="max-w-5xl mx-auto px-5 sm:px-8 pt-28 pb-24">
                 <ProfileHeader
                     user={user}
+                    profile={profile}
                     ordersCount={orders.length}
+                    wishlistCount={wishlist.length}
                     signOut={signOut}
                 />
 
-                <div className="mt-24 space-y-12">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-12">
-                        <div className="max-w-2xl">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="h-[2px] w-12 bg-[#E91E63]" />
-                                <span className="text-[10px] font-black text-[#E91E63] uppercase tracking-[0.3em]">Client Archives</span>
-                            </div>
-                            <h2 className="text-5xl font-black text-gray-900 tracking-tighter uppercase italic mb-4">Purchase History</h2>
-                            <p className="text-sm text-gray-400 font-medium tracking-wide leading-relaxed">A permanent record of your refined selections. Each piece reflects a moment of uncompromising taste and timeless elegance.</p>
-                        </div>
+                <div className="mt-10">
+                    <div className="flex gap-1 p-1 bg-white rounded-2xl border border-gray-100 shadow-sm w-full sm:w-fit">
+                        {TABS.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex-1 sm:flex-none px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
+                                    activeTab === tab.id
+                                        ? "bg-gray-900 text-white shadow-sm"
+                                        : "text-gray-500 hover:text-gray-900"
+                                }`}
+                            >
+                                {tab.label}
+                                {tab.id === "orders" && orders.length > 0 && (
+                                    <span className={`ml-2 text-xs ${activeTab === tab.id ? "text-white/70" : "text-gray-400"}`}>
+                                        ({orders.length})
+                                    </span>
+                                )}
+                                {tab.id === "wishlist" && wishlist.length > 0 && (
+                                    <span className={`ml-2 text-xs ${activeTab === tab.id ? "text-white/70" : "text-gray-400"}`}>
+                                        ({wishlist.length})
+                                    </span>
+                                )}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                <div className="min-h-[400px]">
-                    <OrderHistory
-                        orders={orders}
-                        loading={ordersLoading}
-                        onViewDetails={setSelectedOrder}
-                        getStatusColor={getStatusColor}
-                        onCancelOrder={handleCancelOrder}
-                        onReturnOrder={handleReturnOrder}
-                    />
+                <div className="mt-8 min-h-[320px]">
+                    {activeTab === "orders" ? (
+                        <OrderHistory
+                            orders={orders}
+                            loading={ordersLoading}
+                            onViewDetails={setSelectedOrder}
+                            getStatusColor={getStatusColor}
+                            onCancelOrder={handleCancelOrder}
+                            onReturnOrder={handleReturnOrder}
+                        />
+                    ) : (
+                        <WishlistTab
+                            wishlist={wishlist}
+                            initialized={wishlistReady}
+                            removeFromWishlist={removeFromWishlist}
+                            addToCart={addToCart}
+                        />
+                    )}
                 </div>
             </main>
 
@@ -168,22 +205,6 @@ export default function ProfileClient() {
                 onCancelOrder={handleCancelOrder}
                 onReturnOrder={handleReturnOrder}
             />
-
-            <style jsx global>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #F3F4F6;
-                    border-radius: 10px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #E5E7EB;
-                }
-            `}</style>
-        </div >
+        </div>
     );
 }

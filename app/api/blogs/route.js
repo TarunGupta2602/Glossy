@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 function getBlogServiceClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -17,9 +18,12 @@ function getBlogServiceClient() {
     });
 }
 
-// GET: Fetch all blogs
-export async function GET() {
+// GET: Fetch all blogs (admin only)
+export async function GET(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const supabase = getBlogServiceClient();
         const { data, error } = await supabase
             .from("blogs")
@@ -44,6 +48,9 @@ export async function GET() {
 // POST: Create a new blog
 export async function POST(request) {
     try {
+        const denied = await guardAdmin(request);
+        if (denied) return denied;
+
         const supabase = getBlogServiceClient();
         const body = await request.json();
 

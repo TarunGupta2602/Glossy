@@ -1,9 +1,12 @@
 export const dynamic = "force-static";
 
+import { SUPPORT_EMAIL } from "@/lib/constants";
+import LegalPageLayout, { LegalSection } from "../components/LegalPageLayout";
+
 export const metadata = {
-    title: "Privacy Policy | The luxe jewels",
+    title: "Privacy Policy",
     description:
-        "Learn how The luxe jewels collects, uses, and protects your personal information when you use our website.",
+        "Learn how The Luxe Jewels collects, uses, and protects your personal information when you use our website.",
     alternates: {
         canonical: "/privacy",
     },
@@ -17,95 +20,59 @@ export const metadata = {
 
 export default function PrivacyPolicy() {
     return (
-        <section className="bg-white py-20 px-6">
-            <div className="max-w-3xl mx-auto">
+        <LegalPageLayout
+            title="Privacy Policy"
+            description="Your privacy is important to us. This policy explains how we handle your data when you shop with The Luxe Jewels."
+        >
+            <LegalSection title="Information We Collect">
+                <p>
+                    We collect personal information such as your name, email address, phone number,
+                    and shipping details when you place an order or sign up on our website.
+                </p>
+            </LegalSection>
 
-                {/* Heading */}
-                <div className="mb-12 text-center">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
-                        Privacy Policy
-                    </h1>
-                    <p className="text-gray-500 text-sm">
-                        Your privacy is important to us. This policy explains how we handle your data.
-                    </p>
-                </div>
+            <LegalSection title="How We Use Your Information">
+                <p>
+                    Your information is used to process orders, improve our services, and communicate
+                    with you regarding updates, offers, and support.
+                </p>
+            </LegalSection>
 
-                {/* Content */}
-                <div className="space-y-8 text-gray-700 text-sm leading-relaxed">
+            <LegalSection title="Data Protection">
+                <p>
+                    We take appropriate security measures to protect your personal data from unauthorized
+                    access, misuse, or disclosure.
+                </p>
+            </LegalSection>
 
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Information We Collect
-                        </h2>
-                        <p>
-                            We collect personal information such as your name, email address, phone number,
-                            and shipping details when you place an order or sign up on our website.
-                        </p>
-                    </div>
+            <LegalSection title="Sharing of Information">
+                <p>
+                    We do not sell or rent your personal information. Your data may only be shared with
+                    trusted service providers for order processing and delivery.
+                </p>
+            </LegalSection>
 
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            How We Use Your Information
-                        </h2>
-                        <p>
-                            Your information is used to process orders, improve our services, and communicate
-                            with you regarding updates, offers, and support.
-                        </p>
-                    </div>
+            <LegalSection title="Cookies">
+                <p>
+                    Our website uses cookies to enhance your browsing experience and analyze site traffic.
+                </p>
+            </LegalSection>
 
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Data Protection
-                        </h2>
-                        <p>
-                            We take appropriate security measures to protect your personal data from unauthorized
-                            access, misuse, or disclosure.
-                        </p>
-                    </div>
+            <LegalSection title="Your Rights">
+                <p>
+                    You have the right to access, update, or delete your personal information at any time
+                    by contacting us.
+                </p>
+            </LegalSection>
 
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Sharing of Information
-                        </h2>
-                        <p>
-                            We do not sell or rent your personal information. Your data may only be shared with
-                            trusted service providers for order processing and delivery.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Cookies
-                        </h2>
-                        <p>
-                            Our website uses cookies to enhance your browsing experience and analyze site traffic.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Your Rights
-                        </h2>
-                        <p>
-                            You have the right to access, update, or delete your personal information at any time
-                            by contacting us.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="font-medium text-gray-900 mb-1">
-                            Contact Us
-                        </h2>
-                        <p>
-                            If you have any questions about this Privacy Policy, please contact us at{" "}
-                            <span className="text-gray-900 font-medium">
-                                support@theluxejewels.in
-                            </span>.
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
+            <LegalSection title="Contact Us">
+                <p>
+                    If you have any questions about this Privacy Policy, please contact us at{" "}
+                    <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium text-gray-900 hover:text-[#E91E63] transition-colors">
+                        {SUPPORT_EMAIL}
+                    </a>.
+                </p>
+            </LegalSection>
+        </LegalPageLayout>
     );
 }

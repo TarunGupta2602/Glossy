@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { marked } from "marked";
+import { TWITTER_HANDLE } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -34,9 +35,8 @@ export async function generateMetadata({ params }) {
     return {
         title,
         description,
-        keywords,
         alternates: {
-            canonical: `https://www.theluxejewels.in/blog/${blog.slug}`,
+            canonical: `/blog/${blog.slug}`,
         },
         openGraph: {
             title,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }) {
             title,
             description,
             images: blog.image ? [blog.image] : [],
-            creator: "@theluxejewels",
+            creator: TWITTER_HANDLE,
         },
         robots: {
             index: true,

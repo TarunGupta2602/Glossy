@@ -4,6 +4,8 @@ import { createContext, useContext, useState, useEffect, useCallback, useMemo } 
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./AuthContext";
 import { calculateBuy2Get1Free, FREE_ITEM_PRODUCT_IDS } from "@/lib/promo";
+import { trackAddToCart } from "@/lib/gtag";
+import { trackMetaAddToCart } from "@/lib/metaPixel";
 
 const CartContext = createContext();
 
@@ -126,6 +128,21 @@ export function CartProvider({ children }) {
                 );
             }
             return [...prevCart, { ...product, quantity }];
+        });
+
+        trackAddToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price || 0,
+            quantity,
+            category: product.category,
+        });
+
+        trackMetaAddToCart({
+            id: product.id,
+            name: product.name,
+            value: (product.price || 0) * quantity,
+            category: product.category,
         });
 
         if (user) {

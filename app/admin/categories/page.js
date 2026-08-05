@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function CategoriesListPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -60,7 +61,7 @@ export default function CategoriesListPage() {
             }
 
             // 2. Delete category via API
-            const res = await fetch(`/api/categories/${id}`, {
+            const res = await adminFetch(`/api/categories/${id}`, {
                 method: "DELETE",
             });
             const data = await res.json();

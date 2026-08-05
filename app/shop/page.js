@@ -1,143 +1,116 @@
 import ShopClient from "../components/ShopClient";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
-import Link from "next/link";
+import SeoIntro from "../components/SeoIntro";
 import { redirect } from "next/navigation";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { fetchShopProducts } from "@/lib/shopQueries";
+import { getReviewCounts } from "@/lib/reviewCounts";
+import { buildShopItemListSchema } from "@/lib/itemListSchema";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
     title: "Shop All Fine Jewellery | Buy Anti-Tarnish & Waterproof Jewellery",
-    description: "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewellery at The luxe jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
-    alternates: {
-        canonical: "/shop",
-    },
-    keywords: [
-        "shop jewellery online india",
-        "buy anti tarnish jewellery",
-        "waterproof jewellery shop",
-        "18k gold plated accessories",
-        "luxury fine jewellery India",
-        "minimalist jewellery collection",
-        "hypoallergenic jewellery store"
-    ],
-    robots: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-    },
+    description: "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewellery at The Luxe Jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
+    alternates: { canonical: "/shop" },
     openGraph: {
-        title: "Shop All Fine Jewellery | Premium & Sustainable | The luxe jewels",
+        title: "Shop All Fine Jewellery | Premium & Sustainable | The Luxe Jewels",
         description: "Handcrafted ethical fine jewellery. Modern designs, sustainable luxury, and waterproof durability.",
         url: "https://www.theluxejewels.in/shop",
-        siteName: "The luxe jewels",
-        images: [{ url: "/logo.png" }],
+        siteName: "The Luxe Jewels",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
         type: "website",
     },
 };
 
-// Pagination settings (removed - pagination handled client-side)
-
 export default async function ShopPage({ searchParams }) {
-    const supabase = getServiceClient();
     const params = await searchParams;
     const page = parseInt(params?.page || "1", 10);
+    const sort = params?.sort || "newest";
+    const categoryIds = params?.category ? String(params.category).split(",").filter(Boolean) : [];
+    const minPrice = parseInt(params?.min || "0", 10) || 0;
+    const maxPrice = parseInt(params?.max || "5000", 10) || 5000;
+
     if (isNaN(page) || page < 1) redirect("/shop?page=1");
 
-    // Fetch ALL products for client-side filtering (no pagination on server)
-    const [{ data: categories }, { data: products }] = await Promise.all([
-        supabase.from("categories").select("*").order("name", { ascending: true }),
-        supabase.from("products").select("*, categories(name, id, slug)").order("created_at", { ascending: false }),
-    ]);
+    const supabase = getServiceClient();
+    const { data: categories } = await supabase.from("categories").select("*").order("name", { ascending: true });
 
-    // Calculate discounts server-side for each product
-    const productsWithDiscounts = (products || []).map(product => ({
-        ...product,
-        calculated_discount: product.original_price
-            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-            : calculateDiscount(product.id)
-    }));
+    const { products, totalCount, totalPages } = await fetchShopProducts({
+        page,
+        sort,
+        categoryIds,
+        minPrice,
+        maxPrice,
+    });
 
-    // Breadcrumb Schema
+    if (page > totalPages && totalCount > 0) {
+        redirect(`/shop?page=${totalPages}`);
+    }
+
+    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
+
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://www.theluxejewels.in"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Shop",
-                "item": "https://www.theluxejewels.in/shop"
-            }
-        ]
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.theluxejewels.in" },
+            { "@type": "ListItem", position: 2, name: "Shop", item: "https://www.theluxejewels.in/shop" },
+        ],
     };
+
+    const itemListJsonLd = buildShopItemListSchema({
+        products: productsWithDiscounts,
+        totalCount,
+        page,
+    });
 
     return (
         <main className="min-h-screen bg-white">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-            />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
             <section className="pt-10 px-6 md:px-12 max-w-7xl mx-auto">
                 <Breadcrumbs items={[{ label: "Shop All Collections" }]} />
             </section>
 
             <section className="pt-5 pb-5 px-6 md:px-12 text-center max-w-5xl mx-auto">
-                <h1 className="text-6xl md:text-8xl font-light text-gray-950 tracking-tighter mb-8">
-                    Featured Collection
-                </h1>
-                <p className="text-base md:text-lg text-gray-400 font-normal leading-relaxed max-w-2xl mx-auto">
+                <h1 className="text-4xl md:text-6xl font-light text-gray-950 tracking-tighter mb-8">Shop All Collections</h1>
+                <p className="text-base md:text-lg text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto">
                     Explore our latest curation of anti-tarnish jewellery and hand-crafted fine jewellery.
-
                 </p>
             </section>
 
             <section className="pb-32 px-6 md:px-12">
                 <div className="max-w-7xl mx-auto">
                     <ShopClient
-                        initialProducts={productsWithDiscounts || []}
+                        products={productsWithDiscounts}
                         categories={categories || []}
+                        totalCount={totalCount}
+                        totalPages={totalPages}
+                        currentPage={page}
+                        sortBy={sort}
+                        selectedCategories={categoryIds}
+                        priceRange={[minPrice, maxPrice]}
+                        reviewCounts={reviewCounts}
                     />
                 </div>
             </section>
 
-            {/* SEO Footnote - Visually Hidden */}
-            <section className="sr-only">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-sm leading-relaxed text-gray-500">
-                    <div className="md:col-span-1">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Premium Anti-Tarnish & Fine Jewellery</h2>
-                        <p>
-                            Welcome to the <Link href="/shop" className="text-gray-900 font-bold underline decoration-pink-100 underline-offset-4">The luxe jewels shop</Link>.
-                            We offer a meticulously curated selection of anti-tarnish, waterproof, and everyday wear jewellery blends traditional craftsmanship with modern design.
-                            Our pieces are made for jewellery lovers in India who value ethical luxury.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em] mb-6">Explore Collections</h3>
-                        <ul className="space-y-4">
-                            <li><Link href="/earrings" className="hover:text-[#E91E63] transition-colors font-semibold">18k Gold Plated Earrings</Link></li>
-                            <li><Link href="/necklaces" className="hover:text-[#E91E63] transition-colors font-semibold">Daily Wear Fine Necklaces</Link></li>
-                            <li><Link href="/shop" className="hover:text-[#E91E63] transition-colors font-semibold">New Jewellery Arrivals India</Link></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em] mb-6">About Our Ethics</h3>
-                        <p>
-                            At <Link href="/" className="text-gray-900 font-bold underline decoration-pink-100 underline-offset-4">The luxe jewels</Link>, every piece in our collection is a testament to our commitment to sustainability.
-                            We believe that <Link href="/our-story" className="text-gray-900 transition-colors font-semibold">our story</Link>
-                            is defined by the care we put into every design. Shop India&apos;s best **anti-tarnish jewellery** online now.
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <SeoIntro
+                title="Premium Anti-Tarnish & Fine Jewellery"
+                links={[
+                    { href: "/earrings", label: "18k Gold Plated Earrings" },
+                    { href: "/necklaces", label: "Daily Wear Fine Necklaces" },
+                    { href: "/our-story", label: "Our Story" },
+                ]}
+            >
+                <p>
+                    Welcome to The Luxe Jewels shop — a curated selection of anti-tarnish, waterproof, and everyday wear jewellery
+                    crafted for modern luxury in India.
+                </p>
+            </SeoIntro>
         </main>
     );
 }

@@ -32,7 +32,7 @@ export default function AnnouncementBar() {
                                         </span>
                                     </div>
                                 ) : (
-                                    <span className="text-gray-400 font-medium tracking-[0.1em] text-[9px] md:text-[10px] uppercase">
+                                    <span className="text-gray-600 font-medium tracking-wide text-[9px] md:text-[10px] uppercase">
                                         {item.text}
                                     </span>
                                 )}

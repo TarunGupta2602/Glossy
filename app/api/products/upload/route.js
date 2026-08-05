@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 const BUCKET = "product-images";
 
@@ -31,6 +32,9 @@ function getStoragePath(imageUrl) {
 // POST: Upload image to product-images bucket (server-side to bypass client StorageApiError)
 export async function POST(request) {
     try {
+        const denied = await guardAdmin(request);
+        if (denied) return denied;
+
         const formData = await request.formData();
         const file = formData.get("file");
         const path = formData.get("path");
@@ -93,6 +97,9 @@ export async function POST(request) {
 // DELETE: Remove image from product-images bucket
 export async function DELETE(request) {
     try {
+        const denied = await guardAdmin(request);
+        if (denied) return denied;
+
         const { imageUrl } = await request.json();
 
         if (!imageUrl) {

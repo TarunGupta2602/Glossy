@@ -53,12 +53,12 @@ export default function Newsletter() {
             <div className="w-full px-4 md:px-6">
 
                 <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
-                    Join The luxe jewels List
+                    Join The Luxe Jewels List
                 </h2>
 
                 <p className="text-gray-500 text-[15px] mb-8 max-w-xl mx-auto">
-                    Sign up for early access to our anti-tarnish jewelry drops,
-                    exclusive offers, and new handcrafted fine jewelry collections.
+                    Sign up for early access to our anti-tarnish jewellery drops,
+                    exclusive offers, and new handcrafted fine jewellery collections.
                 </p>
 
                 <form

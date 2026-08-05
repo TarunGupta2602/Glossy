@@ -1,157 +1,135 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+
+const STATUS_LABELS = {
+    processing: "Processing",
+    confirmed: "Confirmed",
+    shipped: "Shipped",
+    "out for delivery": "Out for delivery",
+    delivered: "Delivered",
+    cancelled: "Cancelled",
+    "return requested": "Return requested",
+    returned: "Returned",
+};
 
 export default function OrderModal({ order, onClose, getStatusColor, onCancelOrder, onReturnOrder }) {
     if (!order) return null;
 
     const isEligibleForReturn = () => {
-        if (order.order_status !== 'delivered') return false;
+        if (order.order_status !== "delivered") return false;
         const deliveryDate = new Date(order.delivered_at || order.created_at);
-        const diffTime = Math.abs(new Date() - deliveryDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays <= 7;
+        const diffDays = Math.ceil(Math.abs(new Date() - deliveryDate) / (1000 * 60 * 60 * 24));
+        return diffDays <= 10;
     };
 
-    const isProcessing = order.order_status === 'processing';
+    const isProcessing = order.order_status === "processing";
+    const orderRef = order.razorpay_order_id?.slice(-8) || order.id.slice(-8);
+    const statusLabel = STATUS_LABELS[order.order_status] || order.order_status;
 
     return (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-[0_0_100px_rgba(0,0,0,0.2)] rounded-[40px]">
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-8 right-8 w-14 h-14 bg-white border border-gray-100 hover:border-gray-900 rounded-full flex items-center justify-center transition-all z-30 group shadow-sm"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                </button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div className="bg-white w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-3xl sm:rounded-3xl shadow-2xl">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                    <div>
+                        <p className="text-xs text-gray-400 font-medium">Order #{orderRef}</p>
+                        <h2 className="text-xl font-bold text-gray-900 mt-0.5">Order details</h2>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors"
+                        aria-label="Close"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                    </button>
+                </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    {/* Header Section */}
-                    <div className="p-10 md:p-16 pt-20 bg-gray-50/50 border-b border-gray-100">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border ${getStatusColor(order.order_status).replace('bg-', 'border-').replace('100', '200')} ${getStatusColor(order.order_status)}`}>
-                                        {order.order_status}
+                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-gray-50 p-4">
+                        <div>
+                            <span className={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide border ${getStatusColor(order.order_status)}`}>
+                                {statusLabel}
+                            </span>
+                            <p className="text-xs text-gray-500 mt-2">
+                                Placed on {new Date(order.created_at).toLocaleDateString("en-IN", { dateStyle: "long" })}
+                            </p>
+                        </div>
+                        <p className="text-2xl font-bold text-gray-900">
+                            ₹{parseFloat(order.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-900 mb-4">Items</h3>
+                        <div className="space-y-4">
+                            {order.items?.map((item, idx) => (
+                                <div key={`${item.id || idx}-${item.isFreeGift ? "free" : "item"}`} className="flex gap-4 items-center">
+                                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
+                                        <Image src={item.image || "/logo.png"} alt={item.name} fill sizes="64px" className="object-cover" />
                                     </div>
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                        Received: {new Date(order.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}
-                                    </span>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-semibold text-gray-900 truncate">{item.name}</p>
+                                            {item.isFreeGift && (
+                                                <span className="shrink-0 rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-[10px] font-bold uppercase text-[#E91E63]">Free gift</span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-1">Qty {item.quantity} · ₹{parseFloat(item.price).toLocaleString(undefined, { maximumFractionDigits: 0 })} each</p>
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-900 shrink-0">
+                                        ₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                    </p>
                                 </div>
-                                <h2 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tighter leading-none italic uppercase">
-                                    Dossier <span className="text-[#E91E63]">#{order.razorpay_order_id.split('_')[1] || order.id.slice(-6)}</span>
-                                </h2>
-                                <p className="text-gray-400 font-medium tracking-wide">A detailed manifest of your curated selections.</p>
-                            </div>
-                            <div className="text-left md:text-right">
-                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mb-1">Total Valuation</p>
-                                <p className="text-4xl font-black text-gray-900 tracking-tighter">₹{parseFloat(order.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
-                    <div className="p-10 md:p-16">
-                        {/* Items Section */}
-                        <div className="space-y-10 mb-16">
-                            <h4 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.4em] flex items-center gap-6">
-                                The Collection
-                                <div className="flex-1 h-[1px] bg-gray-100" />
-                            </h4>
-                            <div className="divide-y divide-gray-50">
-                                {order.items?.map((item, idx) => (
-                                    <div key={`${item.id || idx}-${item.isFreeGift ? 'free' : 'item'}`} className="flex gap-10 items-center py-8 group first:pt-0 last:pb-0">
-                                        <div className="relative w-32 h-32 rounded-[32px] overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100 shadow-xl shadow-gray-200/50 group-hover:-translate-y-2 transition-transform duration-500">
-                                            <Image src={item.image || "/logo.png"} alt={item.name} fill sizes="128px" className="object-cover" />
-                                        </div>
-                                        <div className="flex-1 space-y-2">
-                                            <div className="flex items-center gap-3">
-                                                <p className="text-[9px] text-[#E91E63] font-black uppercase tracking-[0.2em]">{item.category || (item.isFreeGift ? "Free Gift" : "Purchased")}</p>
-                                                {item.isFreeGift && (
-                                                    <span className="rounded-full bg-[#E91E63]/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-[#E91E63]">
-                                                        Complimentary
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.name}</p>
-                                            <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
-                                                <span>Qty {item.quantity}</span>
-                                                <div className="w-1 h-1 rounded-full bg-gray-200" />
-                                                <p>₹{parseFloat(item.price).toLocaleString(undefined, { maximumFractionDigits: 0 })}/ea</p>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-2xl font-black text-gray-900 tracking-tighter">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                    {order.shipping_address && (
+                        <div className="rounded-2xl border border-gray-100 p-4">
+                            <h3 className="text-sm font-bold text-gray-900 mb-3">Delivery address</h3>
+                            <p className="text-sm font-semibold text-gray-900">
+                                {order.shipping_address.firstName} {order.shipping_address.lastName}
+                            </p>
+                            <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                                {order.shipping_address.address}<br />
+                                {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.pincode}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-2">{order.shipping_address.phone}</p>
                         </div>
+                    )}
 
-                        {/* Logistics & Payment */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                            <div className="p-10 rounded-[40px] border border-gray-100 bg-gray-50/30">
-                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-8">Shipping Dossier</h4>
-                                <div className="space-y-6">
-                                    <div className="space-y-1">
-                                        <p className="text-[9px] font-black text-[#E91E63] uppercase tracking-widest">Recipient</p>
-                                        <p className="text-xl font-bold text-gray-900 tracking-tight">{order.shipping_address.firstName} {order.shipping_address.lastName}</p>
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide uppercase italic">{order.shipping_address.phone}</p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-[9px] font-black text-[#E91E63] uppercase tracking-widest">Dispatch Address</p>
-                                        <p className="text-sm font-bold text-gray-800 leading-relaxed uppercase tracking-tight">
-                                            {order.shipping_address.address}<br />
-                                            {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.pincode}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="p-10 rounded-[40px] bg-gray-900 text-white flex flex-col justify-between">
-                                <div className="space-y-8">
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em]">Payment Settlement</p>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                                            <p className="text-2xl font-black italic tracking-widest uppercase italic">Captured</p>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em]">Security Verification</p>
-                                        <p className="text-xs font-medium tracking-widest uppercase opacity-60">Verified via Razorpay Secure Gateway</p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-12 flex gap-4">
-                                    {isProcessing && (
-                                        <button
-                                            onClick={() => onCancelOrder(order.id)}
-                                            className="flex-1 h-16 rounded-full border border-white/10 hover:border-red-500 hover:text-red-500 text-white/60 text-[10px] font-black uppercase tracking-[0.2em] transition-all"
-                                        >
-                                            Request Halt
-                                        </button>
-                                    )}
-                                    {isEligibleForReturn() && (
-                                        <button
-                                            onClick={() => onReturnOrder(order.id)}
-                                            className="flex-1 h-16 rounded-full border border-white/10 hover:border-[#E91E63] hover:text-[#E91E63] text-white/60 text-[10px] font-black uppercase tracking-[0.2em] transition-all"
-                                        >
-                                            Request Return
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-16 text-center">
-                            <div className="h-px w-20 bg-gray-100 mx-auto mb-8" />
-                            <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.5em]">The Luxe Jewels · Signature Concierge</p>
-                        </div>
+                    <div className="rounded-2xl bg-gray-900 text-white p-4">
+                        <p className="text-xs text-white/60 uppercase tracking-widest font-semibold mb-1">Payment</p>
+                        <p className="text-sm font-semibold">Paid online via Razorpay</p>
                     </div>
+                </div>
+
+                <div className="px-6 py-4 border-t border-gray-100 flex flex-wrap gap-3">
+                    <Link
+                        href={`/order/${order.id}/invoice`}
+                        className="flex-1 min-w-[140px] py-3 rounded-xl bg-gray-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors text-center"
+                    >
+                        View invoice
+                    </Link>
+                    {isProcessing && (
+                        <button
+                            onClick={() => onCancelOrder(order.id)}
+                            className="flex-1 min-w-[140px] py-3 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-colors"
+                        >
+                            Cancel order
+                        </button>
+                    )}
+                    {isEligibleForReturn() && (
+                        <button
+                            onClick={() => onReturnOrder(order.id)}
+                            className="flex-1 min-w-[140px] py-3 rounded-xl border border-orange-200 text-orange-700 text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition-colors"
+                        >
+                            Request return
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
-

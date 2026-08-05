@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { trackPurchase } from "@/lib/gtag";
+import { trackMetaPurchase } from "@/lib/metaPixel";
 
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
@@ -135,7 +138,7 @@ export default function CheckoutPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "The luxe jewels",
+                name: "The Luxe Jewels",
                 description: "Jewellery Purchase",
                 image: "/logo.png",
                 order_id: orderData.id,
@@ -161,8 +164,21 @@ export default function CheckoutPage() {
                             throw new Error(errorData.error || "Failed to store order");
                         }
 
-                        setPaymentStatus("success");
+                        const savedOrder = await storeOrderRes.json();
+
+                        trackPurchase({
+                            transactionId: response.razorpay_payment_id,
+                            value: cartTotal,
+                            items: checkoutItems.filter((item) => !item.isFreeGift),
+                        });
+
+                        trackMetaPurchase({
+                            value: cartTotal,
+                            transactionId: response.razorpay_payment_id,
+                        });
+
                         clearCart();
+                        router.push(`/order/${savedOrder.order.id}/confirmation`);
                     } catch (error) {
                         console.error("Error storing order:", error);
                         alert("Payment was successful, but we had trouble saving your order. Please contact support.");
@@ -195,19 +211,13 @@ export default function CheckoutPage() {
         }
     };
 
-    if (paymentStatus === "success") {
+    if (paymentStatus === "error") {
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-8">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <h1 className="text-3xl font-black text-gray-900 mb-4">Payment Successful!</h1>
-                <p className="text-gray-500 max-w-sm mb-10 text-lg">Thank you for your purchase.</p>
-                <Link
-                    href="/shop"
-                    className="bg-gray-900 text-white px-10 py-5 rounded-2xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all"
-                >
-                    Continue Shopping
+                <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
+                <p className="text-gray-500 max-w-sm mb-8">Your payment may have gone through. Please check My Orders or contact support with your payment ID.</p>
+                <Link href="/profile" className="bg-gray-900 text-white px-8 py-4 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-all">
+                    View my orders
                 </Link>
             </div>
         );
@@ -261,7 +271,17 @@ export default function CheckoutPage() {
     return (
         <div className="bg-gray-50 min-h-screen">
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
-                <h1 className="text-[32px] font-black tracking-tight text-gray-900 mb-10">Secure Checkout</h1>
+                <CheckoutSteps current={2} />
+                <h1 className="text-[32px] font-black tracking-tight text-gray-900 mb-4">Secure Checkout</h1>
+
+                <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-blue-900">
+                        Pay securely with <span className="font-bold">UPI, cards, or net banking</span> via Razorpay. We do not offer cash on delivery.
+                    </div>
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+                        Estimated delivery: <span className="font-bold">3–5 business days</span> across India after dispatch.
+                    </div>
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                     {/* Left: Information Forms */}

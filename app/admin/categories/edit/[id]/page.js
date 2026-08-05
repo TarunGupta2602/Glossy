@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function EditCategoryPage({ params }) {
     const unwrappedParams = use(params);
@@ -14,6 +15,10 @@ export default function EditCategoryPage({ params }) {
     const router = useRouter();
 
     const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [metaTitle, setMetaTitle] = useState("");
+    const [metaDescription, setMetaDescription] = useState("");
+    const [metaKeywords, setMetaKeywords] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -35,6 +40,10 @@ export default function EditCategoryPage({ params }) {
             const data = await response.json();
             if (data.success) {
                 setName(data.category.name);
+                setDescription(data.category.description || "");
+                setMetaTitle(data.category.meta_title || "");
+                setMetaDescription(data.category.meta_description || "");
+                setMetaKeywords(data.category.meta_keywords || "");
                 setImageUrl(data.category.image_url);
             } else {
                 console.error("Error fetching category:", data.error);
@@ -63,7 +72,7 @@ export default function EditCategoryPage({ params }) {
                 formData.append('file', imageFile);
                 formData.append('oldImageUrl', imageUrl || '');
 
-                const uploadRes = await fetch('/api/upload-category-image', {
+                const uploadRes = await adminFetch('/api/upload-category-image', {
                     method: 'POST',
                     body: formData,
                 });
@@ -81,12 +90,16 @@ export default function EditCategoryPage({ params }) {
 
             // 2. Update Category via API
             console.log("Updating category in database...");
-            const res = await fetch(`/api/categories/${id}`, {
+            const res = await adminFetch(`/api/categories/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name,
                     slug: generateSlug(name),
+                    description: description || null,
+                    meta_title: metaTitle || null,
+                    meta_description: metaDescription || null,
+                    meta_keywords: metaKeywords || null,
                     image_url: finalImageUrl,
                 }),
             });
@@ -140,6 +153,24 @@ export default function EditCategoryPage({ params }) {
                                 onChange={(e) => setName(e.target.value)}
                                 required
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Description</label>
+                            <textarea
+                                rows={3}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Short collection description for the shop page"
+                            />
+                        </div>
+
+                        <div className="space-y-4 pt-2 border-t border-gray-100">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">SEO Settings</p>
+                            <input type="text" placeholder="Meta Title" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+                            <textarea rows={2} placeholder="Meta Description" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none resize-none" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} />
+                            <input type="text" placeholder="Meta Keywords (comma separated)" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none" value={metaKeywords} onChange={(e) => setMetaKeywords(e.target.value)} />
                         </div>
 
                         <div>

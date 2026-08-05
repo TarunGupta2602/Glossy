@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { buildProductSeo, generateProductSlug } from "@/lib/seo";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 async function enrichProductPayload(body, supabase, existingProduct = null) {
     const payload = { ...body };
@@ -100,6 +101,9 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const body = await req.json();
         const supabaseService = getServiceClient();
 

@@ -67,7 +67,7 @@ export default function FeaturedCollections({ categories }) {
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-4 mb-4">
                             <div className="h-[1px] w-12 bg-[#E91E63]" />
-                            <span className="text-[10px] md:text-[11px] font-black tracking-[0.4em] text-[#E91E63] uppercase">
+                            <span className="text-[10px] md:text-[11px] font-black tracking-wider text-[#E91E63] uppercase">
                                 PROPRIETARY CURATION
                             </span>
                         </div>
@@ -81,7 +81,7 @@ export default function FeaturedCollections({ categories }) {
                     </div>
                     <Link
                         href="/collection"
-                        className="group flex items-center gap-4 text-[11px] font-black tracking-[0.3em] uppercase text-gray-900 transition-all self-start md:self-auto"
+                        className="group flex items-center gap-4 text-[11px] font-black tracking-wide uppercase text-gray-900 transition-all self-start md:self-auto"
                     >
                         <span className="relative pb-2">
                             All Collections

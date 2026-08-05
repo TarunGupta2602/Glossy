@@ -1,19 +1,41 @@
+import FaqAccordion from "../components/FaqAccordion";
+
 export const dynamic = "force-static";
 
+const FAQ_ITEMS = [
+    {
+        question: "Is your jewellery truly anti-tarnish?",
+        answer:
+            "Yes, our jewellery is crafted with high-quality materials and 18k gold plating with a special protective layer that makes it tarnish-resistant for long-lasting wear.",
+    },
+    {
+        question: "Can I wear The Luxe Jewels in the shower?",
+        answer:
+            "Our jewellery is designed to be waterproof. However, to maintain the maximum brilliance of the gold plating, we recommend avoiding prolonged exposure to harsh chemicals or perfumes.",
+    },
+    {
+        question: "How long does shipping take within India?",
+        answer:
+            "Orders are processed within 1–2 days and delivered within 3–7 business days. Prepaid orders are usually delivered faster across major cities in India.",
+    },
+    {
+        question: "Do you offer free shipping?",
+        answer: "Yes, we offer free shipping on all orders above ₹1000 across India.",
+    },
+    {
+        question: "Is the jewellery safe for sensitive skin?",
+        answer:
+            "Absolutely. All our pieces are nickel-free and lead-free, ensuring they are hypoallergenic and safe for daily wear even on sensitive skin.",
+    },
+];
+
 export const metadata = {
-    title: "FAQs | Shipping, Returns & Order Help | The luxe jewels",
+    title: "FAQs | Shipping, Returns & Order Help",
     description:
-        "Find answers to common questions about shipping, returns, delivery time, and orders at The luxe jewels.",
+        "Find answers to common questions about shipping, returns, delivery time, and orders at The Luxe Jewels.",
     alternates: {
         canonical: "/faqs",
     },
-    keywords: [
-        "The luxe jewels FAQs",
-        "shipping policy",
-        "returns policy",
-        "jewelry delivery",
-        "order help",
-    ],
     robots: {
         index: true,
         follow: true,
@@ -26,48 +48,14 @@ export default function FAQsPage() {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "Is your jewelry truly anti-tarnish?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, our jewelry is crafted with high-quality materials and 18k gold plating with a special protective layer that makes it tarnish-resistant for long-lasting wear."
-                }
+        mainEntity: FAQ_ITEMS.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+                "@type": "Answer",
+                text: item.answer,
             },
-            {
-                "@type": "Question",
-                "name": "Can I wear The Luxe Jewels in the shower?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Our jewelry is designed to be waterproof. However, to maintain the maximum brilliance of the gold plating, we recommend avoiding prolonged exposure to harsh chemicals or perfumes."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How long does shipping take within India?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Prepaid orders are usually delivered within 3–5 business days across major cities in India like Delhi, Mumbai, and Bangalore."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Do you offer free shipping?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, we offer free shipping on all orders above ₹1000."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Is the jewelry hypoallergenic and safe for sensitive skin?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Absolutely. All our pieces are nickel-free and lead-free, ensuring they are hypoallergenic and safe for daily wear even on sensitive skin."
-                }
-            }
-        ]
+        })),
     };
 
     return (
@@ -77,8 +65,6 @@ export default function FAQsPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <div className="max-w-3xl mx-auto">
-
-                {/* Heading */}
                 <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
                         Frequently Asked Questions
@@ -88,56 +74,7 @@ export default function FAQsPage() {
                     </p>
                 </div>
 
-                {/* FAQ List */}
-                <div className="divide-y divide-gray-200">
-
-                    <div className="py-5">
-                        <h2 className="font-semibold text-gray-900">
-                            Is your jewelry truly anti-tarnish?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                            Yes, our jewelry is crafted with high-quality materials and 18k gold plating with a special protective layer that makes it tarnish-resistant for long-lasting wear.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-semibold text-gray-900">
-                            Can I wear The Luxe Jewels in the shower?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                            Our jewelry is designed to be waterproof. However, to maintain the maximum brilliance of the gold plating, we recommend avoiding prolonged exposure to harsh chemicals or perfumes.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-semibold text-gray-900">
-                            How long does shipping take within India?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                            Orders are processed within 1–2 days and delivered within 3–7 business days. Prepaid orders are usually delivered faster across major cities in India.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-semibold text-gray-900">
-                            Do you offer free shipping?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                            Yes, we offer free shipping on all orders above ₹1000 across India.
-                        </p>
-                    </div>
-
-                    <div className="py-5">
-                        <h2 className="font-semibold text-gray-900">
-                            Is the jewelry safe for sensitive skin?
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                            Absolutely. All our pieces are nickel-free and lead-free, ensuring they are hypoallergenic and safe for daily wear even on sensitive skin.
-                        </p>
-                    </div>
-
-                </div>
-
+                <FaqAccordion items={FAQ_ITEMS} />
             </div>
         </section>
     );

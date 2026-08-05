@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function ReviewsListPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -37,7 +38,7 @@ export default function ReviewsListPage() {
         setLoading(true);
         try {
             const statusParam = filter === "all" ? "" : `status=${filter}`;
-            const response = await fetch(`/api/reviews/admin?${statusParam}`);
+            const response = await adminFetch(`/api/reviews/admin?${statusParam}`);
             const data = await response.json();
             if (data.success) {
                 setReviews(data.reviews || []);
@@ -55,7 +56,7 @@ export default function ReviewsListPage() {
 
         setActionLoading(reviewId);
         try {
-            const response = await fetch("/api/reviews/admin", {
+            const response = await adminFetch("/api/reviews/admin", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ reviewId, action: "approve" }),
@@ -79,7 +80,7 @@ export default function ReviewsListPage() {
 
         setActionLoading(reviewId);
         try {
-            const response = await fetch("/api/reviews/admin", {
+            const response = await adminFetch("/api/reviews/admin", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ reviewId, action: "reject" }),
@@ -103,7 +104,7 @@ export default function ReviewsListPage() {
 
         setActionLoading(reviewId);
         try {
-            const response = await fetch(`/api/reviews/admin?reviewId=${reviewId}`, {
+            const response = await adminFetch(`/api/reviews/admin?reviewId=${reviewId}`, {
                 method: "DELETE",
             });
             const data = await response.json();

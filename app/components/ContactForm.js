@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SUPPORT_EMAIL } from '@/lib/constants';
 
 export default function ContactForm() {
     const [form, setForm] = useState({
@@ -101,7 +102,7 @@ export default function ContactForm() {
             </form>
 
             <div className="mt-10 text-center text-sm text-gray-500">
-                <p>Email: supporttheluxejewels@gmail.com</p>
+                <p>Email: {SUPPORT_EMAIL}</p>
             </div>
         </>
     );

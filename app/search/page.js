@@ -1,47 +1,68 @@
 import SearchClient from "./SearchClient";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { redirect } from "next/navigation";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { searchProducts } from "@/lib/shopQueries";
+import { getReviewCounts } from "@/lib/reviewCounts";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-    title: "Search Results | The luxe jewels",
-    description: "Search for anti-tarnish, waterproof, and premium jewelry across The luxe jewels collections.",
-    robots: {
-        index: false,
-        follow: true,
-    },
-};
-
-export default async function SearchPage({ searchParams }) {
-    const { q: query } = await searchParams;
-    let products = [];
+export async function generateMetadata({ searchParams }) {
+    const params = await searchParams;
+    const query = params?.q?.trim();
 
     if (query) {
-        const supabase = getServiceClient();
+        return {
+            title: `Search: ${query}`,
+            description: `Search results for "${query}" — anti-tarnish earrings, necklaces, and fine jewellery at The Luxe Jewels.`,
+            robots: { index: false, follow: true },
+        };
+    }
 
-        const { data, error } = await supabase
-            .from("products")
-            .select("*, categories(name, id, slug)")
-            .ilike("name", `%${query}%`)
-            .order("created_at", { ascending: false });
+    return {
+        title: "Search Jewellery",
+        description: "Search for anti-tarnish, waterproof, and premium jewellery across The Luxe Jewels collections.",
+        robots: { index: false, follow: true },
+    };
+}
 
-        if (!error && data) {
-            // Calculate discounts server-side for each product
-            products = data.map(product => ({
-                ...product,
-                calculated_discount: product.original_price
-                    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-                    : calculateDiscount(product.id)
-            }));
-        } else if (error) {
-            console.error("Search error:", error);
+export default async function SearchPage({ searchParams }) {
+    const params = await searchParams;
+    const query = params?.q;
+    const page = parseInt(params?.page || "1", 10);
+
+    if (isNaN(page) || page < 1) {
+        redirect(query ? `/search?q=${encodeURIComponent(query)}&page=1` : "/search");
+    }
+
+    let products = [];
+    let totalCount = 0;
+    let totalPages = 0;
+    let currentPage = 1;
+
+    if (query) {
+        const result = await searchProducts(query, { page });
+        products = result.products.map(withCalculatedDiscount);
+        totalCount = result.totalCount;
+        totalPages = result.totalPages;
+        currentPage = result.page;
+
+        if (page > totalPages && totalCount > 0) {
+            redirect(`/search?q=${encodeURIComponent(query)}&page=${totalPages}`);
         }
     }
 
+    const reviewCounts = await getReviewCounts(products.map((p) => p.id));
+
     return (
         <main className="min-h-screen bg-white">
-            <SearchClient query={query} products={products} />
+            <SearchClient
+                query={query}
+                products={products}
+                reviewCounts={reviewCounts}
+                totalCount={totalCount}
+                totalPages={totalPages}
+                currentPage={currentPage}
+            />
         </main>
     );
 }

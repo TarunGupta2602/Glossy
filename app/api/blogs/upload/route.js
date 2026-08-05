@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 function getStorageClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -19,6 +20,9 @@ function getStorageClient() {
 // POST: Upload image to blog-images bucket
 export async function POST(request) {
     try {
+        const denied = await guardAdmin(request);
+        if (denied) return denied;
+
         const formData = await request.formData();
         const file = formData.get("file");
         const oldImageUrl = formData.get("oldImageUrl");

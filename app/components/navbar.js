@@ -1,24 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import LoginModal from "./LoginModal";
+import { getCategoryHref } from "@/lib/categoryLanding";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const { cartCount } = useCart();
     const { wishlist } = useWishlist();
     const { user, profile, signInWithGoogle, signOut } = useAuth();
     const router = useRouter();
+
+    useEffect(() => {
+        fetch("/api/categories")
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success) setCategories(data.categories || []);
+            })
+            .catch(() => {});
+    }, []);
 
     const handleSearch = (e) => {
         if (e.key === "Enter" && searchQuery.trim()) {
@@ -37,7 +49,7 @@ export default function Navbar() {
                         <Link href="/" className="group block focus:outline-none">
                             {/* Universal Text Logo */}
                             <div className="flex flex-col items-start leading-none pr-4">
-                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
+                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-wider text-[#E91E63] mb-1">THE</span>
                                 <span className="text-lg md:text-xl font-bold tracking-tight text-gray-900 uppercase">
                                     LUXE <span className="font-light text-gray-500">JEWELS</span>
                                 </span>
@@ -47,9 +59,39 @@ export default function Navbar() {
 
                     {/* Center: Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-8">
+                        <Link href="/collection" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
+                            Collections
+                        </Link>
                         <Link href="/shop" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
                             Shop All
                         </Link>
+                        <div
+                            className="relative"
+                            onMouseEnter={() => setIsShopMenuOpen(true)}
+                            onMouseLeave={() => setIsShopMenuOpen(false)}
+                        >
+                            <button className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
+                                Categories ▾
+                            </button>
+                            {isShopMenuOpen && categories.length > 0 && (
+                                <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-100 rounded-xl shadow-xl py-3 z-[70]">
+                                    {categories.map((cat) => (
+                                        <Link
+                                            key={cat.id}
+                                            href={getCategoryHref(cat)}
+                                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-[#E91E63] transition-colors"
+                                        >
+                                            {cat.name}
+                                        </Link>
+                                    ))}
+                                    <div className="border-t border-gray-100 mt-2 pt-2 px-4">
+                                        <Link href="/collection" className="text-xs font-bold uppercase tracking-widest text-[#E91E63]">
+                                            View All Collections →
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <Link href="/earrings" className="text-sm font-medium text-gray-800 hover:text-gray-500 transition-colors uppercase tracking-wider">
                             Earrings
                         </Link>
@@ -78,7 +120,7 @@ export default function Navbar() {
                                 <div className="flex items-center w-full max-w-7xl mx-auto gap-3">
                                     <input
                                         type="text"
-                                        placeholder="Search jewelry..."
+                                        placeholder="Search jewellery..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onKeyDown={handleSearch}
@@ -234,6 +276,14 @@ export default function Navbar() {
                 {/* Mobile Navigation Menu */}
                 {isMenuOpen && (
                     <div className="md:hidden mt-2 pb-4 bg-white border-t border-gray-50 flex flex-col items-center divide-y divide-gray-50">
+                        <Link href="/collection" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
+                            Collections
+                        </Link>
+                        {categories.slice(0, 6).map((cat) => (
+                            <Link key={cat.id} href={getCategoryHref(cat)} className="w-full text-center text-xs font-medium text-gray-500 hover:text-[#E91E63] transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                                {cat.name}
+                            </Link>
+                        ))}
                         <Link href="/shop" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
                             Shop All
                         </Link>

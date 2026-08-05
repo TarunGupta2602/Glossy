@@ -1,79 +1,109 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { getDedicatedLandingPath } from "@/lib/categoryLanding";
+import { getBlogPageCount } from "@/lib/blogQueries";
+
+const BASE_URL = "https://www.theluxejewels.in";
+
+/** Stable lastmod for rarely edited legal/static pages. Update when content changes. */
+const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
+
+function toDate(value, fallback) {
+    if (!value) return fallback;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? fallback : date;
+}
 
 export default async function sitemap() {
     const supabase = getServiceClient();
-    const baseUrl = "https://www.theluxejewels.in";
 
-    // 1. Static Pages
-    const staticPages = [
-        "",
-        "/shop",
-        "/collection",
-        "/earrings",
-        "/necklaces",
-        "/our-story",
-        "/contact",
-        "/faqs",
-        "/privacy",
-        "/terms",
-        "/shipping-returns",
-        "/blog",
-    ].map((route) => ({
-        url: `${baseUrl}${route}`,
-        lastModified: new Date(),
-        changeFrequency: route === "" || route === "/shop" ? "daily" : route === "/blog" ? "daily" : "weekly",
-        priority: route === "" ? 1.0 : route === "/shop" ? 0.9 : route === "/blog" ? 0.8 : 0.8,
+    const [
+        { data: latestProduct },
+        { data: latestBlog },
+        { data: latestCategory },
+    ] = await Promise.all([
+        supabase.from("products").select("created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("blogs").select("updated_at, date_posted").order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("categories").select("created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    ]);
+
+    const catalogLastModified = toDate(latestProduct?.created_at, LEGAL_LAST_MODIFIED);
+    const blogLastModified = toDate(latestBlog?.updated_at || latestBlog?.date_posted, catalogLastModified);
+    const categoryLastModified = toDate(latestCategory?.created_at, catalogLastModified);
+
+    const staticRoutes = [
+        { path: "", priority: 1.0, changeFrequency: "daily", lastModified: catalogLastModified },
+        { path: "/shop", priority: 0.9, changeFrequency: "daily", lastModified: catalogLastModified },
+        { path: "/collection", priority: 0.8, changeFrequency: "weekly", lastModified: categoryLastModified },
+        { path: "/earrings", priority: 0.85, changeFrequency: "weekly", lastModified: catalogLastModified },
+        { path: "/necklaces", priority: 0.85, changeFrequency: "weekly", lastModified: catalogLastModified },
+        { path: "/our-story", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
+        { path: "/contact", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
+        { path: "/faqs", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
+        { path: "/privacy", priority: 0.4, changeFrequency: "yearly", lastModified: LEGAL_LAST_MODIFIED },
+        { path: "/terms", priority: 0.4, changeFrequency: "yearly", lastModified: LEGAL_LAST_MODIFIED },
+        { path: "/shipping-returns", priority: 0.6, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
+    ];
+
+    const staticPages = staticRoutes.map(({ path, priority, changeFrequency, lastModified }) => ({
+        url: `${BASE_URL}${path}`,
+        lastModified,
+        changeFrequency,
+        priority,
     }));
 
-    // 2. Dynamic Category Pages
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("slug");
+    const { data: categories } = await supabase.from("categories").select("slug, created_at");
 
-    const categoryPages = (categories || []).map((cat) => ({
-        url: `${baseUrl}/shop/${cat.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly",
-        priority: 0.8,
-    }));
+    const categoryPages = (categories || [])
+        .filter((cat) => cat.slug && !getDedicatedLandingPath(cat.slug))
+        .map((cat) => ({
+            url: `${BASE_URL}/shop/${cat.slug}`,
+            lastModified: toDate(cat.created_at, categoryLastModified),
+            changeFrequency: "weekly",
+            priority: 0.8,
+        }));
 
-    // 3. Dynamic Product Pages
     const { data: products, error: productError } = await supabase
         .from("products")
-        .select("slug");
+        .select("slug, created_at, is_bestseller, is_new");
 
-    let productRows = products;
     if (productError) {
         console.error("Sitemap product query failed:", productError);
-        productRows = [];
     }
 
-    // Filter for products with slugs
-    const filteredProducts = (productRows || []).filter(p => p?.slug);
+    const productPages = (products || [])
+        .filter((p) => p?.slug)
+        .map((product) => ({
+            url: `${BASE_URL}/product/${product.slug}`,
+            lastModified: toDate(product.created_at, catalogLastModified),
+            changeFrequency: "weekly",
+            priority: product.is_bestseller ? 0.9 : product.is_new ? 0.85 : 0.8,
+        }));
 
-    const productPages = filteredProducts.map((product) => ({
-        url: `${baseUrl}/product/${product.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly",
-        priority: 0.8,
-    }));
-
-    // 4. Dynamic Blog Pages
-    const { data: blogs } = await supabase
+    const { data: blogs, count: blogCount } = await supabase
         .from("blogs")
-        .select("slug, updated_at, date_posted")
+        .select("slug, updated_at, date_posted", { count: "exact" })
         .order("date_posted", { ascending: false });
 
+    const blogTotalPages = getBlogPageCount(blogCount);
+    const blogIndexPages = Array.from({ length: blogTotalPages }, (_, i) => {
+        const pageNum = i + 1;
+        return {
+            url: pageNum === 1 ? `${BASE_URL}/blog` : `${BASE_URL}/blog?page=${pageNum}`,
+            lastModified: blogLastModified,
+            changeFrequency: "weekly",
+            priority: pageNum === 1 ? 0.8 : 0.6,
+        };
+    });
+
     const blogPages = (blogs || []).map((blog) => ({
-        url: `${baseUrl}/blog/${blog.slug}`,
-        lastModified: blog.updated_at ? new Date(blog.updated_at) : new Date(),
+        url: `${BASE_URL}/blog/${blog.slug}`,
+        lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
         changeFrequency: "monthly",
         priority: 0.7,
     }));
 
-    return [...staticPages, ...categoryPages, ...productPages, ...blogPages];
+    return [...staticPages, ...blogIndexPages, ...categoryPages, ...productPages, ...blogPages];
 }
-

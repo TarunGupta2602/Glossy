@@ -1,10 +1,12 @@
-import Image from "next/image";
-import Link from "next/link";
+import CategoryPagination from "../components/CategoryPagination";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import ProductCard from "../components/ProductCard";
+import SeoIntro from "../components/SeoIntro";
 import { redirect } from "next/navigation";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { withCalculatedDiscount } from "@/lib/discountUtils";
+import { getReviewCounts } from "@/lib/reviewCounts";
+import { findEarringsCategory } from "@/lib/categoryLanding";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +16,6 @@ export const metadata = {
     alternates: {
         canonical: "/earrings",
     },
-    keywords: [
-        "anti tarnish earrings india",
-        "gold plated earrings online",
-        "waterproof earrings for daily wear",
-        "hypoallergenic earrings for sensitive skin",
-        "18k gold earrings india",
-        "minimalist earrings brand",
-        "buy luxury earrings online india"
-    ],
     robots: {
         index: true,
         follow: true,
@@ -30,16 +23,15 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Anti-Tarnish Earrings | Waterproof & Hypoallergenic | The luxe jewels",
+        title: "Anti-Tarnish Earrings | Waterproof & Hypoallergenic | The Luxe Jewels",
         description: "Ethical and elegant waterproof earrings handcrafted for the modern individual. Tarnish-free 18k gold plating.",
         url: "https://www.theluxejewels.in/earrings",
-        siteName: "The luxe jewels",
-        images: [{ url: "/logo.png" }],
+        siteName: "The Luxe Jewels",
+        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
         type: "website",
     },
 };
 
-// Pagination settings
 const PAGE_SIZE = 12;
 
 export default async function EarringsPage({ searchParams }) {
@@ -47,64 +39,43 @@ export default async function EarringsPage({ searchParams }) {
     const params = await searchParams;
     const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/earrings?page=1");
-    const slug = "-statement-piecess";
 
-    const { data: category } = await supabase
-        .from("categories")
-        .select("id, name")
-        .eq("slug", slug)
-        .single();
+    const { data: categories } = await supabase.from("categories").select("id, name, slug");
+    const category = findEarringsCategory(categories);
 
-    // Get total count
-    const { count } = await supabase
-        .from("products")
-        .select("id", { count: "exact", head: true })
-        .eq("category_id", category?.id);
+    let products = [];
+    let count = 0;
 
-    // Get paginated products
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-    const { data: products } = await supabase
-        .from("products")
-        .select("*, categories(name, id, slug)")
-        .eq("category_id", category?.id)
-        .order("created_at", { ascending: false })
-        .range(from, to);
+    if (category?.id) {
+        const countResult = await supabase
+            .from("products")
+            .select("id", { count: "exact", head: true })
+            .eq("category_id", category.id);
+        count = countResult.count || 0;
 
-    // Calculate discounts server-side for each product
-    const productsWithDiscounts = (products || []).map(product => ({
-        ...product,
-        calculated_discount: product.original_price
-            ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-            : calculateDiscount(product.id)
-    }));
+        const from = (page - 1) * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+        const { data } = await supabase
+            .from("products")
+            .select("*, categories(name, id, slug)")
+            .eq("category_id", category.id)
+            .order("created_at", { ascending: false })
+            .range(from, to);
+        products = data || [];
+    }
 
-    const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const totalPages = Math.ceil(count / PAGE_SIZE);
+    const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
-    // Breadcrumb Schema
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://www.theluxejewels.in"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Shop",
-                "item": "https://www.theluxejewels.in/shop"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Anti-Tarnish Earrings",
-                "item": "https://www.theluxejewels.in/earrings"
-            }
-        ]
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.theluxejewels.in" },
+            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://www.theluxejewels.in/shop" },
+            { "@type": "ListItem", "position": 3, "name": "Anti-Tarnish Earrings", "item": "https://www.theluxejewels.in/earrings" },
+        ],
     };
 
     return (
@@ -119,74 +90,37 @@ export default async function EarringsPage({ searchParams }) {
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Anti-Tarnish Earrings</h1>
                     <p className="text-gray-500 max-w-xl mx-auto italic font-medium">Waterproof. Everyday-proof. Crafted for the modern individual.</p>
                 </div>
-                {!products || products.length === 0 ? (
+                {!products.length ? (
                     <p className="text-center text-gray-500 font-medium py-12">Coming Soon.</p>
                 ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
                         {productsWithDiscounts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                reviewCount={reviewCounts[product.id] || 0}
+                            />
                         ))}
                     </div>
                 )}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
-                <section className="pt-12">
-                    <nav className="flex justify-center" aria-label="Pagination">
-                        <ul className="inline-flex items-center gap-1 bg-white/80 rounded-full px-4 py-2 shadow border border-gray-100">
-                            <li>
-                                <Link
-                                    href={`/earrings?page=${page - 1}`}
-                                    aria-disabled={page === 1}
-                                    tabIndex={page === 1 ? -1 : 0}
-                                    className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                >
-                                    Prev
-                                </Link>
-                            </li>
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                                <li key={n}>
-                                    <Link
-                                        href={`/earrings?page=${n}`}
-                                        aria-current={n === page ? "page" : undefined}
-                                        className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${n === page ? "bg-[#E91E63] text-white shadow" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                    >
-                                        {n}
-                                    </Link>
-                                </li>
-                            ))}
-                            <li>
-                                <Link
-                                    href={`/earrings?page=${page + 1}`}
-                                    aria-disabled={page === totalPages}
-                                    tabIndex={page === totalPages ? -1 : 0}
-                                    className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
-                                >
-                                    Next
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </section>
+                <CategoryPagination basePath="/earrings" page={page} totalPages={totalPages} />
             )}
 
-            {/* SEO Footnote - Visually Hidden */}
-            <div className="sr-only">
-                <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Premium Anti-Tarnish Earrings for Women</h2>
+            <SeoIntro
+                title="Premium Anti-Tarnish Earrings for Women"
+                links={[
+                    { href: "/shop", label: "Shop All Jewellery" },
+                    { href: "/necklaces", label: "Fine Necklaces" },
+                ]}
+            >
                 <p>
-                    Explore our premium collection of **anti-tarnish earrings**, ranging from everyday minimalist studs to statement-making drops.
-                    Each piece at <Link href="/" className="text-gray-900 font-bold underline decoration-pink-100 underline-offset-4">The luxe jewels</Link> is crafted with intentional design,
-                    using fine materials like recycled silver and high-quality 18k gold plating. Our jewelry is designed to be **waterproof and sweat-proof**,
-                    making it perfect for daily wear in India.
+                    Explore our collection of anti-tarnish earrings — from minimalist studs to statement drops.
+                    Each piece is waterproof, sweat-proof, and crafted with 18k gold plating for daily wear in India.
                 </p>
-                <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">Craftsmanship and Sustainable Quality</h2>
-                <p>
-                    We pride ourselves on delivering <Link href="/shop" className="text-gray-900 transition-colors font-semibold">luxury fine jewelry</Link> that doesn&apos;t compromise on ethical standards.
-                    Whether you&apos;re looking for classic hoops or modern sculptural earrings, our jewelry is created to elevate your look
-                    while remaining timeless. Browse our <Link href="/necklaces" className="text-gray-900 transition-colors font-semibold">fine necklaces</Link> collection too to complete your signature look.
-                </p>
-            </div>
+            </SeoIntro>
         </section>
     );
 }

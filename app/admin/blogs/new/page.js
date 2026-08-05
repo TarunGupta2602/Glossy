@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../../context/AuthContext";
 import BlogForm from "../BlogForm";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function NewBlogPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -29,7 +30,7 @@ export default function NewBlogPage() {
     if (!user || profile?.role !== "admin") return null;
 
     const handleCreate = async (blogData) => {
-        const res = await fetch("/api/blogs", {
+        const res = await adminFetch("/api/blogs", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(blogData),

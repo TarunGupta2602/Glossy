@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function EditProductPage({ params }) {
     const unwrappedParams = use(params);
@@ -25,6 +26,15 @@ export default function EditProductPage({ params }) {
     const [metaDescription, setMetaDescription] = useState("");
     const [metaKeywords, setMetaKeywords] = useState("");
     const [imageAlt, setImageAlt] = useState("");
+    const [originalPrice, setOriginalPrice] = useState("");
+    const [isBestseller, setIsBestseller] = useState(false);
+    const [isNew, setIsNew] = useState(false);
+    const [material, setMaterial] = useState("");
+    const [plating, setPlating] = useState("");
+    const [careInstructions, setCareInstructions] = useState("");
+    const [stockCount, setStockCount] = useState("");
+    const [weight, setWeight] = useState("");
+    const [sizeInfo, setSizeInfo] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -74,6 +84,15 @@ export default function EditProductPage({ params }) {
                 setMetaDescription(product.meta_description || "");
                 setMetaKeywords(product.meta_keywords || "");
                 setImageAlt(product.image_alt || "");
+                setOriginalPrice(product.original_price || "");
+                setIsBestseller(!!product.is_bestseller);
+                setIsNew(!!product.is_new);
+                setMaterial(product.material || "");
+                setPlating(product.plating || "");
+                setCareInstructions(product.care_instructions || "");
+                setStockCount(product.stock_count ?? "");
+                setWeight(product.weight || "");
+                setSizeInfo(product.size_info || "");
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -91,14 +110,14 @@ export default function EditProductPage({ params }) {
 
         try {
             // 1. Optional: Delete from storage via server API
-            await fetch("/api/products/upload", {
+            await adminFetch("/api/products/upload", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ imageUrl: imgToDelete.image_url }),
             });
 
             // 2. Delete from database
-            const res = await fetch("/api/admin/product-images", {
+            const res = await adminFetch("/api/admin/product-images", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: imgId }),
@@ -131,7 +150,7 @@ export default function EditProductPage({ params }) {
                     formData.append("oldImageUrl", mainImageUrl);
                 }
 
-                const uploadRes = await fetch("/api/products/upload", {
+                const uploadRes = await adminFetch("/api/products/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -142,7 +161,7 @@ export default function EditProductPage({ params }) {
             }
 
             // 2. Update Product record via API
-            const res = await fetch(`/api/products/${id}`, {
+            const res = await adminFetch(`/api/products/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -155,6 +174,15 @@ export default function EditProductPage({ params }) {
                     meta_description: metaDescription,
                     meta_keywords: metaKeywords,
                     image_alt: imageAlt,
+                    original_price: originalPrice ? parseFloat(originalPrice) : null,
+                    is_bestseller: isBestseller,
+                    is_new: isNew,
+                    material: material || null,
+                    plating: plating || null,
+                    care_instructions: careInstructions || null,
+                    stock_count: stockCount !== "" ? parseInt(stockCount, 10) : null,
+                    weight: weight || null,
+                    size_info: sizeInfo || null,
                 }),
             });
             const data = await res.json();
@@ -169,7 +197,7 @@ export default function EditProductPage({ params }) {
                     formData.append("file", file);
                     formData.append("path", `${id}/gallery-${Date.now()}-${file.name.replace(/\s+/g, "-")}`);
 
-                    const uploadRes = await fetch("/api/products/upload", {
+                    const uploadRes = await adminFetch("/api/products/upload", {
                         method: "POST",
                         body: formData,
                     });
@@ -183,7 +211,7 @@ export default function EditProductPage({ params }) {
                 }
 
                 if (imageObjects.length > 0) {
-                    const galleryRes = await fetch("/api/admin/product-images", {
+                    const galleryRes = await adminFetch("/api/admin/product-images", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(imageObjects),
@@ -266,6 +294,60 @@ export default function EditProductPage({ params }) {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Original Price (MRP)</label>
+                                <input
+                                    type="number"
+                                    placeholder="Leave empty if no discount"
+                                    className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
+                                    value={originalPrice}
+                                    onChange={(e) => setOriginalPrice(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Stock Count</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="Optional"
+                                    className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
+                                    value={stockCount}
+                                    onChange={(e) => setStockCount(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="md:col-span-2 flex flex-wrap gap-6">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                    <input type="checkbox" checked={isBestseller} onChange={(e) => setIsBestseller(e.target.checked)} />
+                                    Best Seller
+                                </label>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                                    <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} />
+                                    New Arrival
+                                </label>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Material</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="e.g. Brass, Recycled Silver" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Plating</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={plating} onChange={(e) => setPlating(e.target.value)} placeholder="e.g. 18k Gold Plated" />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Care Instructions</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={careInstructions} onChange={(e) => setCareInstructions(e.target.value)} placeholder="e.g. Avoid harsh chemicals" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Weight</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 4g per pair" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Size</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} placeholder="e.g. 1.2 cm diameter" />
                             </div>
                         </div>
 
@@ -379,7 +461,7 @@ export default function EditProductPage({ params }) {
                                     <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Meta Keywords</label>
                                     <input
                                         type="text"
-                                        placeholder="jewelry, diamond, luxury..."
+                                        placeholder="jewellery, diamond, luxury..."
                                         className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] focus:ring-4 focus:ring-pink-50 outline-none transition-all font-medium"
                                         value={metaKeywords}
                                         onChange={(e) => setMetaKeywords(e.target.value)}

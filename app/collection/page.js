@@ -7,18 +7,10 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
     title: "Featured Jewellery Collections | Curated Luxury Jewellery India",
-    description: "Explore curated fine jewellery collections at The luxe jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
+    description: "Explore curated fine jewellery collections at The Luxe Jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
     alternates: {
         canonical: "/collection",
     },
-    keywords: [
-        "jewellery collections india",
-        "curated fine jewellery",
-        "anti tarnish jewellery sets",
-        "luxury jewellery curation",
-        "modern jewellery collections",
-        "sustainable jewellery brand india"
-    ],
     robots: {
         index: true,
         follow: true,
@@ -26,10 +18,10 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Featured Collections | Curated Fine Jewellery | The luxe jewels",
+        title: "Featured Collections | Curated Fine Jewellery",
         description: "Explore our curated collections of fine jewellery. Handcrafted for elegance.",
         url: "https://www.theluxejewels.in/collection",
-        siteName: "The luxe jewels",
+        siteName: "The Luxe Jewels",
         images: [{ url: "/logo.png" }],
         type: "website",
     },
@@ -57,9 +49,9 @@ export default async function FeaturedCollections() {
                         <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
                             CURATION
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
                             Featured Collections
-                        </h2>
+                        </h1>
                     </div>
                 </div>
 

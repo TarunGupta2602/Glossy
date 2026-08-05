@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 // GET - Fetch all reviews (including unapproved) for admin
 export async function GET(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { searchParams } = new URL(req.url);
         const productId = searchParams.get("product_id");
         const status = searchParams.get("status"); // 'pending', 'approved', 'all'
@@ -54,6 +58,9 @@ export async function GET(req) {
 // PATCH - Approve or reject reviews
 export async function PATCH(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const body = await req.json();
         const { reviewId, action } = body; // action: 'approve' or 'reject'
 
@@ -102,6 +109,9 @@ export async function PATCH(req) {
 // DELETE - Delete a review
 export async function DELETE(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const { searchParams } = new URL(req.url);
         const reviewId = searchParams.get("reviewId");
 

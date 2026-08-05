@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { adminFetch } from "@/lib/adminApi";
 
 export default function AdminPage() {
     const { user, profile, loading: authLoading, signOut } = useAuth();
@@ -28,7 +29,7 @@ export default function AdminPage() {
         }
 
         try {
-            const response = await fetch("/api/reviews/admin?status=pending");
+            const response = await adminFetch("/api/reviews/admin?status=pending");
             const data = await response.json();
             if (data.success) {
                 setReviewCount(data.reviews?.length || 0);

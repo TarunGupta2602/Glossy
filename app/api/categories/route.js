@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 export async function GET() {
     try {
@@ -24,6 +25,9 @@ export async function GET() {
 
 export async function POST(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const body = await req.json();
         const supabaseService = getServiceClient();
 

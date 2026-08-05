@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { guardAdmin } from "@/lib/requireAdmin";
 
 export async function POST(req) {
     try {
+        const denied = await guardAdmin(req);
+        if (denied) return denied;
+
         const formData = await req.formData();
         const file = formData.get('file');
         const oldImageUrl = formData.get('oldImageUrl');

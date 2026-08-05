@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getProductPath } from "@/lib/seo";
-import { calculateDiscount } from "@/lib/discountUtils";
+import { getProductDiscountInfo } from "@/lib/discountUtils";
 import { WishlistSkeleton } from "./ProfileSkeletons";
 
 export default function WishlistTab({ wishlist, initialized, removeFromWishlist, addToCart }) {
@@ -19,38 +19,27 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
 
     if (wishlist.length === 0) {
         return (
-            <div className="col-span-full bg-white rounded-[40px] border border-dashed border-gray-200 p-12 md:p-20 text-center">
+            <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 md:p-16 text-center">
                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Curate Your Desire</h3>
-                <p className="text-gray-400 mb-10 max-w-xs mx-auto text-sm">Collect the pieces that speak to your soul for later acquisition.</p>
-                <Link href="/shop" className="inline-flex items-center gap-3 border-2 border-gray-900 text-gray-900 px-10 py-5 rounded-2xl text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-gray-900 hover:text-white transition-all">
-                    Explore Collection
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No saved items</h3>
+                <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">Save pieces you love from the shop and they&apos;ll show up here.</p>
+                <Link href="/shop" className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-3.5 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors">
+                    Browse jewellery
                 </Link>
             </div>
         );
     }
 
-    // Calculate discounts for wishlist items
-    const wishlistWithDiscounts = wishlist.map(item => ({
-        ...item,
-        calculated_discount: item.original_price
-            ? Math.round(((item.original_price - item.price) / item.original_price) * 100)
-            : calculateDiscount(item.id)
-    }));
-
     return (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {wishlistWithDiscounts.map((item) => {
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {wishlist.map((item) => {
                 const price = item.price || 0;
-                const originalPrice = item.original_price || (price / 0.7);
-                const displayDiscount = item.original_price
-                    ? Math.round(((item.original_price - price) / item.original_price) * 100)
-                    : item.calculated_discount;
+                const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(item);
 
                 return (
-                    <div key={item.id} className="group flex flex-col h-full bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500">
+                    <div key={item.id} className="group flex flex-col h-full bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
                         <div className="relative aspect-square overflow-hidden bg-gray-50">
                             <Image
                                 src={item.image}
@@ -72,11 +61,13 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
                             </button>
 
-                            <div className="absolute bottom-3 left-3">
-                                <span className="bg-[#2E7D32] text-white text-[8px] md:text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-md shadow-sm">
-                                    SAVE {displayDiscount}%
-                                </span>
-                            </div>
+                            {hasDiscount && (
+                                <div className="absolute bottom-3 left-3">
+                                    <span className="bg-[#2E7D32] text-white text-[8px] md:text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-md shadow-sm">
+                                        SAVE {discountPercent}%
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         <div className="p-4 md:p-6 flex flex-col flex-1">
@@ -85,7 +76,9 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 leading-tight line-clamp-1">{item.name}</h3>
                                 <div className="flex flex-wrap items-center gap-2">
                                     <p className="text-base md:text-lg font-black text-gray-900 italic">₹{price.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                                    <p className="text-[10px] md:text-[12px] text-gray-300 line-through">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                    {hasDiscount && (
+                                        <p className="text-[10px] md:text-[12px] text-gray-300 line-through">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                    )}
                                 </div>
                             </div>
 
@@ -118,4 +111,3 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
         </div>
     );
 }
-
