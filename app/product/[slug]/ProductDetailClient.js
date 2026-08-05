@@ -7,7 +7,6 @@ import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
 import { getCategoryHref } from "@/lib/categoryLanding";
-import PincodeChecker from "../../components/PincodeChecker";
 import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
 import TrustStrip from "../../components/TrustStrip";
@@ -37,6 +36,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     const isWishlisted = isInWishlist(product.id);
     const [addedToBag, setAddedToBag] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
     useEffect(() => {
         trackViewItem({
@@ -299,8 +299,6 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         {/* Trust Signals */}
                         <TrustStrip className="mt-8" />
 
-                        <PincodeChecker />
-
                         {/* Product Details */}
                         {(product.material || product.plating || product.care_instructions || product.weight || product.size_info) && (
                             <div className="mt-8 p-5 rounded-xl bg-gray-50 border border-gray-100 space-y-3">
@@ -334,31 +332,46 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                     </div>
                 </div>
 
-                {/* ── Reviews Section ── */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-end mb-3">
-                        <button
-                            onClick={() => setShowReviewForm(!showReviewForm)}
-                            className="text-xs font-bold tracking-[0.18em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors"
-                        >
-                            {showReviewForm ? "Cancel" : "Write a Review"}
-                        </button>
+                {/* ── Customer Reviews ── */}
+                <div className="pt-10 border-t border-gray-100 mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+                        <div>
+                            <span className="text-[11px] font-black tracking-[0.18em] text-[#E91E63] uppercase mb-2 block">
+                                Verified Reviews
+                            </span>
+                            <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+                                Customer Reviews
+                            </h2>
+                        </div>
+                        {!showReviewForm && (
+                            <button
+                                type="button"
+                                onClick={() => setShowReviewForm(true)}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-2.5 text-[12px] font-bold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63]/40 hover:text-[#E91E63] transition-colors bg-white self-start sm:self-auto"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                                Write a review
+                            </button>
+                        )}
                     </div>
 
                     {showReviewForm && (
-                        <div className="mb-3">
+                        <div className="mb-8">
                             <ReviewForm
                                 productId={product.id}
                                 productName={product.name}
+                                onCancel={() => setShowReviewForm(false)}
                                 onSuccess={() => {
                                     setShowReviewForm(false);
-                                    window.location.reload();
+                                    setReviewRefreshKey((key) => key + 1);
                                 }}
                             />
                         </div>
                     )}
 
-                    <ReviewList productId={product.id} />
+                    <ReviewList productId={product.id} refreshKey={reviewRefreshKey} />
                 </div>
 
                 {/* ── Complete the Look ── */}

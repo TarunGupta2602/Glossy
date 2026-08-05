@@ -4,8 +4,6 @@ import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
-import SeoIntro from "./components/SeoIntro";
-
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
 });
@@ -151,20 +149,6 @@ export default async function Home() {
           reviewCounts={reviewCounts}
         />
       ))}
-
-      <SeoIntro
-        title="Premium Anti-Tarnish & Fine Jewellery in India"
-        links={[
-          { href: "/shop", label: "Shop All Collection" },
-          { href: "/earrings", label: "Anti-Tarnish Earrings" },
-          { href: "/necklaces", label: "Gold Plated Necklaces" },
-        ]}
-      >
-        <p>
-          Welcome to The Luxe Jewels, India&apos;s destination for anti-tarnish jewellery, waterproof accessories, and handcrafted fine jewellery.
-          We specialise in 18k gold plated earrings, designer necklaces, and timeless everyday essentials crafted for modern luxury.
-        </p>
-      </SeoIntro>
 
       {/* Testimonials Section */}
       <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />

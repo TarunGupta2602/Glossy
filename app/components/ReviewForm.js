@@ -3,8 +3,10 @@
 import { useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 
-export default function ReviewForm({ productId, productName, onSuccess }) {
-    const { user, profile } = useAuth();
+const RATING_LABELS = ["", "Poor", "Fair", "Good", "Very good", "Excellent"];
+
+export default function ReviewForm({ productId, productName, onSuccess, onCancel }) {
+    const { user, profile, signInWithGoogle } = useAuth();
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [title, setTitle] = useState("");
@@ -16,12 +18,14 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
     const [success, setSuccess] = useState(false);
     const fileInputRef = useRef(null);
 
+    const activeRating = hoverRating || rating;
+
     const handleImageUpload = async (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
 
         if (images.length + files.length > 5) {
-            setError("You can upload maximum 5 images");
+            setError("You can upload a maximum of 5 photos");
             return;
         }
 
@@ -48,7 +52,7 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
             const uploadedImages = await Promise.all(uploadPromises);
             setImages((prev) => [...prev, ...uploadedImages]);
         } catch (err) {
-            setError(err.message || "Failed to upload images");
+            setError(err.message || "Failed to upload photos");
         } finally {
             setUploading(false);
             if (fileInputRef.current) {
@@ -59,7 +63,6 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
 
     const handleRemoveImage = async (index, imageUrl) => {
         try {
-            // Extract path from URL for deletion
             const urlParts = imageUrl.split("/review-images/");
             if (urlParts.length > 1) {
                 const path = urlParts[1];
@@ -84,12 +87,12 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
         }
 
         if (rating === 0) {
-            setError("Please select a rating");
+            setError("Please select a star rating");
             return;
         }
 
         if (comment.trim().length < 10) {
-            setError("Review must be at least 10 characters long");
+            setError("Your review must be at least 10 characters");
             return;
         }
 
@@ -128,8 +131,6 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
             if (onSuccess) {
                 onSuccess(data.review);
             }
-
-            setTimeout(() => setSuccess(false), 3000);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -139,78 +140,145 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
 
     if (!user) {
         return (
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 text-center">
-                <p className="text-xs text-gray-600">
-                    Please <span className="text-[#E91E63] font-bold">sign in</span> to submit a review
+            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 md:p-8 text-center">
+                <p className="text-sm font-semibold text-gray-900 mb-1">Share your experience</p>
+                <p className="text-sm text-gray-500 mb-5">
+                    Sign in to leave a review for {productName || "this product"}.
                 </p>
+                <button
+                    type="button"
+                    onClick={signInWithGoogle}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-800 hover:border-gray-300 hover:shadow-sm transition-all"
+                >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    Continue with Google
+                </button>
             </div>
         );
     }
 
     if (success) {
         return (
-            <div className="bg-green-50 rounded-lg p-4 border border-green-100 text-center">
-                <p className="text-xs font-bold text-green-700">Review submitted successfully!</p>
+            <div className="rounded-2xl border border-green-100 bg-green-50 p-6 md:p-8 text-center">
+                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <p className="text-base font-bold text-green-800 mb-1">Thank you for your review!</p>
+                <p className="text-sm text-green-700">
+                    It will appear on this page once our team approves it.
+                </p>
             </div>
         );
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 border border-gray-100">
-            <h3 className="text-sm font-bold text-gray-900 mb-4">Write a Review</h3>
-            
+        <form
+            onSubmit={handleSubmit}
+            className="rounded-2xl border border-gray-100 bg-white p-5 md:p-6 shadow-[0_8px_30px_-20px_rgba(31,38,135,0.12)]"
+        >
+            <div className="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <h3 className="text-base font-black text-gray-900">Write a review</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Help others choose {productName ? `"${productName}"` : "this piece"}.
+                    </p>
+                </div>
+                {onCancel && (
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-gray-700 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                )}
+            </div>
+
             {error && (
-                <div className="mb-3 p-2 bg-red-50 border border-red-100 rounded text-xs text-red-600">
+                <div className="mb-4 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
                     {error}
                 </div>
             )}
 
-            {/* Rating Stars */}
-            <div className="mb-3">
-                <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                            key={star}
-                            type="button"
-                            onClick={() => setRating(star)}
-                            onMouseEnter={() => setHoverRating(star)}
-                            onMouseLeave={() => setHoverRating(0)}
-                            className="focus:outline-none"
-                        >
-                            <svg
-                                className={`w-5 h-5 ${
-                                    star <= (hoverRating || rating)
-                                        ? "fill-[#E91E63] stroke-[#E91E63]"
-                                        : "fill-none stroke-gray-300"
-                                }`}
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
+            <div className="mb-5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                    Your rating
+                </label>
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                                key={star}
+                                type="button"
+                                onClick={() => setRating(star)}
+                                onMouseEnter={() => setHoverRating(star)}
+                                onMouseLeave={() => setHoverRating(0)}
+                                className="p-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E63]/40 rounded"
+                                aria-label={`Rate ${star} out of 5`}
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                                />
-                            </svg>
-                        </button>
-                    ))}
+                                <svg
+                                    className={`w-7 h-7 fill-current transition-colors ${
+                                        star <= activeRating ? "text-amber-400" : "text-gray-200"
+                                    }`}
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </button>
+                        ))}
+                    </div>
+                    {activeRating > 0 && (
+                        <span className="text-sm font-semibold text-gray-600">
+                            {RATING_LABELS[activeRating]}
+                        </span>
+                    )}
                 </div>
             </div>
 
-            {/* Comment */}
-            <div className="mb-3">
-                <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Share your thoughts..."
-                    rows={3}
-                    maxLength={500}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-[#E91E63] resize-none"
+            <div className="mb-4">
+                <label htmlFor="review-title" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                    Headline <span className="font-medium normal-case tracking-normal text-gray-400">(optional)</span>
+                </label>
+                <input
+                    id="review-title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Summarize your experience"
+                    maxLength={100}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/10"
                 />
             </div>
 
-            {/* Image Upload - Compact */}
-            <div className="mb-3">
+            <div className="mb-4">
+                <label htmlFor="review-comment" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                    Your review
+                </label>
+                <textarea
+                    id="review-comment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="What did you love? How does it fit or feel?"
+                    rows={4}
+                    maxLength={500}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/10 resize-none leading-relaxed"
+                />
+                <p className="mt-1.5 text-xs text-gray-400 text-right tabular-nums">
+                    {comment.length}/500
+                </p>
+            </div>
+
+            <div className="mb-5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                    Photos <span className="font-medium normal-case tracking-normal text-gray-400">(optional)</span>
+                </label>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -223,35 +291,37 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
                 />
                 <label
                     htmlFor="review-image-upload"
-                    className={`flex items-center justify-center gap-2 border border-dashed border-gray-200 rounded-lg p-2 cursor-pointer hover:border-[#E91E63] transition-colors ${uploading || images.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`flex items-center justify-center gap-2 border border-dashed border-gray-200 rounded-xl p-4 cursor-pointer hover:border-[#E91E63]/50 hover:bg-[#FFF5F8]/50 transition-colors ${
+                        uploading || images.length >= 5 ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-xs text-gray-500">
-                        {uploading ? "Uploading..." : `Add photos (${images.length}/5)`}
+                    <span className="text-sm text-gray-500">
+                        {uploading ? "Uploading…" : `Add photos (${images.length}/5)`}
                     </span>
                 </label>
 
-                {/* Image Previews - Compact */}
                 {images.length > 0 && (
-                    <div className="flex gap-2 mt-2 flex-wrap">
+                    <div className="flex gap-2 mt-3 flex-wrap">
                         {images.map((imageUrl, index) => (
                             <div key={index} className="relative group">
-                                <div className="w-12 h-12 rounded overflow-hidden border border-gray-200">
+                                <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-200">
                                     <img
                                         src={imageUrl}
-                                        alt={`Review image ${index + 1}`}
+                                        alt={`Upload ${index + 1}`}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => handleRemoveImage(index, imageUrl)}
-                                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-sm"
+                                    aria-label="Remove photo"
                                 >
-                                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
@@ -260,13 +330,12 @@ export default function ReviewForm({ productId, productName, onSuccess }) {
                 )}
             </div>
 
-            {/* Submit Button */}
             <button
                 type="submit"
                 disabled={submitting || uploading}
-                className="w-full py-2 bg-[#E91E63] text-white font-bold rounded-lg text-xs hover:bg-[#C2185B] transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-[#E91E63] text-white text-[12px] font-bold uppercase tracking-[0.15em] hover:bg-[#C2185B] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {submitting ? "Submitting..." : "Submit Review"}
+                {submitting ? "Submitting…" : "Submit review"}
             </button>
         </form>
     );
