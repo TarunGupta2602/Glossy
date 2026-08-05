@@ -314,9 +314,12 @@ export default async function BlogDetailPage({ params }) {
                                     src={blog.image}
                                     alt={blog.title}
                                     fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+                                    quality={80}
                                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
                                     priority
-                                    unoptimized
+                                    placeholder="blur"
+                                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC3ABH/2Q=="
                                 />
                             </figure>
                         )}
@@ -330,7 +333,7 @@ export default async function BlogDetailPage({ params }) {
                             prose-a:text-pink-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-8 prose-a:decoration-2 transition-all
                             prose-ul:list-disc prose-ul:pl-6 prose-li:mb-4 prose-li:text-slate-600
                             prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-4
-                            prose-blockquote:border-l-8 prose-blockquote:border-pink-400 prose-blockquote:bg-linear-to-r prose-blockquote:from-pink-50 prose-blockquote:to-white prose-blockquote:p-8 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-10 prose-blockquote:shadow-sm
+                            prose-blockquote:border-l-8 prose-blockquote:border-pink-400 prose-blockquote:bg-gradient-to-r prose-blockquote:from-pink-50 prose-blockquote:to-white prose-blockquote:p-8 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-10 prose-blockquote:shadow-sm
                             prose-img:rounded-4xl prose-img:shadow-2xl prose-img:border prose-img:border-slate-100 prose-img:my-12
                             ">
                             <div
@@ -412,8 +415,11 @@ export default async function BlogDetailPage({ params }) {
                                                     src={post.image || '/placeholder-blog.png'}
                                                     alt={post.title}
                                                     fill
+                                                    sizes="80px"
+                                                    quality={75}
                                                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                                    unoptimized
+                                                    placeholder="blur"
+                                                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC3ABH/2Q=="
                                                 />
                                             </div>
                                             <div className="space-y-1">
