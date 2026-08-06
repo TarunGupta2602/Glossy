@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import CategoryPagination from "../components/CategoryPagination";
@@ -24,7 +25,7 @@ export default function SearchClient({
     }, [query, totalCount]);
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
+        <div className={`${SITE_CONTAINER} py-12 lg:py-20`}>
             <header className="mb-12">
                 <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-gray-900 mb-2">
                     {query ? `Search results for "${query}"` : "Search results"}

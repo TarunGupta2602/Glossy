@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -44,12 +45,12 @@ export default async function FeaturedCollections() {
     return (
         <section className="pb-12 md:pb-16 bg-white">
             <div className="border-b border-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-2.5 md:py-3">
+                <div className={`${SITE_CONTAINER} py-2.5 md:py-3`}>
                     <Breadcrumbs items={[{ label: "Collections" }]} />
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-8 pb-2">
+            <div className={`${SITE_CONTAINER} pt-6 md:pt-8 pb-2`}>
                 <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
                     Curation
                 </span>
@@ -61,7 +62,7 @@ export default async function FeaturedCollections() {
                 </p>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pb-4">
+            <div className={`${SITE_CONTAINER} pb-4`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                     {categories?.map((category) => (
                         <Link

@@ -1,5 +1,6 @@
 "use client";
 
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { useRef } from "react";
@@ -23,8 +24,8 @@ export default function ProductRow({ title, products, viewAllLink, reviewCounts 
     const isBestSeller = title.includes("Best Sellers");
 
     return (
-        <section className={`py-10 md:py-14 px-4 md:px-8 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
-            <div className="w-full">
+        <section className={`py-10 md:py-14 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
+            <div className={HOME_CONTAINER}>
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-10 gap-6">
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">

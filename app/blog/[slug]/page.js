@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -262,7 +263,7 @@ export default async function BlogDetailPage({ params }) {
 
             {/* Reading Progress Indicator (Client-side would be better, but we can do a stationary one or just skip) */}
 
-            <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+            <div className={`${SITE_CONTAINER} py-6 md:py-10`}>
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 overflow-hidden whitespace-nowrap">
                     <Link href="/" className="hover:text-pink-600 transition-colors">Home</Link>

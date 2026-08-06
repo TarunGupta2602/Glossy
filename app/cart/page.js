@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -82,7 +83,7 @@ export default function CartPage() {
 
     return (
         <div className="bg-white min-h-screen pb-24">
-            <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 pt-16">
+            <div className={`${SITE_CONTAINER} pt-16`}>
                 <CheckoutSteps current={1} />
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>

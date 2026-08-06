@@ -98,7 +98,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
     return (
         <div className="bg-white min-h-screen pb-28 lg:pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">
+            <div className="mx-auto w-full max-w-[1360px] px-4 sm:px-6 md:px-8 lg:px-10 py-10 pb-20">
                 
                 {/* Breadcrumb */}
                 <nav className="mb-8 flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-400">
@@ -119,7 +119,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 xl:gap-16 items-start mb-16">
 
                     {/* ── LEFT: Gallery ── */}
-                    <div className="w-full max-w-[520px]">
+                    <div className="w-full max-w-[580px] lg:max-w-[600px]">
                         {/* Main Image */}
                         <div
                             className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] cursor-zoom-in hidden lg:block"

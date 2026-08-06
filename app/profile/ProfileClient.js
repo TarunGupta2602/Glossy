@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -116,7 +117,7 @@ export default function ProfileClient() {
     if (authLoading) {
         return (
             <div className="min-h-screen bg-[#FAFAFA]">
-                <main className="max-w-5xl mx-auto px-5 sm:px-8 pt-28 pb-24">
+                <main className={`${SITE_CONTAINER} max-w-5xl pt-28 pb-24`}>
                     <ProfileHeaderSkeleton />
                 </main>
             </div>
@@ -140,7 +141,7 @@ export default function ProfileClient() {
 
     return (
         <div className="min-h-screen bg-[#FAFAFA]">
-            <main className="max-w-5xl mx-auto px-5 sm:px-8 pt-28 pb-24">
+            <main className={`${SITE_CONTAINER} max-w-5xl pt-28 pb-24`}>
                 <ProfileHeader
                     user={user}
                     profile={profile}

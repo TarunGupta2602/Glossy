@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Breadcrumbs from "./Breadcrumbs";
 import { SUPPORT_EMAIL } from "@/lib/constants";
 
@@ -19,8 +20,8 @@ export function LegalSection({ title, children }) {
 
 export default function LegalPageLayout({ title, description, lastUpdated = "March 2026", children }) {
     return (
-        <section className="bg-[#FAFAFA] min-h-screen py-12 md:py-16 px-5 md:px-8">
-            <div className="max-w-3xl mx-auto">
+        <section className="bg-[#FAFAFA] min-h-screen py-12 md:py-16">
+            <div className={`${SITE_CONTAINER} max-w-3xl`}>
                 <Breadcrumbs items={[{ label: title }]} />
 
                 <header className="mb-8 md:mb-10">

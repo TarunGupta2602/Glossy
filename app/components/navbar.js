@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -42,8 +43,8 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-50/50 backdrop-blur-md bg-white/90 px-4 py-2.5 md:px-6 md:py-4">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-50/50 backdrop-blur-md bg-white/90 py-2.5 md:py-4">
+                <div className={`${SITE_CONTAINER} flex items-center justify-between`}>
                     {/* Left: Logo */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="group block focus:outline-none">
@@ -117,7 +118,7 @@ export default function Navbar() {
                                     : "w-0 opacity-0 md:w-0"
                                 }
                             `}>
-                                <div className="flex items-center w-full max-w-7xl mx-auto gap-3">
+                                <div className={`${SITE_CONTAINER} flex items-center w-full gap-3`}>
                                     <input
                                         type="text"
                                         placeholder="Search jewellery..."

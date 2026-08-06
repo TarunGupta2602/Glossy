@@ -57,7 +57,7 @@ export default function ShopClient({
     const showingTo = Math.min(currentPage * PAGE_SIZE, totalCount);
 
     return (
-        <div className="flex flex-col md:flex-row gap-8 lg:gap-24 relative">
+        <div className="flex flex-col md:flex-row gap-8 lg:gap-10 relative">
             <div className="md:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[90]">
                 <button
                     onClick={() => setIsSidebarOpen(true)}

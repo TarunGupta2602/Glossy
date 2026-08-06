@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Image from "next/image";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/constants";
 import { fetchInstagramPosts, INSTAGRAM_FALLBACK_IMAGES } from "@/lib/instagram";
@@ -8,8 +9,8 @@ export default async function InstagramFeed() {
     const usingLiveFeed = Boolean(posts?.length);
 
     return (
-        <section className="py-20 px-6 md:px-12 bg-gradient-to-b from-white to-pink-50/40 border-t border-gray-100">
-            <div className="max-w-7xl mx-auto text-center">
+        <section className="py-20 bg-gradient-to-b from-white to-pink-50/40 border-t border-gray-100">
+            <div className={`${HOME_CONTAINER} text-center`}>
                 <p className="text-[10px] font-black uppercase tracking-wider text-[#E91E63] mb-3">
                     {INSTAGRAM_HANDLE}
                 </p>

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 
 export default function SeoIntro({ title, children, links = [] }) {
     return (
-        <section className="py-16 px-6 md:px-12 bg-gray-50/60 border-t border-gray-100">
-            <div className="max-w-3xl mx-auto text-center">
+        <section className="py-16 bg-gray-50/60 border-t border-gray-100">
+            <div className={`${SITE_CONTAINER} max-w-3xl text-center`}>
                 {title && (
                     <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 tracking-tight">
                         {title}

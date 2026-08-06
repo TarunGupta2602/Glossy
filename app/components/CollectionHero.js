@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Breadcrumbs from "./Breadcrumbs";
 
 export default function CollectionHero({
@@ -18,7 +19,7 @@ export default function CollectionHero({
     if (!imageUrl) {
         return (
             <div className="border-b border-gray-100 bg-gradient-to-br from-[#FFF5F8] via-white to-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-8">
+                <div className={`${SITE_CONTAINER} py-6 md:py-8`}>
                     {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-4" />}
                     <div className="flex items-center gap-3 mb-3">
                         <div className="h-px w-10 bg-[#E91E63]" />
@@ -62,13 +63,13 @@ export default function CollectionHero({
 
             <div className="absolute inset-0 flex flex-col">
                 {breadcrumbs && (
-                    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-12 pt-4 md:pt-5">
+                    <div className={`${SITE_CONTAINER} w-full pt-4 md:pt-5`}>
                         <Breadcrumbs items={breadcrumbs} variant="light" />
                     </div>
                 )}
 
                 <div className="flex-1 flex items-end md:items-center">
-                    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-12 pb-8 md:pb-0 md:py-10">
+                    <div className={`${SITE_CONTAINER} w-full pb-8 md:pb-0 md:py-10`}>
                         <div className="max-w-2xl">
                             <div className="flex items-center gap-3 mb-3 md:mb-4">
                                 <div className="h-px w-10 bg-[#FF80AB]" />

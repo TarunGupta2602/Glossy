@@ -1,4 +1,5 @@
 import { getInitials } from "@/lib/featuredReviews";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 
 export default function Testimonials({ reviews = [], reviewStats = null }) {
     if (!reviews.length) {
@@ -6,8 +7,8 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
     }
 
     return (
-        <section className="py-12 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
-            <div className="w-full">
+        <section className="py-12 md:py-16 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
+            <div className={HOME_CONTAINER}>
                 <div className="text-center mb-10 md:mb-12">
                     <span className="text-[11px] font-black tracking-wider text-[#E91E63] uppercase mb-3 block">
                         VERIFIED REVIEWS

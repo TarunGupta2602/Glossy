@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -132,7 +133,7 @@ export default async function BlogPage({ searchParams }) {
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-pink-50/30 py-16 md:py-24">
                 <div className="absolute inset-x-0 top-0 h-44 bg-[#FCE4EC] opacity-80 blur-3xl"></div>
-                <div className="relative max-w-7xl mx-auto px-4 md:px-6 text-center">
+                <div className={`${SITE_CONTAINER} relative text-center`}>
                     <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-[#E91E63] mb-3">
                         The Luxe Journal
                     </p>
@@ -157,7 +158,7 @@ export default async function BlogPage({ searchParams }) {
             </section>
 
             {/* Blog Grid */}
-            <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
+            <section className={`${SITE_CONTAINER} py-12 md:py-20`}>
                 {!blogs || blogs.length === 0 ? (
                     <div className="text-center py-20">
                         <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6">

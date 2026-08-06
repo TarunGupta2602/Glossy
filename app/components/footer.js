@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -16,9 +17,9 @@ export default function Footer() {
     return (
         <footer className="relative bg-gradient-to-b from-white via-[#fffafa] to-[#f9f9fb] border-t border-gray-100/50 pt-24 pb-12 overflow-hidden">
             {/* Decorative element */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1480px] h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
-            <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <div className={SITE_CONTAINER}>
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-20 border-b border-gray-100">
 
                     {/* Brand Identity Section */}

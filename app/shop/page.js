@@ -1,4 +1,5 @@
 import ShopClient from "../components/ShopClient";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { redirect } from "next/navigation";
@@ -70,20 +71,19 @@ export default async function ShopPage({ searchParams }) {
         <main className="min-h-screen bg-white">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
-            <section className="pt-6 md:pt-8 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto">
+            <section className={`${SITE_CONTAINER} pt-6 md:pt-8`}>
                 <Breadcrumbs items={[{ label: "Shop All Collections" }]} />
             </section>
 
-            <section className="pt-2 pb-3 px-4 sm:px-6 md:px-12 text-center max-w-5xl mx-auto">
+            <section className={`${SITE_CONTAINER} pt-2 pb-3 text-center`}>
                 <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop All Collections</h1>
                 <p className="text-sm md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto">
                     Explore our latest curation of anti-tarnish jewellery and hand-crafted fine jewellery.
                 </p>
             </section>
 
-            <section className="pb-20 md:pb-24 px-4 sm:px-6 md:px-12">
-                <div className="max-w-7xl mx-auto">
-                    <ShopClient
+            <section className={`${SITE_CONTAINER} pb-20 md:pb-24`}>
+                <ShopClient
                         products={productsWithDiscounts}
                         categories={categories || []}
                         totalCount={totalCount}
@@ -94,7 +94,6 @@ export default async function ShopPage({ searchParams }) {
                         priceRange={[minPrice, maxPrice]}
                         reviewCounts={reviewCounts}
                     />
-                </div>
             </section>
         </main>
     );

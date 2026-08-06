@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -270,7 +271,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+            <div className={`${SITE_CONTAINER} py-16`}>
                 <CheckoutSteps current={2} />
                 <h1 className="text-[32px] font-black tracking-tight text-gray-900 mb-4">Secure Checkout</h1>
 

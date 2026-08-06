@@ -4,6 +4,7 @@ import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
@@ -123,7 +124,7 @@ export default async function Home() {
       </section>
 
       {reviewStats.count > 0 && (
-        <div className="text-center py-8 px-6">
+        <div className={`${HOME_CONTAINER} text-center py-8`}>
           <p className="text-sm font-semibold text-gray-700">
             Loved by our community — <span className="text-amber-500">{reviewStats.average}★</span> from {reviewStats.count} verified review{reviewStats.count === 1 ? "" : "s"}
           </p>

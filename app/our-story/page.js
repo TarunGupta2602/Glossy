@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { INSTAGRAM_HANDLE, SUPPORT_EMAIL, SUPPORT_PHONE, WHATSAPP_URL } from "@/lib/constants";
 
 export const dynamic = "force-static";
@@ -42,8 +43,8 @@ const TIMELINE = [
 
 export default function OurStoryPage() {
     return (
-        <section className="bg-white py-24 px-6 md:px-12">
-            <div className="max-w-5xl mx-auto">
+        <section className="bg-white py-24">
+            <div className={`${SITE_CONTAINER} max-w-5xl`}>
                 <div className="text-center mb-16">
                     <p className="text-[10px] font-black uppercase tracking-wider text-[#E91E63] mb-3">Our Journey</p>
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Our Story</h1>

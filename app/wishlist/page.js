@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
@@ -12,7 +13,7 @@ export default function WishlistPage() {
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] pt-32 pb-24">
-            <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className={SITE_CONTAINER}>
                 {/* Header & Breadcrumbs */}
                 <div className="relative mb-16">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100/30 blur-[120px] rounded-full -z-10" />

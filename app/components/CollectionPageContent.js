@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import CollectionHero from "./CollectionHero";
 import ProductCard from "./ProductCard";
 import CategoryPagination from "./CategoryPagination";
@@ -20,7 +21,7 @@ export default function CollectionPageContent({
     const isSmallCollection = products.length <= 4;
 
     const gridClass = isSmallCollection
-        ? "grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10 max-w-[1080px] mx-auto"
+        ? "grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10"
         : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-5 sm:gap-y-9";
 
     return (
@@ -36,7 +37,7 @@ export default function CollectionPageContent({
             />
 
             <div className="bg-gradient-to-b from-[#FAFAFA] to-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-14">
+                <div className={`${SITE_CONTAINER} py-10 md:py-14`}>
                     {products.length > 0 ? (
                         <>
                             {!isSmallCollection && count > 0 && (

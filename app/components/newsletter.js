@@ -1,5 +1,6 @@
 "use client";
 
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { useState } from "react";
 
 export default function Newsletter() {
@@ -49,7 +50,7 @@ export default function Newsletter() {
 
     return (
         <section className="py-10 md:py-14 bg-white text-center">
-            <div className="w-full px-4 md:px-6">
+            <div className={HOME_CONTAINER}>
 
                 <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
                     Join The Luxe Jewels List
