@@ -1,8 +1,5 @@
-import CategoryPagination from "../components/CategoryPagination";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import Breadcrumbs from "../components/Breadcrumbs";
-import ProductCard from "../components/ProductCard";
-import SeoIntro from "../components/SeoIntro";
+import CollectionPageContent from "../components/CollectionPageContent";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -40,8 +37,9 @@ export default async function EarringsPage({ searchParams }) {
     const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/earrings?page=1");
 
-    const { data: categories } = await supabase.from("categories").select("id, name, slug");
+    const { data: categories } = await supabase.from("categories").select("id, name, slug, image_url, description");
     const category = findEarringsCategory(categories);
+    const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
 
     let products = [];
     let count = 0;
@@ -68,59 +66,39 @@ export default async function EarringsPage({ searchParams }) {
     const totalPages = Math.ceil(count / PAGE_SIZE);
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
+    const pageTitle = category?.name || "Anti-Tarnish Earrings";
+    const pageDescription =
+        category?.description || "Waterproof. Everyday-proof. Crafted for the modern individual.";
+
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.theluxejewels.in" },
-            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://www.theluxejewels.in/shop" },
-            { "@type": "ListItem", "position": 3, "name": "Anti-Tarnish Earrings", "item": "https://www.theluxejewels.in/earrings" },
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.theluxejewels.in" },
+            { "@type": "ListItem", position: 2, name: "Shop", item: "https://www.theluxejewels.in/shop" },
+            { "@type": "ListItem", position: 3, name: pageTitle, item: "https://www.theluxejewels.in/earrings" },
         ],
     };
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+        <section className="pb-10 md:pb-14 bg-white">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
-            <div className="max-w-7xl mx-auto">
-                <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Anti-Tarnish Earrings" }]} />
-                <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Anti-Tarnish Earrings</h1>
-                    <p className="text-gray-500 max-w-xl mx-auto italic font-medium">Waterproof. Everyday-proof. Crafted for the modern individual.</p>
-                </div>
-                {!products.length ? (
-                    <p className="text-center text-gray-500 font-medium py-12">Coming Soon.</p>
-                ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-                        {productsWithDiscounts.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                reviewCount={reviewCounts[product.id] || 0}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
 
-            {totalPages > 1 && (
-                <CategoryPagination basePath="/earrings" page={page} totalPages={totalPages} />
-            )}
-
-            <SeoIntro
-                title="Premium Anti-Tarnish Earrings for Women"
-                links={[
-                    { href: "/shop", label: "Shop All Jewellery" },
-                    { href: "/necklaces", label: "Fine Necklaces" },
-                ]}
-            >
-                <p>
-                    Explore our collection of anti-tarnish earrings — from minimalist studs to statement drops.
-                    Each piece is waterproof, sweat-proof, and crafted with 18k gold plating for daily wear in India.
-                </p>
-            </SeoIntro>
+            <CollectionPageContent
+                breadcrumbs={[{ label: "Shop", href: "/shop" }, { label: pageTitle }]}
+                heroImageUrl={category?.image_url}
+                title={pageTitle}
+                description={pageDescription}
+                count={count}
+                showingCount={productsWithDiscounts.length}
+                products={productsWithDiscounts}
+                reviewCounts={reviewCounts}
+                pagination={totalPages > 1 ? { basePath: "/earrings", page, totalPages } : null}
+                otherCategories={otherCategories}
+            />
         </section>
     );
 }

@@ -1,7 +1,6 @@
 import ShopClient from "../components/ShopClient";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
-import SeoIntro from "../components/SeoIntro";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { fetchShopProducts } from "@/lib/shopQueries";
@@ -71,18 +70,18 @@ export default async function ShopPage({ searchParams }) {
         <main className="min-h-screen bg-white">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
-            <section className="pt-10 px-6 md:px-12 max-w-7xl mx-auto">
+            <section className="pt-6 md:pt-8 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto">
                 <Breadcrumbs items={[{ label: "Shop All Collections" }]} />
             </section>
 
-            <section className="pt-5 pb-5 px-6 md:px-12 text-center max-w-5xl mx-auto">
-                <h1 className="text-4xl md:text-6xl font-light text-gray-950 tracking-tighter mb-8">Shop All Collections</h1>
-                <p className="text-base md:text-lg text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto">
+            <section className="pt-2 pb-3 px-4 sm:px-6 md:px-12 text-center max-w-5xl mx-auto">
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop All Collections</h1>
+                <p className="text-sm md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto">
                     Explore our latest curation of anti-tarnish jewellery and hand-crafted fine jewellery.
                 </p>
             </section>
 
-            <section className="pb-32 px-6 md:px-12">
+            <section className="pb-20 md:pb-24 px-4 sm:px-6 md:px-12">
                 <div className="max-w-7xl mx-auto">
                     <ShopClient
                         products={productsWithDiscounts}
@@ -97,20 +96,6 @@ export default async function ShopPage({ searchParams }) {
                     />
                 </div>
             </section>
-
-            <SeoIntro
-                title="Premium Anti-Tarnish & Fine Jewellery"
-                links={[
-                    { href: "/earrings", label: "18k Gold Plated Earrings" },
-                    { href: "/necklaces", label: "Daily Wear Fine Necklaces" },
-                    { href: "/our-story", label: "Our Story" },
-                ]}
-            >
-                <p>
-                    Welcome to The Luxe Jewels shop — a curated selection of anti-tarnish, waterproof, and everyday wear jewellery
-                    crafted for modern luxury in India.
-                </p>
-            </SeoIntro>
         </main>
     );
 }

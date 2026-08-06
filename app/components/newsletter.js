@@ -12,7 +12,6 @@ export default function Newsletter() {
         setLoading(true);
         setMessage("");
 
-        // simple validation
         if (!email.includes("@")) {
             setMessage("Enter a valid email");
             setLoading(false);
@@ -83,7 +82,6 @@ export default function Newsletter() {
                     </button>
                 </form>
 
-                {/* Message */}
                 {message && (
                     <p className="mt-4 text-sm text-gray-600">
                         {message}

@@ -25,7 +25,6 @@ export default function ProductRow({ title, products, viewAllLink, reviewCounts 
     return (
         <section className={`py-10 md:py-14 px-4 md:px-8 overflow-hidden transition-all duration-700 ${isBestSeller ? 'bg-[#fdf9f7] border-y border-[#f8e5d9]/60' : 'bg-white'}`}>
             <div className="w-full">
-                {/* Refined Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-10 gap-6">
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
@@ -65,7 +64,7 @@ export default function ProductRow({ title, products, viewAllLink, reviewCounts 
                                 className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-900 hover:bg-gray-50 hover:border-gray-200 transition-all duration-300 group shadow-sm bg-white"
                                 aria-label="Next"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:translate-x-0.5 transition-transform"><path d="m9 18 6-6 6-6" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:translate-x-0.5 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
                             </button>
                         </div>
                     </div>
@@ -88,4 +87,3 @@ export default function ProductRow({ title, products, viewAllLink, reviewCounts 
         </section>
     );
 }
-

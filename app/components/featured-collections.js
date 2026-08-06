@@ -7,7 +7,6 @@ import Image from "next/image";
 export default function FeaturedCollections({ categories }) {
     const [currentIdx, setCurrentIdx] = useState(0);
 
-    // Apply custom sorting: Sparkle Jewellery Duo (Second to last), Uniqueness (Last)
     const sortedCategories = [...categories].sort((a, b) => {
         const aSlug = a.slug?.toLowerCase();
         const bSlug = b.slug?.toLowerCase();
@@ -31,7 +30,7 @@ export default function FeaturedCollections({ categories }) {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIdx((prevIdx) => (prevIdx + 1) % sortedCategories.length);
-        }, 5000); // 5 seconds per slide
+        }, 5000);
         return () => clearInterval(interval);
     }, [sortedCategories.length]);
 
@@ -62,7 +61,6 @@ export default function FeaturedCollections({ categories }) {
     return (
         <section className="py-12 md:py-16 bg-white overflow-hidden">
             <div className="w-full px-4 md:px-8 lg:px-12">
-                {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-6">
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-4 mb-4">
@@ -95,9 +93,7 @@ export default function FeaturedCollections({ categories }) {
                     </Link>
                 </div>
 
-                {/* Full-Width Slider */}
                 <div className="relative w-full aspect-[16/9] md:aspect-[21/9]">
-                    {/* Slides */}
                     {sortedCategories.map((category, index) => (
                         <Link
                             key={category.id}
@@ -115,15 +111,12 @@ export default function FeaturedCollections({ categories }) {
                                     quality={75}
                                     loading={index === 0 ? "eager" : "lazy"}
                                     onError={(e) => {
-                                        console.error("Image failed to load:", category.image_url || category.image);
                                         e.target.src = "/logo.png";
                                     }}
                                 />
-                                {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
                             </div>
 
-                            {/* Content Overlay */}
                             <div className="relative z-10 h-full p-6 md:p-10 lg:p-16 flex flex-col justify-center">
                                 <div className="max-w-2xl">
                                     <div className="flex items-center gap-4 mb-4">
@@ -154,7 +147,6 @@ export default function FeaturedCollections({ categories }) {
                         </Link>
                     ))}
 
-                    {/* Navigation Arrows */}
                     <button
                         onClick={prevSlide}
                         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all group"
@@ -175,7 +167,6 @@ export default function FeaturedCollections({ categories }) {
                         </svg>
                     </button>
 
-                    {/* Slider Dots */}
                     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
                         {sortedCategories.map((_, idx) => (
                             <button
@@ -191,4 +182,3 @@ export default function FeaturedCollections({ categories }) {
         </section>
     );
 }
-

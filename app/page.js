@@ -4,6 +4,7 @@ import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
+
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
 });
@@ -41,17 +42,15 @@ export const metadata = {
   },
 };
 
-export const revalidate = 60; // Revalidate the page every 60 seconds (ISR)
+export const revalidate = 60;
 
 export default async function Home() {
   const supabase = getServiceClient();
 
-  // 1. Fetch Categories to get IDs
   const { data: categories } = await supabase
     .from("categories")
     .select("*");
 
-  // 2. Fetch Products for all categories
   const categoryProducts = await Promise.all(
     (categories || []).map(async (cat) => {
       const { data: products } = await supabase
@@ -61,18 +60,15 @@ export default async function Home() {
         .order("created_at", { ascending: false })
         .limit(6);
       
-      // Calculate discounts server-side for each product
       const productsWithDiscounts = (products || []).map(withCalculatedDiscount);
       
       return { ...cat, products: productsWithDiscounts };
     })
   );
 
-  // Filter out categories with no products and apply custom sorting
   const activeCategories = categoryProducts
     .filter(cat => cat.products.length > 0)
     .sort((a, b) => {
-      // Custom order: Sparkle Jewellery Duo (Second to last), Uniqueness (Last)
       const aSlug = a.slug?.toLowerCase();
       const bSlug = b.slug?.toLowerCase();
 
@@ -89,7 +85,6 @@ export default async function Home() {
         return aOrder - bOrder;
       }
 
-      // Default alphabetical sort for others
       return a.name.localeCompare(b.name);
     });
 
@@ -102,16 +97,12 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Dynamic Hero Section */}
       <HeroSlider />
 
-      {/* Featured Collections Section */}
       <FeaturedCollections categories={categories || []} />
 
-      {/* Best Sellers Section - Curated social proof */}
       <section className="bg-gray-50/50 py-0">
         {(() => {
-          // Find products that match our "Best Seller" badge logic to show in this row
           const bestSellerProducts = activeCategories
             .flatMap(cat => cat.products)
             .filter(p => p.is_bestseller)
@@ -139,7 +130,6 @@ export default async function Home() {
         </div>
       )}
 
-      {/* Dynamic Product Rows for All Sections */}
       {activeCategories.map((cat) => (
         <ProductRow
           key={cat.id}
@@ -150,12 +140,10 @@ export default async function Home() {
         />
       ))}
 
-      {/* Testimonials Section */}
       <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
 
       <InstagramFeed />
 
-      {/* Newsletter Section */}
       <Newsletter />
     </main>
   );

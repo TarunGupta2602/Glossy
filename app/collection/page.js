@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { getCategoryHref } from "@/lib/categoryLanding";
 
 export const dynamic = "force-dynamic";
 
@@ -41,43 +42,59 @@ export default async function FeaturedCollections() {
     }
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
-            <div className="max-w-7xl mx-auto">
-                <Breadcrumbs items={[{ label: "Collections" }]} />
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-                    <div>
-                        <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
-                            CURATION
-                        </span>
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
-                            Featured Collections
-                        </h1>
-                    </div>
+        <section className="pb-12 md:pb-16 bg-white">
+            <div className="border-b border-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-2.5 md:py-3">
+                    <Breadcrumbs items={[{ label: "Collections" }]} />
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 text-white">
-                    {categories?.map((category) => {
-                        const isEarrings = category.name.toLowerCase().includes("earring");
-                        const isNecklaces = category.name.toLowerCase().includes("necklace");
-                        const displayTitle = isEarrings ? "Statement Pieces" : isNecklaces ? "The Necklace Edit" : category.name;
-                        const displayDesc = isEarrings ? "Crafted to last a lifetime." : isNecklaces ? "Luminous accents for every style." : category.description || `Explore our ${category.name} collection.`;
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-8 pb-2">
+                <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
+                    Curation
+                </span>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                    Featured Collections
+                </h1>
+                <p className="text-sm text-gray-500 mt-2 max-w-lg">
+                    Handpicked edits of anti-tarnish jewellery — explore by style.
+                </p>
+            </div>
 
-                        return (
-                            <Link
-                                key={category.id}
-                                href={`/shop/${category.slug}`}
-                                className="group relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-gray-100 block shadow-sm border border-gray-50 transition-all hover:shadow-xl"
-                            >
-                                <Image src={category.image_url || "/logo.png"} alt={category.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
-                                <div className="absolute inset-0 p-10 md:p-14 flex flex-col justify-end">
-                                    <h3 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">{displayTitle}</h3>
-                                    <p className="text-white/90 font-medium mb-8 max-w-xs [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">{displayDesc}</p>
-                                    <div className="px-7 py-3 bg-white text-gray-900 text-[11px] font-black uppercase tracking-widest rounded-xl w-fit shadow-xl transition-transform group-hover:scale-105">EXPLORE</div>
-                                </div>
-                            </Link>
-                        );
-                    })}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+                    {categories?.map((category) => (
+                        <Link
+                            key={category.id}
+                            href={getCategoryHref(category)}
+                            className="group relative aspect-[16/10] overflow-hidden rounded-xl md:rounded-2xl bg-gray-100 block border border-gray-100 hover:border-[#E91E63]/20 hover:shadow-lg transition-all duration-300"
+                        >
+                            <Image
+                                src={category.image_url || "/logo.png"}
+                                alt={category.name}
+                                fill
+                                sizes="(max-width: 640px) 100vw, 50vw"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                            <div className="absolute inset-0 p-5 sm:p-6 md:p-8 flex flex-col justify-end">
+                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
+                                    {category.name}
+                                </h2>
+                                {category.description && (
+                                    <p className="text-sm text-white/75 mt-1 line-clamp-2 max-w-sm">
+                                        {category.description}
+                                    </p>
+                                )}
+                                <span className="inline-flex items-center gap-2 mt-3 text-[10px] font-black uppercase tracking-widest text-white/90 group-hover:text-white transition-colors">
+                                    Explore
+                                    <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
             </div>
         </section>

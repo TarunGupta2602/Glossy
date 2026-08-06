@@ -1,8 +1,5 @@
-import CategoryPagination from "../components/CategoryPagination";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import Breadcrumbs from "../components/Breadcrumbs";
-import ProductCard from "../components/ProductCard";
-import SeoIntro from "../components/SeoIntro";
+import CollectionPageContent from "../components/CollectionPageContent";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -40,8 +37,9 @@ export default async function NecklacesPage({ searchParams }) {
     const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/necklaces?page=1");
 
-    const { data: categories } = await supabase.from("categories").select("id, name, slug");
+    const { data: categories } = await supabase.from("categories").select("id, name, slug, image_url, description");
     const category = findNecklacesCategory(categories);
+    const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
 
     let products = [];
     let count = 0;
@@ -68,59 +66,39 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = Math.ceil(count / PAGE_SIZE);
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
+    const pageTitle = category?.name || "Anti-Tarnish Necklaces";
+    const pageDescription =
+        category?.description || "Timeless chains. Sustainable luxury. Designed to never fade.";
+
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.theluxejewels.in" },
-            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://www.theluxejewels.in/shop" },
-            { "@type": "ListItem", "position": 3, "name": "Anti-Tarnish Necklaces", "item": "https://www.theluxejewels.in/necklaces" },
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.theluxejewels.in" },
+            { "@type": "ListItem", position: 2, name: "Shop", item: "https://www.theluxejewels.in/shop" },
+            { "@type": "ListItem", position: 3, name: pageTitle, item: "https://www.theluxejewels.in/necklaces" },
         ],
     };
 
     return (
-        <section className="py-24 px-6 md:px-12 bg-white">
+        <section className="pb-10 md:pb-14 bg-white">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
-            <div className="max-w-7xl mx-auto">
-                <Breadcrumbs items={[{ label: "Shop", href: "/shop" }, { label: "Anti-Tarnish Necklaces" }]} />
-                <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Anti-Tarnish Necklaces</h1>
-                    <p className="text-gray-500 max-w-xl mx-auto italic font-medium">Timeless chains. Sustainable luxury. Designed to never fade.</p>
-                </div>
-                {!products.length ? (
-                    <p className="text-center text-gray-500 font-medium py-12">Coming Soon.</p>
-                ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-                        {productsWithDiscounts.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                reviewCount={reviewCounts[product.id] || 0}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
 
-            {totalPages > 1 && (
-                <CategoryPagination basePath="/necklaces" page={page} totalPages={totalPages} />
-            )}
-
-            <SeoIntro
-                title="Elegant Anti-Tarnish Necklaces for Modern Styling"
-                links={[
-                    { href: "/shop", label: "Fine Jewellery Collections" },
-                    { href: "/earrings", label: "Premium Earrings" },
-                ]}
-            >
-                <p>
-                    Shop anti-tarnish necklaces from delicate 18k gold plated chains to bold statement pendants.
-                    Waterproof, sweat-proof, and designed for everyday elegance across India.
-                </p>
-            </SeoIntro>
+            <CollectionPageContent
+                breadcrumbs={[{ label: "Shop", href: "/shop" }, { label: pageTitle }]}
+                heroImageUrl={category?.image_url}
+                title={pageTitle}
+                description={pageDescription}
+                count={count}
+                showingCount={productsWithDiscounts.length}
+                products={productsWithDiscounts}
+                reviewCounts={reviewCounts}
+                pagination={totalPages > 1 ? { basePath: "/necklaces", page, totalPages } : null}
+                otherCategories={otherCategories}
+            />
         </section>
     );
 }

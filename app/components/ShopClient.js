@@ -58,18 +58,21 @@ export default function ShopClient({
 
     return (
         <div className="flex flex-col md:flex-row gap-8 lg:gap-24 relative">
-            <div className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[90]">
+            <div className="md:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[90]">
                 <button
                     onClick={() => setIsSidebarOpen(true)}
-                    className="flex items-center gap-2.5 bg-gray-950 text-white pl-5 pr-6 py-3.5 rounded-full text-[13px] font-bold tracking-tight shadow-2xl shadow-black/20 active:scale-95 transition-all border border-white/10"
+                    className="flex items-center gap-2 bg-gray-950 text-white pl-5 pr-6 py-3 rounded-full text-[12px] font-bold tracking-tight shadow-2xl shadow-black/20 active:scale-95 transition-all border border-white/10"
                 >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
                     Filter & Sort
                 </button>
             </div>
 
-            <div className="md:hidden flex items-center justify-between mb-4">
+            <div className="md:hidden flex items-center justify-between mb-3">
                 <div className="text-[10px] font-black text-gray-600 uppercase tracking-wide">Collection</div>
-                <div className="text-[11px] font-bold text-gray-900 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+                <div className="text-[10px] sm:text-[11px] font-bold text-gray-900 bg-gray-50 px-2.5 sm:px-3 py-1 rounded-full border border-gray-100">
                     {totalCount > 0 ? `Showing ${showingFrom}–${showingTo} of ${totalCount}` : "0 items"}
                 </div>
             </div>
@@ -103,14 +106,14 @@ export default function ShopClient({
                 </div>
             )}
 
-            <div className="md:hidden sticky top-[52px] z-40 -mx-6 px-6 py-3 bg-white/95 backdrop-blur border-b border-gray-100 mb-4 flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-gray-500">Sort by</span>
-                <div className="flex gap-2">
+            <div className="md:hidden sticky top-[84px] z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2.5 bg-white/95 backdrop-blur border-b border-gray-100 mb-3 flex items-center justify-between gap-2">
+                <span className="text-[10px] font-semibold text-gray-500 flex-shrink-0">Sort</span>
+                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
                     {sortOptions.map((opt) => (
                         <button
                             key={opt.value}
                             onClick={() => navigate({ sort: opt.value, page: 1 })}
-                            className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors ${sortBy === opt.value ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
+                            className={`flex-shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors ${sortBy === opt.value ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
                         >
                             {opt.label}
                         </button>
@@ -174,7 +177,7 @@ export default function ShopClient({
 
                 {products.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10">
                             {products.map((product) => (
                                 <ProductCard
                                     key={product.id}
