@@ -89,7 +89,7 @@ export default function HeroSlider() {
             <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-12 lg:px-16 w-full">
                 <div className="max-w-3xl">
                     <p className="text-white italic font-serif text-2xl md:text-3xl mb-4 tracking-wide animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        {currentIdx === 1 ? "Hello" : activeSlide.subtitle}
+                        {activeSlide.subtitle}
                     </p>
 
                     <h1 className="text-5xl md:text-8xl font-playfair font-bold text-white tracking-tight leading-[0.95] mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">

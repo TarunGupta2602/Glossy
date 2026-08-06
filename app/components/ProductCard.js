@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getProductPath } from "@/lib/seo";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
 
-export default function ProductCard({ product, reviewCount = 0 }) {
+export default function ProductCard({ product, reviewCount = 0, hideCategory = false }) {
     const categoryName = product.categories?.name || "Jewellery";
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
@@ -50,12 +50,14 @@ export default function ProductCard({ product, reviewCount = 0 }) {
             </Link>
 
             <div className="mt-2.5 sm:mt-4 flex flex-col gap-0.5 sm:gap-1 px-0.5 sm:px-1">
-                <span className="text-[9px] sm:text-[10px] font-semibold tracking-wide text-gray-600 uppercase truncate">
-                    {categoryName}
-                </span>
+                {!hideCategory && (
+                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-wide text-gray-600 uppercase truncate">
+                        {categoryName}
+                    </span>
+                )}
 
                 <Link href={getProductPath(product)}>
-                    <h3 className="text-[13px] sm:text-[15px] font-black text-gray-900 leading-snug group-hover:text-gray-900 transition-colors duration-200 line-clamp-2 min-h-[2.5rem] sm:min-h-10">
+                    <h3 className={`text-[13px] sm:text-[15px] font-black text-gray-900 leading-snug group-hover:text-gray-900 transition-colors duration-200 line-clamp-2 ${hideCategory ? "min-h-[2.75rem] sm:min-h-11" : "min-h-[2.5rem] sm:min-h-10"}`}>
                         {product.name}
                     </h3>
                 </Link>

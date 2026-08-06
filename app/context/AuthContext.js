@@ -61,15 +61,22 @@ export function AuthProvider({ children }) {
 
         // Initialize Google GSI Client
         const initGSI = () => {
-            if (window.google) {
-                window.google.accounts.id.initialize({
-                    client_id: googleClientId,
-                    callback: handleGoogleResponse,
-                    auto_select: false, // Don't auto-select to avoid surprising users
-                });
-                // Still try One Tap as it's a great UX
-                window.google.accounts.id.prompt();
-            }
+            if (!window.google?.accounts?.id) return;
+
+            // One Tap requires the current origin in Google Cloud Console.
+            // Skip on localhost to avoid GSI_LOGGER console errors during local dev.
+            const isLocalhost =
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1";
+
+            if (isLocalhost) return;
+
+            window.google.accounts.id.initialize({
+                client_id: googleClientId,
+                callback: handleGoogleResponse,
+                auto_select: false,
+            });
+            window.google.accounts.id.prompt();
         };
 
         // Try to init, or wait for script load
