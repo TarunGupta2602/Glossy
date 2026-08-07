@@ -83,28 +83,28 @@ export default function CartPage() {
 
     return (
         <div className="bg-white min-h-screen pb-24">
-            <div className={`${SITE_CONTAINER} pt-16`}>
+            <div className={`${SITE_CONTAINER} pt-8 md:pt-16`}>
                 <CheckoutSteps current={1} />
-                <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>
-                    <Link href="/shop" className="text-xs font-bold text-[#E91E63] tracking-widest uppercase border-b border-[#E91E63] pb-1 hover:text-[#C2185B] hover:border-[#C2185B] transition-all">
-                        Continue Shopping
+                <div className="flex items-baseline justify-between gap-3 mb-5 md:mb-6">
+                    <h1 className="text-2xl md:text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>
+                    <Link href="/shop" className="text-[10px] md:text-xs font-bold text-[#E91E63] tracking-widest uppercase border-b border-[#E91E63] pb-1 hover:text-[#C2185B] hover:border-[#C2185B] transition-all whitespace-nowrap">
+                        Continue
                     </Link>
                 </div>
 
-                <div className="mb-8 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-blue-900">
+                <div className="mb-6 md:mb-8 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-blue-900">
                     <span className="font-bold">Secure online payment</span> via UPI, cards, and net banking. All orders are prepaid for faster dispatch.
                 </div>
 
-                <TrustStrip className="mb-10" />
+                <TrustStrip className="mb-8 md:mb-10" />
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 md:gap-12 items-start">
                     {/* Items List */}
-                    <div className="space-y-8">
+                    <div className="space-y-5 md:space-y-8">
                         {cart.map((item) => (
-                            <div key={item.id} className="flex gap-6 pb-8 border-b border-gray-100 last:border-0 group">
+                            <div key={item.id} className="flex gap-3 sm:gap-6 pb-5 md:pb-8 border-b border-gray-100 last:border-0 group">
                                 {/* Product Image */}
-                                <Link href={getProductPath(item)} className="relative w-32 sm:w-44 aspect-[4/5] rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
+                                <Link href={getProductPath(item)} className="relative w-24 sm:w-32 md:w-44 aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
                                     <Image
                                         src={item.image}
                                         alt={item.name}
@@ -115,11 +115,11 @@ export default function CartPage() {
                                 </Link>
 
                                 {/* Item Info */}
-                                <div className="flex-1 flex flex-col justify-between py-1">
+                                <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                                     <div>
-                                        <div className="flex justify-between items-start mb-1">
-                                            <div className="flex flex-col gap-1">
-                                                <Link href={getProductPath(item)} className="text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-1">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5 sm:gap-3 mb-1">
+                                            <div className="flex flex-col gap-1 min-w-0">
+                                                <Link href={getProductPath(item)} className="text-base sm:text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-2 sm:line-clamp-1">
                                                     {item.name}
                                                 </Link>
                                                 {promo.freeProductIds?.includes(item.id) && (
@@ -128,16 +128,16 @@ export default function CartPage() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                            <p className="text-base sm:text-lg font-bold text-gray-900 flex-shrink-0">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                         </div>
-                                        <p className="text-[10px] font-bold tracking-[0.2em] text-[#E91E63] uppercase mb-3">{item.category}</p>
+                                        <p className="text-[10px] font-bold tracking-[0.2em] text-[#E91E63] uppercase mb-2 md:mb-3">{item.category}</p>
                                         {item.description && (
-                                            <p className="text-sm text-gray-400 font-medium leading-relaxed line-clamp-2 mb-4 max-w-md">
+                                            <p className="hidden sm:block text-sm text-gray-400 font-medium leading-relaxed line-clamp-2 mb-4 max-w-md">
                                                 {item.description}
                                             </p>
                                         )}
 
-                                        <div className="flex items-center gap-4 text-[11px] text-gray-400 font-medium mb-4">
+                                        <div className="hidden sm:flex items-center gap-4 text-[11px] text-gray-400 font-medium mb-4">
                                             <span className="flex items-center gap-1.5">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
                                                 In Stock
@@ -149,20 +149,20 @@ export default function CartPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between mt-auto">
+                                    <div className="flex items-center justify-between mt-auto gap-2">
                                         {/* Qty Selector */}
-                                        <div className="flex items-center border border-gray-100 bg-gray-50/50 rounded-xl h-11 px-2">
+                                        <div className="flex items-center border border-gray-100 bg-gray-50/50 rounded-xl h-10 sm:h-11 px-1 sm:px-2">
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
+                                                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
                                                 disabled={item.quantity <= 1}
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                             </button>
-                                            <span className="w-10 text-center text-sm font-bold text-gray-800">{item.quantity}</span>
+                                            <span className="w-8 sm:w-10 text-center text-sm font-bold text-gray-800">{item.quantity}</span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
+                                                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                             </button>
@@ -171,9 +171,9 @@ export default function CartPage() {
                                         {/* Remove Button */}
                                         <button
                                             onClick={() => removeFromCart(item.id)}
-                                            className="text-[11px] font-bold text-gray-300 hover:text-red-500 tracking-widest uppercase transition-colors"
+                                            className="text-[10px] sm:text-[11px] font-bold text-gray-300 hover:text-red-500 tracking-widest uppercase transition-colors"
                                         >
-                                            Remove Item
+                                            Remove
                                         </button>
                                     </div>
                                 </div>
@@ -182,18 +182,18 @@ export default function CartPage() {
                     </div>
 
                     {/* Summary Sidebar */}
-                    <aside className="bg-gray-50/80 backdrop-blur-sm rounded-[32px] p-8 sticky top-28 border border-gray-100">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                    <aside className="bg-gray-50/80 backdrop-blur-sm rounded-2xl md:rounded-[32px] p-5 sm:p-8 sticky top-28 border border-gray-100">
+                        <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 md:mb-6">Order Summary</h2>
 
-                        <div className="space-y-4 mb-8">
+                        <div className="space-y-4 mb-6 md:mb-8">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Subtotal</span>
                                 <span className="font-bold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                             </div>
                             {discountAmount > 0 && (
-                                <div className="flex justify-between text-sm text-green-600">
-                                    <span className="font-medium">Offer Discount (Buy 2 products, get the 3rd one free)</span>
-                                    <span className="font-bold">-₹{discountAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                                <div className="flex justify-between gap-4 text-sm text-green-600">
+                                    <span className="font-medium">Offer Discount (Buy 2, get 3rd free)</span>
+                                    <span className="font-bold flex-shrink-0">-₹{discountAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-sm">
@@ -253,7 +253,7 @@ export default function CartPage() {
                                 Proceed to Checkout
                             </button>
                         ) : (
-                            <div className="mb-6 bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                            <div className="mb-6 bg-white border border-gray-100 rounded-2xl md:rounded-3xl p-5 sm:p-8 shadow-sm">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="flex flex-col items-center leading-none flex-shrink-0">
                                         <span className="text-[7px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-0.5">THE</span>
@@ -262,11 +262,11 @@ export default function CartPage() {
                                         </span>
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-black tracking-tight text-gray-900 leading-none mb-1">Join The Signature Club.</h3>
+                                        <h3 className="text-base sm:text-lg font-black tracking-tight text-gray-900 leading-none mb-1">Join The Signature Club.</h3>
                                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Unlock premium privileges</p>
                                     </div>
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed">Sign in to track orders, save your favorites, and experience our swiftest checkout flow.</p>
+                                <p className="text-sm text-gray-500 font-medium mb-6 sm:mb-8 leading-relaxed">Sign in to track orders, save your favorites, and experience our swiftest checkout flow.</p>
 
                                 {/* Native Branded Google Button */}
                                 <div className="flex justify-center min-h-[50px] mb-4">

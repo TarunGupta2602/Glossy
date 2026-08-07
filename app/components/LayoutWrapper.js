@@ -9,10 +9,19 @@ import AnnouncementBar from "./AnnouncementBar";
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
     const isAdmin = pathname?.startsWith("/admin");
+    const isProductPage = pathname?.startsWith("/product/");
+    const isShopPage = pathname?.startsWith("/shop");
 
     if (isAdmin) {
         return <>{children}</>;
     }
+
+    // Lift FAB above PDP sticky CTA / shop filter chip + iOS home indicator
+    const fabPosition = isProductPage
+        ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6"
+        : isShopPage
+            ? "bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
+            : "bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6";
 
     return (
         <>
@@ -25,17 +34,17 @@ export default function LayoutWrapper({ children }) {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fixed bottom-6 right-6 z-[9999] group"
+                className={`fixed z-[9999] group ${fabPosition}`}
                 aria-label="Chat on WhatsApp"
             >
-                <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                <span className="hidden md:block absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     Need help? Chat with us!
                 </span>
 
-                <div className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300">
+                <div className="relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300">
                     <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20"></span>
                     <svg
-                        className="w-8 h-8 text-white"
+                        className="w-7 h-7 sm:w-8 sm:h-8 text-white"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >

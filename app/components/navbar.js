@@ -43,15 +43,15 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-50/50 backdrop-blur-md bg-white/90 py-2.5 md:py-4">
-                <div className={`${SITE_CONTAINER} flex items-center justify-between`}>
+            <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-50/50 backdrop-blur-md bg-white/90 py-2 md:py-4">
+                <div className={`${SITE_CONTAINER} flex items-center justify-between gap-2`}>
                     {/* Left: Logo */}
-                    <div className="flex-shrink-0">
-                        <Link href="/" className="group block focus:outline-none">
+                    <div className="flex-shrink-0 min-w-0">
+                        <Link href="/" className="group block focus:outline-none" onClick={() => setIsMenuOpen(false)}>
                             {/* Universal Text Logo */}
-                            <div className="flex flex-col items-start leading-none pr-4">
-                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-wider text-[#E91E63] mb-1">THE</span>
-                                <span className="text-lg md:text-xl font-bold tracking-tight text-gray-900 uppercase">
+                            <div className="flex flex-col items-start leading-none pr-1 sm:pr-4">
+                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-wider text-[#E91E63] mb-0.5 md:mb-1">THE</span>
+                                <span className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-gray-900 uppercase whitespace-nowrap">
                                     LUXE <span className="font-light text-gray-500">JEWELS</span>
                                 </span>
                             </div>
@@ -108,32 +108,32 @@ export default function Navbar() {
                     </div>
 
                     {/* Right: Actions */}
-                    <div className="flex items-center space-x-3 md:space-x-5">
+                    <div className="flex items-center gap-1.5 sm:gap-3 md:gap-5 flex-shrink-0">
                         {/* Search Bar */}
                         <div className="flex items-center">
                             <div className={`
                                 flex items-center transition-all duration-300 overflow-hidden
                                 ${isSearchOpen
-                                    ? "fixed inset-x-0 top-0 h-[72px] bg-white px-4 z-[60] md:relative md:inset-auto md:h-auto md:w-48 lg:w-64 md:opacity-100 md:bg-transparent"
+                                    ? "fixed inset-x-0 top-0 h-[64px] sm:h-[72px] bg-white px-3 sm:px-4 z-[60] shadow-sm md:relative md:inset-auto md:h-auto md:w-48 lg:w-64 md:opacity-100 md:bg-transparent md:shadow-none"
                                     : "w-0 opacity-0 md:w-0"
                                 }
                             `}>
-                                <div className={`${SITE_CONTAINER} flex items-center w-full gap-3`}>
+                                <div className={`${SITE_CONTAINER} flex items-center w-full gap-2 sm:gap-3`}>
                                     <input
                                         type="text"
                                         placeholder="Search jewellery..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onKeyDown={handleSearch}
-                                        className="flex-1 bg-gray-50 border border-gray-100 rounded-full py-2.5 md:py-1.5 px-5 md:px-4 text-sm focus:outline-none focus:border-[#E91E63] text-gray-800"
+                                        className="flex-1 min-w-0 bg-gray-50 border border-gray-100 rounded-full py-2.5 md:py-1.5 px-4 md:px-4 text-base md:text-sm focus:outline-none focus:border-[#E91E63] text-gray-800"
                                         autoFocus={isSearchOpen}
                                     />
                                     {isSearchOpen && (
                                         <button
                                             onClick={() => setIsSearchOpen(false)}
-                                            className="md:hidden p-2 text-gray-400 hover:text-gray-900"
+                                            className="md:hidden p-2 text-gray-400 hover:text-gray-900 flex-shrink-0"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
                                         </button>
                                     )}
                                 </div>
@@ -141,11 +141,11 @@ export default function Navbar() {
 
                             {!isSearchOpen && (
                                 <button
-                                    className="text-gray-800 hover:text-[#E91E63] transition-colors p-1"
+                                    className="text-gray-800 hover:text-[#E91E63] transition-colors p-1.5"
                                     aria-label="Search"
                                     onClick={() => setIsSearchOpen(true)}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
@@ -153,8 +153,8 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        {/* Authentication Section */}
-                        <div className="relative flex items-center">
+                        {/* Authentication Section — hidden on small phones; available in mobile menu */}
+                        <div className="relative hidden sm:flex items-center">
                             {user ? (
                                 <div className="relative leading-none">
                                     <button
@@ -162,7 +162,7 @@ export default function Navbar() {
                                         className="flex items-center gap-2 focus:outline-none group"
                                         aria-label="User menu"
                                     >
-                                        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-100 group-hover:border-[#E91E63] transition-colors">
+                                        <div className="relative w-7 h-7 md:w-8 md:h-8 rounded-full overflow-hidden border border-gray-100 group-hover:border-[#E91E63] transition-colors">
                                             <Image
                                                 src={profile?.avatar || user.user_metadata?.avatar_url || "/logo.png"}
                                                 alt={profile?.name || user.user_metadata?.full_name || "User"}
@@ -212,10 +212,10 @@ export default function Navbar() {
                                 <div className="relative leading-none">
                                     <button
                                         onClick={() => setIsLoginModalOpen(true)}
-                                        className="text-gray-800 hover:text-[#E91E63] transition-colors p-1"
+                                        className="text-gray-800 hover:text-[#E91E63] transition-colors p-1.5"
                                         aria-label="Sign in"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>
                                         </svg>
@@ -225,26 +225,26 @@ export default function Navbar() {
                         </div>
 
                         {/* Wishlist Icon with Badge */}
-                        <Link href="/wishlist" className="relative text-gray-800 hover:text-[#E91E63] transition-colors" aria-label="Wishlist">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <Link href="/wishlist" className="relative text-gray-800 hover:text-[#E91E63] transition-colors p-1.5" aria-label="Wishlist">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                             </svg>
                             {wishlist.length > 0 && (
-                                <span className="absolute -top-1.5 -right-2 bg-gray-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110 shadow-sm">
+                                <span className="absolute top-0 right-0 bg-gray-900 text-white text-[9px] font-bold px-1 py-0.5 rounded-full min-w-[16px] text-center transition-all duration-300 shadow-sm">
                                     {wishlist.length}
                                 </span>
                             )}
                         </Link>
 
                         {/* Bag Icon with Badge */}
-                        <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors" aria-label="Shopping bag">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors p-1.5" aria-label="Shopping bag">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
                                 <line x1="3" y1="6" x2="21" y2="6"></line>
                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
                             </svg>
                             {cartCount > 0 && (
-                                <span className="absolute -top-1.5 -right-2 bg-gray-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center transition-all duration-300 transform scale-110 shadow-sm">
+                                <span className="absolute top-0 right-0 bg-gray-900 text-white text-[9px] font-bold px-1 py-0.5 rounded-full min-w-[16px] text-center transition-all duration-300 shadow-sm">
                                     {cartCount}
                                 </span>
                             )}
@@ -252,11 +252,12 @@ export default function Navbar() {
 
                         {/* Mobile Menu Button */}
                         <button
-                            className="md:hidden text-gray-800 hover:text-gray-500 transition-colors"
+                            className="md:hidden text-gray-800 hover:text-gray-500 transition-colors p-1.5 -mr-1"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             aria-label="Toggle menu"
+                            aria-expanded={isMenuOpen}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 {isMenuOpen ? (
                                     <>
                                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -276,60 +277,69 @@ export default function Navbar() {
 
                 {/* Mobile Navigation Menu */}
                 {isMenuOpen && (
-                    <div className="md:hidden mt-2 pb-4 bg-white border-t border-gray-50 flex flex-col items-center divide-y divide-gray-50">
-                        <Link href="/collection" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Collections
-                        </Link>
-                        {categories.slice(0, 6).map((cat) => (
-                            <Link key={cat.id} href={getCategoryHref(cat)} className="w-full text-center text-xs font-medium text-gray-500 hover:text-[#E91E63] transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-                                {cat.name}
+                    <div className="md:hidden border-t border-gray-100 bg-white max-h-[min(70vh,520px)] overflow-y-auto overscroll-contain">
+                        <div className={`${SITE_CONTAINER} flex flex-col py-2`}>
+                            <Link href="/collection" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Collections
                             </Link>
-                        ))}
-                        <Link href="/shop" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Shop All
-                        </Link>
-                        <Link href="/wishlist" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            My Wishlist
-                            {wishlist.length > 0 && <span className="ml-2 bg-gray-900 text-white px-2 py-0.5 rounded-full text-[9px]">{wishlist.length}</span>}
-                        </Link>
-                        <Link href="/earrings" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Earrings
-                        </Link>
-                        <Link href="/necklaces" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Necklaces
-                        </Link>
-                        <Link href="/blog" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Blog
-                        </Link>
-                        <Link href="/our-story" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                            Our Story
-                        </Link>
-                        {user ? (
-                            <div className="w-full flex flex-col items-center">
-                                <Link href="/profile" className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4" onClick={() => setIsMenuOpen(false)}>
-                                    My Profile
-                                </Link>
+                            <Link href="/shop" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Shop All
+                            </Link>
+                            {categories.length > 0 && (
+                                <div className="py-3 border-b border-gray-50">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Categories</p>
+                                    <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                                        {categories.slice(0, 8).map((cat) => (
+                                            <Link key={cat.id} href={getCategoryHref(cat)} className="text-left text-sm font-medium text-gray-600 hover:text-[#E91E63] transition-colors py-2 truncate" onClick={() => setIsMenuOpen(false)}>
+                                                {cat.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <Link href="/earrings" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Earrings
+                            </Link>
+                            <Link href="/necklaces" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Necklaces
+                            </Link>
+                            <Link href="/wishlist" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Wishlist
+                                {wishlist.length > 0 && <span className="ml-2 bg-gray-900 text-white px-2 py-0.5 rounded-full text-[9px]">{wishlist.length}</span>}
+                            </Link>
+                            <Link href="/blog" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Blog
+                            </Link>
+                            <Link href="/our-story" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                Our Story
+                            </Link>
+                            {user ? (
+                                <>
+                                    <Link href="/profile" className="text-left text-sm font-semibold text-gray-900 hover:text-[#E91E63] transition-colors py-3.5 border-b border-gray-50" onClick={() => setIsMenuOpen(false)}>
+                                        My Profile
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            signOut();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="text-left text-sm font-semibold text-gray-500 hover:text-[#E91E63] transition-colors py-3.5"
+                                    >
+                                        Sign Out
+                                    </button>
+                                </>
+                            ) : (
                                 <button
                                     onClick={() => {
-                                        signOut();
+                                        setIsLoginModalOpen(true);
                                         setIsMenuOpen(false);
                                     }}
-                                    className="w-full text-center text-xs font-semibold text-gray-500 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4"
+                                    className="mt-2 mb-2 w-full text-center text-sm font-bold text-white bg-[#E91E63] hover:bg-[#C2185B] transition-colors uppercase tracking-widest py-3.5 rounded-xl"
                                 >
-                                    Sign Out
+                                    Sign In
                                 </button>
-                            </div>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    setIsLoginModalOpen(true);
-                                    setIsMenuOpen(false);
-                                }}
-                                className="w-full text-center text-xs font-semibold text-gray-800 hover:text-[#E91E63] transition-colors uppercase tracking-widest py-4"
-                            >
-                                Sign In
-                            </button>
-                        )}
+                            )}
+                        </div>
                     </div>
                 )}
 

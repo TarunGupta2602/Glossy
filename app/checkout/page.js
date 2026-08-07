@@ -227,15 +227,15 @@ export default function CheckoutPage() {
     if (!isInitialized || !user) {
         return (
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-                <div className="max-w-md w-full bg-white rounded-[40px] p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
-                    <div className="flex flex-col items-center leading-none mb-8">
+                <div className="max-w-md w-full bg-white rounded-3xl md:rounded-[40px] p-6 sm:p-10 md:p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
+                    <div className="flex flex-col items-center leading-none mb-6 md:mb-8">
                         <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
-                        <span className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                        <span className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 uppercase">
                             LUXE <span className="font-light text-gray-500">JEWELS</span>
                         </span>
                     </div>
-                    <h1 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Your Signature Awaits.</h1>
-                    <p className="text-gray-400 mb-10 text-sm leading-relaxed px-4">Log in to complete your acquisition and track your order every step of the way.</p>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">Your Signature Awaits.</h1>
+                    <p className="text-gray-400 mb-8 md:mb-10 text-sm leading-relaxed px-2 sm:px-4">Log in to complete your acquisition and track your order every step of the way.</p>
 
                     {/* Native Branded Google Button */}
                     <div className="flex justify-center min-h-[50px]">
@@ -271,22 +271,22 @@ export default function CheckoutPage() {
 
     return (
         <div className="bg-gray-50 min-h-screen">
-            <div className={`${SITE_CONTAINER} py-16`}>
+            <div className={`${SITE_CONTAINER} py-8 md:py-16`}>
                 <CheckoutSteps current={2} />
-                <h1 className="text-[32px] font-black tracking-tight text-gray-900 mb-4">Secure Checkout</h1>
+                <h1 className="text-2xl md:text-[32px] font-black tracking-tight text-gray-900 mb-4">Secure Checkout</h1>
 
-                <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-blue-900">
+                <div className="mb-6 md:mb-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                    <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-blue-900">
                         Pay securely with <span className="font-bold">UPI, cards, or net banking</span> via Razorpay. We do not offer cash on delivery.
                     </div>
-                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-amber-900">
                         Estimated delivery: <span className="font-bold">3–5 business days</span> across India after dispatch.
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-start">
                     {/* Left: Information Forms */}
-                    <div className="bg-white rounded-3xl p-8 shadow-sm space-y-8">
+                    <div className="bg-white rounded-2xl md:rounded-3xl p-5 sm:p-8 shadow-sm space-y-6 md:space-y-8">
                         <div>
                             <h2 className="text-xl font-bold mb-6 flex items-center gap-3">
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#E91E63] text-white text-sm">1</span>
@@ -406,8 +406,8 @@ export default function CheckoutPage() {
 
                     {/* Right: Order Details */}
                     <div className="space-y-6">
-                        <div className="bg-white rounded-3xl p-8 shadow-sm">
-                            <h2 className="text-xl font-bold mb-6">Your Order</h2>
+                        <div className="bg-white rounded-2xl md:rounded-3xl p-5 sm:p-8 shadow-sm">
+                            <h2 className="text-lg md:text-xl font-bold mb-5 md:mb-6">Your Order</h2>
                             <div className="space-y-6">
                                 {checkoutItems.map((item) => (
                                     <div key={`${item.id}-${item.isFreeGift ? 'free' : 'cart'}-${item.freeGiftSet || 0}`} className="flex gap-4">

@@ -97,7 +97,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
         : "/shop";
 
     return (
-        <div className="bg-white min-h-screen pb-28 lg:pb-20">
+        <div className="bg-white min-h-screen pb-[calc(7rem+env(safe-area-inset-bottom,0px))] lg:pb-20">
             <div className="mx-auto w-full max-w-[1360px] px-4 sm:px-6 md:px-8 lg:px-10 py-10 pb-20">
                 
                 {/* Breadcrumb */}
@@ -412,7 +412,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
             </div>
 
             {/* Mobile sticky add-to-bag bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-100 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
                 <div className="flex-shrink-0">
                     <p className="text-lg font-black text-gray-900">₹{price}</p>
                     {hasDiscount && (

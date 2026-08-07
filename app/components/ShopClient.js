@@ -58,7 +58,7 @@ export default function ShopClient({
 
     return (
         <div className="flex flex-col md:flex-row gap-8 lg:gap-10 relative">
-            <div className="md:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[90]">
+            <div className="md:hidden fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-[90]">
                 <button
                     onClick={() => setIsSidebarOpen(true)}
                     className="flex items-center gap-2 bg-gray-950 text-white pl-5 pr-6 py-3 rounded-full text-[12px] font-bold tracking-tight shadow-2xl shadow-black/20 active:scale-95 transition-all border border-white/10"

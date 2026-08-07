@@ -15,12 +15,12 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="relative bg-gradient-to-b from-white via-[#fffafa] to-[#f9f9fb] border-t border-gray-100/50 pt-24 pb-12 overflow-hidden">
+        <footer className="relative bg-gradient-to-b from-white via-[#fffafa] to-[#f9f9fb] border-t border-gray-100/50 pt-14 md:pt-24 pb-10 md:pb-12 overflow-hidden">
             {/* Decorative element */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1480px] h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
             <div className={SITE_CONTAINER}>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-20 border-b border-gray-100">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 pb-12 md:pb-20 border-b border-gray-100">
 
                     {/* Brand Identity Section */}
                     <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
@@ -64,8 +64,8 @@ export default function Footer() {
 
                         {/* Shop Section */}
                         <div className="flex flex-col items-center md:items-start">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Shop</h3>
-                            <ul className="flex flex-col gap-4 text-sm font-bold text-gray-600 group-links">
+                            <h3 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-5 md:mb-8">Shop</h3>
+                            <ul className="flex flex-col gap-3 md:gap-4 text-sm font-bold text-gray-600 group-links">
                                 <li><Link href="/shop" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Shop All</Link></li>
                                 <li><Link href="/earrings" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Earrings</Link></li>
                                 <li><Link href="/necklaces" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Necklaces</Link></li>
@@ -75,8 +75,8 @@ export default function Footer() {
 
                         {/* Experience Section */}
                         <div className="flex flex-col items-center md:items-start">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Experience</h3>
-                            <ul className="flex flex-col gap-4 text-sm font-bold text-gray-600">
+                            <h3 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-5 md:mb-8">Experience</h3>
+                            <ul className="flex flex-col gap-3 md:gap-4 text-sm font-bold text-gray-600">
                                 <li><Link href="/our-story" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Our Story</Link></li>
                                 <li><Link href="/shipping-returns" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Shipping Policy</Link></li>
                                 <li><Link href="/contact" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Contact Us</Link></li>
@@ -85,8 +85,8 @@ export default function Footer() {
                         </div>
 
                         {/* Connection Section */}
-                        <div className="flex flex-col items-center md:items-start col-span-2 lg:col-span-1 border-t md:border-t-0 pt-10 md:pt-0 border-gray-100">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Connect</h3>
+                        <div className="flex flex-col items-center md:items-start col-span-2 lg:col-span-1 border-t md:border-t-0 pt-8 md:pt-0 border-gray-100">
+                            <h3 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-5 md:mb-8">Connect</h3>
                             <p className="text-gray-600 text-sm font-medium mb-6 text-center md:text-left">
                                 Join our community on Instagram for styling tips and exclusive updates.
                             </p>

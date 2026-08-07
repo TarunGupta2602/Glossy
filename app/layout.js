@@ -47,6 +47,12 @@ function buildSiteVerification() {
     return verification;
 }
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata = {
   metadataBase: new URL(BRAND_URL),
   title: {

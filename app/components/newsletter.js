@@ -63,21 +63,21 @@ export default function Newsletter() {
 
                 <form
                     onSubmit={handleSubmit}
-                    className="flex items-center justify-center gap-3 max-w-xl mx-auto"
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-xl mx-auto"
                 >
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="flex-1 px-5 py-3 rounded-xl border border-gray-200 bg-[#f7f7f7]"
+                        className="w-full flex-1 px-5 py-3.5 sm:py-3 rounded-xl border border-gray-200 bg-[#f7f7f7] text-base"
                         required
                     />
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-3 rounded-xl bg-[#0f172a] text-white font-semibold disabled:opacity-50"
+                        className="w-full sm:w-auto px-6 py-3.5 sm:py-3 rounded-xl bg-[#0f172a] text-white font-semibold disabled:opacity-50"
                     >
                         {loading ? "Joining..." : "Join"}
                     </button>

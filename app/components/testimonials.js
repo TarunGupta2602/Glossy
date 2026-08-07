@@ -9,11 +9,11 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
     return (
         <section className="py-12 md:py-16 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
             <div className={HOME_CONTAINER}>
-                <div className="text-center mb-10 md:mb-12">
+                <div className="text-center mb-8 md:mb-12">
                     <span className="text-[11px] font-black tracking-wider text-[#E91E63] uppercase mb-3 block">
                         VERIFIED REVIEWS
                     </span>
-                    <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-3 md:mb-4">
                         What Our Community Says
                     </h2>
                     {reviewStats?.count > 0 && (

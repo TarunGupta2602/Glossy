@@ -9,19 +9,19 @@ export default async function InstagramFeed() {
     const usingLiveFeed = Boolean(posts?.length);
 
     return (
-        <section className="py-20 bg-gradient-to-b from-white to-pink-50/40 border-t border-gray-100">
+        <section className="py-12 md:py-20 bg-gradient-to-b from-white to-pink-50/40 border-t border-gray-100">
             <div className={`${HOME_CONTAINER} text-center`}>
                 <p className="text-[10px] font-black uppercase tracking-wider text-[#E91E63] mb-3">
                     {INSTAGRAM_HANDLE}
                 </p>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 tracking-tight">
                     Follow Our Jewellery Journey
                 </h2>
-                <p className="text-gray-600 max-w-xl mx-auto mb-10">
+                <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto mb-8 md:mb-10">
                     Styling tips, new drops, and behind-the-scenes from The Luxe Jewels on Instagram.
                 </p>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-8 md:mb-10">
                     {usingLiveFeed
                         ? posts.map((post, i) => (
                               <a
