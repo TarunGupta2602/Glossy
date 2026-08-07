@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
@@ -37,6 +37,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
     const [addedToBag, setAddedToBag] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
+    const touchStartX = useRef(null);
 
     useEffect(() => {
         trackViewItem({
@@ -92,6 +93,23 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
         setZoomOrigin({ x, y });
     };
 
+    const handleGalleryTouchStart = (e) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleGalleryTouchEnd = (e) => {
+        if (touchStartX.current == null || allImages.length < 2) return;
+        const dx = e.changedTouches[0].clientX - touchStartX.current;
+        if (Math.abs(dx) > 40) {
+            if (dx < 0) {
+                setActiveIdx((i) => Math.min(allImages.length - 1, i + 1));
+            } else {
+                setActiveIdx((i) => Math.max(0, i - 1));
+            }
+        }
+        touchStartX.current = null;
+    };
+
     const categoryHref = product.categories?.slug
         ? getCategoryHref(product.categories)
         : "/shop";
@@ -145,7 +163,12 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             />
                         </div>
 
-                        <div className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] lg:hidden" style={{ aspectRatio: "1/1" }}>
+                        <div
+                            className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] lg:hidden touch-pan-y"
+                            style={{ aspectRatio: "1/1" }}
+                            onTouchStart={handleGalleryTouchStart}
+                            onTouchEnd={handleGalleryTouchEnd}
+                        >
                             <Image
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
@@ -155,17 +178,32 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 quality={80}
                                 placeholder="blur"
                                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
-                                className="object-cover"
+                                className="object-cover pointer-events-none"
+                                draggable={false}
                             />
+                            {allImages.length > 1 && (
+                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                    {allImages.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => setActiveIdx(idx)}
+                                            aria-label={`View image ${idx + 1}`}
+                                            className={`h-1.5 rounded-full transition-all ${activeIdx === idx ? "w-5 bg-white" : "w-1.5 bg-white/50"}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
-                        {/* Thumbnail Strip — Show all images including main one as thumbnails */}
-                        <div className="grid grid-cols-5 gap-2 mt-3">
-                            {allImages.slice(0, 5).map((img, idx) => (
+                        {/* Thumbnail strip — scrollable on mobile when many images */}
+                        <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1 -mx-0.5 px-0.5">
+                            {allImages.map((img, idx) => (
                                 <button
                                     key={idx}
+                                    type="button"
                                     onClick={() => setActiveIdx(idx)}
-                                    className={`relative w-full rounded-lg overflow-hidden bg-[#F2F2F2] transition-all duration-200 ${activeIdx === idx
+                                    className={`relative flex-shrink-0 w-[18%] min-w-[56px] max-w-[72px] rounded-lg overflow-hidden bg-[#F2F2F2] transition-all duration-200 ${activeIdx === idx
                                         ? "ring-2 ring-[#E91E63] ring-offset-1"
                                         : "opacity-60 hover:opacity-100"
                                         }`}
@@ -175,7 +213,7 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         src={img}
                                         alt={`${product.name} - Thumbnail ${idx + 1}`}
                                         fill
-                                        sizes="10vw"
+                                        sizes="72px"
                                         quality={60}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
@@ -242,13 +280,12 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                             ))}
                         </ul>
 
-                        {/* Quantity + Add to Bag */}
-                        <div className="flex items-stretch gap-3 h-[50px]">
-                            {/* Qty Selector */}
+                        {/* Quantity + Add to Bag — desktop / tablet; mobile uses sticky bar */}
+                        <div className="hidden lg:flex items-stretch gap-3 h-[50px]">
                             <div className="relative flex-shrink-0">
                                 <select
                                     value={qty}
-                                    onChange={(e) => setQty(parseInt(e.target.value))}
+                                    onChange={(e) => setQty(parseInt(e.target.value, 10))}
                                     className="h-full w-[80px] appearance-none border border-gray-200 rounded-xl pl-4 pr-7 text-[14px] font-semibold text-gray-800 bg-white focus:outline-none focus:border-[#E91E63] cursor-pointer"
                                 >
                                     {[1, 2, 3, 4, 5].map((n) => (
@@ -260,7 +297,6 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 </svg>
                             </div>
 
-                            {/* Add new to Bag CTA */}
                             <button
                                 onClick={handleAddToBag}
                                 className={`flex-1 rounded-xl text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300 active:scale-[0.98] ${addedToBag
@@ -412,11 +448,26 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
             </div>
 
             {/* Mobile sticky add-to-bag bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-100 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-                <div className="flex-shrink-0">
-                    <p className="text-lg font-black text-gray-900">₹{price}</p>
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-100 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center gap-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+                <div className="relative flex-shrink-0">
+                    <select
+                        value={qty}
+                        onChange={(e) => setQty(parseInt(e.target.value, 10))}
+                        aria-label="Quantity"
+                        className="h-12 w-14 appearance-none border border-gray-200 rounded-xl pl-3 pr-6 text-sm font-semibold text-gray-800 bg-white focus:outline-none focus:border-[#E91E63]"
+                    >
+                        {[1, 2, 3, 4, 5].map((n) => (
+                            <option key={n} value={n}>{n}</option>
+                        ))}
+                    </select>
+                    <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div className="flex-shrink-0 min-w-0">
+                    <p className="text-base font-black text-gray-900 leading-none">₹{price}</p>
                     {hasDiscount && (
-                        <p className="text-xs text-gray-400 line-through">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                        <p className="text-[10px] text-gray-400 line-through mt-0.5">₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                     )}
                 </div>
                 <button

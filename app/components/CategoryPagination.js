@@ -47,7 +47,7 @@ export default function CategoryPagination({ basePath, page, totalPages, queryPa
                         href={buildPageUrl(basePath, page - 1, queryParams)}
                         aria-disabled={page === 1}
                         tabIndex={page === 1 ? -1 : 0}
-                        className={`rounded-full px-3 py-2 text-xs sm:text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
+                        className={`min-h-11 inline-flex items-center rounded-full px-3.5 py-2 text-xs sm:text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
                     >
                         Prev
                     </Link>
@@ -66,7 +66,7 @@ export default function CategoryPagination({ basePath, page, totalPages, queryPa
                             <Link
                                 href={buildPageUrl(basePath, pageNum, queryParams)}
                                 aria-current={pageNum === page ? "page" : undefined}
-                                className={`min-w-[2.25rem] h-9 flex items-center justify-center rounded-full px-2.5 text-xs sm:text-sm font-semibold transition-colors duration-200 ${pageNum === page ? "bg-[#E91E63] text-white shadow" : "text-[#E91E63] hover:bg-pink-50"}`}
+                                className={`min-w-11 min-h-11 flex items-center justify-center rounded-full px-2.5 text-xs sm:text-sm font-semibold transition-colors duration-200 ${pageNum === page ? "bg-[#E91E63] text-white shadow" : "text-[#E91E63] hover:bg-pink-50"}`}
                             >
                                 {pageNum}
                             </Link>
@@ -78,7 +78,7 @@ export default function CategoryPagination({ basePath, page, totalPages, queryPa
                         href={buildPageUrl(basePath, page + 1, queryParams)}
                         aria-disabled={page === totalPages}
                         tabIndex={page === totalPages ? -1 : 0}
-                        className={`rounded-full px-3 py-2 text-xs sm:text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
+                        className={`min-h-11 inline-flex items-center rounded-full px-3.5 py-2 text-xs sm:text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
                     >
                         Next
                     </Link>

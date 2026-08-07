@@ -2,26 +2,31 @@
 
 import { usePathname } from "next/navigation";
 import { WHATSAPP_URL } from "@/lib/constants";
+import { useOverlay } from "../context/OverlayContext";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import AnnouncementBar from "./AnnouncementBar";
 
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
+    const { isOverlayOpen } = useOverlay();
     const isAdmin = pathname?.startsWith("/admin");
     const isProductPage = pathname?.startsWith("/product/");
     const isShopPage = pathname?.startsWith("/shop");
+    const isBlogPost = pathname?.startsWith("/blog/") && pathname !== "/blog";
 
     if (isAdmin) {
         return <>{children}</>;
     }
 
-    // Lift FAB above PDP sticky CTA / shop filter chip + iOS home indicator
+    // Lift FAB above PDP sticky CTA / shop filter chip / blog share bar + iOS home indicator
     const fabPosition = isProductPage
         ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6"
         : isShopPage
             ? "bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
-            : "bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6";
+            : isBlogPost
+                ? "bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
+                : "bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6";
 
     return (
         <>
@@ -34,8 +39,10 @@ export default function LayoutWrapper({ children }) {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`fixed z-[9999] group ${fabPosition}`}
+                className={`fixed z-40 group transition-opacity duration-200 ${fabPosition} ${isOverlayOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
                 aria-label="Chat on WhatsApp"
+                aria-hidden={isOverlayOpen}
+                tabIndex={isOverlayOpen ? -1 : 0}
             >
                 <span className="hidden md:block absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     Need help? Chat with us!

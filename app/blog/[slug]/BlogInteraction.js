@@ -20,7 +20,8 @@ export function ShareButtons({ title }) {
     return (
         <div className="flex items-center gap-2">
             <button
-                className="p-2 rounded-full border border-slate-200 text-slate-500 hover:text-pink-600 hover:border-pink-200 transition-all"
+                type="button"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-pink-600 hover:border-pink-200 transition-all"
                 title="Share on Twitter"
                 onClick={shareTwitter}
             >
@@ -29,7 +30,8 @@ export function ShareButtons({ title }) {
                 </svg>
             </button>
             <button
-                className="p-2 rounded-full border border-slate-200 text-slate-500 hover:text-pink-600 hover:border-pink-200 transition-all"
+                type="button"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-pink-600 hover:border-pink-200 transition-all"
                 title="Share on WhatsApp"
                 onClick={shareWhatsApp}
             >
@@ -61,16 +63,17 @@ export function MobileStickyCTA({ title }) {
     };
 
     return (
-        <div className="lg:hidden sticky bottom-6 left-0 right-0 px-4 z-50 pointer-events-none">
+        <div className="lg:hidden fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-0 right-16 z-40 px-4 pointer-events-none">
             <div className="max-w-md mx-auto pointer-events-auto">
-                <div className="flex items-center justify-center gap-4 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full p-2 shadow-2xl">
-                    <a href="/blog" className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold uppercase tracking-widest text-slate-900">
+                <div className="flex items-center justify-center gap-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-full p-1.5 shadow-2xl">
+                    <a href="/blog" className="flex-1 flex items-center justify-center gap-2 min-h-11 py-2 text-xs font-bold uppercase tracking-widest text-slate-900">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                         Back
                     </a>
                     <div className="w-px h-4 bg-slate-200"></div>
                     <button
-                        className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold uppercase tracking-widest text-pink-600"
+                        type="button"
+                        className="flex-1 flex items-center justify-center gap-2 min-h-11 py-2 text-xs font-bold uppercase tracking-widest text-pink-600"
                         onClick={handleShare}
                     >
                         Share

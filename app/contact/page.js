@@ -24,11 +24,11 @@ export const metadata = {
 
 export default function ContactPage() {
     return (
-        <section className="bg-white py-20 px-6">
+        <section className="bg-white py-12 md:py-20 px-4 sm:px-6">
             <div className="max-w-3xl mx-auto">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
-                    <p className="text-gray-600">We&apos;re here to help with any questions about your order or our jewellery.</p>
+                <div className="text-center mb-8 md:mb-12">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Get in Touch</h1>
+                    <p className="text-sm md:text-base text-gray-600">We&apos;re here to help with any questions about your order or our jewellery.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">

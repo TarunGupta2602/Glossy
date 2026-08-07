@@ -41,7 +41,7 @@ export default function LegalPageLayout({ title, description, lastUpdated = "Mar
                     )}
                 </header>
 
-                <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 md:p-10 space-y-8">
+                <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-8 md:p-10 space-y-8">
                     {children}
                 </article>
 

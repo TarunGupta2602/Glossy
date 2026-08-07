@@ -10,9 +10,13 @@ import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import LoginModal from "./LoginModal";
 import { getCategoryHref } from "@/lib/categoryLanding";
+import { useOverlayOpen } from "../context/OverlayContext";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    useOverlayOpen(isMenuOpen);
+    useBodyScrollLock(isMenuOpen);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -141,7 +145,7 @@ export default function Navbar() {
 
                             {!isSearchOpen && (
                                 <button
-                                    className="text-gray-800 hover:text-[#E91E63] transition-colors p-1.5"
+                                    className="text-gray-800 hover:text-[#E91E63] transition-colors min-w-11 min-h-11 inline-flex items-center justify-center"
                                     aria-label="Search"
                                     onClick={() => setIsSearchOpen(true)}
                                 >
@@ -225,7 +229,7 @@ export default function Navbar() {
                         </div>
 
                         {/* Wishlist Icon with Badge */}
-                        <Link href="/wishlist" className="relative text-gray-800 hover:text-[#E91E63] transition-colors p-1.5" aria-label="Wishlist">
+                        <Link href="/wishlist" className="relative text-gray-800 hover:text-[#E91E63] transition-colors min-w-11 min-h-11 inline-flex items-center justify-center" aria-label="Wishlist">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                             </svg>
@@ -237,7 +241,7 @@ export default function Navbar() {
                         </Link>
 
                         {/* Bag Icon with Badge */}
-                        <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors p-1.5" aria-label="Shopping bag">
+                        <Link href="/cart" className="relative text-gray-800 hover:text-[#E91E63] transition-colors min-w-11 min-h-11 inline-flex items-center justify-center" aria-label="Shopping bag">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-[22px] md:h-[22px]">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
                                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -252,7 +256,7 @@ export default function Navbar() {
 
                         {/* Mobile Menu Button */}
                         <button
-                            className="md:hidden text-gray-800 hover:text-gray-500 transition-colors p-1.5 -mr-1"
+                            className="md:hidden text-gray-800 hover:text-gray-500 transition-colors min-w-11 min-h-11 inline-flex items-center justify-center -mr-1"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             aria-label="Toggle menu"
                             aria-expanded={isMenuOpen}

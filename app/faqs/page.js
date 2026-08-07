@@ -1,3 +1,4 @@
+import { SITE_CONTAINER } from "@/lib/siteLayout";
 import FaqAccordion from "../components/FaqAccordion";
 
 export const dynamic = "force-static";
@@ -59,14 +60,14 @@ export default function FAQsPage() {
     };
 
     return (
-        <section className="bg-white py-20 px-6">
+        <section className="bg-white py-12 md:py-20">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            <div className="max-w-3xl mx-auto">
-                <div className="text-center mb-12">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
+            <div className={`${SITE_CONTAINER} max-w-3xl`}>
+                <div className="text-center mb-8 md:mb-12">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
                         Frequently Asked Questions
                     </h1>
                     <p className="text-gray-500 text-sm">

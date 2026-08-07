@@ -89,16 +89,17 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                                 >
                                     Add to Bag
                                 </button>
-                                <div className="flex items-center justify-between px-1 mt-1">
+                                <div className="flex items-center justify-between gap-2 mt-1">
                                     <Link
                                         href={getProductPath(item)}
-                                        className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors"
+                                        className="min-h-11 inline-flex items-center px-1 text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-gray-900 transition-colors"
                                     >
                                         Details
                                     </Link>
                                     <button
+                                        type="button"
                                         onClick={() => removeFromWishlist(item.id)}
-                                        className="text-[9px] md:text-[10px] font-bold text-red-400 uppercase tracking-widest hover:text-red-600 transition-colors"
+                                        className="min-h-11 inline-flex items-center px-1 text-[11px] md:text-xs font-bold text-red-400 uppercase tracking-widest hover:text-red-600 transition-colors"
                                     >
                                         Remove
                                     </button>

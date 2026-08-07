@@ -25,12 +25,19 @@ export default function SearchClient({
     }, [query, totalCount]);
 
     return (
-        <div className={`${SITE_CONTAINER} py-12 lg:py-20`}>
-            <header className="mb-12">
-                <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-gray-900 mb-2">
-                    {query ? `Search results for "${query}"` : "Search results"}
+        <div className={`${SITE_CONTAINER} py-8 md:py-12 lg:py-20`}>
+            <header className="mb-8 md:mb-12">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-gray-900 mb-2 break-words">
+                    {query ? (
+                        <>
+                            Search results for{" "}
+                            <span className="text-[#E91E63]">&ldquo;{query}&rdquo;</span>
+                        </>
+                    ) : (
+                        "Search results"
+                    )}
                 </h1>
-                <p className="text-gray-500 font-medium">
+                <p className="text-sm md:text-base text-gray-500 font-medium">
                     {totalCount === 0
                         ? "We couldn't find any products matching your search."
                         : totalPages > 1
@@ -41,7 +48,7 @@ export default function SearchClient({
 
             {products.length > 0 ? (
                 <>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10">
                         {products.map((product) => (
                             <ProductCard
                                 key={product.id}

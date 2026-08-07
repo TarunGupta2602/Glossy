@@ -43,17 +43,17 @@ const TIMELINE = [
 
 export default function OurStoryPage() {
     return (
-        <section className="bg-white py-24">
+        <section className="bg-white py-12 md:py-24">
             <div className={`${SITE_CONTAINER} max-w-5xl`}>
-                <div className="text-center mb-16">
+                <div className="text-center mb-10 md:mb-16">
                     <p className="text-[10px] font-black uppercase tracking-wider text-[#E91E63] mb-3">Our Journey</p>
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Our Story</h1>
-                    <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                    <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6">Our Story</h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
                         Crafted with passion. Designed for timeless elegance.
                     </p>
                 </div>
 
-                <div className="relative aspect-[21/9] rounded-3xl overflow-hidden mb-16 shadow-lg">
+                <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-10 md:mb-16 shadow-lg">
                     <Image
                         src="/iloveimg-resized/hero3.png"
                         alt="The Luxe Jewels — handcrafted anti-tarnish jewellery"
@@ -62,10 +62,10 @@ export default function OurStoryPage() {
                         className="object-cover"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white max-w-md">
-                        <p className="text-sm font-bold uppercase tracking-wider text-pink-200 mb-2">The Luxe Jewels</p>
-                        <p className="text-xl md:text-2xl font-playfair font-bold leading-snug">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4 md:bottom-10 md:left-10 md:right-auto text-white max-w-md">
+                        <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-pink-200 mb-1 md:mb-2">The Luxe Jewels</p>
+                        <p className="text-lg md:text-2xl font-playfair font-bold leading-snug">
                             Jewellery that celebrates confidence, not compromise.
                         </p>
                     </div>

@@ -43,3 +43,8 @@
 .mb-safe {
   margin-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Approximate sticky offset under announcement + navbar */
+:root {
+  --site-header-offset: 5.25rem;
+}

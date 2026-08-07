@@ -7,7 +7,7 @@ export default function ExploreCollections({ categories }) {
 
     return (
         <section className="mt-12 md:mt-16 pt-10 md:pt-12 border-t border-gray-200/80">
-            <div className="flex items-end justify-between gap-4 mb-6 md:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-6 md:mb-8">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-px w-8 bg-[#E91E63]" />
@@ -24,7 +24,7 @@ export default function ExploreCollections({ categories }) {
                 </div>
                 <Link
                     href="/collection"
-                    className="group flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500 hover:text-[#E91E63] transition-colors whitespace-nowrap"
+                    className="group inline-flex items-center gap-2 self-start sm:self-auto min-h-11 text-[11px] font-bold uppercase tracking-wider text-gray-500 hover:text-[#E91E63] transition-colors"
                 >
                     View all
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:translate-x-0.5 transition-transform">

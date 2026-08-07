@@ -93,7 +93,7 @@ export default async function BlogPage({ searchParams }) {
                             href={`/blog?page=${page - 1}`}
                             aria-disabled={page === 1}
                             tabIndex={page === 1 ? -1 : 0}
-                            className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
+                            className={`min-h-11 inline-flex items-center rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200 ${page === 1 ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
                         >
                             Prev
                         </Link>
@@ -118,7 +118,7 @@ export default async function BlogPage({ searchParams }) {
                             href={`/blog?page=${page + 1}`}
                             aria-disabled={page === totalPages}
                             tabIndex={page === totalPages ? -1 : 0}
-                            className={`rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed" : "text-[#E91E63] hover:bg-pink-50"}`}
+                            className={`min-h-11 inline-flex items-center rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200 ${page === totalPages ? "text-gray-300 cursor-not-allowed pointer-events-none" : "text-[#E91E63] hover:bg-pink-50"}`}
                         >
                             Next
                         </Link>

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getInitials } from "@/lib/featuredReviews";
+import { useOverlayOpen } from "../context/OverlayContext";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 function StarRating({ rating, size = "md" }) {
     const sizeClass = size === "sm" ? "w-3.5 h-3.5" : size === "lg" ? "w-5 h-5" : "w-4 h-4";
@@ -30,6 +32,10 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
     const [lightboxImage, setLightboxImage] = useState(null);
     const [lightboxImages, setLightboxImages] = useState([]);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+    const touchStartX = useRef(null);
+
+    useOverlayOpen(Boolean(lightboxImage));
+    useBodyScrollLock(Boolean(lightboxImage));
 
     useEffect(() => {
         fetchReviews();
@@ -77,13 +83,11 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
         setLightboxImage(imageUrl);
         setLightboxImages(allImages);
         setLightboxIndex(index);
-        document.body.style.overflow = "hidden";
     };
 
     const closeLightbox = () => {
         setLightboxImage(null);
         setLightboxImages([]);
-        document.body.style.overflow = "auto";
     };
 
     const goToPrevious = () => {
@@ -310,15 +314,27 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
 
             {lightboxImage && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md"
                     onClick={closeLightbox}
+                    onTouchStart={(e) => {
+                        touchStartX.current = e.touches[0].clientX;
+                    }}
+                    onTouchEnd={(e) => {
+                        if (touchStartX.current == null || lightboxImages.length < 2) return;
+                        const dx = e.changedTouches[0].clientX - touchStartX.current;
+                        if (Math.abs(dx) > 40) {
+                            if (dx < 0) goToNext();
+                            else goToPrevious();
+                        }
+                        touchStartX.current = null;
+                    }}
                     role="dialog"
                     aria-modal="true"
                 >
                     <button
                         type="button"
                         onClick={closeLightbox}
-                        className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
+                        className="absolute top-[calc(1rem+env(safe-area-inset-top,0px))] right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                         aria-label="Close"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,7 +349,7 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
                                 e.stopPropagation();
                                 goToPrevious();
                             }}
-                            className="absolute left-4 md:left-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
+                            className="absolute left-3 md:left-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                             aria-label="Previous image"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -350,6 +366,7 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
                             src={lightboxImage}
                             alt="Review"
                             className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+                            draggable={false}
                         />
                         {lightboxImages.length > 1 && (
                             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white text-sm px-4 py-2 rounded-full backdrop-blur-sm">
@@ -365,7 +382,7 @@ export default function ReviewList({ productId, refreshKey = 0 }) {
                                 e.stopPropagation();
                                 goToNext();
                             }}
-                            className="absolute right-4 md:right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
+                            className="absolute right-3 md:right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10"
                             aria-label="Next image"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

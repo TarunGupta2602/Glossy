@@ -46,15 +46,6 @@ export default function ContactForm() {
 
     return (
         <>
-            <div className="text-center mb-12">
-                <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
-                    Contact Us
-                </h1>
-                <p className="text-gray-500 text-sm">
-                    Have a question about your order, shipping, or a custom piece? We’d love to hear from you.
-                </p>
-            </div>
-
             {success && (
                 <p className="text-green-600 text-center mb-6">
                     ✅ Message sent successfully!

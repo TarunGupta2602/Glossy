@@ -289,7 +289,7 @@ export default async function BlogDetailPage({ params }) {
                                 </span>
                             </div>
 
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-slate-900 leading-[1.1]" style={{ fontFamily: "var(--font-playfair)" }}>
+                            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-slate-900 leading-[1.15]" style={{ fontFamily: "var(--font-playfair)" }}>
                                 {blog.title}
                             </h1>
 
@@ -325,11 +325,11 @@ export default async function BlogDetailPage({ params }) {
                             </figure>
                         )}
 
-                        <article className="prose prose-slate prose-lg md:prose-xl max-w-none 
+                        <article className="prose prose-slate prose-base sm:prose-lg md:prose-xl max-w-none 
                             prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-900
-                            prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b prose-h2:border-pink-100
-                            prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:mt-8 prose-h3:mb-4
-                            prose-p:text-slate-600 prose-p:leading-relaxed md:prose-p:leading-loose prose-p:mb-8
+                            prose-h2:text-xl sm:prose-h2:text-2xl md:prose-h2:text-4xl prose-h2:mt-8 md:prose-h2:mt-12 prose-h2:mb-4 md:prose-h2:mb-6 prose-h2:pb-3 md:prose-h2:pb-4 prose-h2:border-b prose-h2:border-pink-100
+                            prose-h3:text-lg sm:prose-h3:text-xl md:prose-h3:text-3xl prose-h3:mt-6 md:prose-h3:mt-8 prose-h3:mb-3 md:prose-h3:mb-4
+                            prose-p:text-slate-600 prose-p:leading-relaxed md:prose-p:leading-loose prose-p:mb-6 md:prose-p:mb-8
                             prose-strong:text-slate-900 prose-strong:font-black prose-strong:text-pink-600/90
                             prose-a:text-pink-600 prose-a:font-black prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-8 prose-a:decoration-2 transition-all
                             prose-ul:list-disc prose-ul:pl-6 prose-li:mb-4 prose-li:text-slate-600
@@ -382,23 +382,47 @@ export default async function BlogDetailPage({ params }) {
                     <aside className="lg:col-span-4 space-y-10">
                         {/* Table of Contents */}
                         {tocItems.length > 0 && (
-                            <div className="sticky top-24 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm lg:block hidden">
-                                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-6 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-pink-500"></span>
-                                    Table of contents
-                                </h3>
-                                <nav className="space-y-4">
-                                    {tocItems.map((item) => (
-                                        <a
-                                            key={item.slug}
-                                            href={`#${item.slug}`}
-                                            className={`block text-sm font-medium transition-all hover:translate-x-1 ${item.depth === 2 ? 'text-slate-600 hover:text-pink-600' : 'text-slate-400 hover:text-pink-600 pl-4 border-l border-slate-100'}`}
-                                        >
-                                            {item.text}
-                                        </a>
-                                    ))}
-                                </nav>
-                            </div>
+                            <>
+                                <details className="lg:hidden bg-white rounded-2xl border border-slate-200 p-4 shadow-sm group">
+                                    <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-sm font-black uppercase tracking-[0.15em] text-slate-900">
+                                        <span className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                                            Contents
+                                        </span>
+                                        <svg className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </summary>
+                                    <nav className="mt-4 space-y-3">
+                                        {tocItems.map((item) => (
+                                            <a
+                                                key={item.slug}
+                                                href={`#${item.slug}`}
+                                                className={`block text-sm font-medium py-1 ${item.depth === 2 ? 'text-slate-600' : 'text-slate-400 pl-4 border-l border-slate-100'}`}
+                                            >
+                                                {item.text}
+                                            </a>
+                                        ))}
+                                    </nav>
+                                </details>
+                                <div className="sticky top-24 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm hidden lg:block">
+                                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-6 flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                                        Table of contents
+                                    </h3>
+                                    <nav className="space-y-4">
+                                        {tocItems.map((item) => (
+                                            <a
+                                                key={item.slug}
+                                                href={`#${item.slug}`}
+                                                className={`block text-sm font-medium transition-all hover:translate-x-1 ${item.depth === 2 ? 'text-slate-600 hover:text-pink-600' : 'text-slate-400 hover:text-pink-600 pl-4 border-l border-slate-100'}`}
+                                            >
+                                                {item.text}
+                                            </a>
+                                        ))}
+                                    </nav>
+                                </div>
+                            </>
                         )}
 
                         {/* Related Posts */}

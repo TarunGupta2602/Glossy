@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
+import { useOverlayOpen } from "../context/OverlayContext";
 
 const STATUS_LABELS = {
     processing: "Processing",
@@ -15,6 +18,19 @@ const STATUS_LABELS = {
 };
 
 export default function OrderModal({ order, onClose, getStatusColor, onCancelOrder, onReturnOrder }) {
+    const isOpen = Boolean(order);
+    useBodyScrollLock(isOpen);
+    useOverlayOpen(isOpen);
+
+    useEffect(() => {
+        if (!isOpen) return undefined;
+        const onKey = (e) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [isOpen, onClose]);
+
     if (!order) return null;
 
     const isEligibleForReturn = () => {
@@ -105,17 +121,17 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                     </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-gray-100 flex flex-wrap gap-3">
+                <div className="px-6 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] border-t border-gray-100 flex flex-wrap gap-3">
                     <Link
                         href={`/order/${order.id}/invoice`}
-                        className="flex-1 min-w-[140px] py-3 rounded-xl bg-gray-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors text-center"
+                        className="flex-1 min-w-[140px] min-h-11 py-3 rounded-xl bg-gray-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors text-center flex items-center justify-center"
                     >
                         View invoice
                     </Link>
                     {isProcessing && (
                         <button
                             onClick={() => onCancelOrder(order.id)}
-                            className="flex-1 min-w-[140px] py-3 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-colors"
+                            className="flex-1 min-w-[140px] min-h-11 py-3 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-colors"
                         >
                             Cancel order
                         </button>
@@ -123,7 +139,7 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
                     {isEligibleForReturn() && (
                         <button
                             onClick={() => onReturnOrder(order.id)}
-                            className="flex-1 min-w-[140px] py-3 rounded-xl border border-orange-200 text-orange-700 text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition-colors"
+                            className="flex-1 min-w-[140px] min-h-11 py-3 rounded-xl border border-orange-200 text-orange-700 text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition-colors"
                         >
                             Request return
                         </button>

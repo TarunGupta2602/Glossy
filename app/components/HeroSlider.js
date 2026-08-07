@@ -76,10 +76,11 @@ export default function HeroSlider() {
                             src={slide.image}
                             alt={slide.title}
                             fill
+                            // Only set priority on the first slide. Do not pass fetchPriority/loading —
+                            // Next/Image owns those and manual overrides cause SSR/client hydration mismatches.
                             priority={idx === 0}
                             sizes="100vw"
                             quality={75}
-                            loading={idx === 0 ? "eager" : "lazy"}
                             className="object-cover object-[center_30%] md:object-center"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10 md:bg-gradient-to-r md:from-black/40 md:via-black/10 md:to-transparent"></div>
