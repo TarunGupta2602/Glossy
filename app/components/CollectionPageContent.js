@@ -47,12 +47,14 @@ export default function CollectionPageContent({
                             )}
 
                             <div className={gridClass}>
-                                {products.map((product) => (
+                                {products.map((product, index) => (
                                     <ProductCard
                                         key={product.id}
                                         product={product}
                                         reviewCount={reviewCounts[product.id] || 0}
                                         hideCategory
+                                        priority={index < 4}
+                                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                     />
                                 ))}
                             </div>

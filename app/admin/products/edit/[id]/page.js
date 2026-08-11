@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
+import { getProductFormAutofill } from "@/lib/productDefaults";
 
 export default function EditProductPage({ params }) {
     const unwrappedParams = use(params);
@@ -38,6 +39,7 @@ export default function EditProductPage({ params }) {
 
     const [loading, setLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [createdAt, setCreatedAt] = useState(null);
 
     // 1. Handle Authentication Redirect
     useEffect(() => {
@@ -93,6 +95,7 @@ export default function EditProductPage({ params }) {
                 setStockCount(product.stock_count ?? "");
                 setWeight(product.weight || "");
                 setSizeInfo(product.size_info || "");
+                setCreatedAt(product.created_at || null);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -100,6 +103,52 @@ export default function EditProductPage({ params }) {
         }
 
         setLoading(false);
+    };
+
+    const handleAutofill = () => {
+        if (!name.trim() || !price) {
+            alert("Name and Price are required for autofill.");
+            return;
+        }
+        const categoryName = categories.find((c) => c.id === categoryId)?.name || "";
+        const { values, filled, kind } = getProductFormAutofill(
+            {
+                name,
+                price,
+                description,
+                material,
+                plating,
+                careInstructions,
+                weight,
+                sizeInfo,
+                stockCount,
+                originalPrice,
+                isBestseller,
+                isNew,
+                createdAt,
+            },
+            categoryName
+        );
+
+        if (!filled.length) {
+            alert("All detail fields already look filled.");
+            return;
+        }
+
+        if (values.originalPrice != null && !originalPrice) setOriginalPrice(values.originalPrice);
+        if (values.stockCount != null && stockCount === "") setStockCount(values.stockCount);
+        if (values.material && !material) setMaterial(values.material);
+        if (values.plating && !plating) setPlating(values.plating);
+        if (values.careInstructions && !careInstructions) setCareInstructions(values.careInstructions);
+        if (values.weight && !weight) setWeight(values.weight);
+        if (values.sizeInfo && !sizeInfo) setSizeInfo(values.sizeInfo);
+        if (values.description && !description.trim()) setDescription(values.description);
+        if (values.isNew === true) setIsNew(true);
+        if (values.isBestseller === true) setIsBestseller(true);
+
+        alert(
+            `Filled: ${filled.join(", ")}\n\nDetected type: ${kind}\nReview, then click Update Product.`
+        );
     };
 
     const handleDeleteGalleryImage = async (imgId) => {
@@ -252,7 +301,19 @@ export default function EditProductPage({ params }) {
                 </Link>
 
                 <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100 overflow-hidden">
-                    <h1 className="text-2xl font-bold mb-10 text-gray-900">Edit Product Listing</h1>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                        <h1 className="text-2xl font-bold text-gray-900">Edit Product Listing</h1>
+                        <button
+                            type="button"
+                            onClick={handleAutofill}
+                            className="px-4 py-2.5 text-sm font-bold rounded-xl border border-gray-200 bg-white text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63] transition-all"
+                        >
+                            Auto-fill empty fields
+                        </button>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-8">
+                        Fills only blank MRP, stock, material, plating, care, weight, and size from this product&apos;s name/category/price.
+                    </p>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Info Grid */}

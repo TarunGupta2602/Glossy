@@ -71,6 +71,9 @@ export const metadata = {
   },
   alternates: {
     canonical: "/",
+    types: {
+      "application/rss+xml": `${BRAND_URL}/feed.xml`,
+    },
   },
   openGraph: {
     title: "The Luxe Jewels | Premium Waterproof & Anti-Tarnish Jewellery",

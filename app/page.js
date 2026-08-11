@@ -5,6 +5,8 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { getCategoryHref } from "@/lib/categoryLanding";
+import SeoIntro from "./components/SeoIntro";
 
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />
@@ -136,12 +138,28 @@ export default async function Home() {
           key={cat.id}
           title={cat.name}
           products={cat.products}
-          viewAllLink={`/shop/${cat.slug}`}
+          viewAllLink={getCategoryHref(cat)}
           reviewCounts={reviewCounts}
         />
       ))}
 
       <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
+
+      <SeoIntro
+        title="Anti-tarnish jewellery made for everyday India"
+        links={[
+          { href: "/earrings", label: "Earrings" },
+          { href: "/necklaces", label: "Necklaces" },
+          { href: "/shop", label: "Shop All" },
+          { href: "/blog", label: "Journal" },
+        ]}
+      >
+        <p>
+          The Luxe Jewels crafts waterproof, hypoallergenic 18k gold plated jewellery for daily wear
+          and gifting — from statement earrings to layered necklaces that stay lustrous without
+          constant care.
+        </p>
+      </SeoIntro>
 
       <InstagramFeed />
 

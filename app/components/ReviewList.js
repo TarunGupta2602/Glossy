@@ -23,21 +23,31 @@ function StarRating({ rating, size = "md" }) {
     );
 }
 
-export default function ReviewList({ productId, refreshKey = 0 }) {
-    const [reviews, setReviews] = useState([]);
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
+export default function ReviewList({
+    productId,
+    refreshKey = 0,
+    initialReviews = null,
+    initialStats = null,
+}) {
+    const [reviews, setReviews] = useState(initialReviews || []);
+    const [stats, setStats] = useState(initialStats);
+    const [loading, setLoading] = useState(!initialReviews);
     const [error, setError] = useState("");
     const [showAllReviews, setShowAllReviews] = useState(false);
     const [lightboxImage, setLightboxImage] = useState(null);
     const [lightboxImages, setLightboxImages] = useState([]);
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const touchStartX = useRef(null);
+    const skipInitialFetch = useRef(Boolean(initialReviews) && refreshKey === 0);
 
     useOverlayOpen(Boolean(lightboxImage));
     useBodyScrollLock(Boolean(lightboxImage));
 
     useEffect(() => {
+        if (skipInitialFetch.current) {
+            skipInitialFetch.current = false;
+            return;
+        }
         fetchReviews();
     }, [productId, refreshKey]);
 

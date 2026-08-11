@@ -1,9 +1,9 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600;
 
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getDedicatedLandingPath } from "@/lib/categoryLanding";
 import { getBlogPageCount } from "@/lib/blogQueries";
+import { normalizeBlogSlug } from "@/lib/seo";
 
 const BASE_URL = "https://www.theluxejewels.in";
 
@@ -99,7 +99,7 @@ export default async function sitemap() {
     });
 
     const blogPages = (blogs || []).map((blog) => ({
-        url: `${BASE_URL}/blog/${blog.slug}`,
+        url: `${BASE_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
         lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
         changeFrequency: "monthly",
         priority: 0.7,

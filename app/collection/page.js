@@ -5,7 +5,7 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getCategoryHref } from "@/lib/categoryLanding";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata = {
     title: "Featured Jewellery Collections | Curated Luxury Jewellery India",
@@ -34,7 +34,7 @@ export default async function FeaturedCollections() {
 
     const { data: categories, error } = await supabase
         .from("categories")
-        .select("*")
+        .select("id, name, slug, image_url, description")
         .order("name", { ascending: true });
 
     if (error) {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { normalizeBlogSlug } from "@/lib/seo";
 
 function getBlogServiceClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -56,6 +57,9 @@ export async function PATCH(request, { params }) {
         const supabase = getBlogServiceClient();
         const { id } = await params;
         const body = await request.json();
+        if (body.slug) {
+            body.slug = normalizeBlogSlug(body.slug);
+        }
 
         const { data, error } = await supabase
             .from("blogs")

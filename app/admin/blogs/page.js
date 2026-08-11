@@ -6,12 +6,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
+import { normalizeBlogSlug } from "@/lib/seo";
 
 export default function AdminBlogsPage() {
     const { user, profile, loading: authLoading } = useAuth();
     const router = useRouter();
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [normalizing, setNormalizing] = useState(false);
 
     useEffect(() => {
         if (!authLoading) {
@@ -49,11 +51,94 @@ export default function AdminBlogsPage() {
         setLoading(false);
     };
 
+    const dirtySlugCount = blogs.filter((blog) => {
+        const clean = normalizeBlogSlug(blog.slug || "");
+        return blog.slug && clean !== blog.slug;
+    }).length;
+
+    const longMetaCount = blogs.filter(
+        (blog) => String(blog.meta_description || "").length > 160
+    ).length;
+
+    const missingKeywordsCount = blogs.filter(
+        (blog) => !String(blog.meta_keywords || "").trim()
+    ).length;
+
+    const handleNormalizeSlugs = async () => {
+        const message = [
+            "Fix SEO issues on all blog posts?",
+            "",
+            "This will:",
+            "• Clean messy URL slugs (old URLs still redirect)",
+            "• Strip brand from meta titles",
+            "• Trim long meta descriptions at a word boundary",
+            "• Convert markdown # H1 headings to ## H2",
+            "",
+            "Keywords/tags are not auto-filled — edit posts that still need them.",
+            dirtySlugCount || longMetaCount
+                ? `\nDetected now: ${dirtySlugCount} messy slug(s), ${longMetaCount} long meta description(s), ${missingKeywordsCount} missing keywords.`
+                : `\n${missingKeywordsCount} post(s) are missing keywords (you'll still need to add those manually).`,
+        ].join("\n");
+
+        if (!confirm(message)) return;
+
+        setNormalizing(true);
+        try {
+            const res = await adminFetch("/api/blogs/normalize-slugs", {
+                method: "POST",
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                throw new Error(data.error || "Normalize failed");
+            }
+
+            const lines = [
+                `Scanned: ${data.scanned}`,
+                `Updated: ${data.updated}`,
+                `Already clean: ${data.skipped}`,
+            ];
+
+            if (data.missingKeywords > 0) {
+                lines.push(
+                    `Still missing keywords: ${data.missingKeywords} (add in Edit for tag pages)`
+                );
+            }
+
+            if (data.changes?.length) {
+                lines.push("", "Changes:");
+                data.changes.slice(0, 12).forEach((change) => {
+                    const bits = [];
+                    if (change.fixes?.slug) bits.push("slug");
+                    if (change.fixes?.metaTitle) bits.push("title");
+                    if (change.fixes?.metaDescription) bits.push("desc");
+                    if (change.fixes?.headings) bits.push("H1→H2");
+                    lines.push(
+                        `• ${change.title}: ${change.fromSlug} → ${change.toSlug} [${bits.join(", ") || "updated"}]`
+                    );
+                });
+                if (data.changes.length > 12) {
+                    lines.push(`…and ${data.changes.length - 12} more`);
+                }
+            }
+
+            if (data.failures?.length) {
+                lines.push("", `Failed: ${data.failures.length}`);
+            }
+
+            alert(lines.join("\n"));
+            await fetchBlogs();
+        } catch (err) {
+            console.error("Normalize SEO error:", err);
+            alert("Error: " + (err.message || "Could not fix SEO issues"));
+        }
+        setNormalizing(false);
+    };
+
     const handleDelete = async (id, imageUrl) => {
         if (!confirm("Are you sure you want to delete this blog post?")) return;
 
         try {
-            // Delete blog from database (API handles image cleanup)
             const url = imageUrl
                 ? `/api/blogs/${id}?imageUrl=${encodeURIComponent(imageUrl)}`
                 : `/api/blogs/${id}`;
@@ -79,6 +164,11 @@ export default function AdminBlogsPage() {
         });
     };
 
+    const isDirtySlug = (slug) => {
+        const clean = normalizeBlogSlug(slug || "");
+        return Boolean(slug) && clean !== slug;
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">
             <div className="max-w-7xl mx-auto">
@@ -94,17 +184,44 @@ export default function AdminBlogsPage() {
                             Back to Dashboard
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900">Manage Blogs</h1>
-                        <p className="text-sm text-gray-500 mt-1">{blogs.length} blog post{blogs.length !== 1 ? "s" : ""}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                            {blogs.length} blog post{blogs.length !== 1 ? "s" : ""}
+                            {dirtySlugCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}· {dirtySlugCount} messy slug{dirtySlugCount === 1 ? "" : "s"}
+                                </span>
+                            ) : null}
+                            {longMetaCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}· {longMetaCount} long meta desc
+                                </span>
+                            ) : null}
+                            {missingKeywordsCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}· {missingKeywordsCount} missing keywords
+                                </span>
+                            ) : null}
+                        </p>
                     </div>
-                    <Link
-                        href="/admin/blogs/new"
-                        className="px-6 py-3 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-lg flex items-center"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        New Blog Post
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                            type="button"
+                            onClick={handleNormalizeSlugs}
+                            disabled={normalizing || loading || blogs.length === 0}
+                            className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {normalizing ? "Fixing SEO…" : "Fix all SEO issues"}
+                        </button>
+                        <Link
+                            href="/admin/blogs/new"
+                            className="px-6 py-3 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-lg flex items-center justify-center"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            New Blog Post
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -136,7 +253,10 @@ export default function AdminBlogsPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {blogs.map((blog) => (
+                                    {blogs.map((blog) => {
+                                        const liveSlug = normalizeBlogSlug(blog.slug) || blog.slug;
+                                        const dirty = isDirtySlug(blog.slug);
+                                        return (
                                         <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center space-x-4">
@@ -172,14 +292,21 @@ export default function AdminBlogsPage() {
                                                 <span className="text-sm text-gray-600">{formatDate(blog.date_posted)}</span>
                                             </td>
                                             <td className="px-6 py-4 hidden lg:table-cell">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 max-w-[200px] truncate">
+                                                <span
+                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium max-w-[220px] truncate ${
+                                                        dirty
+                                                            ? "bg-amber-50 text-amber-800"
+                                                            : "bg-gray-100 text-gray-700"
+                                                    }`}
+                                                    title={dirty ? `Will become /${liveSlug}` : undefined}
+                                                >
                                                     /{blog.slug}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end space-x-3">
                                                     <Link
-                                                        href={`/blog/${blog.slug}`}
+                                                        href={`/blog/${liveSlug}`}
                                                         target="_blank"
                                                         className="text-gray-400 hover:text-gray-600 text-sm"
                                                         title="View live"
@@ -203,7 +330,8 @@ export default function AdminBlogsPage() {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))}
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

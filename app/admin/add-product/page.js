@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
+import { getProductFormAutofill } from "@/lib/productDefaults";
 
 export default function AddProductPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -32,6 +33,51 @@ export default function AddProductPage() {
     const [otherImages, setOtherImages] = useState([]);
 
     const [loading, setLoading] = useState(false);
+
+    const handleAutofill = () => {
+        if (!name.trim() || !price) {
+            alert("Enter Product Name and Price first — autofill uses them to suggest the best values.");
+            return;
+        }
+        const categoryName = categories.find((c) => c.id === categoryId)?.name || "";
+        const { values, filled, kind } = getProductFormAutofill(
+            {
+                name,
+                price,
+                description,
+                material,
+                plating,
+                careInstructions,
+                weight,
+                sizeInfo,
+                stockCount,
+                originalPrice,
+                isBestseller,
+                isNew,
+            },
+            categoryName
+        );
+
+        if (!filled.length) {
+            alert("All detail fields already look filled.");
+            return;
+        }
+
+        if (values.originalPrice != null && !originalPrice) setOriginalPrice(values.originalPrice);
+        if (values.stockCount != null && stockCount === "") setStockCount(values.stockCount);
+        if (values.material && !material) setMaterial(values.material);
+        if (values.plating && !plating) setPlating(values.plating);
+        if (values.careInstructions && !careInstructions) setCareInstructions(values.careInstructions);
+        if (values.weight && !weight) setWeight(values.weight);
+        if (values.sizeInfo && !sizeInfo) setSizeInfo(values.sizeInfo);
+        if (values.description && !description.trim()) setDescription(values.description);
+        if (values.isNew === true) setIsNew(true);
+        if (values.isBestseller === true) setIsBestseller(true);
+
+        alert(
+            `Filled: ${filled.join(", ")}\n\nDetected type: ${kind}\nReview the values, then save.`
+        );
+    };
 
     // Check session on mount
     useEffect(() => {
@@ -178,7 +224,20 @@ export default function AddProductPage() {
                 </Link>
 
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <h1 className="text-2xl font-bold mb-8 text-gray-900">Add New Product</h1>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                        <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
+                        <button
+                            type="button"
+                            onClick={handleAutofill}
+                            className="px-4 py-2.5 text-sm font-bold rounded-xl border border-gray-200 bg-white text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63] transition-all"
+                        >
+                            Auto-fill empty fields
+                        </button>
+                    </div>
+
+                    <p className="text-sm text-gray-500 -mt-4 mb-8">
+                        Enter name, price, and category, then click Auto-fill for MRP, stock, material, plating, care, weight, and size.
+                    </p>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Basic Info */}

@@ -233,11 +233,13 @@ export default function ShopClient({
                 {products.length > 0 ? (
                     <>
                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10">
-                            {products.map((product) => (
+                            {products.map((product, index) => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
                                     reviewCount={reviewCounts[product.id] || 0}
+                                    priority={index < 4}
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                                 />
                             ))}
                         </div>

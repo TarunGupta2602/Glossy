@@ -5,11 +5,19 @@ import { notFound, redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { buildLandingRedirect, getDedicatedLandingPath } from "@/lib/categoryLanding";
+import { formatPageTitle, truncateMetaDescription } from "@/lib/seo";
+import {
+    PRODUCT_CARD_SELECT,
+    getCategoryStaticParams,
+} from "@/lib/productQueries";
 
 const PAGE_SIZE = 12;
 
-export const dynamic = "force-dynamic";
 export const revalidate = 3600;
+
+export async function generateStaticParams() {
+    return getCategoryStaticParams(50);
+}
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
@@ -17,7 +25,7 @@ export async function generateMetadata({ params }) {
 
     const { data: category } = await supabase
         .from("categories")
-        .select("*")
+        .select("name, meta_title, meta_description, description, image_url, slug")
         .eq("slug", slug)
         .single();
 
@@ -25,8 +33,14 @@ export async function generateMetadata({ params }) {
         return { title: "Collection Not Found", robots: { index: false, follow: false } };
     }
 
-    const title = category.meta_title || `${category.name} | Premium Anti-Tarnish Collection`;
-    const description = category.meta_description || category.description || `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`;
+    const title = formatPageTitle(
+        category.meta_title || `${category.name} | Premium Anti-Tarnish Collection`
+    );
+    const description = truncateMetaDescription(
+        category.meta_description ||
+            category.description ||
+            `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`
+    );
 
     return {
         title,
@@ -67,11 +81,17 @@ export default async function CollectionDetails({ params, searchParams }) {
     }
 
     const page = parseInt(resolvedSearchParams?.page || "1", 10);
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     const supabase = getServiceClient();
 
     const [{ data: category, error: catError }, { data: allCategories }] = await Promise.all([
-        supabase.from("categories").select("*").eq("slug", slug).single(),
+        supabase
+            .from("categories")
+            .select("id, name, slug, image_url, description")
+            .eq("slug", slug)
+            .single(),
         supabase.from("categories").select("id, name, slug, image_url").order("name"),
     ]);
 
@@ -79,22 +99,23 @@ export default async function CollectionDetails({ params, searchParams }) {
         notFound();
     }
 
-    const { count } = await supabase
-        .from("products")
-        .select("id", { count: "exact", head: true })
-        .eq("category_id", category.id);
+    const [countResult, productsResult] = await Promise.all([
+        supabase
+            .from("products")
+            .select("id", { count: "exact", head: true })
+            .eq("category_id", category.id),
+        supabase
+            .from("products")
+            .select(PRODUCT_CARD_SELECT)
+            .eq("category_id", category.id)
+            .order("created_at", { ascending: false })
+            .range(from, to),
+    ]);
 
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-    const { data: products } = await supabase
-        .from("products")
-        .select("*, categories(name, id, slug)")
-        .eq("category_id", category.id)
-        .order("created_at", { ascending: false })
-        .range(from, to);
-
-    const productsWithDiscounts = (products || []).map(withCalculatedDiscount);
-    const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+    const count = countResult.count || 0;
+    const products = productsResult.data || [];
+    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
     const otherCategories = (allCategories || []).filter((c) => c.id !== category.id);
 
@@ -106,7 +127,7 @@ export default async function CollectionDetails({ params, searchParams }) {
         url: `https://www.theluxejewels.in/shop/${slug}`,
         mainEntity: {
             "@type": "ItemList",
-            itemListElement: products?.map((product, index) => ({
+            itemListElement: productsWithDiscounts.map((product, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
                 item: {
@@ -118,7 +139,7 @@ export default async function CollectionDetails({ params, searchParams }) {
                     priceCurrency: "INR",
                     category: category.name,
                 },
-            })) || [],
+            })),
         },
     };
 
@@ -148,7 +169,7 @@ export default async function CollectionDetails({ params, searchParams }) {
                 heroImageUrl={category.image_url}
                 title={category.name}
                 description={category.description}
-                count={count || 0}
+                count={count}
                 showingCount={productsWithDiscounts.length}
                 products={productsWithDiscounts}
                 reviewCounts={reviewCounts}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { buildProductSeo, generateProductSlug, isUuid } from "@/lib/seo";
+import { applyProductDetailsDefaults } from "@/lib/productDefaults";
 import { guardAdmin } from "@/lib/requireAdmin";
 
 async function enrichProductPayload(body, supabase, existingProduct) {
@@ -39,7 +40,13 @@ async function enrichProductPayload(body, supabase, existingProduct) {
         }
     }
 
-    return payload;
+    const { payload: withDetails } = applyProductDetailsDefaults(payload, {
+        ...(existingProduct || {}),
+        categories: existingProduct?.categories || { name: categoryName },
+        categoryName,
+    });
+
+    return withDetails;
 }
 
 export async function GET(req, { params }) {

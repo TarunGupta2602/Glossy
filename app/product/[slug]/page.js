@@ -1,9 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
-import { fetchProductBySlugOrId } from "@/lib/productQueries";
+import {
+    fetchProductBySlugOrId,
+    getProductStaticParams,
+    PRODUCT_CARD_SELECT,
+} from "@/lib/productQueries";
 import {
     BASE_URL,
     formatPageTitle,
+    truncateMetaDescription,
     getProductCanonicalUrl,
     getProductPath,
     isUuid,
@@ -14,8 +19,11 @@ import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+    return getProductStaticParams(80);
+}
 
 export async function generateMetadata({ params }) {
     const { slug: param } = await params;
@@ -27,10 +35,11 @@ export async function generateMetadata({ params }) {
 
     const categoryName = product.categories?.name || "Fine Jewellery";
     const seoTitle = formatPageTitle(product.meta_title || `${product.name} | ${categoryName}`);
-    const seoDescription =
+    const seoDescription = truncateMetaDescription(
         product.meta_description ||
         product.description ||
-        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with free shipping across India.`;
+        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with free shipping across India.`
+    );
     const canonicalPath = getProductPath(product);
 
     return {
@@ -100,17 +109,18 @@ export default async function ProductPage({ params }) {
             .limit(5),
         supabase
             .from("products")
-            .select("id, name, price, main_image, image_alt, slug, categories(name)")
+            .select(PRODUCT_CARD_SELECT)
             .eq("category_id", product.category_id)
             .neq("id", id)
             .order("created_at", { ascending: false })
             .limit(4),
         supabase
             .from("reviews")
-            .select("*")
+            .select("id, rating, user_name, comment, created_at, images")
             .eq("product_id", id)
             .eq("is_approved", true)
             .order("created_at", { ascending: false })
+            .limit(50),
     ]);
 
     const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean).slice(0, 5);
@@ -120,7 +130,7 @@ export default async function ProductPage({ params }) {
     // Calculate discount for main product
     const productWithDiscount = withCalculatedDiscount(product);
 
-    // Calculate discounts for related products
+    // Calculate discounts for related products + review counts in parallel is already sequential here — counts after related known
     relatedProducts = (relatedProducts || []).map(withCalculatedDiscount);
     const relatedReviewCounts = await getReviewCounts(relatedProducts.map((p) => p.id));
 
@@ -129,9 +139,21 @@ export default async function ProductPage({ params }) {
 
     // Calculate review statistics for schema
     const totalReviews = reviews.length;
-    const avgRating = totalReviews > 0 
-        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews 
+    const avgRating = totalReviews > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
         : 0;
+
+    const reviewStats = {
+        totalReviews: totalReviews,
+        avgRating: totalReviews > 0 ? parseFloat(avgRating.toFixed(2)) : 0,
+        ratingCounts: {
+            5: reviews.filter((r) => r.rating === 5).length,
+            4: reviews.filter((r) => r.rating === 4).length,
+            3: reviews.filter((r) => r.rating === 3).length,
+            2: reviews.filter((r) => r.rating === 2).length,
+            1: reviews.filter((r) => r.rating === 1).length,
+        },
+    };
 
     // Build review schema
     const reviewSchema = reviews.slice(0, 10).map(review => ({
@@ -239,6 +261,8 @@ export default async function ProductPage({ params }) {
                 galleryImages={galleryImages}
                 relatedProducts={relatedProducts}
                 relatedReviewCounts={relatedReviewCounts}
+                initialReviews={reviews}
+                initialReviewStats={reviewStats}
             />
         </main>
     );

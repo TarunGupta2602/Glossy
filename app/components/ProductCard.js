@@ -3,7 +3,13 @@ import Link from "next/link";
 import { getProductPath } from "@/lib/seo";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
 
-export default function ProductCard({ product, reviewCount = 0, hideCategory = false }) {
+export default function ProductCard({
+    product,
+    reviewCount = 0,
+    hideCategory = false,
+    priority = false,
+    sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+}) {
     const categoryName = product.categories?.name || "Jewellery";
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
@@ -33,11 +39,10 @@ export default function ProductCard({ product, reviewCount = 0, hideCategory = f
                     src={product.main_image || "/logo.png"}
                     alt={product.image_alt || product.name}
                     fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={75}
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
+                    sizes={sizes}
+                    quality={priority ? 75 : 65}
+                    priority={priority}
+                    loading={priority ? "eager" : "lazy"}
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-white/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700 rounded-2xl" />

@@ -14,7 +14,14 @@ import ProductCard from "../../components/ProductCard";
 import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
 
-export default function ProductDetailClient({ product, galleryImages = [], relatedProducts = [], relatedReviewCounts = {} }) {
+export default function ProductDetailClient({
+    product,
+    galleryImages = [],
+    relatedProducts = [],
+    relatedReviewCounts = {},
+    initialReviews = [],
+    initialReviewStats = null,
+}) {
     const categoryName = product.categories?.name || "Jewellery";
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
@@ -138,34 +145,17 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
 
                     {/* ── LEFT: Gallery ── */}
                     <div className="w-full max-w-[580px] lg:max-w-[600px]">
-                        {/* Main Image */}
+                        {/* Single main image — zoom on desktop, swipe on mobile (avoid double download) */}
                         <div
-                            className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] cursor-zoom-in hidden lg:block"
+                            className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] lg:cursor-zoom-in touch-pan-y"
                             style={{ aspectRatio: "1/1" }}
-                            onMouseEnter={() => setIsZoomed(true)}
+                            onMouseEnter={() => {
+                                if (typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches) {
+                                    setIsZoomed(true);
+                                }
+                            }}
                             onMouseLeave={() => setIsZoomed(false)}
                             onMouseMove={handleImageMouseMove}
-                        >
-                            <Image
-                                src={allImages[activeIdx]}
-                                alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
-                                fill
-                                priority={true}
-                                sizes="(max-width: 1024px) 90vw, 45vw"
-                                quality={80}
-                                placeholder="blur"
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
-                                className="object-cover transition-transform duration-200 ease-out"
-                                style={{
-                                    transform: isZoomed ? "scale(1.75)" : "scale(1)",
-                                    transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                                }}
-                            />
-                        </div>
-
-                        <div
-                            className="relative w-full rounded-2xl overflow-hidden bg-[#F2F2F2] lg:hidden touch-pan-y"
-                            style={{ aspectRatio: "1/1" }}
                             onTouchStart={handleGalleryTouchStart}
                             onTouchEnd={handleGalleryTouchEnd}
                         >
@@ -173,16 +163,18 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
-                                priority={true}
+                                priority
                                 sizes="(max-width: 1024px) 90vw, 45vw"
                                 quality={80}
-                                placeholder="blur"
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
-                                className="object-cover pointer-events-none"
+                                className="object-cover transition-transform duration-200 ease-out lg:pointer-events-auto pointer-events-none"
+                                style={{
+                                    transform: isZoomed ? "scale(1.75)" : "scale(1)",
+                                    transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                                }}
                                 draggable={false}
                             />
                             {allImages.length > 1 && (
-                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 lg:hidden">
                                     {allImages.map((_, idx) => (
                                         <button
                                             key={idx}
@@ -217,8 +209,6 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                                         quality={60}
                                         className="object-cover"
                                         loading={idx === 0 ? "eager" : "lazy"}
-                                        placeholder="blur"
-                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDsAAAABJr5//Z"
                                     />
                                 </button>
                             ))}
@@ -407,7 +397,12 @@ export default function ProductDetailClient({ product, galleryImages = [], relat
                         </div>
                     )}
 
-                    <ReviewList productId={product.id} refreshKey={reviewRefreshKey} />
+                    <ReviewList
+                        productId={product.id}
+                        refreshKey={reviewRefreshKey}
+                        initialReviews={initialReviews}
+                        initialStats={initialReviewStats}
+                    />
                 </div>
 
                 {/* ── Complete the Look ── */}

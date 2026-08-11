@@ -7,22 +7,47 @@ import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { fetchShopProducts } from "@/lib/shopQueries";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
+import { getPaginatedCanonical } from "@/lib/seo";
+import { BRAND_URL } from "@/lib/constants";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
-export const metadata = {
-    title: "Shop All Fine Jewellery | Buy Anti-Tarnish & Waterproof Jewellery",
-    description: "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewellery at The Luxe Jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
-    alternates: { canonical: "/shop" },
-    openGraph: {
-        title: "Shop All Fine Jewellery | Premium & Sustainable | The Luxe Jewels",
-        description: "Handcrafted ethical fine jewellery. Modern designs, sustainable luxury, and waterproof durability.",
-        url: "https://www.theluxejewels.in/shop",
-        siteName: "The Luxe Jewels",
-        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
-        type: "website",
-    },
-};
+export async function generateMetadata({ searchParams }) {
+    const params = await searchParams;
+    const page = parseInt(params?.page || "1", 10);
+    const pageNum = isNaN(page) || page < 1 ? 1 : page;
+    const hasFilters = Boolean(
+        params?.category ||
+        (params?.min && params.min !== "0") ||
+        (params?.max && params.max !== "5000") ||
+        (params?.sort && params.sort !== "newest")
+    );
+    // Paginated pages self-canonicalize; filtered views consolidate to /shop (or page N)
+    const canonical = getPaginatedCanonical("/shop", hasFilters ? 1 : pageNum);
+    const title =
+        pageNum > 1 && !hasFilters
+            ? `Shop All Fine Jewellery (Page ${pageNum})`
+            : "Shop All Fine Jewellery | Buy Anti-Tarnish & Waterproof Jewellery";
+
+    return {
+        title,
+        description:
+            "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewellery at The Luxe Jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
+        alternates: { canonical },
+        robots: hasFilters
+            ? { index: false, follow: true }
+            : { index: true, follow: true, "max-image-preview": "large" },
+        openGraph: {
+            title: "Shop All Fine Jewellery | Premium & Sustainable | The Luxe Jewels",
+            description:
+                "Handcrafted ethical fine jewellery. Modern designs, sustainable luxury, and waterproof durability.",
+            url: `${BRAND_URL}${canonical}`,
+            siteName: "The Luxe Jewels",
+            images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+            type: "website",
+        },
+    };
+}
 
 export default async function ShopPage({ searchParams }) {
     const params = await searchParams;
@@ -35,15 +60,22 @@ export default async function ShopPage({ searchParams }) {
     if (isNaN(page) || page < 1) redirect("/shop?page=1");
 
     const supabase = getServiceClient();
-    const { data: categories } = await supabase.from("categories").select("*").order("name", { ascending: true });
 
-    const { products, totalCount, totalPages } = await fetchShopProducts({
-        page,
-        sort,
-        categoryIds,
-        minPrice,
-        maxPrice,
-    });
+    const [{ data: categories }, shopResult] = await Promise.all([
+        supabase
+            .from("categories")
+            .select("id, name, slug")
+            .order("name", { ascending: true }),
+        fetchShopProducts({
+            page,
+            sort,
+            categoryIds,
+            minPrice,
+            maxPrice,
+        }),
+    ]);
+
+    const { products, totalCount, totalPages } = shopResult;
 
     if (page > totalPages && totalCount > 0) {
         redirect(`/shop?page=${totalPages}`);

@@ -78,6 +78,7 @@ export default function Footer() {
                             <h3 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-5 md:mb-8">Experience</h3>
                             <ul className="flex flex-col gap-3 md:gap-4 text-sm font-bold text-gray-600">
                                 <li><Link href="/our-story" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Our Story</Link></li>
+                                <li><Link href="/blog" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Blog / Journal</Link></li>
                                 <li><Link href="/shipping-returns" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Shipping Policy</Link></li>
                                 <li><Link href="/contact" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">Contact Us</Link></li>
                                 <li><Link href="/faqs" className="hover:text-[#E91E63] hover:translate-x-1 inline-block transition-all duration-300">FAQs</Link></li>

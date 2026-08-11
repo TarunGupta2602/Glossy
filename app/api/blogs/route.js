@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { normalizeBlogSlug } from "@/lib/seo";
 
 function getBlogServiceClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,6 +17,14 @@ function getBlogServiceClient() {
         db: { schema: "public" },
         auth: { persistSession: false },
     });
+}
+
+function sanitizeBlogPayload(body) {
+    const payload = { ...body };
+    if (payload.slug) {
+        payload.slug = normalizeBlogSlug(payload.slug);
+    }
+    return payload;
 }
 
 // GET: Fetch all blogs (admin only)
@@ -52,7 +61,7 @@ export async function POST(request) {
         if (denied) return denied;
 
         const supabase = getBlogServiceClient();
-        const body = await request.json();
+        const body = sanitizeBlogPayload(await request.json());
 
         console.log("POST /api/blogs body keys:", Object.keys(body));
 
