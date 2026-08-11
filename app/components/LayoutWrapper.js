@@ -6,6 +6,7 @@ import { useOverlay } from "../context/OverlayContext";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import AnnouncementBar from "./AnnouncementBar";
+import TabTeaser from "./TabTeaser";
 
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
@@ -30,6 +31,7 @@ export default function LayoutWrapper({ children }) {
 
     return (
         <>
+            <TabTeaser />
             <AnnouncementBar />
             <Navbar />
             {children}

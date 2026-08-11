@@ -13,6 +13,7 @@ import TrustStrip from "../../components/TrustStrip";
 import ProductCard from "../../components/ProductCard";
 import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
+import { trackRecentlyViewed } from "@/lib/recentlyViewed";
 
 export default function ProductDetailClient({
     product,
@@ -59,7 +60,8 @@ export default function ProductDetailClient({
             value: product.price || 0,
             category: categoryName,
         });
-    }, [product.id, product.name, product.price, categoryName]);
+        trackRecentlyViewed(product);
+    }, [product, categoryName]);
 
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })

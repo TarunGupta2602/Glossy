@@ -1,145 +1,203 @@
 "use client";
 
 import { HOME_CONTAINER } from "@/lib/siteLayout";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HeroSlider() {
-    const slides = [
-        {
-            image: "/iloveimg-resized/hero1.jpg",
-            subtitle: "The New Season",
-            title: "Lustre & Light",
-            description: "Handcrafted anti-tarnish jewellery designed for your daily brilliance.",
-            buttonText: "Shop the Collection",
-            buttonLink: "/shop",
-            isSale: false
-        },
-        {
-            image: "/iloveimg-resized/hero2.jpg",
-            subtitle: "Handpicked For You",
-            title: "Curated Picks",
-            description: "Our editors' favourite pieces — anti-tarnish jewellery made for everyday luxury.",
-            buttonText: "Shop Curated Picks",
-            buttonLink: "/shop",
-            isSale: true
-        },
-        {
-            image: "/iloveimg-resized/hero3.png",
-            subtitle: "Everyday Elegance",
-            title: "Timeless Beauty",
-            description: "Discover pieces that transition seamlessly from day to night.",
-            buttonText: "Discover More",
-            buttonLink: "/shop",
-            isSale: false
-        },
-        {
-            image: "/iloveimg-resized/hero4.png",
-            subtitle: "New Arrivals",
-            title: "Golden Hour",
-            description: "Warm tones and radiant designs for the modern woman.",
-            buttonText: "Shop New",
-            buttonLink: "/shop",
-            isSale: false
-        },
-        {
-            image: "/iloveimg-resized/hero5.png",
-            subtitle: "Signature Collection",
-            title: "Pure Luxury",
-            description: "Exquisite craftsmanship meets sustainable elegance.",
-            buttonText: "View Collection",
-            buttonLink: "/collection",
-            isSale: false
-        }
-    ];
+const SLIDES = [
+    {
+        image: "/iloveimg-resized/hero3.png",
+        headline: "Anti-tarnish jewellery for everyday India",
+        support: "Waterproof, hypoallergenic 18k gold plated pieces made for daily wear.",
+        primary: { label: "Shop Earrings", href: "/earrings" },
+        secondary: { label: "Shop Necklaces", href: "/necklaces" },
+    },
+    {
+        image: "/iloveimg-resized/hero4.png",
+        headline: "Statement earrings that stay lustrous",
+        support: "Shop waterproof earrings designed for all-day comfort and shine.",
+        primary: { label: "Shop Earrings", href: "/earrings" },
+        secondary: { label: "Shop All", href: "/shop" },
+    },
+    {
+        image: "/iloveimg-resized/hero5.png",
+        headline: "Layered necklaces for every look",
+        support: "From everyday chains to evening edits — built to wear, not babysit.",
+        primary: { label: "Shop Necklaces", href: "/necklaces" },
+        secondary: { label: "Best Sellers", href: "/shop?sort=popular" },
+    },
+    {
+        image: "/iloveimg-resized/hero2.jpg",
+        headline: "New arrivals, ready to gift",
+        support: "Fresh drops in anti-tarnish gold — plus Buy 2 Get 1 Free across the store.",
+        primary: { label: "Shop New", href: "/shop?sort=newest" },
+        secondary: { label: "View Collections", href: "/collection" },
+    },
+    {
+        image: "/iloveimg-resized/hero1.jpg",
+        headline: "Everyday luxury, made to last",
+        support: "Handcrafted jewellery for daily brilliance — free shipping over ₹1000.",
+        primary: { label: "Shop Best Sellers", href: "/shop?sort=popular" },
+        secondary: { label: "Explore Collections", href: "/collection" },
+    },
+];
 
+export default function HeroSlider() {
     const [currentIdx, setCurrentIdx] = useState(0);
-    const activeSlide = slides[currentIdx];
+    const [paused, setPaused] = useState(false);
+    const touchStartX = useRef(null);
+    const activeSlide = SLIDES[currentIdx];
+
+    const goTo = useCallback((idx) => {
+        setCurrentIdx(((idx % SLIDES.length) + SLIDES.length) % SLIDES.length);
+    }, []);
+
+    const next = useCallback(() => goTo(currentIdx + 1), [currentIdx, goTo]);
+    const prev = useCallback(() => goTo(currentIdx - 1), [currentIdx, goTo]);
 
     useEffect(() => {
+        if (paused) return undefined;
         const interval = setInterval(() => {
-            setCurrentIdx((prevIdx) => (prevIdx + 1) % slides.length);
-        }, 6000);
+            setCurrentIdx((prevIdx) => (prevIdx + 1) % SLIDES.length);
+        }, 6500);
         return () => clearInterval(interval);
-    }, [slides.length]);
+    }, [paused]);
+
+    const onTouchStart = (e) => {
+        touchStartX.current = e.changedTouches[0]?.clientX ?? null;
+        setPaused(true);
+    };
+
+    const onTouchEnd = (e) => {
+        const start = touchStartX.current;
+        const end = e.changedTouches[0]?.clientX;
+        touchStartX.current = null;
+        setPaused(false);
+        if (start == null || end == null) return;
+        const delta = end - start;
+        if (Math.abs(delta) < 40) return;
+        if (delta < 0) next();
+        else prev();
+    };
 
     return (
-        <section className="relative h-[min(72vh,560px)] sm:h-[65vh] md:h-[85vh] flex items-end md:items-center overflow-hidden bg-[#fafafa]">
+        <section
+            className="relative h-[min(72svh,560px)] sm:h-[70vh] md:h-[88vh] flex items-end md:items-center overflow-hidden bg-[#1a1214]"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            aria-roledescription="carousel"
+            aria-label="Featured jewellery"
+        >
             <div className="absolute inset-0 z-0">
-                {slides.map((slide, idx) => (
+                {SLIDES.map((slide, idx) => (
                     <div
-                        key={idx}
-                        className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === currentIdx ? "opacity-100" : "opacity-0"}`}
+                        key={slide.image}
+                        className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                            idx === currentIdx ? "opacity-100" : "opacity-0"
+                        }`}
+                        aria-hidden={idx !== currentIdx}
                     >
                         <Image
                             src={slide.image}
-                            alt={slide.title}
+                            alt=""
                             fill
-                            // Only set priority on the first slide. Do not pass fetchPriority/loading —
-                            // Next/Image owns those and manual overrides cause SSR/client hydration mismatches.
                             priority={idx === 0}
                             sizes="100vw"
-                            quality={75}
-                            className="object-cover object-[center_30%] md:object-center"
+                            quality={85}
+                            className={`object-cover object-[center_20%] sm:object-[center_22%] md:object-[center_30%] transition-transform duration-[9s] ease-out ${
+                                idx === currentIdx ? "scale-[1.03]" : "scale-100"
+                            }`}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10 md:bg-gradient-to-r md:from-black/40 md:via-black/10 md:to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/15 md:bg-gradient-to-r md:from-black/55 md:via-black/20 md:to-black/5" />
                     </div>
                 ))}
             </div>
 
-            <div className={`${HOME_CONTAINER} relative z-10 w-full pb-16 pt-20 md:pb-0 md:pt-0`}>
-                <div className="max-w-3xl">
-                    <p className="text-white italic font-serif text-lg sm:text-2xl md:text-3xl mb-2 sm:mb-4 tracking-wide animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        {activeSlide.subtitle}
+            <div className={`${HOME_CONTAINER} relative z-10 w-full pb-16 pt-16 sm:pb-20 sm:pt-24 md:pb-0 md:pt-0`}>
+                <div className="max-w-2xl">
+                    <p className="font-playfair text-white text-xl sm:text-3xl md:text-4xl tracking-tight mb-2 sm:mb-5">
+                        The Luxe Jewels
                     </p>
 
-                    <h1 className="text-[2.5rem] sm:text-5xl md:text-8xl font-playfair font-bold text-white tracking-tight leading-[0.95] mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
-                        {activeSlide.title.split("&").map((part, i) => (
-                            <span key={i} className="block">
-                                {part}{i === 0 && activeSlide.title.includes("&") && <span className="opacity-60">&</span>}
-                            </span>
-                        ))}
+                    <h1
+                        key={`h-${currentIdx}`}
+                        className="text-[1.55rem] sm:text-4xl md:text-5xl lg:text-[3.35rem] font-playfair font-bold text-white tracking-tight leading-[1.1] mb-2.5 sm:mb-5"
+                    >
+                        {activeSlide.headline}
                     </h1>
 
-                    <div className="flex flex-col gap-5 sm:gap-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-                        <p className="text-sm sm:text-lg md:text-xl font-medium text-white/90 max-w-lg leading-relaxed lowercase tracking-wider line-clamp-2 sm:line-clamp-none">
-                            {activeSlide.description}
-                        </p>
+                    <p
+                        key={`p-${currentIdx}`}
+                        className="text-[13px] sm:text-base md:text-lg text-white/85 max-w-lg leading-relaxed mb-5 sm:mb-9 line-clamp-2 sm:line-clamp-none"
+                    >
+                        {activeSlide.support}
+                    </p>
 
-                        <div className="flex flex-col sm:flex-row items-start justify-start gap-6 sm:gap-8">
-                            <Link
-                                href={activeSlide.buttonLink}
-                                className="group relative inline-flex items-center gap-3 sm:gap-4 text-white font-black text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.25em] transition-all"
-                            >
-                                <span className="relative pb-2">
-                                    {activeSlide.buttonText}
-                                    <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-[#E91E63] transition-all group-hover:w-full"></span>
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover:translate-x-2 transition-transform duration-300">
-                                    <path d="M5 12h14m-7-7 7 7-7 7" />
-                                </svg>
-                            </Link>
-                        </div>
+                    <div
+                        key={`c-${currentIdx}`}
+                        className="flex flex-row flex-wrap items-center gap-2.5 sm:gap-4"
+                    >
+                        <Link
+                            href={activeSlide.primary.href}
+                            className="inline-flex items-center justify-center gap-2 bg-[#E91E63] text-white text-[10px] sm:text-xs font-black uppercase tracking-[0.14em] sm:tracking-[0.18em] px-4 sm:px-6 py-3 sm:py-4 hover:bg-[#c2185b] transition-colors duration-300 min-h-11"
+                        >
+                            {activeSlide.primary.label}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M5 12h14m-7-7 7 7-7 7" />
+                            </svg>
+                        </Link>
+                        <Link
+                            href={activeSlide.secondary.href}
+                            className="inline-flex items-center justify-center text-white text-[10px] sm:text-xs font-black uppercase tracking-[0.14em] sm:tracking-[0.18em] px-2 py-3 border-b border-white/40 hover:border-[#E91E63] transition-colors duration-300 min-h-11"
+                        >
+                            {activeSlide.secondary.label}
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            <div className="absolute bottom-5 right-4 sm:bottom-12 sm:right-12 md:right-24 z-20 flex gap-3 sm:gap-4">
-                {slides.map((_, idx) => (
+            <div className="absolute bottom-3 right-3 sm:bottom-10 sm:right-10 z-20 flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-2">
                     <button
-                        key={idx}
-                        onClick={() => setCurrentIdx(idx)}
-                        className="group relative h-8 sm:h-12 w-1 flex items-center justify-center transition-all duration-500"
-                        aria-label={`Go to slide ${idx + 1}`}
+                        type="button"
+                        onClick={prev}
+                        className="w-10 h-10 rounded-full border border-white/30 bg-black/25 backdrop-blur-sm text-white flex items-center justify-center"
+                        aria-label="Previous slide"
                     >
-                        <div className={`w-full transition-all duration-500 ${idx === currentIdx ? "bg-[#E91E63] h-full" : "bg-white/30 h-1/2 group-hover:h-3/4 group-hover:bg-white/60"}`}></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
                     </button>
-                ))}
-            </div>
+                    <button
+                        type="button"
+                        onClick={next}
+                        className="w-10 h-10 rounded-full border border-white/30 bg-black/25 backdrop-blur-sm text-white flex items-center justify-center"
+                        aria-label="Next slide"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
 
-            <div className="hidden md:block absolute bottom-12 left-1/2 -translate-x-1/2 z-20 animate-bounce opacity-40">
-                <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+                <div className="flex gap-1.5 sm:gap-3" role="tablist" aria-label="Hero slides">
+                    {SLIDES.map((_, idx) => (
+                        <button
+                            key={idx}
+                            type="button"
+                            role="tab"
+                            aria-selected={idx === currentIdx}
+                            onClick={() => goTo(idx)}
+                            className={`h-1.5 rounded-full transition-all duration-500 ${
+                                idx === currentIdx ? "w-6 sm:w-8 bg-[#E91E63]" : "w-1.5 bg-white/35"
+                            }`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         </section>
     );
