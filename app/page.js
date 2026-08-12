@@ -13,6 +13,7 @@ import {
 } from "@/lib/categoryLanding";
 import HomeTrustBar from "./components/HomeTrustBar";
 import HomeCollections from "./components/HomeCollections";
+import HomeGiftEdits from "./components/HomeGiftEdits";
 import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
 import TopStyles from "./components/TopStyles";
@@ -292,6 +293,7 @@ export default async function Home() {
     <main className="min-h-screen bg-white">
       <HeroSlider />
       <HomeTrustBar />
+      <HomeGiftEdits />
 
       <RevealOnScroll>
         <HomeCollections collections={collections} />

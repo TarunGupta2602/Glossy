@@ -19,6 +19,7 @@ const PRIMARY_LINKS = [
     { href: "/shop", label: "Shop" },
     { href: "/earrings", label: "Earrings" },
     { href: "/necklaces", label: "Necklaces" },
+    { href: "/gifts/under-999", label: "Gifts" },
     { href: "/collection", label: "Collections" },
     { href: "/blog", label: "Blog" },
 ];
@@ -26,8 +27,8 @@ const PRIMARY_LINKS = [
 const QUICK_LINKS = [
     { href: "/earrings", label: "Earrings", hint: "Studs, hoops & drops" },
     { href: "/necklaces", label: "Necklaces", hint: "Chains & pendants" },
-    { href: "/shop?sort=popular", label: "Bestsellers", hint: "Most loved" },
-    { href: "/blog", label: "Blog", hint: "Guides & tips" },
+    { href: "/gifts/under-999", label: "Gifts ₹999", hint: "Ready to gift" },
+    { href: "/gifts/under-499", label: "Gifts ₹499", hint: "Light & lovely" },
 ];
 
 function IconBtn({ as: Comp = "button", className = "", children, ...props }) {
@@ -210,10 +211,22 @@ export default function Navbar() {
                                             </Link>
                                         ))}
                                     </div>
-                                    <div className="mt-2 border-t border-gray-50 pt-2 px-1">
+                                    <div className="mt-2 border-t border-gray-50 pt-2 px-1 space-y-1.5">
+                                        <Link
+                                            href="/gifts/under-999"
+                                            className="block rounded-lg px-2 py-1.5 text-[12px] font-semibold text-gray-800 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
+                                        >
+                                            Gifts under ₹999
+                                        </Link>
+                                        <Link
+                                            href="/gifts/under-499"
+                                            className="block rounded-lg px-2 py-1.5 text-[12px] font-semibold text-gray-800 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
+                                        >
+                                            Gifts under ₹499
+                                        </Link>
                                         <Link
                                             href="/collection"
-                                            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#E91E63] hover:text-[#c2185b]"
+                                            className="inline-flex items-center gap-1.5 px-2 pt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#E91E63] hover:text-[#c2185b]"
                                         >
                                             View all collections
                                             <span aria-hidden>→</span>
@@ -542,6 +555,8 @@ export default function Navbar() {
                         <div className="rounded-2xl border border-gray-100 overflow-hidden mb-6">
                             {[
                                 { href: "/blog", label: "Blog — all articles" },
+                                { href: "/gifts/under-999", label: "Gifts under ₹999" },
+                                { href: "/gifts/under-499", label: "Gifts under ₹499" },
                                 { href: "/our-story", label: "Our story" },
                                 {
                                     href: "/wishlist",
