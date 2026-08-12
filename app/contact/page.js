@@ -1,9 +1,17 @@
 import ContactForm from "../components/ContactForm";
-import { WHATSAPP_URL, SUPPORT_EMAIL, SUPPORT_PHONE, BUSINESS_HOURS } from "@/lib/constants";
+import {
+    WHATSAPP_URL,
+    SUPPORT_EMAIL,
+    SUPPORT_PHONE,
+    BUSINESS_HOURS,
+    BUSINESS_ADDRESS_LINE,
+    SERVICE_AREA_LABEL,
+} from "@/lib/constants";
 
 export const metadata = {
-    title: "Contact The Luxe Jewels | Jewellery Support & Custom Enquiries",
-    description: "Get in touch with The Luxe Jewels for jewellery support, order help, custom enquiries, and shipping questions across India.",
+    title: "Contact The Luxe Jewels | Noida NCR Jewellery Support",
+    description:
+        "Contact The Luxe Jewels for jewellery support, order help, and custom enquiries. Serving Noida, Greater Noida, Delhi NCR, and pan-India with WhatsApp, phone, and email support.",
     alternates: {
         canonical: "/contact",
     },
@@ -14,8 +22,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Contact The Luxe Jewels",
-        description: "Reach out for support, custom orders, or shipping help with premium anti-tarnish jewellery in India.",
+        title: "Contact The Luxe Jewels | Noida NCR & Pan-India Support",
+        description:
+            "Reach out for support, custom orders, or shipping help. Serving Noida, Delhi NCR, and pan-India.",
         url: "https://www.theluxejewels.in/contact",
         siteName: "The Luxe Jewels",
         type: "website",
@@ -76,20 +85,34 @@ export default function ContactPage() {
                             <h2 className="font-bold text-gray-900">Support Hours</h2>
                         </div>
                         <p className="text-gray-600">{BUSINESS_HOURS}</p>
-                        <p className="text-sm text-gray-500 mt-2">Online store — we ship pan-India</p>
+                        <p className="text-sm text-gray-500 mt-2">{SERVICE_AREA_LABEL}</p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 md:col-span-2">
+                        <div className="flex items-center gap-3 mb-2">
+                            <svg className="w-5 h-5 text-[#E91E63]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <h2 className="font-bold text-gray-900">Business address</h2>
+                        </div>
+                        <p className="text-gray-600">{BUSINESS_ADDRESS_LINE}</p>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Online jewellery store for Noida, Greater Noida, Ghaziabad &amp; Delhi NCR shoppers — we ship pan-India.
+                        </p>
                     </div>
                 </div>
 
                 <div className="mb-12 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                     <iframe
-                        title="The Luxe Jewels service area — India"
-                        src="https://maps.google.com/maps?q=India&z=4&output=embed"
+                        title="The Luxe Jewels — Noida & Delhi NCR service area"
+                        src="https://maps.google.com/maps?q=Noida%2C%20Uttar%20Pradesh&z=10&output=embed"
                         className="w-full h-64 md:h-80 border-0"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
                     />
                     <p className="px-4 py-3 text-xs text-gray-500 bg-gray-50 text-center">
-                        Based in India · Free delivery on orders over ₹1000
+                        {SERVICE_AREA_LABEL} · Free delivery on orders over ₹1000
                     </p>
                 </div>
 

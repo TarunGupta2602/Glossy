@@ -1,12 +1,20 @@
 import Image from "next/image";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
-import { INSTAGRAM_HANDLE, SUPPORT_EMAIL, SUPPORT_PHONE, WHATSAPP_URL } from "@/lib/constants";
+import {
+    INSTAGRAM_HANDLE,
+    SUPPORT_EMAIL,
+    SUPPORT_PHONE,
+    WHATSAPP_URL,
+    BUSINESS_ADDRESS_LINE,
+    SERVICE_AREA_LABEL,
+} from "@/lib/constants";
 
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Our Story | Handcrafted Sustainable Jewellery",
-    description: "Discover the journey behind The Luxe Jewels. We are committed to crafting timeless, premium anti-tarnish jewellery with ethical sourcing and intentional design.",
+    title: "Our Story | The Luxe Jewels — Noida NCR & Pan-India",
+    description:
+        "Discover The Luxe Jewels story — anti-tarnish jewellery crafted for everyday luxury. Serving shoppers in Noida, Greater Noida, Delhi NCR, and across India.",
     alternates: {
         canonical: "/our-story",
     },
@@ -111,6 +119,8 @@ export default function OurStoryPage() {
                 <div className="text-center pt-12 border-t border-gray-100">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Meet the makers behind the sparkle</h2>
                     <p className="text-gray-600 mb-2">A small, passionate team curating and quality-checking every piece.</p>
+                    <p className="text-sm text-gray-600 mb-1">{SERVICE_AREA_LABEL}</p>
+                    <p className="text-sm text-gray-500 mb-2">{BUSINESS_ADDRESS_LINE}</p>
                     <p className="text-sm text-[#E91E63] font-semibold mb-8">{INSTAGRAM_HANDLE} on Instagram</p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`} className="flex items-center justify-center gap-3 text-gray-600 hover:text-[#E91E63] transition-colors">

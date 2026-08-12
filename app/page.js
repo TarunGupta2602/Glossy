@@ -47,14 +47,14 @@ const RecentlyViewed = dynamic(() => import("./components/RecentlyViewed"), {
 });
 
 export const metadata = {
-  title: "The Luxe Jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
+  title: "The Luxe Jewels | Anti-Tarnish Jewellery for Noida NCR & India",
   description:
-    "Shop anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover 18k gold plated earrings, necklaces, and everyday luxury at The Luxe Jewels.",
+    "Shop anti-tarnish, waterproof jewellery online — 18k gold plated earrings, necklaces & more. The Luxe Jewels serves Noida, Delhi NCR, and pan-India with free delivery over ₹1000.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "The Luxe Jewels | Premium Jewellery for Everyday Luxury",
+    title: "The Luxe Jewels | Anti-Tarnish Jewellery India",
     description:
-      "Discover handcrafted anti-tarnish jewellery made for daily wear, gifting, and modern styling in India.",
+      "Handcrafted anti-tarnish jewellery for daily wear and gifting — serving Noida, Delhi NCR, and pan-India.",
     url: "https://www.theluxejewels.in",
     siteName: "The Luxe Jewels",
     type: "website",
@@ -314,20 +314,21 @@ export default async function Home() {
       <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
 
       <SeoIntro
-        title="Anti-tarnish jewellery made for everyday India"
+        title="Anti-tarnish jewellery for Noida NCR & everyday India"
         links={[
           { href: "/earrings", label: "Earrings" },
           { href: "/necklaces", label: "Necklaces" },
           { href: "/shop/glimmer-bracelet", label: "Bracelets" },
           { href: "/shop/sparkle-jewelry-duo", label: "Jewelry Duos" },
           { href: "/shop/uniqueness-rings", label: "Rings" },
+          { href: "/blog", label: "Jewellery Guides" },
           { href: "/shop", label: "Shop All" },
         ]}
       >
         <p>
           The Luxe Jewels crafts waterproof, hypoallergenic 18k gold plated jewellery for daily wear
           and gifting — from statement earrings to layered necklaces that stay lustrous without
-          constant care.
+          constant care. Serving Noida, Greater Noida, Delhi NCR, and pan-India.
         </p>
       </SeoIntro>
 

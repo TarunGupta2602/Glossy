@@ -4,7 +4,7 @@ import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { WHATSAPP_URL, SUPPORT_EMAIL, SUPPORT_PHONE, BRAND_NAME } from "@/lib/constants";
+import { WHATSAPP_URL, SUPPORT_EMAIL, SUPPORT_PHONE, BRAND_NAME, SERVICE_AREA_LABEL } from "@/lib/constants";
 import PaymentIcons from "./PaymentIcons";
 
 export default function Footer() {
@@ -33,8 +33,11 @@ export default function Footer() {
                             </div>
                         </Link>
 
-                        <p className="text-gray-500 text-base leading-relaxed max-w-sm font-medium mb-8">
+                        <p className="text-gray-500 text-base leading-relaxed max-w-sm font-medium mb-4">
                             Curating the finest anti-tarnish, waterproof jewellery that celebrates your unique sparkle. Modern luxury designed for every day.
+                        </p>
+                        <p className="text-gray-500 text-sm leading-relaxed max-w-sm font-medium mb-8">
+                            {SERVICE_AREA_LABEL}
                         </p>
 
                         <div className="space-y-1">

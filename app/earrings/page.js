@@ -20,10 +20,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Premium Anti-Tarnish Earrings (Page ${pageNum})`
-                : "Premium Anti-Tarnish Earrings | 18k Gold Plated",
+                ? `Waterproof Anti-Tarnish Earrings (Page ${pageNum})`
+                : "Waterproof Anti-Tarnish Earrings | Studs, Hoops & Drops",
         description:
-            "Shop the best anti-tarnish earrings in India. Our collection features waterproof, hypoallergenic 18k gold plated studs, hoops, and statement drops for daily wear.",
+            "Shop waterproof anti-tarnish earrings for daily Indian wear — hypoallergenic 18k gold plated studs, hoops, and statement drops that stay bright without constant polishing.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -32,9 +32,9 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Anti-Tarnish Earrings | Waterproof & Hypoallergenic | The Luxe Jewels",
+            title: "Waterproof Anti-Tarnish Earrings | Studs & Hoops India",
             description:
-                "Ethical and elegant waterproof earrings handcrafted for the modern individual. Tarnish-free 18k gold plating.",
+                "Hypoallergenic 18k gold plated studs, hoops, and drops made for everyday wear in Indian weather.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -122,17 +122,21 @@ export default async function EarringsPage({ searchParams }) {
             />
 
             <SeoIntro
-                title="Why choose anti-tarnish earrings from The Luxe Jewels?"
+                title="Why choose waterproof anti-tarnish earrings?"
                 links={[
                     { href: "/necklaces", label: "Shop Necklaces" },
                     { href: "/shop", label: "Shop All" },
+                    {
+                        href: "/blog/18k-gold-plated-vs-real-gold-jewelry",
+                        label: "18k Gold Plated Guide",
+                    },
                     { href: "/blog", label: "Jewellery Tips" },
                 ]}
             >
                 <p>
                     Our waterproof, hypoallergenic 18k gold plated earrings are made for daily Indian
                     wear — from studs and hoops to statement drops that stay bright without constant
-                    polishing.
+                    polishing. Pair with our necklaces for a complete everyday set.
                 </p>
             </SeoIntro>
         </section>

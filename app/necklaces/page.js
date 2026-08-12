@@ -20,10 +20,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Premium Anti-Tarnish Necklaces (Page ${pageNum})`
-                : "Premium Anti-Tarnish Necklaces | Waterproof Gold Chains",
+                ? `Gold Plated Anti-Tarnish Necklaces (Page ${pageNum})`
+                : "Gold Plated Anti-Tarnish Necklaces for Daily Wear India",
         description:
-            "Discover the finest anti-tarnish necklaces in India. Our collection includes waterproof 18k gold plated chains, pendants, and layered sets designed for everyday elegance.",
+            "Shop waterproof 18k gold plated necklaces for everyday Indian wear — pendants, layered chains, and anti-tarnish finishes that stay bright. Free delivery on orders over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -32,9 +32,9 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Anti-Tarnish Necklaces | Luxury Waterproof Jewellery | The Luxe Jewels",
+            title: "Gold Plated Anti-Tarnish Necklaces | Daily Wear India",
             description:
-                "Luminous accents for every style. Handcrafted waterproof fine necklaces. Designed to never fade.",
+                "Waterproof pendants and chains designed for everyday elegance — anti-tarnish finishes made for Indian climate and gifting.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -118,16 +118,45 @@ export default async function NecklacesPage({ searchParams }) {
             />
 
             <SeoIntro
-                title="Everyday necklaces that stay lustrous"
+                title="How to choose an everyday anti-tarnish necklace"
                 links={[
                     { href: "/earrings", label: "Shop Earrings" },
                     { href: "/shop", label: "Shop All" },
-                    { href: "/blog", label: "Styling Guides" },
+                    {
+                        href: "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion",
+                        label: "Daily Wear Guide",
+                    },
+                    { href: "/blog", label: "More Styling Guides" },
                 ]}
             >
                 <p>
-                    Explore waterproof gold plated chains, pendants, and layered sets from The Luxe
-                    Jewels — anti-tarnish pieces designed for gifting and daily elegance across India.
+                    Looking for a necklace you can wear from office to evening without constant
+                    polishing? Start with waterproof 18k gold plated chains and pendants from The
+                    Luxe Jewels — anti-tarnish pieces made for Indian humidity, festive outfits, and
+                    everyday layering.
+                </p>
+                <p>
+                    Choose a delicate pendant for gifting, a satellite or paperclip chain for daily
+                    stacking, or a statement charm for evenings. Pair with our{" "}
+                    <a href="/earrings" className="text-[#E91E63] font-semibold hover:underline">
+                        anti-tarnish earrings
+                    </a>{" "}
+                    for a complete set, or browse the{" "}
+                    <a href="/shop" className="text-[#E91E63] font-semibold hover:underline">
+                        full catalogue
+                    </a>{" "}
+                    if you want bracelets and rings too.
+                </p>
+                <p>
+                    Serving shoppers across Noida, Greater Noida, Delhi NCR, and pan-India with free
+                    delivery on orders over ₹1000. Prefer gifts? See our{" "}
+                    <a
+                        href="/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026"
+                        className="text-[#E91E63] font-semibold hover:underline"
+                    >
+                        festive jewellery gift ideas
+                    </a>
+                    .
                 </p>
             </SeoIntro>
         </section>

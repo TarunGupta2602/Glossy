@@ -2,7 +2,6 @@ export const revalidate = 3600;
 
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getDedicatedLandingPath } from "@/lib/categoryLanding";
-import { getBlogPageCount } from "@/lib/blogQueries";
 import { normalizeBlogSlug } from "@/lib/seo";
 
 const BASE_URL = "https://www.theluxejewels.in";
@@ -74,7 +73,7 @@ export default async function sitemap() {
     }
 
     const productPages = (products || [])
-        .filter((p) => p?.slug)
+        .filter((p) => p?.slug && !String(p.slug).startsWith("-"))
         .map((product) => ({
             url: `${BASE_URL}/product/${product.slug}`,
             lastModified: toDate(product.created_at, catalogLastModified),
@@ -82,21 +81,20 @@ export default async function sitemap() {
             priority: product.is_bestseller ? 0.9 : product.is_new ? 0.85 : 0.8,
         }));
 
-    const { data: blogs, count: blogCount } = await supabase
+    const { data: blogs } = await supabase
         .from("blogs")
-        .select("slug, updated_at, date_posted", { count: "exact" })
+        .select("slug, updated_at, date_posted")
         .order("date_posted", { ascending: false });
 
-    const blogTotalPages = getBlogPageCount(blogCount);
-    const blogIndexPages = Array.from({ length: blogTotalPages }, (_, i) => {
-        const pageNum = i + 1;
-        return {
-            url: pageNum === 1 ? `${BASE_URL}/blog` : `${BASE_URL}/blog?page=${pageNum}`,
+    // Only sitemap the main journal hub — paginated pages are noindex
+    const blogIndexPages = [
+        {
+            url: `${BASE_URL}/blog`,
             lastModified: blogLastModified,
             changeFrequency: "weekly",
-            priority: pageNum === 1 ? 0.8 : 0.6,
-        };
-    });
+            priority: 0.85,
+        },
+    ];
 
     const blogPages = (blogs || []).map((blog) => ({
         url: `${BASE_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,

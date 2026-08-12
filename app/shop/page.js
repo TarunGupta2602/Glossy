@@ -26,21 +26,21 @@ export async function generateMetadata({ searchParams }) {
     const canonical = getPaginatedCanonical("/shop", hasFilters ? 1 : pageNum);
     const title =
         pageNum > 1 && !hasFilters
-            ? `Shop All Fine Jewellery (Page ${pageNum})`
-            : "Shop All Fine Jewellery | Buy Anti-Tarnish & Waterproof Jewellery";
+            ? `Shop All Anti-Tarnish Jewellery (Page ${pageNum})`
+            : "Shop All Anti-Tarnish Jewellery Online | Full Catalogue";
 
     return {
         title,
         description:
-            "Explore our full collection of premium anti-tarnish, waterproof, and handcrafted jewellery at The Luxe Jewels. From ethical earrings to gold plated necklaces, find everyday luxury.",
+            "Browse the complete The Luxe Jewels catalogue — every anti-tarnish earring, necklace, bracelet, and ring in one place. Filter by style, sort by newest, and shop waterproof everyday luxury with pan-India delivery.",
         alternates: { canonical },
         robots: hasFilters
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
         openGraph: {
-            title: "Shop All Fine Jewellery | Premium & Sustainable | The Luxe Jewels",
+            title: "Shop All Jewellery | Full Anti-Tarnish Catalogue",
             description:
-                "Handcrafted ethical fine jewellery. Modern designs, sustainable luxury, and waterproof durability.",
+                "Browse every piece in The Luxe Jewels catalogue — waterproof earrings, necklaces, and more with pan-India shipping.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],

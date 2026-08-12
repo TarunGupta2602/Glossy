@@ -27,7 +27,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE } from "@/lib/constants";
+import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, BUSINESS_ADDRESS } from "@/lib/constants";
 
 function buildSiteVerification() {
     const verification = {
@@ -60,7 +60,7 @@ export const metadata = {
     default: "The Luxe Jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
     template: "%s | The Luxe Jewels"
   },
-  description: "Shop The Luxe Jewels for premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Free delivery on orders over ₹1000.",
+  description: "Shop The Luxe Jewels for premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Serving Noida, Delhi NCR & pan-India — free delivery on orders over ₹1000.",
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
@@ -134,12 +134,13 @@ export default function RootLayout({ children }) {
     "name": BRAND_NAME,
     "url": BRAND_URL,
     "logo": `${BRAND_URL}/favicon-symbol.png`,
-    "description": "Defining modern luxury through intentional design and sustainable practices in fine jewellery.",
+    "description": "Defining modern luxury through intentional design and sustainable practices in fine jewellery. Serving Noida, Delhi NCR, and pan-India.",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
       "contactType": "customer service",
-      "areaServed": "IN"
+      "areaServed": "IN",
+      "availableLanguage": ["English", "Hindi"]
     },
     "sameAs": [
       "https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
@@ -167,20 +168,28 @@ export default function RootLayout({ children }) {
 
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "JewelryStore",
     "name": BRAND_NAME,
-    "description": "Premium anti-tarnish and waterproof jewellery store in India. Shop 18k gold plated earrings, necklaces, and fine jewellery.",
+    "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
     "url": BRAND_URL,
     "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
+    "email": "supporttheluxejewels@gmail.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Dhaulana",
-      "addressLocality": "Hapur",
-      "addressRegion": "Uttar Pradesh",
-      "postalCode": "245301",
-      "addressCountry": "IN"
+      "streetAddress": BUSINESS_ADDRESS.streetAddress,
+      "addressLocality": BUSINESS_ADDRESS.addressLocality,
+      "addressRegion": BUSINESS_ADDRESS.addressRegion,
+      "postalCode": BUSINESS_ADDRESS.postalCode,
+      "addressCountry": BUSINESS_ADDRESS.addressCountry
     },
-    "priceRange": "₹₹₹",
+    "areaServed": [
+      { "@type": "City", "name": "Noida" },
+      { "@type": "City", "name": "Greater Noida" },
+      { "@type": "City", "name": "Ghaziabad" },
+      { "@type": "AdministrativeArea", "name": "Delhi NCR" },
+      { "@type": "Country", "name": "India" }
+    ],
+    "priceRange": "₹₹",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],

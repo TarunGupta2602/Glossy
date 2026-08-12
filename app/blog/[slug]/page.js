@@ -16,6 +16,7 @@ import {
     parseBlogKeywords,
     keywordToTagSlug,
 } from "@/lib/blogQueries";
+import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 
 export const revalidate = 300;
@@ -23,19 +24,21 @@ export const revalidate = 300;
 export async function generateMetadata({ params }) {
     const { slug } = await params;
     const supabase = getServiceClient();
-    const { blog, requested, canonicalSlug } = await findBlogBySlug(
+    const { blog: rawBlog, requested, canonicalSlug } = await findBlogBySlug(
         supabase,
         slug,
-        "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author"
+        "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author, faqs"
     );
 
-    if (!blog) {
+    if (!rawBlog) {
         return {
             title: "Article Not Found",
             description: "The requested article could not be found.",
             robots: { index: false, follow: false },
         };
     }
+
+    const blog = applyBlogSeoOverride(rawBlog, canonicalSlug);
 
     if (requested !== canonicalSlug) {
         // Metadata still generated; page will permanentRedirect
@@ -127,9 +130,9 @@ export default async function BlogDetailPage({ params }) {
     const { slug } = await params;
     const supabase = getServiceClient();
 
-    const { blog, requested, canonicalSlug } = await findBlogBySlug(supabase, slug);
+    const { blog: rawBlog, requested, canonicalSlug } = await findBlogBySlug(supabase, slug);
 
-    if (!blog) {
+    if (!rawBlog) {
         notFound();
     }
 
@@ -137,6 +140,7 @@ export default async function BlogDetailPage({ params }) {
         permanentRedirect(`/blog/${canonicalSlug}`);
     }
 
+    const blog = applyBlogSeoOverride(rawBlog, canonicalSlug);
     const relatedPosts = await getRelatedBlogPosts(supabase, blog, 3);
     const keywords = parseBlogKeywords(blog.meta_keywords);
 

@@ -15,15 +15,14 @@ export async function generateMetadata({ searchParams }) {
     const page = parseInt(params?.page || "1", 10);
     const pageNum = isNaN(page) || page < 1 ? 1 : page;
     const canonical = getPaginatedCanonical("/blog", pageNum);
+    const isPaginated = pageNum > 1;
 
-    const title =
-        pageNum > 1
-            ? `Blog | Jewellery Tips & Trends (Page ${pageNum})`
-            : "Blog | Jewellery Tips, Styling Guides & Latest Trends";
-    const description =
-        pageNum > 1
-            ? `Page ${pageNum} of The Luxe Jewels blog — jewellery tips, styling guides, care advice, and trends in anti-tarnish jewellery.`
-            : "Explore The Luxe Jewels blog for expert jewellery tips, styling guides, care advice, and the latest trends in luxury anti-tarnish and waterproof jewellery.";
+    const title = isPaginated
+        ? `Jewellery Tips & Trends — Page ${pageNum}`
+        : "Jewellery Care, Styling Guides & Trends | The Luxe Journal";
+    const description = isPaginated
+        ? `Page ${pageNum} of The Luxe Jewels journal — anti-tarnish jewellery care, styling ideas, and gift guides for everyday luxury in India.`
+        : "Read The Luxe Jewels journal for anti-tarnish jewellery care, 18k gold plated buying guides, festive gift ideas, and styling tips for earrings, necklaces, and bracelets in India.";
 
     return {
         title,
@@ -31,18 +30,19 @@ export async function generateMetadata({ searchParams }) {
         alternates: {
             canonical,
         },
-        robots: {
-            index: true,
-            follow: true,
-            "max-image-preview": "large",
-            "max-snippet": -1,
-        },
+        robots: isPaginated
+            ? { index: false, follow: true }
+            : {
+                  index: true,
+                  follow: true,
+                  "max-image-preview": "large",
+                  "max-snippet": -1,
+              },
         openGraph: {
-            title: pageNum > 1
-                ? `Blog — Page ${pageNum} | The Luxe Jewels`
-                : "Blog | Jewellery Tips & Styling Guides | The Luxe Jewels",
-            description:
-                "Explore expert jewellery tips, styling guides, and the latest trends from The Luxe Jewels.",
+            title: isPaginated
+                ? `Journal — Page ${pageNum} | The Luxe Jewels`
+                : "The Luxe Journal | Jewellery Care, Styling & Gift Guides",
+            description,
             url: `${BRAND_URL}${canonical}`,
             type: "website",
             images: [
@@ -56,12 +56,10 @@ export async function generateMetadata({ searchParams }) {
         },
         twitter: {
             card: "summary_large_image",
-            title:
-                pageNum > 1
-                    ? `Blog — Page ${pageNum} | The Luxe Jewels`
-                    : "Blog | Jewellery Tips & Styling Guides | The Luxe Jewels",
-            description:
-                "Explore expert jewellery tips, styling guides, and the latest trends from The Luxe Jewels.",
+            title: isPaginated
+                ? `Journal — Page ${pageNum} | The Luxe Jewels`
+                : "The Luxe Journal | Jewellery Care & Styling Guides",
+            description,
             images: ["/og-image.png"],
             creator: TWITTER_HANDLE,
         },
@@ -103,15 +101,27 @@ export default async function BlogPage({ searchParams }) {
 
     const itemListJsonLd = {
         "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: "The Luxe Jewels Blog",
-        numberOfItems: count || 0,
-        itemListElement: (blogs || []).map((blog, index) => ({
-            "@type": "ListItem",
-            position: from + index + 1,
-            url: `${BRAND_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
-            name: blog.title,
-        })),
+        "@type": "CollectionPage",
+        name: "The Luxe Jewels Journal",
+        description:
+            "Guides on anti-tarnish jewellery care, 18k gold plated buying advice, festive gifting, and styling for earrings, necklaces, and bracelets in India.",
+        url: `${BRAND_URL}/blog`,
+        isPartOf: {
+            "@type": "WebSite",
+            name: "The Luxe Jewels",
+            url: BRAND_URL,
+        },
+        mainEntity: {
+            "@type": "ItemList",
+            name: "Latest jewellery guides",
+            numberOfItems: count || 0,
+            itemListElement: (blogs || []).map((blog, index) => ({
+                "@type": "ListItem",
+                position: from + index + 1,
+                url: `${BRAND_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
+                name: blog.title,
+            })),
+        },
     };
 
     function Pagination() {
@@ -192,12 +202,27 @@ export default async function BlogPage({ searchParams }) {
                         className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-5 tracking-tight drop-shadow-sm"
                         style={{ fontFamily: "var(--font-playfair)" }}
                     >
-                        Stories, styling tips, and jewellery inspiration.
+                        Jewellery care, styling guides &amp; gift ideas for India
                     </h1>
                     <p className="mx-auto max-w-2xl text-sm md:text-base text-gray-500 font-medium leading-7">
-                        Dive into our latest articles to discover jewellery care advice,
-                        seasonal styling ideas, and the newest trends in luxury accessories.
+                        Practical articles on anti-tarnish and waterproof jewellery — how to
+                        clean gold plated pieces, what 18k plating really means, festive gift
+                        picks for Raksha Bandhan and Friendship Day, and everyday styling for
+                        earrings, necklaces, and bracelets.
                     </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-[#E91E63]">
+                        <Link href="/earrings" className="underline-offset-4 hover:underline">
+                            Shop earrings
+                        </Link>
+                        <span className="text-gray-300">·</span>
+                        <Link href="/necklaces" className="underline-offset-4 hover:underline">
+                            Shop necklaces
+                        </Link>
+                        <span className="text-gray-300">·</span>
+                        <Link href="/shop" className="underline-offset-4 hover:underline">
+                            Shop all jewellery
+                        </Link>
+                    </div>
                     <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 sm:gap-4">
                         <span className="rounded-full border border-pink-100 bg-white/80 px-4 py-2 font-semibold text-[#c2185b] shadow-sm">
                             {count || 0} articles

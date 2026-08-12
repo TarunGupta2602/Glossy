@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
 import {
     fetchProductBySlugOrId,
@@ -11,9 +11,9 @@ import {
     truncateMetaDescription,
     getProductCanonicalUrl,
     getProductPath,
-    isUuid,
     SITE_NAME,
 } from "@/lib/seo";
+import { LEGACY_PRODUCT_REDIRECTS } from "@/lib/legacyProductRedirects";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
@@ -89,11 +89,22 @@ export default async function ProductPage({ params }) {
     const { slug: param } = await params;
     const product = await fetchProductBySlugOrId(param);
 
-    if (!product) notFound();
+    if (!product) {
+        const legacy = LEGACY_PRODUCT_REDIRECTS.find(
+            (entry) => entry.source === `/product/${param}`
+        );
+        if (legacy) permanentRedirect(legacy.destination);
 
-    // Redirect UUID URLs to slug URLs for SEO when slug is available
-    if (isUuid(param) && product.slug && product.slug !== param) {
-        redirect(getProductPath(product));
+        const lower = String(param || "").toLowerCase();
+        if (/(arring|hoop|oop|stud)/.test(lower)) permanentRedirect("/earrings");
+        if (/(ecklace|endant|chain)/.test(lower)) permanentRedirect("/necklaces");
+        notFound();
+    }
+
+    // Permanent redirect UUID / corrupted legacy URLs to the canonical slug path
+    const canonicalPath = getProductPath(product);
+    if (product.slug && param !== product.slug) {
+        permanentRedirect(canonicalPath);
     }
 
     const id = product.id;

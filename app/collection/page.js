@@ -8,8 +8,9 @@ import { getCategoryHref } from "@/lib/categoryLanding";
 export const revalidate = 3600;
 
 export const metadata = {
-    title: "Featured Jewellery Collections | Curated Luxury Jewellery India",
-    description: "Explore curated fine jewellery collections at The Luxe Jewels, featuring anti-tarnish earrings, necklaces, and statement pieces designed for everyday elegance in India.",
+    title: "Browse Jewellery by Category | Earrings, Necklaces & More",
+    description:
+        "Explore The Luxe Jewels by category — curated edits of anti-tarnish earrings, necklaces, bracelets, and rings. Pick a collection, then shop waterproof everyday luxury for India.",
     alternates: {
         canonical: "/collection",
     },
@@ -20,8 +21,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Featured Collections | Curated Fine Jewellery",
-        description: "Explore our curated collections of fine jewellery. Handcrafted for elegance.",
+        title: "Browse by Category | Jewellery Collections",
+        description:
+            "Choose a curated jewellery category — earrings, necklaces, bracelets, and more — then shop anti-tarnish pieces made for daily wear.",
         url: "https://www.theluxejewels.in/collection",
         siteName: "The Luxe Jewels",
         images: [{ url: "/logo.png" }],
@@ -52,13 +54,14 @@ export default async function FeaturedCollections() {
 
             <div className={`${SITE_CONTAINER} pt-6 md:pt-8 pb-2`}>
                 <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
-                    Curation
+                    Shop by category
                 </span>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-                    Featured Collections
+                    Browse jewellery by category
                 </h1>
                 <p className="text-sm text-gray-500 mt-2 max-w-lg">
-                    Handpicked edits of anti-tarnish jewellery — explore by style.
+                    Start with earrings, necklaces, bracelets, or rings — then explore the full
+                    anti-tarnish edit inside each collection.
                 </p>
             </div>
 
