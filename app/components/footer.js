@@ -25,8 +25,8 @@ const SHOP_LINKS = [
 ];
 
 const HELP_LINKS = [
+    { href: "/blog", label: "Blog" },
     { href: "/our-story", label: "Our story" },
-    { href: "/blog", label: "Journal" },
     { href: "/shipping-returns", label: "Shipping & returns" },
     { href: "/faqs", label: "FAQs" },
     { href: "/contact", label: "Contact" },

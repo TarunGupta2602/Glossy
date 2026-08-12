@@ -20,13 +20,14 @@ const PRIMARY_LINKS = [
     { href: "/earrings", label: "Earrings" },
     { href: "/necklaces", label: "Necklaces" },
     { href: "/collection", label: "Collections" },
+    { href: "/blog", label: "Blog" },
 ];
 
 const QUICK_LINKS = [
     { href: "/earrings", label: "Earrings", hint: "Studs, hoops & drops" },
     { href: "/necklaces", label: "Necklaces", hint: "Chains & pendants" },
     { href: "/shop?sort=popular", label: "Bestsellers", hint: "Most loved" },
-    { href: "/shop?sort=newest", label: "New in", hint: "Fresh drops" },
+    { href: "/blog", label: "Blog", hint: "Guides & tips" },
 ];
 
 function IconBtn({ as: Comp = "button", className = "", children, ...props }) {
@@ -540,7 +541,7 @@ export default function Navbar() {
                         </p>
                         <div className="rounded-2xl border border-gray-100 overflow-hidden mb-6">
                             {[
-                                { href: "/blog", label: "Journal" },
+                                { href: "/blog", label: "Blog — all articles" },
                                 { href: "/our-story", label: "Our story" },
                                 {
                                     href: "/wishlist",
