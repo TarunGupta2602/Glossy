@@ -10,6 +10,7 @@ import { attachHoverImages } from "@/lib/hoverImages";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
+import { PROMO_LABEL } from "@/lib/promo";
 
 export const revalidate = 300;
 
@@ -27,21 +28,21 @@ export async function generateMetadata({ searchParams }) {
     const canonical = getPaginatedCanonical("/shop", hasFilters ? 1 : pageNum);
     const title =
         pageNum > 1 && !hasFilters
-            ? `Shop All Anti-Tarnish Jewellery (Page ${pageNum})`
-            : "Shop All Anti-Tarnish Jewellery Online | Full Catalogue";
+            ? `Shop All Anti-Tarnish Jewellery (Page ${pageNum}) | ${PROMO_LABEL}`
+            : `Shop All Anti-Tarnish Jewellery | ${PROMO_LABEL}`;
 
     return {
         title,
         description:
-            "Browse the complete The Luxe Jewels catalogue — every anti-tarnish earring, necklace, bracelet, and ring in one place. Filter by style, sort by newest, and shop waterproof everyday luxury with pan-India delivery.",
+            "Browse the complete The Luxe Jewels catalogue — anti-tarnish earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + pan-India delivery. Filter by style and shop waterproof everyday luxury.",
         alternates: { canonical },
         robots: hasFilters
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
         openGraph: {
-            title: "Shop All Jewellery | Full Anti-Tarnish Catalogue",
+            title: `Shop All Jewellery | ${PROMO_LABEL}`,
             description:
-                "Browse every piece in The Luxe Jewels catalogue — waterproof earrings, necklaces, and more with pan-India shipping.",
+                "Browse every piece in The Luxe Jewels catalogue — waterproof earrings, necklaces, and more with Buy 2 Get 1 Free.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],

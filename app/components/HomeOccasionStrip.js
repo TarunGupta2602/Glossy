@@ -3,10 +3,10 @@ import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
 
 const OCCASIONS = [
     { label: "Daily wear", href: "/shop?sort=popular", hint: "Everyday shine" },
-    { label: "Office", href: "/earrings", hint: "Subtle polish" },
-    { label: "Gifting", href: "/shop?sort=newest", hint: "Ready to wrap" },
+    { label: "Office", href: "/blog/office-wear-jewellery-india-anti-tarnish", hint: "Subtle polish" },
+    { label: "Gifts ₹499", href: "/gifts/under-499", hint: "Light & lovely" },
+    { label: "Gifts ₹999", href: "/gifts/under-999", hint: "Ready to wrap" },
     { label: "Festive", href: "/necklaces", hint: "Layer & glow" },
-    { label: "Wedding guest", href: "/collection", hint: "Statement edits" },
 ];
 
 export default function HomeOccasionStrip() {

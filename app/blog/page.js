@@ -7,6 +7,7 @@ import { BLOG_PAGE_SIZE, getBlogPageCount } from "@/lib/blogQueries";
 import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL, TWITTER_HANDLE } from "@/lib/constants";
 import { normalizeBlogSlug } from "@/lib/seo";
+import { listStaticBlogSummaries } from "@/lib/staticBlogPosts";
 
 export const revalidate = 300;
 
@@ -76,17 +77,37 @@ export default async function BlogPage({ searchParams }) {
         .from("blogs")
         .select("id", { count: "exact", head: true });
 
+    const staticSummaries = listStaticBlogSummaries();
+    const dbCount = count || 0;
+    const totalCount = dbCount + staticSummaries.length;
+
     const from = (page - 1) * BLOG_PAGE_SIZE;
     const to = from + BLOG_PAGE_SIZE - 1;
-    const { data: blogs } = await supabase
+
+    // Merge static growth posts at the front of the journal feed
+    const merged = [...staticSummaries];
+    const staticSlugs = new Set(staticSummaries.map((p) => p.slug));
+
+    const { data: dbBlogs } = await supabase
         .from("blogs")
         .select("id, title, slug, description, image, author, date_posted")
         .order("date_posted", { ascending: false })
-        .range(from, to);
+        .limit(200);
 
-    const totalPages = getBlogPageCount(count);
+    for (const blog of dbBlogs || []) {
+        const slug = normalizeBlogSlug(blog.slug) || blog.slug;
+        if (staticSlugs.has(slug)) continue;
+        merged.push({ ...blog, slug });
+    }
 
-    if (page > totalPages && (count || 0) > 0) {
+    merged.sort(
+        (a, b) => new Date(b.date_posted || 0).getTime() - new Date(a.date_posted || 0).getTime()
+    );
+
+    const blogs = merged.slice(from, to + 1);
+    const totalPages = getBlogPageCount(totalCount);
+
+    if (page > totalPages && totalCount > 0) {
         redirect(totalPages === 1 ? "/blog" : `/blog?page=${totalPages}`);
     }
 
@@ -114,7 +135,7 @@ export default async function BlogPage({ searchParams }) {
         mainEntity: {
             "@type": "ItemList",
             name: "Latest jewellery guides",
-            numberOfItems: count || 0,
+            numberOfItems: totalCount || 0,
             itemListElement: (blogs || []).map((blog, index) => ({
                 "@type": "ListItem",
                 position: from + index + 1,
@@ -225,7 +246,7 @@ export default async function BlogPage({ searchParams }) {
                     </div>
                     <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 sm:gap-4">
                         <span className="rounded-full border border-pink-100 bg-white/80 px-4 py-2 font-semibold text-[#c2185b] shadow-sm">
-                            {count || 0} articles
+                            {totalCount || 0} articles
                         </span>
                         <span className="rounded-full border border-gray-100 bg-white/80 px-4 py-2 font-medium">
                             {totalPages} page{totalPages === 1 ? "" : "s"}

@@ -3,6 +3,7 @@ export const revalidate = 3600;
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getDedicatedLandingPath } from "@/lib/categoryLanding";
 import { normalizeBlogSlug } from "@/lib/seo";
+import { STATIC_BLOG_POSTS } from "@/lib/staticBlogPosts";
 
 const BASE_URL = "https://www.theluxejewels.in";
 
@@ -38,6 +39,8 @@ export default async function sitemap() {
         { path: "/collection", priority: 0.8, changeFrequency: "weekly", lastModified: categoryLastModified },
         { path: "/earrings", priority: 0.85, changeFrequency: "weekly", lastModified: catalogLastModified },
         { path: "/necklaces", priority: 0.85, changeFrequency: "weekly", lastModified: catalogLastModified },
+        { path: "/gifts/under-499", priority: 0.8, changeFrequency: "weekly", lastModified: catalogLastModified },
+        { path: "/gifts/under-999", priority: 0.8, changeFrequency: "weekly", lastModified: catalogLastModified },
         { path: "/our-story", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
         { path: "/contact", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
         { path: "/faqs", priority: 0.7, changeFrequency: "monthly", lastModified: LEGAL_LAST_MODIFIED },
@@ -96,12 +99,20 @@ export default async function sitemap() {
         },
     ];
 
-    const blogPages = (blogs || []).map((blog) => ({
-        url: `${BASE_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
-        lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
-        changeFrequency: "monthly",
-        priority: 0.7,
-    }));
+    const blogPages = [
+        ...STATIC_BLOG_POSTS.map((blog) => ({
+            url: `${BASE_URL}/blog/${blog.slug}`,
+            lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
+            changeFrequency: "monthly",
+            priority: 0.75,
+        })),
+        ...(blogs || []).map((blog) => ({
+            url: `${BASE_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
+            lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
+            changeFrequency: "monthly",
+            priority: 0.7,
+        })),
+    ];
 
     return [...staticPages, ...blogIndexPages, ...categoryPages, ...productPages, ...blogPages];
 }

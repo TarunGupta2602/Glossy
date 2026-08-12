@@ -20,8 +20,8 @@ const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
     { href: "/earrings", label: "Earrings" },
     { href: "/necklaces", label: "Necklaces" },
-    { href: "/collection", label: "Collections" },
-    { href: "/shop?sort=newest", label: "New arrivals" },
+    { href: "/gifts/under-999", label: "Gifts under ₹999" },
+    { href: "/gifts/under-499", label: "Gifts under ₹499" },
 ];
 
 const HELP_LINKS = [

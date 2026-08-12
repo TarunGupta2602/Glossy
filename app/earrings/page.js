@@ -1,6 +1,6 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import CollectionPageContent from "../components/CollectionPageContent";
-import SeoIntro from "../components/SeoIntro";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -8,6 +8,9 @@ import { findEarringsCategory } from "@/lib/categoryLanding";
 import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
+import { EARRINGS_GUIDE } from "@/lib/categoryGuides";
+import { PROMO_LABEL } from "@/lib/promo";
+import { attachHoverImages } from "@/lib/hoverImages";
 
 export const revalidate = 300;
 
@@ -20,10 +23,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Waterproof Anti-Tarnish Earrings (Page ${pageNum})`
-                : "Waterproof Anti-Tarnish Earrings | Studs, Hoops & Drops",
+                ? `Waterproof Anti-Tarnish Earrings (Page ${pageNum}) | ${PROMO_LABEL}`
+                : `Waterproof Anti-Tarnish Earrings India | ${PROMO_LABEL}`,
         description:
-            "Shop waterproof anti-tarnish earrings for daily Indian wear — hypoallergenic 18k gold plated studs, hoops, and statement drops that stay bright without constant polishing.",
+            "Shop waterproof anti-tarnish earrings for daily Indian wear — hypoallergenic 18k gold plated studs, hoops & drops. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -32,7 +35,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Waterproof Anti-Tarnish Earrings | Studs & Hoops India",
+            title: `Waterproof Anti-Tarnish Earrings | ${PROMO_LABEL}`,
             description:
                 "Hypoallergenic 18k gold plated studs, hoops, and drops made for everyday wear in Indian weather.",
             url: `${BRAND_URL}${canonical}`,
@@ -81,7 +84,10 @@ export default async function EarringsPage({ searchParams }) {
         products = productsResult.data || [];
     }
 
-    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const productsWithDiscounts = await attachHoverImages(
+        supabase,
+        products.map(withCalculatedDiscount)
+    );
     const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(
         productsWithDiscounts.map((p) => p.id)
@@ -89,7 +95,8 @@ export default async function EarringsPage({ searchParams }) {
 
     const pageTitle = category?.name || "Anti-Tarnish Earrings";
     const pageDescription =
-        category?.description || "Waterproof. Everyday-proof. Crafted for the modern individual.";
+        category?.description ||
+        "Waterproof studs, hoops & drops for everyday India — Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -121,24 +128,7 @@ export default async function EarringsPage({ searchParams }) {
                 otherCategories={otherCategories}
             />
 
-            <SeoIntro
-                title="Why choose waterproof anti-tarnish earrings?"
-                links={[
-                    { href: "/necklaces", label: "Shop Necklaces" },
-                    { href: "/shop", label: "Shop All" },
-                    {
-                        href: "/blog/18k-gold-plated-vs-real-gold-jewelry",
-                        label: "18k Gold Plated Guide",
-                    },
-                    { href: "/blog", label: "Jewellery Tips" },
-                ]}
-            >
-                <p>
-                    Our waterproof, hypoallergenic 18k gold plated earrings are made for daily Indian
-                    wear — from studs and hoops to statement drops that stay bright without constant
-                    polishing. Pair with our necklaces for a complete everyday set.
-                </p>
-            </SeoIntro>
+            <CategoryBuyingGuide guide={EARRINGS_GUIDE} />
         </section>
     );
 }

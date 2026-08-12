@@ -1,6 +1,6 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import CollectionPageContent from "../components/CollectionPageContent";
-import SeoIntro from "../components/SeoIntro";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -8,6 +8,9 @@ import { findNecklacesCategory } from "@/lib/categoryLanding";
 import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
+import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
+import { PROMO_LABEL } from "@/lib/promo";
+import { attachHoverImages } from "@/lib/hoverImages";
 
 export const revalidate = 300;
 
@@ -20,10 +23,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Gold Plated Anti-Tarnish Necklaces (Page ${pageNum})`
-                : "Gold Plated Anti-Tarnish Necklaces for Daily Wear India",
+                ? `Gold Plated Anti-Tarnish Necklaces (Page ${pageNum}) | ${PROMO_LABEL}`
+                : `Gold Plated Anti-Tarnish Necklaces India | ${PROMO_LABEL}`,
         description:
-            "Shop waterproof 18k gold plated necklaces for everyday Indian wear — pendants, layered chains, and anti-tarnish finishes that stay bright. Free delivery on orders over ₹1000.",
+            "Shop waterproof 18k gold plated necklaces for everyday Indian wear — pendants & layered chains. Buy 2 Get 1 Free + free delivery over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -32,7 +35,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Gold Plated Anti-Tarnish Necklaces | Daily Wear India",
+            title: `Gold Plated Anti-Tarnish Necklaces | ${PROMO_LABEL}`,
             description:
                 "Waterproof pendants and chains designed for everyday elegance — anti-tarnish finishes made for Indian climate and gifting.",
             url: `${BRAND_URL}${canonical}`,
@@ -79,13 +82,17 @@ export default async function NecklacesPage({ searchParams }) {
         products = productsResult.data || [];
     }
 
-    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const productsWithDiscounts = await attachHoverImages(
+        supabase,
+        products.map(withCalculatedDiscount)
+    );
     const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
     const pageTitle = category?.name || "Anti-Tarnish Necklaces";
     const pageDescription =
-        category?.description || "Timeless chains. Sustainable luxury. Designed to never fade.";
+        category?.description ||
+        "Everyday chains and pendants that stay bright — Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -117,48 +124,7 @@ export default async function NecklacesPage({ searchParams }) {
                 otherCategories={otherCategories}
             />
 
-            <SeoIntro
-                title="How to choose an everyday anti-tarnish necklace"
-                links={[
-                    { href: "/earrings", label: "Shop Earrings" },
-                    { href: "/shop", label: "Shop All" },
-                    {
-                        href: "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion",
-                        label: "Daily Wear Guide",
-                    },
-                    { href: "/blog", label: "More Styling Guides" },
-                ]}
-            >
-                <p>
-                    Looking for a necklace you can wear from office to evening without constant
-                    polishing? Start with waterproof 18k gold plated chains and pendants from The
-                    Luxe Jewels — anti-tarnish pieces made for Indian humidity, festive outfits, and
-                    everyday layering.
-                </p>
-                <p>
-                    Choose a delicate pendant for gifting, a satellite or paperclip chain for daily
-                    stacking, or a statement charm for evenings. Pair with our{" "}
-                    <a href="/earrings" className="text-[#E91E63] font-semibold hover:underline">
-                        anti-tarnish earrings
-                    </a>{" "}
-                    for a complete set, or browse the{" "}
-                    <a href="/shop" className="text-[#E91E63] font-semibold hover:underline">
-                        full catalogue
-                    </a>{" "}
-                    if you want bracelets and rings too.
-                </p>
-                <p>
-                    Serving shoppers across Noida, Greater Noida, Delhi NCR, and pan-India with free
-                    delivery on orders over ₹1000. Prefer gifts? See our{" "}
-                    <a
-                        href="/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026"
-                        className="text-[#E91E63] font-semibold hover:underline"
-                    >
-                        festive jewellery gift ideas
-                    </a>
-                    .
-                </p>
-            </SeoIntro>
+            <CategoryBuyingGuide guide={NECKLACES_GUIDE} />
         </section>
     );
 }
