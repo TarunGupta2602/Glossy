@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
 
 export default function TopStyles({ tabs = [], reviewCounts = {} }) {
@@ -37,7 +37,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
                     </h2>
                 </div>
 
-                <div className="-mx-4 px-4 mb-6 md:mb-10 overflow-x-auto no-scrollbar md:mx-0 md:px-0 md:overflow-visible">
+                <div className={`${HOME_EDGE_SCROLL} mb-6 md:mb-10 overflow-x-auto no-scrollbar md:overflow-visible`}>
                     <div className="flex md:flex-wrap items-center justify-start md:justify-center gap-2 sm:gap-3 w-max md:w-auto mx-auto">
                         {safeTabs.map((tab) => {
                             const isActive = tab.id === activeTab.id;
@@ -63,7 +63,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
                 {products.length > 0 ? (
                     <>
                         <div
-                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5 md:gap-6 transition-opacity duration-200 ${
+                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-7 transition-opacity duration-200 ${
                                 isPending ? "opacity-50" : "opacity-100"
                             }`}
                         >

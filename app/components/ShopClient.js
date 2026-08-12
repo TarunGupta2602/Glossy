@@ -211,7 +211,7 @@ export default function ShopClient({
                 </div>
             </div>
 
-            <div className={`flex-1 min-w-0 relative pb-24 md:pb-0 transition-opacity duration-200 ${isPending ? "opacity-55" : "opacity-100"}`}>
+            <div className={`flex-1 min-w-0 relative pb-24 md:pb-0 transition-[opacity,transform] duration-300 ${isPending ? "opacity-55 translate-y-0.5" : "opacity-100 translate-y-0"}`}>
                 {isPending && (
                     <div className="absolute inset-x-0 top-0 z-10 flex justify-center pointer-events-none">
                         <span className="mt-2 rounded-full bg-white border border-gray-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#E91E63] shadow-sm">
@@ -219,6 +219,49 @@ export default function ShopClient({
                         </span>
                     </div>
                 )}
+
+                {(selectedCategories.length > 0 || minPrice > 0 || maxPrice < 5000) && (
+                    <div className="flex flex-wrap items-center gap-2 mb-4 md:mb-5">
+                        {selectedCategories.map((id) => {
+                            const cat = categories.find((c) => String(c.id) === String(id));
+                            if (!cat) return null;
+                            return (
+                                <button
+                                    key={id}
+                                    type="button"
+                                    onClick={() =>
+                                        navigate({
+                                            categories: selectedCategories.filter((c) => c !== String(id)),
+                                            page: 1,
+                                        })
+                                    }
+                                    className="inline-flex items-center gap-1.5 min-h-9 rounded-full bg-[#fdf2f6] border border-[#E91E63]/20 px-3 text-[11px] font-semibold text-[#E91E63] hover:bg-[#E91E63] hover:text-white transition-colors"
+                                >
+                                    {cat.name}
+                                    <span aria-hidden>×</span>
+                                </button>
+                            );
+                        })}
+                        {(minPrice > 0 || maxPrice < 5000) && (
+                            <button
+                                type="button"
+                                onClick={() => navigate({ min: 0, max: 5000, page: 1 })}
+                                className="inline-flex items-center gap-1.5 min-h-9 rounded-full bg-gray-100 border border-gray-200 px-3 text-[11px] font-semibold text-gray-700 hover:border-gray-400 transition-colors"
+                            >
+                                ₹{minPrice}–₹{maxPrice}
+                                <span aria-hidden>×</span>
+                            </button>
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => router.push("/shop?page=1")}
+                            className="text-[11px] font-semibold text-gray-500 underline underline-offset-2 min-h-9 px-1"
+                        >
+                            Clear all
+                        </button>
+                    </div>
+                )}
+
                 <div className="hidden md:flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                     <div className="flex items-center gap-3">
                         <p className="text-[13px] text-gray-600">

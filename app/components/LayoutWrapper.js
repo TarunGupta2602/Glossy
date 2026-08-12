@@ -7,6 +7,8 @@ import Navbar from "./navbar";
 import Footer from "./footer";
 import AnnouncementBar from "./AnnouncementBar";
 import TabTeaser from "./TabTeaser";
+import CartDrawer from "./CartDrawer";
+import ToastHost from "./ToastHost";
 
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
@@ -36,6 +38,8 @@ export default function LayoutWrapper({ children }) {
             <Navbar />
             {children}
             <Footer />
+            <CartDrawer />
+            <ToastHost />
 
             <a
                 href={WHATSAPP_URL}

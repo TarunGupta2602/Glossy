@@ -13,7 +13,12 @@ export function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
     const [isInitialized, setIsInitialized] = useState(false);
     const [allProducts, setAllProducts] = useState([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
     const { user } = useAuth();
+
+    const openCart = useCallback(() => setIsCartOpen(true), []);
+    const closeCart = useCallback(() => setIsCartOpen(false), []);
+    const toggleCart = useCallback(() => setIsCartOpen((v) => !v), []);
 
     // Fetch cart from database for authenticated users
     const fetchDBCart = useCallback(async () => {
@@ -167,6 +172,7 @@ export function CartProvider({ children }) {
         }
 
         // Guest mode handled by the initial setCart call and the useEffect for localStorage
+        setIsCartOpen(true);
     };
 
     const removeFromCart = async (productId) => {
@@ -282,6 +288,10 @@ export function CartProvider({ children }) {
                 cartTotal,
                 isInitialized,
                 promo,
+                isCartOpen,
+                openCart,
+                closeCart,
+                toggleCart,
             }}
         >
             {children}

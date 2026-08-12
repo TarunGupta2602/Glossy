@@ -5,6 +5,7 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
+import { attachHoverImagesToLists } from "@/lib/hoverImages";
 import {
   findEarringsCategory,
   findNecklacesCategory,
@@ -12,13 +13,11 @@ import {
 } from "@/lib/categoryLanding";
 import HomeTrustBar from "./components/HomeTrustBar";
 import HomeCollections from "./components/HomeCollections";
+import HomeOccasionStrip from "./components/HomeOccasionStrip";
 import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
 import TopStyles from "./components/TopStyles";
-
-const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
-  loading: () => <div className="h-[420px] bg-[#faf7f8] animate-pulse" />,
-});
+import RevealOnScroll from "./components/RevealOnScroll";
 
 const Testimonials = dynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[300px] bg-gray-50 animate-pulse" />,
@@ -195,13 +194,14 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
     items.push({
       id: category.id,
       label: meta.label,
+      name: category.name || meta.label,
       href: getCategoryHref(category),
       order: meta.order,
       image: pickImage(
-        products[0]?.main_image,
-        products[1]?.main_image,
         category.image_url,
         category.image,
+        products[0]?.main_image,
+        products[1]?.main_image,
         meta.fallbackImage
       ),
       products,
@@ -251,79 +251,93 @@ export default async function Home() {
     supabase
       .from("categories")
       .select("id, name, slug, image_url, description"),
-    getFeaturedReviews(3),
+    getFeaturedReviews(6),
     getSiteReviewStats(),
   ]);
 
   const {
-    bestSellerProducts,
-    newArrivalProducts,
-    featuredProducts,
-    latestProducts,
+    bestSellerProducts: bestRaw,
+    newArrivalProducts: newRaw,
+    latestProducts: latestRaw,
     productsByCategoryId,
-    necklacesCat,
   } = await fetchHomeProducts(supabase, categories || []);
 
   const collections = buildCollections(categories || [], productsByCategoryId);
-  const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
+  const topStyleTabsRaw = buildTopStyleTabs(collections, latestRaw);
+
+  const tabProductLists = topStyleTabsRaw.map((t) => t.products || []);
+  const [bestSellerProducts, newArrivalProducts, ...tabLists] =
+    await attachHoverImagesToLists(supabase, [
+      bestRaw,
+      newRaw,
+      ...tabProductLists,
+    ]);
+
+  const topStyleTabs = topStyleTabsRaw.map((tab, i) => ({
+    ...tab,
+    products: tabLists[i] || tab.products,
+  }));
 
   const allProductIds = [
     ...new Set(
       [
         ...bestSellerProducts,
         ...newArrivalProducts,
-        ...featuredProducts,
         ...topStyleTabs.flatMap((t) => t.products || []),
       ].map((p) => p.id)
     ),
   ];
   const reviewCounts = await getReviewCounts(allProductIds);
 
-  const featuredFallback = pickImage(
-    necklacesCat?.image_url,
-    featuredProducts[0]?.main_image,
-    "/iloveimg-resized/hero3.png"
-  );
-
   return (
     <main className="min-h-screen bg-white">
       <HeroSlider />
       <HomeTrustBar />
-      <HomeCollections collections={collections} />
-      <TopStyles tabs={topStyleTabs} reviewCounts={reviewCounts} />
+      <HomeOccasionStrip />
+
+      <RevealOnScroll>
+        <HomeCollections collections={collections} />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <TopStyles tabs={topStyleTabs} reviewCounts={reviewCounts} />
+      </RevealOnScroll>
 
       {bestSellerProducts.length > 0 && (
-        <ProductRow
-          title="Bestsellers"
-          eyebrow="Most loved"
-          accent="warm"
-          products={bestSellerProducts}
-          viewAllLink="/shop?sort=popular"
-          reviewCounts={reviewCounts}
-        />
+        <RevealOnScroll>
+          <ProductRow
+            title="Bestsellers"
+            eyebrow="Most loved"
+            accent="warm"
+            products={bestSellerProducts}
+            viewAllLink="/shop?sort=popular"
+            reviewCounts={reviewCounts}
+          />
+        </RevealOnScroll>
       )}
 
-      <FeaturedCollections
-        categories={categories || []}
-        featuredProducts={featuredProducts}
-        fallbackImage={featuredFallback}
-      />
-
       {newArrivalProducts.length > 0 && (
-        <ProductRow
-          title="New Arrivals"
-          eyebrow="Just in"
-          products={newArrivalProducts}
-          viewAllLink="/shop?sort=newest"
-          reviewCounts={reviewCounts}
-        />
+        <RevealOnScroll>
+          <ProductRow
+            title="New Arrivals"
+            eyebrow="Just in"
+            products={newArrivalProducts}
+            viewAllLink="/shop?sort=newest"
+            reviewCounts={reviewCounts}
+          />
+        </RevealOnScroll>
       )}
 
       <RecentlyViewed />
 
-      <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
+      <RevealOnScroll>
+        <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
+      </RevealOnScroll>
 
-      <InstagramFeed />
+      <RevealOnScroll>
+        <InstagramFeed />
+      </RevealOnScroll>
+
       <Newsletter />
     </main>
   );

@@ -1,34 +1,73 @@
+import Image from "next/image";
 import Link from "next/link";
-import { getInitials } from "@/lib/featuredReviews";
+import { getInitials, getReviewVisual } from "@/lib/featuredReviews";
 import { getProductPath } from "@/lib/seo";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
+import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
 export default function Testimonials({ reviews = [], reviewStats = null }) {
     if (!reviews.length) {
         return null;
     }
 
+    const photoReviews = reviews
+        .map((review) => ({ review, visual: getReviewVisual(review) }))
+        .filter((item) => item.visual)
+        .slice(0, 8);
+
+    const quoteReviews = reviews.slice(0, 3);
+
     return (
-        <section className="py-10 md:py-16 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
+        <section className="py-8 md:py-14 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
             <div className={HOME_CONTAINER}>
-                <div className="text-center mb-6 md:mb-12 px-1">
-                    <span className="text-[11px] font-black tracking-wider text-[#E91E63] uppercase mb-2 md:mb-3 block">
+                <div className="text-center mb-5 md:mb-8 px-1">
+                    <span className="text-[11px] font-semibold tracking-[0.18em] text-[#E91E63] uppercase mb-2 block">
                         Verified reviews
                     </span>
-                    <h2 className="text-xl sm:text-3xl md:text-4xl font-playfair font-bold text-gray-900 tracking-tight mb-2 md:mb-4">
+                    <h2 className="text-xl sm:text-3xl md:text-4xl font-playfair font-bold text-gray-900 tracking-tight mb-2">
                         Loved in real life
                     </h2>
                     {reviewStats?.count > 0 && (
-                        <p className="text-sm font-semibold text-gray-600 mb-3">
+                        <p className="text-sm font-semibold text-gray-600">
                             <span className="text-amber-500">{reviewStats.average}★</span>
-                            {" "}from {reviewStats.count} verified review{reviewStats.count === 1 ? "" : "s"}
+                            {" "}from {reviewStats.count} verified review
+                            {reviewStats.count === 1 ? "" : "s"}
                         </p>
                     )}
-                    <div className="w-16 h-[2px] bg-[#E91E63] mx-auto rounded-full opacity-30" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-                    {reviews.map((review) => {
+                {photoReviews.length > 0 && (
+                    <div className={`flex gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar mb-6 md:mb-10 ${HOME_EDGE_SCROLL} pb-1`}>
+                        {photoReviews.map(({ review, visual }) => {
+                            const product = review.products;
+                            const href = product ? getProductPath(product) : "/shop";
+                            return (
+                                <Link
+                                    key={`photo-${review.id}`}
+                                    href={href}
+                                    className="group relative shrink-0 w-[28vw] max-w-[140px] sm:w-[120px] aspect-[3/4] overflow-hidden rounded-2xl bg-[#f3ebe4] ring-1 ring-black/5"
+                                >
+                                    <Image
+                                        src={visual}
+                                        alt={product?.name || "Customer look"}
+                                        fill
+                                        sizes="120px"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        placeholder="blur"
+                                        blurDataURL={IMAGE_BLUR_DATA_URL}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                                    <span className="absolute bottom-2 left-2 right-2 text-[10px] font-semibold text-white line-clamp-1">
+                                        {review.user_name}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                    {quoteReviews.map((review) => {
                         const initials = getInitials(review.user_name);
                         const product = review.products;
                         const productName = product?.name;
@@ -37,13 +76,25 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
                         return (
                             <article
                                 key={review.id}
-                                className="bg-white rounded-2xl md:rounded-[2rem] p-5 sm:p-6 md:p-8 shadow-[0_15px_40px_-15px_rgba(31,38,135,0.08)] border border-gray-50 flex flex-col items-center text-center transition-all duration-500"
+                                className="bg-white rounded-2xl md:rounded-[1.75rem] p-5 sm:p-6 shadow-[0_12px_36px_-18px_rgba(26,18,20,0.18)] border border-gray-50 flex flex-col"
                             >
-                                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#E91E63] to-[#FF80AB] flex items-center justify-center text-white font-black text-lg mb-6 shadow-lg shadow-[#FF80AB]/20 group-hover:scale-110 transition-transform duration-300">
-                                    {initials || "★"}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-11 h-11 rounded-full bg-[#fce4ec] text-[#E91E63] flex items-center justify-center font-semibold text-sm">
+                                        {initials || "★"}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-gray-900">
+                                            {review.user_name}
+                                        </h3>
+                                        {review.is_verified_purchase && (
+                                            <span className="text-[10px] font-semibold text-green-700 uppercase tracking-wide">
+                                                Verified purchase
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div className="flex items-center gap-1 mb-4" aria-label={`${review.rating} out of 5 stars`}>
+                                <div className="flex items-center gap-0.5 mb-3" aria-label={`${review.rating} out of 5 stars`}>
                                     {[...Array(5)].map((_, i) => (
                                         <svg
                                             key={i}
@@ -56,35 +107,18 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
                                     ))}
                                 </div>
 
-                                <p className="text-gray-600 text-[15px] leading-relaxed mb-8 flex-grow">
+                                <p className="text-gray-600 text-[14px] leading-relaxed flex-grow">
                                     &quot;{review.comment}&quot;
                                 </p>
 
-                                <div className="mt-auto">
-                                    <h3 className="text-base font-bold text-gray-900 group-hover:text-[#E91E63] transition-colors">
-                                        {review.user_name}
-                                    </h3>
-                                    <div className="flex flex-col items-center gap-2 mt-1">
-                                        {review.is_verified_purchase && (
-                                            <span className="text-[10px] font-semibold text-green-700 uppercase tracking-wide">
-                                                Verified purchase
-                                            </span>
-                                        )}
-                                        {productName && productHref && (
-                                            <Link
-                                                href={productHref}
-                                                className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E91E63] hover:text-[#c2185b] transition-colors"
-                                            >
-                                                Shop this look →
-                                            </Link>
-                                        )}
-                                        {productName && !productHref && (
-                                            <span className="text-[10px] font-medium text-gray-600">
-                                                {productName}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
+                                {productName && productHref && (
+                                    <Link
+                                        href={productHref}
+                                        className="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E91E63] hover:text-[#c2185b] transition-colors"
+                                    >
+                                        Shop this look →
+                                    </Link>
+                                )}
                             </article>
                         );
                     })}

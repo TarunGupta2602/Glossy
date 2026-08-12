@@ -6,8 +6,9 @@ import { useState } from "react";
 import { getProductPath } from "@/lib/seo";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
 import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
-import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
+import { useToast } from "../context/ToastContext";
+import QuickLookModal from "./QuickLookModal";
 
 export default function ProductCard({
     product,
@@ -22,83 +23,91 @@ export default function ProductCard({
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
         : "0";
     const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(product);
-    const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
+    const { showToast } = useToast();
     const wishlisted = isInWishlist(product.id);
-    const [added, setAdded] = useState(false);
-    const [adding, setAdding] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
+    const [quickOpen, setQuickOpen] = useState(false);
+    const [wishPulse, setWishPulse] = useState(false);
+    const href = getProductPath(product);
+    const hoverImage = product.hover_image;
 
     const handleWishlist = async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const wasIn = wishlisted;
         await toggleWishlist(product);
-    };
-
-    const handleAdd = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (adding) return;
-        setAdding(true);
-        try {
-            await addToCart(product, 1);
-            setAdded(true);
-            setTimeout(() => setAdded(false), 1600);
-        } finally {
-            setAdding(false);
-        }
+        setWishPulse(true);
+        window.setTimeout(() => setWishPulse(false), 450);
+        showToast(wasIn ? "Removed from wishlist" : "Saved to wishlist", {
+            href: "/wishlist",
+            hrefLabel: "View",
+            tone: "pink",
+        });
     };
 
     return (
-        <div className="group flex flex-col h-full">
-            <div className="relative overflow-hidden rounded-lg sm:rounded-2xl border border-gray-100 shadow-sm sm:shadow-md md:hover:shadow-xl bg-[#f7f2ef] aspect-square w-full transition-shadow duration-300">
-                <Link
-                    href={getProductPath(product)}
-                    className="absolute inset-0 z-0 block"
-                    aria-label={product.name}
-                >
-                    <Image
-                        src={product.main_image || "/logo.png"}
-                        alt={product.image_alt || product.name}
-                        fill
-                        sizes={sizes}
-                        quality={priority ? 75 : 60}
-                        priority={priority}
-                        loading={priority ? "eager" : "lazy"}
-                        placeholder="blur"
-                        blurDataURL={IMAGE_BLUR_DATA_URL}
-                        onLoad={() => setImgLoaded(true)}
-                        className={`object-cover transition-[transform,opacity] duration-500 ease-out md:group-hover:scale-[1.04] ${
-                            imgLoaded ? "opacity-100" : "opacity-0"
-                        }`}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60 md:group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" />
-                </Link>
+        <>
+            <article className="group flex flex-col h-full">
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-[1.35rem] bg-[#f3ebe4] aspect-[4/5] w-full shadow-[0_1px_0_rgba(26,18,20,0.04)] ring-1 ring-black/[0.04]">
+                    <Link href={href} className="absolute inset-0 z-0 block" aria-label={product.name}>
+                        <Image
+                            src={product.main_image || "/logo.png"}
+                            alt={product.image_alt || product.name}
+                            fill
+                            sizes={sizes}
+                            quality={priority ? 75 : 60}
+                            priority={priority}
+                            loading={priority ? "eager" : "lazy"}
+                            placeholder="blur"
+                            blurDataURL={IMAGE_BLUR_DATA_URL}
+                            onLoad={() => setImgLoaded(true)}
+                            className={`object-cover transition-[transform,opacity] duration-[700ms] ease-out will-change-transform md:group-hover:scale-[1.03] ${
+                                imgLoaded ? "opacity-100" : "opacity-0"
+                            } ${hoverImage ? "md:group-hover:opacity-0" : ""}`}
+                        />
+                        {hoverImage && (
+                            <Image
+                                src={hoverImage}
+                                alt=""
+                                fill
+                                sizes={sizes}
+                                quality={60}
+                                loading="lazy"
+                                aria-hidden
+                                className="object-cover opacity-0 transition-opacity duration-500 md:group-hover:opacity-100"
+                            />
+                        )}
+                    </Link>
 
-                <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-30 flex flex-col gap-1.5 sm:gap-2 pointer-events-none">
-                    {product.is_bestseller && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-amber-400 text-black text-[8px] sm:text-[10px] font-black shadow-sm border border-white/20 uppercase tracking-[0.05em] leading-none">
-                            BEST SELLER
-                        </span>
-                    )}
-                    {product.is_new && (
-                        <span className="inline-block px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-white text-gray-900 text-[8px] sm:text-[10px] font-bold shadow-sm border border-gray-100 uppercase tracking-widest leading-none">
-                            New
-                        </span>
-                    )}
-                </div>
+                    <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-1.5 pointer-events-none max-w-[70%]">
+                        {product.is_bestseller && (
+                            <span className="px-2.5 py-1 rounded-full bg-[#1a1214]/88 text-white text-[9px] font-semibold uppercase tracking-[0.1em] backdrop-blur-sm">
+                                Bestseller
+                            </span>
+                        )}
+                        {product.is_new && !product.is_bestseller && (
+                            <span className="px-2.5 py-1 rounded-full bg-white/95 text-gray-900 text-[9px] font-semibold uppercase tracking-[0.1em] shadow-sm">
+                                New
+                            </span>
+                        )}
+                        {hasDiscount && (
+                            <span className="px-2.5 py-1 rounded-full bg-[#E91E63] text-white text-[9px] font-semibold uppercase tracking-[0.1em] shadow-sm">
+                                {discountPercent}% off
+                            </span>
+                        )}
+                    </div>
 
-                {showQuickActions && (
-                    <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30">
+                    {showQuickActions && (
                         <button
                             type="button"
                             onClick={handleWishlist}
                             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border transition-colors duration-200 active:scale-95 ${
+                            className={`absolute top-3 right-3 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 shadow-sm ${
                                 wishlisted
-                                    ? "bg-[#E91E63] border-[#E91E63] text-white"
-                                    : "bg-white/95 border-gray-100 text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]"
-                            }`}
+                                    ? "bg-[#E91E63] text-white"
+                                    : "bg-white/95 text-gray-600 hover:text-[#E91E63] backdrop-blur-sm"
+                            } ${wishPulse ? "scale-110" : ""}`}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +116,7 @@ export default function ProductCard({
                                 viewBox="0 0 24 24"
                                 fill={wishlisted ? "currentColor" : "none"}
                                 stroke="currentColor"
-                                strokeWidth="2"
+                                strokeWidth="1.8"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 aria-hidden="true"
@@ -115,75 +124,90 @@ export default function ProductCard({
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                             </svg>
                         </button>
-                    </div>
-                )}
+                    )}
 
-                <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-stretch gap-2 p-1.5 sm:p-3 translate-y-0 opacity-100 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300">
-                    {showQuickActions ? (
+                    <div className="absolute inset-x-0 bottom-0 z-20 p-2.5 sm:p-3 flex flex-col gap-2 pointer-events-none md:translate-y-1 md:opacity-0 md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100">
                         <button
                             type="button"
-                            onClick={handleAdd}
-                            disabled={adding}
-                            className={`w-full text-[9px] sm:text-[11px] font-bold tracking-[0.1em] uppercase px-2 sm:px-3 py-2 sm:py-2.5 min-h-9 sm:min-h-10 rounded-full shadow border backdrop-blur-sm active:scale-[0.98] transition-all duration-200 disabled:opacity-60 ${
-                                added
-                                    ? "bg-[#E91E63] text-white border-[#E91E63]"
-                                    : "bg-white/95 text-gray-900 border-gray-200 md:hover:bg-gray-900 md:hover:text-white"
-                            }`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setQuickOpen(true);
+                            }}
+                            className="pointer-events-auto md:hidden inline-flex items-center justify-center w-full min-h-9 rounded-full bg-white/90 backdrop-blur-sm text-[10px] font-semibold tracking-[0.12em] uppercase text-gray-800 border border-white/50 shadow-sm active:scale-[0.98]"
                         >
-                            {added ? "Added ✓" : adding ? "Adding…" : "Add to bag"}
+                            Quick look
                         </button>
-                    ) : (
                         <Link
-                            href={getProductPath(product)}
-                            className="w-full text-center bg-white/95 text-gray-900 text-[9px] sm:text-[11px] font-bold tracking-[0.1em] uppercase px-2 sm:px-3 py-2 sm:py-2.5 min-h-9 rounded-full shadow border border-gray-200 backdrop-blur-sm"
+                            href={href}
+                            className="pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-10 sm:min-h-11 rounded-full border border-white/40 bg-white/95 backdrop-blur-sm text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-900 shadow-sm transition-all duration-250 active:scale-[0.98] hover:border-[#E91E63] hover:bg-[#E91E63] hover:text-white"
                         >
-                            View
+                            View product
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="13"
+                                height="13"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M5 12h14m-7-7 7 7-7 7" />
+                            </svg>
                         </Link>
-                    )}
+                    </div>
                 </div>
-            </div>
 
-            <div className="mt-2 sm:mt-3.5 flex flex-col gap-0.5 sm:gap-1 px-0.5 sm:px-1">
-                {!hideCategory && (
-                    <span className="text-[8px] sm:text-[10px] font-semibold tracking-wide text-gray-500 uppercase truncate">
-                        {categoryName}
-                    </span>
-                )}
+                <div className="mt-3.5 sm:mt-4 flex flex-1 flex-col">
+                    {!hideCategory && (
+                        <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-gray-400 mb-1 truncate">
+                            {categoryName}
+                        </p>
+                    )}
 
-                <Link href={getProductPath(product)} className="group/title">
-                    <h3
-                        className={`text-[12px] sm:text-[15px] font-black text-gray-900 leading-snug transition-colors duration-200 line-clamp-2 group-hover/title:text-[#E91E63] ${
-                            hideCategory
-                                ? "min-h-[2.4rem] sm:min-h-11"
-                                : "min-h-[2.2rem] sm:min-h-10"
-                        }`}
-                    >
-                        {product.name}
-                    </h3>
-                </Link>
+                    <Link href={href} className="block">
+                        <h3 className="font-playfair text-[15px] sm:text-[16.5px] font-medium text-gray-900 leading-[1.35] line-clamp-2 min-h-[2.55rem] sm:min-h-[2.7rem] transition-colors duration-200 group-hover:text-[#E91E63]">
+                            {product.name}
+                        </h3>
+                    </Link>
 
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-0.5">
-                    <p className="text-[13px] sm:text-[15px] font-bold text-gray-900">₹{price}</p>
-                    {hasDiscount && (
-                        <>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 line-through">
+                    <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+                        <span className="text-[15px] sm:text-[16px] font-semibold text-gray-900 tracking-tight tabular-nums">
+                            ₹{price}
+                        </span>
+                        {hasDiscount && (
+                            <span className="text-[12px] text-gray-400 line-through tabular-nums">
                                 ₹
                                 {originalPrice.toLocaleString(undefined, {
                                     maximumFractionDigits: 0,
                                 })}
-                            </p>
-                            <p className="text-[10px] sm:text-[11px] font-bold text-green-700">
-                                -{discountPercent}%
-                            </p>
-                        </>
-                    )}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        {reviewCount > 0 && (
+                            <span className="text-[11px] text-amber-600 font-medium tracking-wide">
+                                ★ {reviewCount}
+                            </span>
+                        )}
+                        <span className="text-[10px] text-gray-400 tracking-wide">
+                            Anti-tarnish · Waterproof
+                        </span>
+                    </div>
                 </div>
-                {reviewCount > 0 && (
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5">
-                        ★ {reviewCount} review{reviewCount === 1 ? "" : "s"}
-                    </p>
-                )}
-            </div>
-        </div>
+            </article>
+
+            {quickOpen && (
+                <QuickLookModal
+                    product={product}
+                    reviewCount={reviewCount}
+                    onClose={() => setQuickOpen(false)}
+                />
+            )}
+        </>
     );
 }

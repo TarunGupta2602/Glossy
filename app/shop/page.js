@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { fetchShopProducts } from "@/lib/shopQueries";
 import { getReviewCounts } from "@/lib/reviewCounts";
+import { attachHoverImages } from "@/lib/hoverImages";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
@@ -81,7 +82,10 @@ export default async function ShopPage({ searchParams }) {
         redirect(`/shop?page=${totalPages}`);
     }
 
-    const productsWithDiscounts = products.map(withCalculatedDiscount);
+    const productsWithDiscounts = await attachHoverImages(
+        supabase,
+        products.map(withCalculatedDiscount)
+    );
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
     const breadcrumbJsonLd = {

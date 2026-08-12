@@ -1,6 +1,6 @@
 "use client";
 
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { PRODUCT_ROW_SIZES } from "@/lib/imageBlur";
@@ -58,7 +58,7 @@ export default function ProductRow({
 
     return (
         <section
-            className={`py-8 md:py-14 overflow-hidden ${
+            className={`py-7 md:py-12 overflow-hidden ${
                 isWarm ? "bg-[#fdf9f7] border-y border-[#f8e5d9]/60" : "bg-white"
             }`}
         >
@@ -70,7 +70,7 @@ export default function ProductRow({
                                 className={`h-px w-8 ${isWarm ? "bg-amber-400" : "bg-[#E91E63]"}`}
                             />
                             <span
-                                className={`text-[10px] font-black tracking-wider uppercase ${
+                                className={`text-[10px] font-semibold tracking-[0.18em] uppercase ${
                                     isWarm ? "text-amber-600" : "text-[#E91E63]"
                                 }`}
                             >
@@ -86,7 +86,7 @@ export default function ProductRow({
                         {viewAllLink && (
                             <Link
                                 href={viewAllLink}
-                                className="text-[10px] sm:text-[11px] font-black tracking-wide uppercase text-gray-600 hover:text-[#E91E63] transition-colors"
+                                className="text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
                             >
                                 View all
                             </Link>
@@ -143,12 +143,12 @@ export default function ProductRow({
 
                 <div
                     ref={scrollRef}
-                    className="flex items-stretch gap-3 sm:gap-4 md:gap-8 overflow-x-auto pb-4 md:pb-8 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth"
+                    className={`flex items-stretch gap-3.5 sm:gap-5 md:gap-6 overflow-x-auto pb-2 md:pb-4 snap-x snap-mandatory no-scrollbar ${HOME_EDGE_SCROLL} scroll-smooth`}
                 >
                     {products.map((product, index) => (
                         <div
                             key={product.id}
-                            className="shrink-0 w-[46vw] max-w-[200px] sm:w-[280px] sm:max-w-none md:w-[320px] snap-start"
+                            className="shrink-0 w-[46vw] max-w-[210px] sm:w-[240px] sm:max-w-none md:w-[268px] snap-start"
                         >
                             <ProductCard
                                 product={product}

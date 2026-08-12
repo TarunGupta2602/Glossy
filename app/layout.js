@@ -4,6 +4,7 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { OverlayProvider } from "./context/OverlayContext";
+import { ToastProvider } from "./context/ToastContext";
 import LayoutWrapper from "./components/LayoutWrapper";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import MetaPixel from "./components/MetaPixel";
@@ -231,9 +232,11 @@ export default function RootLayout({ children }) {
           <CartProvider>
             <WishlistProvider>
               <OverlayProvider>
-                <LayoutWrapper>
-                  {children}
-                </LayoutWrapper>
+                <ToastProvider>
+                  <LayoutWrapper>
+                    {children}
+                  </LayoutWrapper>
+                </ToastProvider>
               </OverlayProvider>
             </WishlistProvider>
           </CartProvider>
