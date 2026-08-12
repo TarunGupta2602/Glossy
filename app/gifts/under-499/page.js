@@ -4,7 +4,6 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { attachHoverImages } from "@/lib/hoverImages";
 import { BRAND_URL } from "@/lib/constants";
-import { PROMO_LABEL } from "@/lib/promo";
 import GiftLandingContent from "../../components/GiftLandingContent";
 
 export const revalidate = 300;
@@ -12,12 +11,12 @@ export const revalidate = 300;
 const MAX = 499;
 
 export const metadata = {
-    title: `Jewellery Gifts Under ₹499 | Anti-Tarnish Picks · ${PROMO_LABEL}`,
+    title: `Jewellery Gifts Under ₹499 | Waterproof Everyday Picks`,
     description:
         "Shop anti-tarnish jewellery gifts under ₹499 — waterproof earrings, necklaces & more for Friendship Day, birthdays, and everyday gifting in India. Buy 2 Get 1 Free + pan-India shipping.",
     alternates: { canonical: "/gifts/under-499" },
     openGraph: {
-        title: "Jewellery Gifts Under ₹499 | The Luxe Jewels",
+        title: "Jewellery Gifts Under ₹499 | Waterproof Everyday Picks",
         description:
             "Affordable anti-tarnish jewellery gifts under ₹499 — everyday pieces she’ll actually wear.",
         url: `${BRAND_URL}/gifts/under-499`,

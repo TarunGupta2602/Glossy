@@ -9,7 +9,6 @@ import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
-import { PROMO_LABEL } from "@/lib/promo";
 import { attachHoverImages } from "@/lib/hoverImages";
 
 export const revalidate = 300;
@@ -23,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Gold Plated Anti-Tarnish Necklaces (Page ${pageNum}) | ${PROMO_LABEL}`
-                : `Gold Plated Anti-Tarnish Necklaces India | ${PROMO_LABEL}`,
+                ? `Anti-Tarnish Necklaces for Daily Wear (Page ${pageNum})`
+                : `Anti-Tarnish Necklaces for Daily Wear | Waterproof Gold Plated`,
         description:
-            "Shop waterproof 18k gold plated necklaces for everyday Indian wear — pendants & layered chains. Buy 2 Get 1 Free + free delivery over ₹1000.",
+            "Shop waterproof 18k gold plated anti-tarnish necklaces for everyday Indian wear — pendants & layered chains. Buy 2 Get 1 Free + free delivery over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -35,7 +34,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: `Gold Plated Anti-Tarnish Necklaces | ${PROMO_LABEL}`,
+            title: "Anti-Tarnish Necklaces for Daily Wear | Waterproof Gold Plated",
             description:
                 "Waterproof pendants and chains designed for everyday elegance — anti-tarnish finishes made for Indian climate and gifting.",
             url: `${BRAND_URL}${canonical}`,

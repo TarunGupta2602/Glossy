@@ -9,7 +9,6 @@ import { getPaginatedCanonical } from "@/lib/seo";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { EARRINGS_GUIDE } from "@/lib/categoryGuides";
-import { PROMO_LABEL } from "@/lib/promo";
 import { attachHoverImages } from "@/lib/hoverImages";
 
 export const revalidate = 300;
@@ -23,8 +22,8 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Waterproof Anti-Tarnish Earrings (Page ${pageNum}) | ${PROMO_LABEL}`
-                : `Waterproof Anti-Tarnish Earrings India | ${PROMO_LABEL}`,
+                ? `Waterproof Anti-Tarnish Earrings India (Page ${pageNum})`
+                : `Waterproof Anti-Tarnish Earrings India | Buy 2 Get 1 Free`,
         description:
             "Shop waterproof anti-tarnish earrings for daily Indian wear — hypoallergenic 18k gold plated studs, hoops & drops. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
@@ -35,7 +34,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: `Waterproof Anti-Tarnish Earrings | ${PROMO_LABEL}`,
+            title: "Waterproof Anti-Tarnish Earrings India | Buy 2 Get 1 Free",
             description:
                 "Hypoallergenic 18k gold plated studs, hoops, and drops made for everyday wear in Indian weather.",
             url: `${BRAND_URL}${canonical}`,

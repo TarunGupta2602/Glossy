@@ -4,7 +4,6 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { attachHoverImages } from "@/lib/hoverImages";
 import { BRAND_URL } from "@/lib/constants";
-import { PROMO_LABEL } from "@/lib/promo";
 import GiftLandingContent from "../../components/GiftLandingContent";
 
 export const revalidate = 300;
@@ -12,12 +11,12 @@ export const revalidate = 300;
 const MAX = 999;
 
 export const metadata = {
-    title: `Jewellery Gifts Under ₹999 | Anti-Tarnish Edit · ${PROMO_LABEL}`,
+    title: `Jewellery Gifts Under ₹999 | Anti-Tarnish Edit · Buy 2 Get 1 Free`,
     description:
         "Curated anti-tarnish jewellery gifts under ₹999 — earrings, necklaces & bracelets for Raksha Bandhan, Friendship Day, and everyday gifting in India. Buy 2 Get 1 Free.",
     alternates: { canonical: "/gifts/under-999" },
     openGraph: {
-        title: "Jewellery Gifts Under ₹999 | The Luxe Jewels",
+        title: "Jewellery Gifts Under ₹999 | Anti-Tarnish Edit · Buy 2 Get 1 Free",
         description:
             "Gift-ready waterproof jewellery under ₹999 — shoppable picks with Buy 2 Get 1 Free.",
         url: `${BRAND_URL}/gifts/under-999`,
