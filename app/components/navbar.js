@@ -238,7 +238,7 @@ export default function Navbar() {
                     <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                         {/* Desktop search pill */}
                         <form
-                            className="hidden md:flex items-center w-40 lg:w-48 xl:w-56 rounded-full border border-gray-200 bg-[#faf7f8] px-3 focus-within:border-[#E91E63]/40 focus-within:bg-white transition-colors"
+                            className="hidden md:flex items-center w-40 lg:w-48 xl:w-56 rounded-full border border-gray-200 bg-[#faf7f8] px-3 focus-within:border-gray-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-gray-900/5 transition-all"
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 submitSearch();
@@ -263,7 +263,7 @@ export default function Navbar() {
                                 placeholder="Search…"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-transparent py-2 pl-2 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none"
+                                className="w-full bg-transparent py-2 pl-2 text-[13px] text-gray-800 placeholder:text-gray-400 outline-none focus:outline-none focus-visible:outline-none"
                                 aria-label="Search jewellery"
                             />
                         </form>
@@ -405,7 +405,7 @@ export default function Navbar() {
                                         if (e.key === "Enter") submitSearch();
                                         if (e.key === "Escape") setIsSearchOpen(false);
                                     }}
-                                    className="flex-1 min-w-0 bg-transparent py-2.5 pl-2 text-base text-gray-900 focus:outline-none"
+                                    className="flex-1 min-w-0 bg-transparent py-2.5 pl-2 text-base text-gray-900 outline-none focus:outline-none focus-visible:outline-none"
                                     aria-label="Search jewellery"
                                 />
                             </div>

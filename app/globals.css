@@ -6,6 +6,14 @@
   outline-offset: 2px;
 }
 
+/* Text fields use their own border treatment — avoid a harsh “error” box while typing */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[contenteditable="true"]:focus-visible {
+  outline: none;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;
