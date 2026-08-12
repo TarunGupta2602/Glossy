@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
@@ -31,6 +31,7 @@ export default function ShopClient({
     reviewCounts = {},
 }) {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     const [minPrice, maxPrice] = priceRange;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -47,15 +48,16 @@ export default function ShopClient({
     }, [isSidebarOpen]);
 
     const navigate = (updates) => {
-        router.push(
-            buildShopUrl({
-                page: updates.page ?? 1,
-                sort: updates.sort ?? sortBy,
-                categories: updates.categories ?? selectedCategories,
-                min: updates.min ?? minPrice,
-                max: updates.max ?? maxPrice,
-            })
-        );
+        const href = buildShopUrl({
+            page: updates.page ?? 1,
+            sort: updates.sort ?? sortBy,
+            categories: updates.categories ?? selectedCategories,
+            min: updates.min ?? minPrice,
+            max: updates.max ?? maxPrice,
+        });
+        startTransition(() => {
+            router.push(href);
+        });
     };
 
     const hasActiveFilters =
@@ -209,7 +211,14 @@ export default function ShopClient({
                 </div>
             </div>
 
-            <div className="flex-1 min-w-0 relative pb-24 md:pb-0">
+            <div className={`flex-1 min-w-0 relative pb-24 md:pb-0 transition-opacity duration-200 ${isPending ? "opacity-55" : "opacity-100"}`}>
+                {isPending && (
+                    <div className="absolute inset-x-0 top-0 z-10 flex justify-center pointer-events-none">
+                        <span className="mt-2 rounded-full bg-white border border-gray-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#E91E63] shadow-sm">
+                            Updating…
+                        </span>
+                    </div>
+                )}
                 <div className="hidden md:flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                     <div className="flex items-center gap-3">
                         <p className="text-[13px] text-gray-600">

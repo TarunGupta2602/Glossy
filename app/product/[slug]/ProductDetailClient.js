@@ -14,6 +14,7 @@ import ProductCard from "../../components/ProductCard";
 import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
 import { trackRecentlyViewed } from "@/lib/recentlyViewed";
+import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
 export default function ProductDetailClient({
     product,
@@ -168,6 +169,8 @@ export default function ProductDetailClient({
                                 priority
                                 sizes="(max-width: 1024px) 90vw, 45vw"
                                 quality={80}
+                                placeholder="blur"
+                                blurDataURL={IMAGE_BLUR_DATA_URL}
                                 className="object-cover transition-transform duration-200 ease-out lg:pointer-events-auto pointer-events-none"
                                 style={{
                                     transform: isZoomed ? "scale(1.75)" : "scale(1)",

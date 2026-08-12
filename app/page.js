@@ -10,9 +10,11 @@ import {
   findNecklacesCategory,
   getCategoryHref,
 } from "@/lib/categoryLanding";
-import SeoIntro from "./components/SeoIntro";
 import HomeTrustBar from "./components/HomeTrustBar";
 import HomeCollections from "./components/HomeCollections";
+import HeroSlider from "./components/HeroSlider";
+import ProductRow from "./components/ProductRow";
+import TopStyles from "./components/TopStyles";
 
 const FeaturedCollections = dynamic(() => import("./components/featured-collections"), {
   loading: () => <div className="h-[420px] bg-[#faf7f8] animate-pulse" />,
@@ -28,18 +30,6 @@ const Newsletter = dynamic(() => import("./components/newsletter"), {
 
 const InstagramFeed = dynamic(() => import("./components/InstagramFeed"), {
   loading: () => <div className="h-[300px] bg-gray-50 animate-pulse" />,
-});
-
-const HeroSlider = dynamic(() => import("./components/HeroSlider"), {
-  loading: () => <div className="h-[65vh] md:h-[85vh] bg-[#1a1214] animate-pulse" />,
-});
-
-const ProductRow = dynamic(() => import("./components/ProductRow"), {
-  loading: () => <div className="h-[400px] bg-gray-50 animate-pulse" />,
-});
-
-const TopStyles = dynamic(() => import("./components/TopStyles"), {
-  loading: () => <div className="h-[480px] bg-white animate-pulse" />,
 });
 
 const RecentlyViewed = dynamic(() => import("./components/RecentlyViewed"), {
@@ -114,11 +104,29 @@ async function fetchCategoryProducts(supabase, categoryId, limit = 8) {
   return (data || []).map(withCalculatedDiscount);
 }
 
+function pickMatchedCategories(categories = []) {
+  const used = new Set();
+  const matched = [];
+  for (const meta of COLLECTION_META) {
+    const category = categories.find((c) => !used.has(c.id) && meta.match(c));
+    if (!category) continue;
+    used.add(category.id);
+    matched.push(category);
+  }
+  return matched;
+}
+
 async function fetchHomeProducts(supabase, categories = []) {
+  const matchedCategories = pickMatchedCategories(categories);
   const earringsCat = findEarringsCategory(categories);
   const necklacesCat = findNecklacesCategory(categories);
 
-  const [{ data: bestsellers }, { data: newArrivals }, { data: latest }] = await Promise.all([
+  const [
+    { data: bestsellers },
+    { data: newArrivals },
+    { data: latest },
+    categoryProductResults,
+  ] = await Promise.all([
     supabase
       .from("products")
       .select(PRODUCT_CARD_SELECT)
@@ -136,17 +144,17 @@ async function fetchHomeProducts(supabase, categories = []) {
       .select(PRODUCT_CARD_SELECT)
       .order("created_at", { ascending: false })
       .limit(12),
+    Promise.all(
+      matchedCategories.map(async (cat) => [
+        cat.id,
+        await fetchCategoryProducts(supabase, cat.id, 8),
+      ])
+    ),
   ]);
 
-  const productsByCategoryId = {};
-  await Promise.all(
-    (categories || []).map(async (cat) => {
-      productsByCategoryId[cat.id] = await fetchCategoryProducts(supabase, cat.id, 8);
-    })
-  );
+  const productsByCategoryId = Object.fromEntries(categoryProductResults);
 
   const latestProducts = (latest || []).map(withCalculatedDiscount);
-  // Only products explicitly tagged as bestseller / new — never fill bestsellers with new arrivals
   const bestSellerProducts = (bestsellers || []).map(withCalculatedDiscount);
   let newArrivalProducts = (newArrivals || []).map(withCalculatedDiscount);
 
@@ -215,7 +223,6 @@ function buildTopStyleTabs(collections, latestProducts) {
     }
   }
 
-  // Prefer a mix; fall back to latest if categories are thin
   const all =
     allProducts.length >= 4
       ? allProducts.slice(0, 8)
@@ -227,7 +234,8 @@ function buildTopStyleTabs(collections, latestProducts) {
       id: c.id,
       label: c.label,
       href: c.href,
-      products: c.products || [],
+      // Cap payload — only first 8 products per tab are shown
+      products: (c.products || []).slice(0, 8),
     })),
   ];
 }
@@ -235,24 +243,26 @@ function buildTopStyleTabs(collections, latestProducts) {
 export default async function Home() {
   const supabase = getServiceClient();
 
-  const { data: categories } = await supabase.from("categories").select("*");
-
   const [
-    {
-      bestSellerProducts,
-      newArrivalProducts,
-      featuredProducts,
-      latestProducts,
-      productsByCategoryId,
-      necklacesCat,
-    },
+    { data: categories },
     featuredReviews,
     reviewStats,
   ] = await Promise.all([
-    fetchHomeProducts(supabase, categories || []),
+    supabase
+      .from("categories")
+      .select("id, name, slug, image_url, description"),
     getFeaturedReviews(3),
     getSiteReviewStats(),
   ]);
+
+  const {
+    bestSellerProducts,
+    newArrivalProducts,
+    featuredProducts,
+    latestProducts,
+    productsByCategoryId,
+    necklacesCat,
+  } = await fetchHomeProducts(supabase, categories || []);
 
   const collections = buildCollections(categories || [], productsByCategoryId);
   const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
@@ -312,25 +322,6 @@ export default async function Home() {
       <RecentlyViewed />
 
       <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
-
-      <SeoIntro
-        title="Anti-tarnish jewellery for Noida NCR & everyday India"
-        links={[
-          { href: "/earrings", label: "Earrings" },
-          { href: "/necklaces", label: "Necklaces" },
-          { href: "/shop/glimmer-bracelet", label: "Bracelets" },
-          { href: "/shop/sparkle-jewelry-duo", label: "Jewelry Duos" },
-          { href: "/shop/uniqueness-rings", label: "Rings" },
-          { href: "/blog", label: "Jewellery Guides" },
-          { href: "/shop", label: "Shop All" },
-        ]}
-      >
-        <p>
-          The Luxe Jewels crafts waterproof, hypoallergenic 18k gold plated jewellery for daily wear
-          and gifting — from statement earrings to layered necklaces that stay lustrous without
-          constant care. Serving Noida, Greater Noida, Delhi NCR, and pan-India.
-        </p>
-      </SeoIntro>
 
       <InstagramFeed />
       <Newsletter />

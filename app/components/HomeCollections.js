@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
 export default function HomeCollections({ collections = [] }) {
     if (!collections.length) return null;
@@ -15,23 +16,26 @@ export default function HomeCollections({ collections = [] }) {
                 </div>
 
                 <div className="flex justify-start md:justify-center gap-4 sm:gap-8 md:gap-10 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-1 -mx-4 px-4 md:mx-0 md:px-0">
-                    {collections.map((item) => (
+                    {collections.map((item, index) => (
                         <Link
                             key={item.href}
                             href={item.href}
                             className="group flex flex-col items-center gap-2.5 sm:gap-3 shrink-0 w-[76px] sm:w-[104px] md:w-[120px] snap-start"
                         >
-                            <span className="relative block w-[76px] h-[76px] sm:w-[104px] sm:h-[104px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden bg-[#f5f0eb] ring-1 ring-black/5 transition-transform duration-500 group-active:scale-95 sm:group-hover:scale-[1.04]">
+                            <span className="relative block w-[76px] h-[76px] sm:w-[104px] sm:h-[104px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden bg-[#f5f0eb] ring-1 ring-black/5 transition-transform duration-300 group-active:scale-95 sm:group-hover:scale-[1.04] sm:group-hover:ring-[#E91E63]/25">
                                 <Image
                                     src={item.image || "/logo.png"}
                                     alt={item.label}
                                     fill
                                     sizes="120px"
-                                    quality={75}
+                                    quality={70}
+                                    priority={index < 3}
+                                    placeholder="blur"
+                                    blurDataURL={IMAGE_BLUR_DATA_URL}
                                     className="object-cover"
                                 />
                             </span>
-                            <span className="text-[10px] sm:text-xs md:text-[13px] font-medium text-gray-900 text-center leading-snug tracking-wide">
+                            <span className="text-[10px] sm:text-xs md:text-[13px] font-medium text-gray-900 text-center leading-snug tracking-wide group-hover:text-[#E91E63] transition-colors">
                                 {item.label}
                             </span>
                         </Link>
