@@ -43,7 +43,7 @@ export function ShareButtons({ title }) {
     );
 }
 
-export function MobileStickyCTA({ title }) {
+export function MobileStickyCTA({ title, shopHref, shopLabel }) {
     const [baseUrl, setBaseUrl] = useState('');
 
     useEffect(() => {
@@ -62,14 +62,28 @@ export function MobileStickyCTA({ title }) {
         }
     };
 
+    const shortShopLabel =
+        shopLabel && shopLabel.length > 18
+            ? shopLabel.replace(/^Shop\s+/i, "").slice(0, 16)
+            : shopLabel;
+
     return (
         <div className="lg:hidden fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-0 right-16 z-40 px-4 pointer-events-none">
             <div className="max-w-md mx-auto pointer-events-auto">
-                <div className="flex items-center justify-center gap-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-full p-1.5 shadow-2xl">
-                    <a href="/blog" className="flex-1 flex items-center justify-center gap-2 min-h-11 py-2 text-xs font-bold uppercase tracking-widest text-slate-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-                        Back
-                    </a>
+                <div className="flex items-center justify-center gap-1 bg-white/95 backdrop-blur-md border border-slate-200 rounded-full p-1.5 shadow-2xl">
+                    {shopHref ? (
+                        <a
+                            href={shopHref}
+                            className="flex-[1.4] flex items-center justify-center gap-1.5 min-h-11 py-2 px-2 text-[10px] font-bold uppercase tracking-widest text-white bg-[#E91E63] rounded-full"
+                        >
+                            {shortShopLabel || "Shop"}
+                        </a>
+                    ) : (
+                        <a href="/blog" className="flex-1 flex items-center justify-center gap-2 min-h-11 py-2 text-xs font-bold uppercase tracking-widest text-slate-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                            Back
+                        </a>
+                    )}
                     <div className="w-px h-4 bg-slate-200"></div>
                     <button
                         type="button"

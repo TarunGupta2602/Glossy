@@ -44,7 +44,7 @@ export default function GiftLandingContent({
                         {title}
                     </h1>
                     <p className="text-[15px] text-gray-600 leading-relaxed mb-4">{subtitle}</p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-5">
                         <span className="rounded-full bg-[#fdf2f6] border border-[#E91E63]/20 px-3 py-1.5 text-[11px] font-semibold text-[#E91E63]">
                             {PROMO_LABEL}
                         </span>
@@ -54,6 +54,26 @@ export default function GiftLandingContent({
                         <span className="rounded-full bg-gray-50 border border-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-600">
                             Pan-India shipping
                         </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <Link
+                            href="/earrings"
+                            className="inline-flex min-h-10 items-center rounded-full bg-[#E91E63] px-4 text-[12px] font-semibold text-white hover:bg-[#c2185b] transition-colors"
+                        >
+                            Shop earrings
+                        </Link>
+                        <Link
+                            href="/necklaces"
+                            className="inline-flex min-h-10 items-center rounded-full border border-gray-200 px-4 text-[12px] font-semibold text-gray-900 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                        >
+                            Shop necklaces
+                        </Link>
+                        <Link
+                            href={maxPrice <= 499 ? "/gifts/under-999" : "/gifts/under-499"}
+                            className="inline-flex min-h-10 items-center rounded-full border border-gray-200 px-4 text-[12px] font-semibold text-gray-900 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                        >
+                            {maxPrice <= 499 ? "Also see under ₹999" : "Also see under ₹499"}
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -96,8 +116,13 @@ export default function GiftLandingContent({
                     </h2>
                     <p className="text-[14px] text-gray-600 leading-relaxed mb-3">
                         Every piece here is anti-tarnish and made for everyday Indian wear — so the
-                        gift doesn’t sit unused in a box. Add two paid items to unlock{" "}
-                        {PROMO_LABEL}, or pair earrings with a necklace for a ready set.
+                        gift doesn’t sit unused in a box. Perfect for Friendship Day, Raksha Bandhan,
+                        birthdays, and office gifting. Add two paid items to unlock {PROMO_LABEL}, or
+                        pair earrings with a necklace for a ready set.
+                    </p>
+                    <p className="text-[14px] text-gray-600 leading-relaxed mb-4">
+                        Prefer a wider edit? Browse the full anti-tarnish catalogue, or jump straight
+                        into category pages for faster picking.
                     </p>
                     <div className="flex flex-wrap gap-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#E91E63]">
                         <Link href="/earrings" className="hover:underline">
@@ -108,6 +133,18 @@ export default function GiftLandingContent({
                         </Link>
                         <Link href="/shop?sort=popular" className="hover:underline">
                             Bestsellers
+                        </Link>
+                        <Link
+                            href={maxPrice <= 499 ? "/gifts/under-999" : "/gifts/under-499"}
+                            className="hover:underline"
+                        >
+                            {maxPrice <= 499 ? "Under ₹999" : "Under ₹499"}
+                        </Link>
+                        <Link
+                            href="/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026"
+                            className="hover:underline"
+                        >
+                            Festive gift guide
                         </Link>
                     </div>
                 </div>

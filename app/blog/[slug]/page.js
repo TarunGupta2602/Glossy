@@ -17,6 +17,8 @@ import {
     keywordToTagSlug,
 } from "@/lib/blogQueries";
 import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
+import { getBlogShopCta } from "@/lib/blogShopCtas";
+import BlogShopCta from "../../components/BlogShopCta";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 
 export const revalidate = 300;
@@ -141,6 +143,7 @@ export default async function BlogDetailPage({ params }) {
     }
 
     const blog = applyBlogSeoOverride(rawBlog, canonicalSlug);
+    const shopCta = getBlogShopCta(canonicalSlug);
     const relatedPosts = await getRelatedBlogPosts(supabase, blog, 3);
     const keywords = parseBlogKeywords(blog.meta_keywords);
 
@@ -371,6 +374,8 @@ export default async function BlogDetailPage({ params }) {
                             />
                         </article>
 
+                        <BlogShopCta cta={shopCta} />
+
                         {blog.faqs && blog.faqs.length > 0 && (
                             <section className="pt-16 border-t border-slate-200">
                                 <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-8">
@@ -432,6 +437,9 @@ export default async function BlogDetailPage({ params }) {
                     </main>
 
                     <aside className="lg:col-span-4 space-y-10">
+                        <div className="hidden lg:block lg:sticky lg:top-28">
+                            <BlogShopCta cta={shopCta} compact />
+                        </div>
                         {tocItems.length > 0 && (
                             <>
                                 <details className="lg:hidden bg-white rounded-2xl border border-slate-200 p-4 shadow-sm group">
@@ -528,7 +536,11 @@ export default async function BlogDetailPage({ params }) {
                 </div>
             </div>
 
-            <MobileStickyCTA title={blog.title} />
+            <MobileStickyCTA
+                title={blog.title}
+                shopHref={shopCta.primary.href}
+                shopLabel={shopCta.primary.label}
+            />
         </div>
     );
 }
