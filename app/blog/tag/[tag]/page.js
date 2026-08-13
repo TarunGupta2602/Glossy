@@ -38,9 +38,11 @@ export async function generateMetadata({ params, searchParams }) {
     }
 
     const label = tagLabel;
-    const canonical = getPaginatedCanonical(`/blog/tag/${tagSlug}`, pageNum);
+    const isPaginated = pageNum > 1;
+    const tagPath = `/blog/tag/${tagSlug}`;
+    const canonical = isPaginated ? tagPath : getPaginatedCanonical(tagPath, pageNum);
     const title = formatPageTitle(
-        pageNum > 1
+        isPaginated
             ? `${label} Articles (Page ${pageNum})`
             : `${label} — Jewellery Tips & Guides`
     );
@@ -63,7 +65,9 @@ export async function generateMetadata({ params, searchParams }) {
             images: ["/og-image.png"],
             creator: TWITTER_HANDLE,
         },
-        robots: { index: true, follow: true, "max-image-preview": "large" },
+        robots: isPaginated
+            ? { index: false, follow: true }
+            : { index: true, follow: true, "max-image-preview": "large" },
     };
 }
 

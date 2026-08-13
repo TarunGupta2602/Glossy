@@ -25,11 +25,15 @@ export async function generateMetadata({ searchParams }) {
         ? `Page ${pageNum} of The Luxe Jewels journal — anti-tarnish jewellery care, styling ideas, and gift guides for everyday luxury in India.`
         : "Read The Luxe Jewels journal for anti-tarnish jewellery care, 18k gold plated buying guides, festive gift ideas, and styling tips for earrings, necklaces, and bracelets in India.";
 
+    // Paginated journal pages: noindex + canonicalize to hub so Google
+    // doesn't keep /blog?page=2 in the index (still happening in GSC).
+    const indexableCanonical = isPaginated ? "/blog" : canonical;
+
     return {
         title,
         description,
         alternates: {
-            canonical,
+            canonical: indexableCanonical,
         },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -44,7 +48,7 @@ export async function generateMetadata({ searchParams }) {
                 ? `Journal — Page ${pageNum} | The Luxe Jewels`
                 : "The Luxe Journal | Jewellery Care, Styling & Gift Guides",
             description,
-            url: `${BRAND_URL}${canonical}`,
+            url: `${BRAND_URL}${indexableCanonical}`,
             type: "website",
             images: [
                 {

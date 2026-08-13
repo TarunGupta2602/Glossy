@@ -23,10 +23,11 @@ export async function generateMetadata({ searchParams }) {
         (params?.max && params.max !== "5000") ||
         (params?.sort && params.sort !== "newest")
     );
-    // Paginated pages self-canonicalize; filtered views consolidate to /shop (or page N)
-    const canonical = getPaginatedCanonical("/shop", hasFilters ? 1 : pageNum);
+    // Filters + pagination should not compete with brand/homepage in GSC.
+    const isPaginated = pageNum > 1 && !hasFilters;
+    const canonical = hasFilters || isPaginated ? "/shop" : "/shop";
     const title =
-        pageNum > 1 && !hasFilters
+        isPaginated
             ? `Shop 18k Gold Plated Anti-Tarnish Jewellery (Page ${pageNum})`
             : `Shop 18k Gold Plated Anti-Tarnish Jewellery Online | India`;
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ searchParams }) {
         description:
             "Shop all anti-tarnish, waterproof 18k gold plated jewellery online — earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + pan-India delivery from The Luxe Jewels.",
         alternates: { canonical },
-        robots: hasFilters
+        robots: hasFilters || isPaginated
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
         openGraph: {
