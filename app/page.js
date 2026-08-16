@@ -36,17 +36,25 @@ const RecentlyViewed = dynamic(() => import("./components/RecentlyViewed"), {
 });
 
 export const metadata = {
-  title: "The Luxe Jewels Noida NCR | Anti-Tarnish Jewellery + Free Shipping",
+  title: {
+    absolute: "Luxe Jewels Noida | Anti-Tarnish Jewellery Shop India",
+  },
   description:
-    "Shop anti-tarnish, waterproof jewellery online — 18k gold plated earrings, necklaces & more. The Luxe Jewels serves Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free + free delivery over ₹1000.",
+    "Shop The Luxe Jewels in Noida & Delhi NCR — anti-tarnish, waterproof 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + free delivery over ₹1000 across India.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "The Luxe Jewels Noida NCR | Anti-Tarnish Jewellery + Free Shipping",
+    title: "Luxe Jewels Noida | Anti-Tarnish Jewellery Shop India",
     description:
-      "Handcrafted anti-tarnish jewellery for daily wear and gifting — serving Noida, Delhi NCR, and pan-India. Buy 2 Get 1 Free.",
+      "Anti-tarnish jewellery for daily wear and gifting — serving Noida, Delhi NCR, and pan-India. Buy 2 Get 1 Free.",
     url: "https://www.theluxejewels.in",
     siteName: "The Luxe Jewels",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Luxe Jewels Noida | Anti-Tarnish Jewellery Shop India",
+    description:
+      "Anti-tarnish, waterproof jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free.",
   },
 };
 

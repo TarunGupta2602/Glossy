@@ -28,13 +28,13 @@ export async function generateMetadata({ searchParams }) {
     const canonical = hasFilters || isPaginated ? "/shop" : "/shop";
     const title =
         isPaginated
-            ? `Shop 18k Gold Plated Anti-Tarnish Jewellery (Page ${pageNum})`
-            : `Shop 18k Gold Plated Anti-Tarnish Jewellery Online | India`;
+            ? `Shop Anti-Tarnish Gold Plated Jewellery (Page ${pageNum})`
+            : `Shop Anti-Tarnish Gold Plated Jewellery Online India`;
 
     return {
         title,
         description:
-            "Shop all anti-tarnish, waterproof 18k gold plated jewellery online — earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + pan-India delivery from The Luxe Jewels.",
+            "Shop anti-tarnish waterproof 18k gold plated jewellery online in India — earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: hasFilters || isPaginated
             ? { index: false, follow: true }

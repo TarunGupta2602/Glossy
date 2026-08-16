@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
     return {
         title:
             pageNum > 1
-                ? `Waterproof Anti-Tarnish Earrings India (Page ${pageNum})`
-                : `Waterproof Anti-Tarnish Earrings India | Buy 2 Get 1 Free`,
+                ? `Anti-Tarnish Earrings for Daily Wear (Page ${pageNum})`
+                : `Anti-Tarnish Earrings for Daily Wear | Waterproof`,
         description:
-            "Shop waterproof anti-tarnish earrings for daily Indian wear — hypoallergenic 18k gold plated studs, hoops & drops. Buy 2 Get 1 Free + free shipping over ₹1000.",
+            "Buy waterproof anti-tarnish earrings for daily wear in India — hypoallergenic 18k gold plated studs, hoops & drops. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -34,7 +34,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Waterproof Anti-Tarnish Earrings India | Buy 2 Get 1 Free",
+            title: "Anti-Tarnish Earrings for Daily Wear | Waterproof",
             description:
                 "Hypoallergenic 18k gold plated studs, hoops, and drops made for everyday wear in Indian weather.",
             url: `${BRAND_URL}${canonical}`,

@@ -19,11 +19,11 @@ export async function generateMetadata({ searchParams }) {
     const isPaginated = pageNum > 1;
 
     const title = isPaginated
-        ? `Jewellery Tips & Trends — Page ${pageNum}`
-        : "Jewellery Care, Styling Guides & Trends | The Luxe Journal";
+        ? `Jewellery Tips & Gift Guides — Page ${pageNum}`
+        : "Jewellery Tips, Gift Guides & Trends for India";
     const description = isPaginated
-        ? `Page ${pageNum} of The Luxe Jewels journal — anti-tarnish jewellery care, styling ideas, and gift guides for everyday luxury in India.`
-        : "Read The Luxe Jewels journal for anti-tarnish jewellery care, 18k gold plated buying guides, festive gift ideas, and styling tips for earrings, necklaces, and bracelets in India.";
+        ? `Page ${pageNum} of The Luxe Jewels journal — anti-tarnish care, 18k gold plated buying guides, and gift ideas for everyday India.`
+        : "Anti-tarnish jewellery care, what 18k gold plated means, Friendship Day gift ideas, daily wear bracelets, and styling tips for earrings & necklaces in India.";
 
     // Paginated journal pages: noindex + canonicalize to hub so Google
     // doesn't keep /blog?page=2 in the index (still happening in GSC).

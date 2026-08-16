@@ -23,9 +23,9 @@ export async function generateMetadata({ searchParams }) {
         title:
             pageNum > 1
                 ? `Anti-Tarnish Necklaces for Daily Wear (Page ${pageNum})`
-                : `Anti-Tarnish Necklaces for Daily Wear | Waterproof Gold Plated`,
+                : `Anti-Tarnish Necklaces for Daily Wear | Gold Plated`,
         description:
-            "Shop waterproof 18k gold plated anti-tarnish necklaces for everyday Indian wear — pendants & layered chains. Buy 2 Get 1 Free + free delivery over ₹1000.",
+            "Buy waterproof anti-tarnish necklaces for daily wear — 18k gold plated pendants & layered chains for Indian weather. Buy 2 Get 1 Free + free delivery over ₹1000.",
         alternates: { canonical },
         robots: {
             index: true,
@@ -34,7 +34,7 @@ export async function generateMetadata({ searchParams }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: "Anti-Tarnish Necklaces for Daily Wear | Waterproof Gold Plated",
+            title: "Anti-Tarnish Necklaces for Daily Wear | Gold Plated",
             description:
                 "Waterproof pendants and chains designed for everyday elegance — anti-tarnish finishes made for Indian climate and gifting.",
             url: `${BRAND_URL}${canonical}`,

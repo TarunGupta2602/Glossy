@@ -11,12 +11,12 @@ export const revalidate = 300;
 const MAX = 999;
 
 export const metadata = {
-    title: `Jewellery Gifts Under ₹999 | Anti-Tarnish Edit · Buy 2 Get 1 Free`,
+    title: `Jewellery Gifts Under ₹999 for Friendship Day & Festivals`,
     description:
-        "Curated anti-tarnish jewellery gifts under ₹999 — earrings, necklaces & bracelets for Raksha Bandhan, Friendship Day, and everyday gifting in India. Buy 2 Get 1 Free.",
+        "Anti-tarnish jewellery gifts under ₹999 for Friendship Day, Raksha Bandhan, and birthdays — earrings, necklaces & bracelets. Buy 2 Get 1 Free + pan-India shipping.",
     alternates: { canonical: "/gifts/under-999" },
     openGraph: {
-        title: "Jewellery Gifts Under ₹999 | Anti-Tarnish Edit · Buy 2 Get 1 Free",
+        title: "Jewellery Gifts Under ₹999 for Friendship Day & Festivals",
         description:
             "Gift-ready waterproof jewellery under ₹999 — shoppable picks with Buy 2 Get 1 Free.",
         url: `${BRAND_URL}/gifts/under-999`,
