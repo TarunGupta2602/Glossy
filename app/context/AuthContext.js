@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { authFetch } from "@/lib/adminApi";
 
 const AuthContext = createContext();
 
@@ -10,9 +11,13 @@ export function AuthProvider({ children }) {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const fetchProfile = async (userId) => {
+    const googleClientId =
+        process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+        "483518069191-egjpfiap3opnnj90q6ui20evr8pg6fic.apps.googleusercontent.com";
+
+    const fetchProfile = async () => {
         try {
-            const response = await fetch(`/api/profile?userId=${userId}`);
+            const response = await authFetch("/api/profile");
             const data = await response.json();
 
             if (data.success) {
@@ -27,19 +32,16 @@ export function AuthProvider({ children }) {
         }
     };
 
-    const googleClientId = "483518069191-egjpfiap3opnnj90q6ui20evr8pg6fic.apps.googleusercontent.com";
-
-    // Handle identity from Google prompt
     const handleGoogleResponse = async (response) => {
         try {
             const { data, error } = await supabase.auth.signInWithIdToken({
-                provider: 'google',
+                provider: "google",
                 token: response.credential,
             });
 
             if (data?.user) {
                 setUser(data.user);
-                await fetchProfile(data.user.id);
+                await fetchProfile();
             } else if (error) {
                 console.error("Supabase Auth error with Google Token:", error.message);
             }
@@ -49,37 +51,32 @@ export function AuthProvider({ children }) {
     };
 
     useEffect(() => {
-        // Initial session check
-        supabase.auth.getSession().then(async ({ data: { session } }) => {
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
+        supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
+            setUser(currentUser ?? null);
             if (currentUser) {
-                await fetchProfile(currentUser.id);
+                await fetchProfile();
             }
             setLoading(false);
         });
 
-        // Initialize Google GSI Client
         const initGSI = () => {
             if (!window.google?.accounts?.id) return;
-
-            // One Tap requires the current origin in Google Cloud Console.
-            // Skip on localhost to avoid GSI_LOGGER console errors during local dev.
-            const isLocalhost =
-                window.location.hostname === "localhost" ||
-                window.location.hostname === "127.0.0.1";
-
-            if (isLocalhost) return;
 
             window.google.accounts.id.initialize({
                 client_id: googleClientId,
                 callback: handleGoogleResponse,
                 auto_select: false,
             });
-            window.google.accounts.id.prompt();
+
+            const isLocalhost =
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1";
+
+            if (!isLocalhost) {
+                window.google.accounts.id.prompt();
+            }
         };
 
-        // Try to init, or wait for script load
         if (window.google) {
             initGSI();
         } else {
@@ -92,12 +89,13 @@ export function AuthProvider({ children }) {
             setTimeout(() => clearInterval(interval), 5000);
         }
 
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (_event, session) => {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
-                await fetchProfile(currentUser.id);
+                await fetchProfile();
             } else {
                 setProfile(null);
             }
@@ -108,8 +106,10 @@ export function AuthProvider({ children }) {
     }, []);
 
     const signInWithGoogle = async () => {
-        // Fallback to old flow if called without GSI or if user explicitly wants it
-        const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+        const origin =
+            typeof window !== "undefined"
+                ? window.location.origin
+                : "http://localhost:3000";
         await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
@@ -124,7 +124,16 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, profile, loading, signInWithGoogle, signOut, googleClientId }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                profile,
+                loading,
+                signInWithGoogle,
+                signOut,
+                googleClientId,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

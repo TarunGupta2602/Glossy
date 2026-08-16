@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import CheckoutSteps from "../components/CheckoutSteps";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 import { trackPurchase } from "@/lib/gtag";
 import { trackMetaPurchase } from "@/lib/metaPixel";
+import { authFetch } from "@/lib/adminApi";
 
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
@@ -19,7 +21,6 @@ export default function CheckoutPage() {
     const [checkoutItems, setCheckoutItems] = useState([]);
 
     useEffect(() => {
-        // Prepare checkout items with free gift logic
         const items = cart.map((item) => ({
             ...item,
             quantity: item.quantity || 1,
@@ -27,7 +28,6 @@ export default function CheckoutPage() {
             isFreeGift: false,
         }));
 
-        // Add free gifts from promo selections
         if (promo.freeGiftSelections?.length > 0) {
             promo.freeGiftSelections.forEach((selection) => {
                 items.push({
@@ -37,6 +37,7 @@ export default function CheckoutPage() {
                     category: selection.category,
                     quantity: 1,
                     price: 0,
+                    originalPrice: Number(selection.price) || 0,
                     isFreeGift: true,
                 });
             });
@@ -45,40 +46,7 @@ export default function CheckoutPage() {
         setCheckoutItems(items);
     }, [cart, promo.freeGiftSelections]);
 
-    const GoogleBtn = ({ id }) => {
-        useEffect(() => {
-            const renderBtn = () => {
-                if (window.google && window.google.accounts) {
-                    const btn = document.getElementById(id);
-                    if (btn) {
-                        window.google.accounts.id.renderButton(
-                            btn,
-                            {
-                                theme: 'outline',
-                                size: 'large',
-                                text: 'continue_with',
-                                shape: 'pill',
-                                width: btn.offsetWidth || 320
-                            }
-                        );
-                    }
-                }
-            };
-
-            const interval = setInterval(() => {
-                if (window.google && window.google.accounts) {
-                    renderBtn();
-                    clearInterval(interval);
-                }
-            }, 500);
-
-            return () => clearInterval(interval);
-        }, [id]);
-
-        return null;
-    };
-
-    const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, success, error new
+    const [paymentStatus, setPaymentStatus] = useState("idle");
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
         lastName: "",
@@ -90,12 +58,14 @@ export default function CheckoutPage() {
         phone: ""
     });
 
-
     useEffect(() => {
-        if (isInitialized && !user) {
-            router.push("/cart");
+        if (user?.email) {
+            setShippingInfo((prev) => ({
+                ...prev,
+                email: prev.email || user.email,
+            }));
         }
-    }, [user, isInitialized, router]);
+    }, [user?.email]);
 
     const loadRazorpay = () => {
         return new Promise((resolve) => {
@@ -118,14 +88,9 @@ export default function CheckoutPage() {
         }
 
         try {
-            // 1. Create order on server
-            const orderResponse = await fetch("/api/razorpay", {
+            const orderResponse = await authFetch("/api/razorpay", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    amount: cartTotal,
-                    currency: "INR",
-                }),
+                body: JSON.stringify({}),
             });
 
             const orderData = await orderResponse.json();
@@ -134,7 +99,8 @@ export default function CheckoutPage() {
                 throw new Error(orderData.error || "Failed to create order");
             }
 
-            // 2. Open Razorpay Checkout
+            const chargedTotal = orderData.cartTotal ?? cartTotal;
+
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
@@ -144,19 +110,15 @@ export default function CheckoutPage() {
                 image: "/logo.png",
                 order_id: orderData.id,
                 handler: async function (response) {
-                    // Payment successful
                     try {
-                        const storeOrderRes = await fetch("/api/orders", {
+                        const storeOrderRes = await authFetch("/api/orders", {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
-                                user_id: user.id,
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
-                                total_amount: cartTotal,
+                                razorpay_signature: response.razorpay_signature,
                                 shipping_address: shippingInfo,
                                 contact_phone: shippingInfo.phone,
-                                items: checkoutItems
                             }),
                         });
 
@@ -169,16 +131,16 @@ export default function CheckoutPage() {
 
                         trackPurchase({
                             transactionId: response.razorpay_payment_id,
-                            value: cartTotal,
+                            value: chargedTotal,
                             items: checkoutItems.filter((item) => !item.isFreeGift),
                         });
 
                         trackMetaPurchase({
-                            value: cartTotal,
+                            value: chargedTotal,
                             transactionId: response.razorpay_payment_id,
                         });
 
-                        clearCart();
+                        await clearCart();
                         router.push(`/order/${savedOrder.order.id}/confirmation`);
                     } catch (error) {
                         console.error("Error storing order:", error);
@@ -206,7 +168,7 @@ export default function CheckoutPage() {
 
         } catch (error) {
             console.error("Payment Error:", error);
-            alert("Something went wrong with the payment.");
+            alert(error.message || "Something went wrong with the payment.");
             setPaymentStatus("error");
             setIsProcessing(false);
         }
@@ -237,12 +199,9 @@ export default function CheckoutPage() {
                     <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">Your Signature Awaits.</h1>
                     <p className="text-gray-400 mb-8 md:mb-10 text-sm leading-relaxed px-2 sm:px-4">Log in to complete your acquisition and track your order every step of the way.</p>
 
-                    {/* Native Branded Google Button */}
                     <div className="flex justify-center min-h-[50px]">
-                        <div id="google-checkout-login" className="w-full h-[50px] flex justify-center"></div>
+                        <GoogleSignInButton text="continue_with" />
                     </div>
-
-                    <GoogleBtn id="google-checkout-login" />
 
                     <div className="mt-12 flex flex-col gap-4">
                         <Link href="/cart" className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors">

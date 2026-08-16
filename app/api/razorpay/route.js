@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { requireUser } from "@/lib/requireAuth";
+import {
+    buildCheckoutFromCart,
+    loadPromoProducts,
+    loadUserCartRows,
+} from "@/lib/checkoutTotals";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -8,22 +16,74 @@ const razorpay = new Razorpay({
 
 export async function POST(req) {
     try {
-        const { amount, currency = "INR" } = await req.json();
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
 
-        if (!amount) {
-            return NextResponse.json({ error: "Amount is required" }, { status: 400 });
+        const limited = rateLimit(`razorpay:${auth.user.id}:${clientIp(req)}`, {
+            limit: 10,
+            windowMs: 60_000,
+        });
+        if (!limited.ok) {
+            return NextResponse.json(
+                { error: "Too many payment attempts. Please wait a moment." },
+                { status: 429 }
+            );
         }
 
-        // Razorpay expects amount in paise (e.g., 100 INR = 10000 paise)
+        if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+            return NextResponse.json(
+                { error: "Payment provider not configured" },
+                { status: 500 }
+            );
+        }
+
+        const supabase = getServiceClient();
+        const cartRows = await loadUserCartRows(supabase, auth.user.id);
+
+        if (!cartRows.length) {
+            return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+        }
+
+        const allProducts = await loadPromoProducts(supabase);
+        const checkout = buildCheckoutFromCart(cartRows, allProducts);
+
+        for (const item of checkout.cart) {
+            if (
+                item.stock_count != null &&
+                item.stock_count < (item.quantity || 1)
+            ) {
+                return NextResponse.json(
+                    { error: `Insufficient stock for ${item.name}` },
+                    { status: 409 }
+                );
+            }
+        }
+
+        if (checkout.cartTotal <= 0) {
+            return NextResponse.json(
+                { error: "Invalid cart total" },
+                { status: 400 }
+            );
+        }
+
         const options = {
-            amount: Math.round(amount * 100),
-            currency,
-            receipt: `receipt_${Date.now()}`,
+            amount: Math.round(checkout.cartTotal * 100),
+            currency: "INR",
+            receipt: `rcpt_${auth.user.id.slice(0, 8)}_${Date.now()}`,
+            notes: {
+                user_id: auth.user.id,
+                item_count: String(checkout.checkoutItems.length),
+            },
         };
 
         const order = await razorpay.orders.create(options);
 
-        return NextResponse.json(order);
+        return NextResponse.json({
+            ...order,
+            cartTotal: checkout.cartTotal,
+            shippingFee: checkout.shippingFee,
+            discountAmount: checkout.discountAmount,
+        });
     } catch (error) {
         console.error("Razorpay Order Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });

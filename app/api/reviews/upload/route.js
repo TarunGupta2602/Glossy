@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { createClient } from "@supabase/supabase-js";
+import { requireUser, isAdminUser } from "@/lib/requireAuth";
 
 export async function POST(req) {
     try {
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
+
         const formData = await req.formData();
         const file = formData.get("file");
-        const userId = formData.get("userId");
+        const userId = auth.user.id;
 
         if (!file) {
             return NextResponse.json({ error: "No file provided" }, { status: 400 });
         }
 
-        if (!userId) {
-            return NextResponse.json({ error: "User ID required" }, { status: 400 });
-        }
-
-        // Validate file type
         const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
         if (!allowedTypes.includes(file.type)) {
             return NextResponse.json(
@@ -25,8 +23,7 @@ export async function POST(req) {
             );
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
             return NextResponse.json(
                 { error: "File size exceeds 5MB limit" },
@@ -36,14 +33,12 @@ export async function POST(req) {
 
         const supabase = getServiceClient();
 
-        // Generate unique filename
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(2, 15);
         const fileExt = file.name.split(".").pop();
         const fileName = `${userId}/${timestamp}-${random}.${fileExt}`;
 
-        // Upload to Supabase storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
             .from("review-images")
             .upload(fileName, file, {
                 upsert: false,
@@ -58,7 +53,6 @@ export async function POST(req) {
             );
         }
 
-        // Get public URL
         const { data: urlData } = supabase.storage
             .from("review-images")
             .getPublicUrl(fileName);
@@ -76,6 +70,9 @@ export async function POST(req) {
 
 export async function DELETE(req) {
     try {
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
+
         const { searchParams } = new URL(req.url);
         const imagePath = searchParams.get("path");
 
@@ -84,6 +81,12 @@ export async function DELETE(req) {
                 { error: "Image path required" },
                 { status: 400 }
             );
+        }
+
+        const admin = await isAdminUser(auth.user.id);
+        const ownsPath = imagePath.startsWith(`${auth.user.id}/`);
+        if (!admin && !ownsPath) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
         const supabase = getServiceClient();

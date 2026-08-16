@@ -1,23 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { normalizeBlogSlug } from "@/lib/seo";
-
-function getBlogServiceClient() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key =
-        process.env.SUPABASE_SERVICE_ROLE_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!url || !key) {
-        throw new Error("Missing Supabase URL or Service Role Key");
-    }
-
-    return createClient(url, key, {
-        db: { schema: "public" },
-        auth: { persistSession: false },
-    });
-}
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 function sanitizeBlogPayload(body) {
     const payload = { ...body };
@@ -33,7 +17,7 @@ export async function GET(req) {
         const denied = await guardAdmin(req);
         if (denied) return denied;
 
-        const supabase = getBlogServiceClient();
+        const supabase = getServiceClient();
         const { data, error } = await supabase
             .from("blogs")
             .select("*")
@@ -60,10 +44,8 @@ export async function POST(request) {
         const denied = await guardAdmin(request);
         if (denied) return denied;
 
-        const supabase = getBlogServiceClient();
+        const supabase = getServiceClient();
         const body = sanitizeBlogPayload(await request.json());
-
-        console.log("POST /api/blogs body keys:", Object.keys(body));
 
         const { data, error } = await supabase
             .from("blogs")

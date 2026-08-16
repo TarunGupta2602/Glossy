@@ -1,23 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 const BUCKET = "product-images";
-
-function getStorageClient() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key =
-        process.env.SUPABASE_SERVICE_ROLE_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!url || !key) {
-        throw new Error("Missing Supabase URL or Service Role Key");
-    }
-
-    return createClient(url, key, {
-        auth: { persistSession: false },
-    });
-}
 
 function getStoragePath(imageUrl) {
     try {
@@ -54,7 +39,7 @@ export async function POST(request) {
             );
         }
 
-        const supabase = getStorageClient();
+        const supabase = getServiceClient();
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
@@ -117,7 +102,7 @@ export async function DELETE(request) {
             );
         }
 
-        const supabase = getStorageClient();
+        const supabase = getServiceClient();
         const { error } = await supabase.storage.from(BUCKET).remove([storagePath]);
 
         if (error) throw error;

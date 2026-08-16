@@ -19,7 +19,7 @@ export default function AdminPage() {
     // Fetch stats if user is an admin
     const fetchStats = useCallback(async () => {
         try {
-            const response = await fetch("/api/orders");
+            const response = await adminFetch("/api/orders");
             const data = await response.json();
             if (data.success) {
                 setOrderCount(data.totalCount || data.orders?.length || 0);

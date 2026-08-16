@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { requireUser, isAdminUser } from "@/lib/requireAuth";
 
 export async function GET(req, { params }) {
     try {
-        const { id } = await params;
-        const { searchParams } = new URL(req.url);
-        const userId = searchParams.get("userId");
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
 
-        if (!id || !userId) {
-            return NextResponse.json({ error: "Missing order id or user id" }, { status: 400 });
+        const { id } = await params;
+        if (!id) {
+            return NextResponse.json({ error: "Missing order id" }, { status: 400 });
         }
 
         const supabase = getServiceClient();
@@ -22,7 +23,8 @@ export async function GET(req, { params }) {
             return NextResponse.json({ error: "Order not found" }, { status: 404 });
         }
 
-        if (order.user_id !== userId) {
+        const admin = await isAdminUser(auth.user.id);
+        if (!admin && order.user_id !== auth.user.id) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 

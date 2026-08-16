@@ -11,6 +11,7 @@ import OrderHistory from "./OrderHistory";
 import OrderModal from "./OrderModal";
 import WishlistTab from "./WishlistTab";
 import { ProfileHeaderSkeleton } from "./ProfileSkeletons";
+import { authFetch } from "@/lib/adminApi";
 
 const TABS = [
     { id: "orders", label: "My Orders" },
@@ -31,7 +32,7 @@ export default function ProfileClient() {
         if (!user) return;
         setOrdersLoading(true);
         try {
-            const response = await fetch(`/api/orders?userId=${user.id}`);
+            const response = await authFetch("/api/orders");
             const data = await response.json();
 
             if (data.success) {
@@ -57,9 +58,8 @@ export default function ProfileClient() {
         if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
 
         try {
-            const response = await fetch("/api/orders", {
+            const response = await authFetch("/api/orders", {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: orderId, order_status: "cancelled" }),
             });
 
@@ -80,9 +80,8 @@ export default function ProfileClient() {
         if (!confirm("Request a return for this order? Returns are accepted within 10 days of delivery.")) return;
 
         try {
-            const response = await fetch("/api/orders", {
+            const response = await authFetch("/api/orders", {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: orderId, order_status: "return requested" }),
             });
 

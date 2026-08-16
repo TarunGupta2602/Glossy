@@ -59,19 +59,22 @@ export async function GET(req) {
         const categoryId = searchParams.get("category_id");
         const slug = searchParams.get("slug");
         const q = searchParams.get("q");
+        const lite = searchParams.get("lite") === "1";
 
         const supabaseService = getServiceClient();
 
-        let query = supabaseService
-            .from("products")
-            .select(`
+        const selectCols = lite
+            ? `id, name, price, main_image, stock_count, categories ( name )`
+            : `
                 *,
                 categories (
                     name,
                     id,
                     slug
                 )
-            `);
+            `;
+
+        let query = supabaseService.from("products").select(selectCols);
 
         if (categoryId) {
             query = query.eq("category_id", categoryId);

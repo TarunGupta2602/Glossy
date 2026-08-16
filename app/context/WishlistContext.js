@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./AuthContext";
+import { authFetch } from "@/lib/adminApi";
 
 const WishlistContext = createContext();
 
@@ -11,12 +11,11 @@ export function WishlistProvider({ children }) {
     const [isInitialized, setIsInitialized] = useState(false);
     const { user } = useAuth();
 
-    // Fetch wishlist from database for authenticated users
     const fetchDBWishlist = useCallback(async () => {
         if (!user) return;
 
         try {
-            const response = await fetch(`/api/wishlist?userId=${user.id}`);
+            const response = await authFetch("/api/wishlist");
             const data = await response.json();
 
             if (data.success) {
@@ -29,34 +28,29 @@ export function WishlistProvider({ children }) {
         }
     }, [user]);
 
+    const syncLocalWishlistToDB = useCallback(
+        async (localWish) => {
+            if (!user || localWish.length === 0) return;
 
-
-
-    const syncLocalWishlistToDB = useCallback(async (localWish) => {
-        if (!user || localWish.length === 0) return;
-
-        try {
-            // Synchronize each item via the API
-            for (const item of localWish) {
-                await fetch("/api/wishlist", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user.id, productId: item.id, action: "add" }),
-                });
+            try {
+                for (const item of localWish) {
+                    await authFetch("/api/wishlist", {
+                        method: "POST",
+                        body: JSON.stringify({ productId: item.id, action: "add" }),
+                    });
+                }
+                await fetchDBWishlist();
+            } catch (error) {
+                console.error("Wishlist sync error:", error);
             }
-            await fetchDBWishlist();
-        } catch (error) {
-            console.error("Wishlist sync error:", error);
-        }
-    }, [user, fetchDBWishlist]);
+        },
+        [user, fetchDBWishlist]
+    );
 
-
-    // Initial load: either from DB or localStorage
     useEffect(() => {
         const loadInitialWishlist = async () => {
             if (user) {
                 await fetchDBWishlist();
-                // Sync local items manually right after login if they exist
                 const localWishString = localStorage.getItem("theluxejewels-wishlist");
                 if (localWishString) {
                     try {
@@ -74,7 +68,7 @@ export function WishlistProvider({ children }) {
                 if (savedWishlist) {
                     try {
                         setWishlist(JSON.parse(savedWishlist));
-                    } catch (e) {
+                    } catch {
                         setWishlist([]);
                     }
                 } else {
@@ -87,16 +81,13 @@ export function WishlistProvider({ children }) {
         loadInitialWishlist();
     }, [user, fetchDBWishlist, syncLocalWishlistToDB]);
 
-    // Save Guest wishlist to localStorage ONLY if user is not logged in
     useEffect(() => {
         if (isInitialized && !user) {
             localStorage.setItem("theluxejewels-wishlist", JSON.stringify(wishlist));
         }
     }, [wishlist, isInitialized, user]);
 
-
     const addToWishlist = async (product) => {
-        // Optimistic update
         const previousWishlist = [...wishlist];
         setWishlist((prev) => {
             if (prev.some((item) => item.id === product.id)) return prev;
@@ -105,16 +96,15 @@ export function WishlistProvider({ children }) {
 
         if (user) {
             try {
-                const response = await fetch("/api/wishlist", {
+                const response = await authFetch("/api/wishlist", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user.id, productId: product.id, action: "add" }),
+                    body: JSON.stringify({ productId: product.id, action: "add" }),
                 });
 
                 const data = await response.json();
                 if (!data.success) {
                     console.error("Wishlist Add Error:", data.error);
-                    setWishlist(previousWishlist); // Revert on error
+                    setWishlist(previousWishlist);
                 } else {
                     await fetchDBWishlist();
                 }
@@ -123,27 +113,23 @@ export function WishlistProvider({ children }) {
                 setWishlist(previousWishlist);
             }
         }
-
-        // Guest mode is already handled by the state update above and the useEffect for localStorage
     };
 
     const removeFromWishlist = async (productId) => {
-        // Optimistic update
         const previousWishlist = [...wishlist];
         setWishlist((prev) => prev.filter((item) => item.id !== productId));
 
         if (user) {
             try {
-                const response = await fetch("/api/wishlist", {
+                const response = await authFetch("/api/wishlist", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user.id, productId: productId, action: "remove" }),
+                    body: JSON.stringify({ productId, action: "remove" }),
                 });
 
                 const data = await response.json();
                 if (!data.success) {
                     console.error("Wishlist Remove Error:", data.error);
-                    setWishlist(previousWishlist); // Revert on error
+                    setWishlist(previousWishlist);
                 } else {
                     await fetchDBWishlist();
                 }
@@ -152,8 +138,6 @@ export function WishlistProvider({ children }) {
                 setWishlist(previousWishlist);
             }
         }
-
-        // Guest mode handled by state update
     };
 
     const isInWishlist = (productId) => {
@@ -169,7 +153,16 @@ export function WishlistProvider({ children }) {
     };
 
     return (
-        <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, isInWishlist, toggleWishlist, isInitialized }}>
+        <WishlistContext.Provider
+            value={{
+                wishlist,
+                addToWishlist,
+                removeFromWishlist,
+                isInWishlist,
+                toggleWishlist,
+                isInitialized,
+            }}
+        >
             {children}
         </WishlistContext.Provider>
     );

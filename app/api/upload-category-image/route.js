@@ -20,7 +20,6 @@ export async function POST(req) {
         // Delete old image if exists
         if (oldImageUrl) {
             const oldFileName = oldImageUrl.split('/').pop();
-            console.log("Deleting old image:", oldFileName);
             const { error: deleteError } = await supabaseService
                 .storage
                 .from('category-images')
@@ -33,7 +32,6 @@ export async function POST(req) {
 
         // Upload new image
         const fileName = `category-${Date.now()}-${file.name}`;
-        console.log("Uploading new image:", fileName);
 
         const { error: uploadError } = await supabaseService
             .storage

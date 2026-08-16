@@ -1,21 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
-
-function getStorageClient() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key =
-        process.env.SUPABASE_SERVICE_ROLE_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!url || !key) {
-        throw new Error("Missing Supabase URL or Service Role Key");
-    }
-
-    return createClient(url, key, {
-        auth: { persistSession: false },
-    });
-}
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 // POST: Upload image to blog-images bucket
 export async function POST(request) {
@@ -34,7 +19,7 @@ export async function POST(request) {
             );
         }
 
-        const supabase = getStorageClient();
+        const supabase = getServiceClient();
         const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
 
         // Convert file to buffer

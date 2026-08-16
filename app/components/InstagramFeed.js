@@ -41,7 +41,6 @@ export default async function InstagramFeed() {
                                       fill
                                       sizes="(max-width: 768px) 50vw, 25vw"
                                       className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                      unoptimized
                                   />
                                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                               </a>

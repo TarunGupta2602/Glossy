@@ -20,6 +20,7 @@ import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { getBlogShopCta } from "@/lib/blogShopCtas";
 import BlogShopCta from "../../components/BlogShopCta";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 
 export const revalidate = 300;
 
@@ -180,7 +181,9 @@ export default async function BlogDetailPage({ params }) {
 
     marked.use({ renderer });
 
-    const htmlContent = blog.content ? await marked.parse(blog.content) : "";
+    const htmlContent = blog.content
+        ? sanitizeHtml(await marked.parse(blog.content))
+        : "";
     const seoTitle = formatPageTitle(blog.meta_title || blog.title);
     const seoDescription = truncateMetaDescription(
         blog.meta_description || blog.description || ""

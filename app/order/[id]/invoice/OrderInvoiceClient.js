@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import OrderInvoice from "../../../components/OrderInvoice";
+import { authFetch } from "@/lib/adminApi";
 
 export default function OrderInvoiceClient() {
     const { id } = useParams();
@@ -20,7 +21,7 @@ export default function OrderInvoiceClient() {
             return;
         }
 
-        fetch(`/api/orders/${id}?userId=${user.id}`)
+        authFetch(`/api/orders/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) setOrder(data.order);

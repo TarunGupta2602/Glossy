@@ -14,6 +14,7 @@ import {
     SITE_NAME,
 } from "@/lib/seo";
 import { LEGACY_PRODUCT_REDIRECTS } from "@/lib/legacyProductRedirects";
+import { getCategoryHref } from "@/lib/categoryLanding";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
@@ -72,9 +73,6 @@ export async function generateMetadata({ params }) {
                     type: "image/png"
                 }],
             type: "website",
-        },
-        other: {
-            "og:type": "product",
         },
         twitter: {
             card: "summary_large_image",
@@ -253,7 +251,7 @@ export default async function ProductPage({ params }) {
                         "@type": "ListItem",
                         position: 2,
                         name: product.categories?.name || "Jewellery",
-                        item: `${BASE_URL}/shop/${product.categories?.slug || ""}`,
+                        item: `${BASE_URL}${getCategoryHref(product.categories)}`,
                     },
                     { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
                 ],

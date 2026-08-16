@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import OrderInvoice from "../../../components/OrderInvoice";
+import { authFetch } from "@/lib/adminApi";
 
 export default function OrderConfirmationClient() {
     const { id } = useParams();
@@ -24,7 +25,7 @@ export default function OrderConfirmationClient() {
 
         async function loadOrder() {
             try {
-                const res = await fetch(`/api/orders/${id}?userId=${user.id}`);
+                const res = await authFetch(`/api/orders/${id}`);
                 const data = await res.json();
 
                 if (!res.ok) {

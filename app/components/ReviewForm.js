@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
+import { authFetch } from "@/lib/adminApi";
 
 const RATING_LABELS = ["", "Poor", "Fair", "Good", "Very good", "Excellent"];
 
@@ -36,9 +37,8 @@ export default function ReviewForm({ productId, productName, onSuccess, onCancel
             const uploadPromises = files.map(async (file) => {
                 const formData = new FormData();
                 formData.append("file", file);
-                formData.append("userId", user.id);
 
-                const response = await fetch("/api/reviews/upload", {
+                const response = await authFetch("/api/reviews/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -66,7 +66,7 @@ export default function ReviewForm({ productId, productName, onSuccess, onCancel
             const urlParts = imageUrl.split("/review-images/");
             if (urlParts.length > 1) {
                 const path = urlParts[1];
-                await fetch(`/api/reviews/upload?path=${encodeURIComponent(path)}`, {
+                await authFetch(`/api/reviews/upload?path=${encodeURIComponent(path)}`, {
                     method: "DELETE",
                 });
             }
@@ -99,16 +99,10 @@ export default function ReviewForm({ productId, productName, onSuccess, onCancel
         setSubmitting(true);
 
         try {
-            const response = await fetch("/api/reviews", {
+            const response = await authFetch("/api/reviews", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify({
                     product_id: productId,
-                    user_id: user.id,
-                    user_name: profile?.full_name || user.email?.split("@")[0] || "Anonymous",
-                    user_email: user.email,
                     rating,
                     title: title.trim() || null,
                     comment: comment.trim(),

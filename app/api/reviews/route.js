@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { createClient } from "@supabase/supabase-js";
+import { requireUser, isAdminUser } from "@/lib/requireAuth";
 
 export async function POST(req) {
     try {
-        const body = await req.json();
-        const { product_id, user_id, user_name, user_email, rating, title, comment, images } = body;
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
 
-        // Validation
-        if (!product_id || !user_id || !user_name || !user_email || !rating || !comment) {
+        const body = await req.json();
+        const { product_id, rating, title, comment, images } = body;
+
+        if (!product_id || !rating || !comment) {
             return NextResponse.json(
-                { error: "Missing required fields: product_id, user_id, user_name, user_email, rating, comment" },
+                {
+                    error: "Missing required fields: product_id, rating, comment",
+                },
                 { status: 400 }
             );
         }
@@ -36,7 +40,6 @@ export async function POST(req) {
             );
         }
 
-        // Validate images array (max 5 images)
         if (images && (!Array.isArray(images) || images.length > 5)) {
             return NextResponse.json(
                 { error: "You can upload maximum 5 images" },
@@ -44,16 +47,21 @@ export async function POST(req) {
             );
         }
 
-        // Verify user is authenticated (using service client to bypass RLS for check)
         const supabaseService = getServiceClient();
-        
-        // Check if user already reviewed this product
+        const userId = auth.user.id;
+        const userName =
+            auth.user.user_metadata?.full_name ||
+            auth.user.user_metadata?.name ||
+            auth.user.email?.split("@")[0] ||
+            "Customer";
+        const userEmail = auth.user.email;
+
         const { data: existingReview } = await supabaseService
             .from("reviews")
             .select("id")
             .eq("product_id", product_id)
-            .eq("user_id", user_id)
-            .single();
+            .eq("user_id", userId)
+            .maybeSingle();
 
         if (existingReview) {
             return NextResponse.json(
@@ -62,26 +70,21 @@ export async function POST(req) {
             );
         }
 
-        // Check if user has purchased this product (optional - for verified purchase badge)
-        // This requires an orders table - for now we'll set it to false
-        const isVerifiedPurchase = false;
-
-        // Insert the review
         const { data: review, error } = await supabaseService
             .from("reviews")
             .insert([
                 {
                     product_id,
-                    user_id,
-                    user_name,
-                    user_email,
+                    user_id: userId,
+                    user_name: userName,
+                    user_email: userEmail,
                     rating,
                     title: title || null,
                     comment,
                     images: images || [],
-                    is_approved: false, // Requires admin approval
-                    is_verified_purchase: isVerifiedPurchase
-                }
+                    is_approved: false,
+                    is_verified_purchase: false,
+                },
             ])
             .select()
             .single();
@@ -94,7 +97,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             review,
-            message: "Review submitted successfully and is pending approval"
+            message: "Review submitted successfully and is pending approval",
         });
     } catch (error) {
         console.error("Review POST Error:", error);
@@ -102,20 +105,33 @@ export async function POST(req) {
     }
 }
 
-// GET endpoint to fetch reviews with filters (for admin or general use)
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const productId = searchParams.get("product_id");
         const userId = searchParams.get("user_id");
-        const approvedOnly = searchParams.get("approved_only") !== "false"; // default true
-        const limit = parseInt(searchParams.get("limit") || "50");
+        const approvedOnlyParam = searchParams.get("approved_only");
+        const limit = parseInt(searchParams.get("limit") || "50", 10);
+
+        let approvedOnly = approvedOnlyParam !== "false";
+
+        if (approvedOnlyParam === "false") {
+            const auth = await requireUser(req);
+            if (auth.error) return auth.error;
+            const admin = await isAdminUser(auth.user.id);
+            if (!admin) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
+            approvedOnly = false;
+        }
 
         const supabaseService = getServiceClient();
 
         let query = supabaseService
             .from("reviews")
-            .select("*")
+            .select(
+                "id, product_id, user_id, user_name, rating, title, comment, images, is_approved, is_verified_purchase, created_at"
+            )
             .order("created_at", { ascending: false })
             .limit(limit);
 
@@ -140,7 +156,7 @@ export async function GET(req) {
 
         return NextResponse.json({
             success: true,
-            reviews: reviews || []
+            reviews: reviews || [],
         });
     } catch (error) {
         console.error("Reviews GET Error:", error);

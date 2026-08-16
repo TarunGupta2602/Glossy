@@ -1,23 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { normalizeBlogSlug } from "@/lib/seo";
-
-function getBlogServiceClient() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key =
-        process.env.SUPABASE_SERVICE_ROLE_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!url || !key) {
-        throw new Error("Missing Supabase URL or Service Role Key");
-    }
-
-    return createClient(url, key, {
-        db: { schema: "public" },
-        auth: { persistSession: false },
-    });
-}
+import { getServiceClient } from "@/lib/supabaseServiceClient";
 
 // GET: Fetch single blog by ID (admin only)
 export async function GET(request, { params }) {
@@ -25,7 +9,7 @@ export async function GET(request, { params }) {
         const denied = await guardAdmin(request);
         if (denied) return denied;
 
-        const supabase = getBlogServiceClient();
+        const supabase = getServiceClient();
         const { id } = await params;
 
         const { data, error } = await supabase
@@ -54,7 +38,7 @@ export async function PATCH(request, { params }) {
         const denied = await guardAdmin(request);
         if (denied) return denied;
 
-        const supabase = getBlogServiceClient();
+        const supabase = getServiceClient();
         const { id } = await params;
         const body = await request.json();
         if (body.slug) {
@@ -88,7 +72,7 @@ export async function DELETE(request, { params }) {
         const denied = await guardAdmin(request);
         if (denied) return denied;
 
-        const supabase = getBlogServiceClient();
+        const supabase = getServiceClient();
         const { id } = await params;
 
         // Clean up image from storage if provided
