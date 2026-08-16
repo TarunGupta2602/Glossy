@@ -5,7 +5,6 @@ import {
     SUPPORT_EMAIL,
     SUPPORT_PHONE,
     WHATSAPP_URL,
-    BUSINESS_ADDRESS_LINE,
     SERVICE_AREA_LABEL,
 } from "@/lib/constants";
 
@@ -120,7 +119,6 @@ export default function OurStoryPage() {
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Meet the makers behind the sparkle</h2>
                     <p className="text-gray-600 mb-2">A small, passionate team curating and quality-checking every piece.</p>
                     <p className="text-sm text-gray-600 mb-1">{SERVICE_AREA_LABEL}</p>
-                    <p className="text-sm text-gray-500 mb-2">{BUSINESS_ADDRESS_LINE}</p>
                     <p className="text-sm text-[#E91E63] font-semibold mb-8">{INSTAGRAM_HANDLE} on Instagram</p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`} className="flex items-center justify-center gap-3 text-gray-600 hover:text-[#E91E63] transition-colors">

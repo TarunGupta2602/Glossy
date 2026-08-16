@@ -2,11 +2,7 @@ import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { requireUser } from "@/lib/requireAuth";
-import {
-    buildCheckoutFromCart,
-    loadPromoProducts,
-    loadUserCartRows,
-} from "@/lib/checkoutTotals";
+import { resolveCheckoutCart } from "@/lib/checkoutTotals";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 const razorpay = new Razorpay({
@@ -37,32 +33,21 @@ export async function POST(req) {
             );
         }
 
+        const body = await req.json().catch(() => ({}));
+        const clientItems = Array.isArray(body.items) ? body.items : [];
+
         const supabase = getServiceClient();
-        const cartRows = await loadUserCartRows(supabase, auth.user.id);
+        const { checkout, error } = await resolveCheckoutCart(
+            supabase,
+            auth.user.id,
+            clientItems,
+            { persistFallback: true }
+        );
 
-        if (!cartRows.length) {
-            return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
-        }
-
-        const allProducts = await loadPromoProducts(supabase);
-        const checkout = buildCheckoutFromCart(cartRows, allProducts);
-
-        for (const item of checkout.cart) {
-            if (
-                item.stock_count != null &&
-                item.stock_count < (item.quantity || 1)
-            ) {
-                return NextResponse.json(
-                    { error: `Insufficient stock for ${item.name}` },
-                    { status: 409 }
-                );
-            }
-        }
-
-        if (checkout.cartTotal <= 0) {
+        if (error || !checkout) {
             return NextResponse.json(
-                { error: "Invalid cart total" },
-                { status: 400 }
+                { error: error || "Cart is empty" },
+                { status: error?.includes("stock") ? 409 : 400 }
             );
         }
 
@@ -73,6 +58,8 @@ export async function POST(req) {
             notes: {
                 user_id: auth.user.id,
                 item_count: String(checkout.checkoutItems.length),
+                paid_subtotal: String(checkout.cartSubtotal),
+                shipping_fee: String(checkout.shippingFee),
             },
         };
 

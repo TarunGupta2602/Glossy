@@ -78,6 +78,19 @@ export default function CheckoutPage() {
     };
 
     const handlePayment = async () => {
+        if (!user) {
+            alert("Please sign in to complete checkout.");
+            return;
+        }
+        if (!cart.length) {
+            alert("Your cart is empty.");
+            return;
+        }
+        if (!shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode) {
+            alert("Please fill in your shipping details.");
+            return;
+        }
+
         setIsProcessing(true);
         const res = await loadRazorpay();
 
@@ -88,9 +101,26 @@ export default function CheckoutPage() {
         }
 
         try {
+            // Keep DB cart in sync with what the customer sees before charging
+            for (const item of cart) {
+                await authFetch("/api/cart", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        productId: item.id,
+                        quantity: item.quantity || 1,
+                        action: "add",
+                    }),
+                });
+            }
+
             const orderResponse = await authFetch("/api/razorpay", {
                 method: "POST",
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    items: cart.map((item) => ({
+                        id: item.id,
+                        quantity: item.quantity || 1,
+                    })),
+                }),
             });
 
             const orderData = await orderResponse.json();
@@ -119,6 +149,10 @@ export default function CheckoutPage() {
                                 razorpay_signature: response.razorpay_signature,
                                 shipping_address: shippingInfo,
                                 contact_phone: shippingInfo.phone,
+                                items: cart.map((item) => ({
+                                    id: item.id,
+                                    quantity: item.quantity || 1,
+                                })),
                             }),
                         });
 

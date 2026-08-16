@@ -4,9 +4,7 @@ import Razorpay from "razorpay";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { requireUser, isAdminUser } from "@/lib/requireAuth";
 import {
-    buildCheckoutFromCart,
-    loadPromoProducts,
-    loadUserCartRows,
+    resolveCheckoutCart,
 } from "@/lib/checkoutTotals";
 
 const CUSTOMER_ALLOWED_STATUSES = new Set(["cancelled", "return requested"]);
@@ -143,36 +141,20 @@ export async function POST(req) {
             });
         }
 
-        const cartRows = await loadUserCartRows(supabaseService, auth.user.id);
-        if (!cartRows.length) {
-            return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
-        }
+        const clientItems = Array.isArray(body.items) ? body.items : [];
 
-        const allProducts = await loadPromoProducts(supabaseService);
-        const checkout = buildCheckoutFromCart(cartRows, allProducts);
+        const { checkout, error: checkoutError } = await resolveCheckoutCart(
+            supabaseService,
+            auth.user.id,
+            clientItems,
+            { persistFallback: true }
+        );
 
-        for (const item of checkout.cart) {
-            if (
-                item.stock_count != null &&
-                item.stock_count < (item.quantity || 1)
-            ) {
-                return NextResponse.json(
-                    {
-                        error: `Insufficient stock for ${item.name}`,
-                    },
-                    { status: 409 }
-                );
-            }
-        }
-
-        for (const gift of checkout.promo.freeGiftSelections || []) {
-            const product = allProducts.find((p) => p.id === gift.productId);
-            if (product?.stock_count != null && product.stock_count < 1) {
-                return NextResponse.json(
-                    { error: `Free gift out of stock: ${gift.name}` },
-                    { status: 409 }
-                );
-            }
+        if (checkoutError || !checkout) {
+            return NextResponse.json(
+                { error: checkoutError || "Cart is empty" },
+                { status: checkoutError?.includes("stock") ? 409 : 400 }
+            );
         }
 
         const expectedPaise = Math.round(checkout.cartTotal * 100);

@@ -28,7 +28,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, BUSINESS_ADDRESS } from "@/lib/constants";
+import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL } from "@/lib/constants";
 
 function buildSiteVerification() {
     const verification = {
@@ -169,20 +169,12 @@ export default function RootLayout({ children }) {
 
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
-    "@type": "JewelryStore",
+    "@type": "OnlineStore",
     "name": BRAND_NAME,
     "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
     "url": BRAND_URL,
     "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
-    "email": "supporttheluxejewels@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": BUSINESS_ADDRESS.streetAddress,
-      "addressLocality": BUSINESS_ADDRESS.addressLocality,
-      "addressRegion": BUSINESS_ADDRESS.addressRegion,
-      "postalCode": BUSINESS_ADDRESS.postalCode,
-      "addressCountry": BUSINESS_ADDRESS.addressCountry
-    },
+    "email": SUPPORT_EMAIL,
     "areaServed": [
       { "@type": "City", "name": "Noida" },
       { "@type": "City", "name": "Greater Noida" },
