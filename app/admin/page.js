@@ -54,11 +54,7 @@ export default function AdminPage() {
                 password
             );
 
-            if (!loadedProfile) {
-                setError(
-                    "Signed in, but your profile could not be loaded. Check that this account exists in the users table."
-                );
-            } else if (loadedProfile.role !== "admin") {
+            if (loadedProfile && loadedProfile.role !== "admin") {
                 setError(
                     "This account is signed in but does not have admin privileges."
                 );
@@ -91,13 +87,6 @@ export default function AdminPage() {
                             </span>
                         </div>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
-                        {user && !profile && (
-                            <div className="mt-4 p-3 bg-rose-50 rounded-xl border border-rose-100">
-                                <p className="text-xs text-rose-700 font-semibold leading-relaxed">
-                                    Signed in, but no profile was found for this account. Ask to set role=admin on your users row.
-                                </p>
-                            </div>
-                        )}
                         {user && profile && profile?.role !== "admin" && (
                             <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">
                                 <p className="text-xs text-amber-700 font-semibold leading-relaxed">
