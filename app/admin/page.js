@@ -2,13 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
-import { supabase } from "@/lib/supabaseClient";
 import { adminFetch } from "@/lib/adminApi";
 
 export default function AdminPage() {
-    const { user, profile, loading: authLoading, signOut } = useAuth();
+    const { user, profile, loading: authLoading, signOut, signInWithPassword } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loginLoading, setLoginLoading] = useState(false);
@@ -40,7 +38,7 @@ export default function AdminPage() {
     }, []);
 
     useEffect(() => {
-        if (profile?.role === 'admin') {
+        if (profile?.role === "admin") {
             fetchStats(); // eslint-disable-line react-hooks/set-state-in-effect
         }
     }, [profile, fetchStats]);
@@ -51,22 +49,24 @@ export default function AdminPage() {
         setLoginLoading(true);
 
         try {
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-                email,
+            const { profile: loadedProfile } = await signInWithPassword(
+                email.trim(),
                 password
-            });
+            );
 
-            if (signInError) {
-                setError(signInError.message);
-                setLoginLoading(false);
-                return;
+            if (!loadedProfile) {
+                setError(
+                    "Signed in, but your profile could not be loaded. Check that this account exists in the users table."
+                );
+            } else if (loadedProfile.role !== "admin") {
+                setError(
+                    "This account is signed in but does not have admin privileges."
+                );
             }
-
-            // The profile will be loaded via AuthContext automatically.
-            // We just need to wait for it.
         } catch (err) {
             console.error("Login Error:", err);
-            setError("An unexpected error occurred. Please try again.");
+            setError(err?.message || "An unexpected error occurred. Please try again.");
+        } finally {
             setLoginLoading(false);
         }
     };
@@ -91,7 +91,14 @@ export default function AdminPage() {
                             </span>
                         </div>
                         <p className="text-gray-500 text-sm">Admin Portal Access</p>
-                        {user && profile?.role !== 'admin' && (
+                        {user && !profile && (
+                            <div className="mt-4 p-3 bg-rose-50 rounded-xl border border-rose-100">
+                                <p className="text-xs text-rose-700 font-semibold leading-relaxed">
+                                    Signed in, but no profile was found for this account. Ask to set role=admin on your users row.
+                                </p>
+                            </div>
+                        )}
+                        {user && profile && profile?.role !== "admin" && (
                             <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">
                                 <p className="text-xs text-amber-700 font-semibold leading-relaxed">
                                     Your account is logged in but does not have administrator privileges.

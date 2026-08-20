@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { authFetch } from "@/lib/adminApi";
 
@@ -15,22 +15,33 @@ export function AuthProvider({ children }) {
         process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
         "483518069191-egjpfiap3opnnj90q6ui20evr8pg6fic.apps.googleusercontent.com";
 
-    const fetchProfile = async () => {
-        try {
-            const response = await authFetch("/api/profile");
-            const data = await response.json();
+    const fetchProfile = useCallback(async () => {
+        // Retry briefly — session cookies can lag right after sign-in.
+        for (let attempt = 0; attempt < 5; attempt += 1) {
+            try {
+                const response = await authFetch("/api/profile");
+                const data = await response.json();
 
-            if (data.success) {
-                setProfile(data.profile);
-            } else {
+                if (data.success) {
+                    setProfile(data.profile);
+                    return data.profile;
+                }
+
                 console.error("Error fetching profile via API:", data.error);
-                setProfile(null);
+            } catch (error) {
+                if (attempt === 4) {
+                    console.error("Error fetching profile from API:", error);
+                    setProfile(null);
+                    return null;
+                }
+                await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+                continue;
             }
-        } catch (error) {
-            console.error("Error fetching profile from API:", error);
-            setProfile(null);
+            break;
         }
-    };
+        setProfile(null);
+        return null;
+    }, []);
 
     const handleGoogleResponse = async (response) => {
         try {
@@ -51,12 +62,16 @@ export function AuthProvider({ children }) {
     };
 
     useEffect(() => {
-        supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
-            setUser(currentUser ?? null);
+        let cancelled = false;
+
+        supabase.auth.getSession().then(async ({ data: { session } }) => {
+            if (cancelled) return;
+            const currentUser = session?.user ?? null;
+            setUser(currentUser);
             if (currentUser) {
                 await fetchProfile();
             }
-            setLoading(false);
+            if (!cancelled) setLoading(false);
         });
 
         const initGSI = () => {
@@ -91,19 +106,27 @@ export function AuthProvider({ children }) {
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (_event, session) => {
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-            if (currentUser) {
-                await fetchProfile();
-            } else {
-                setProfile(null);
-            }
-            setLoading(false);
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            // Defer async work — calling other auth methods inside this
+            // callback can deadlock the Supabase client.
+            setTimeout(async () => {
+                if (cancelled) return;
+                const currentUser = session?.user ?? null;
+                setUser(currentUser);
+                if (currentUser) {
+                    await fetchProfile();
+                } else {
+                    setProfile(null);
+                }
+                setLoading(false);
+            }, 0);
         });
 
-        return () => subscription.unsubscribe();
-    }, []);
+        return () => {
+            cancelled = true;
+            subscription.unsubscribe();
+        };
+    }, [fetchProfile, googleClientId]);
 
     const signInWithGoogle = async () => {
         const origin =
@@ -118,8 +141,26 @@ export function AuthProvider({ children }) {
         });
     };
 
+    const signInWithPassword = async (email, password) => {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+        if (error) throw error;
+
+        const signedInUser = data.user ?? data.session?.user ?? null;
+        setUser(signedInUser);
+
+        // Ensure session is readable before profile API call.
+        await supabase.auth.getSession();
+        const loadedProfile = signedInUser ? await fetchProfile() : null;
+        setLoading(false);
+        return { user: signedInUser, profile: loadedProfile };
+    };
+
     const signOut = async () => {
         await supabase.auth.signOut();
+        setUser(null);
         setProfile(null);
     };
 
@@ -130,8 +171,10 @@ export function AuthProvider({ children }) {
                 profile,
                 loading,
                 signInWithGoogle,
+                signInWithPassword,
                 signOut,
                 googleClientId,
+                refreshProfile: fetchProfile,
             }}
         >
             {children}
