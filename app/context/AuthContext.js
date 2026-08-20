@@ -77,19 +77,13 @@ export function AuthProvider({ children }) {
         const initGSI = () => {
             if (!window.google?.accounts?.id) return;
 
+            // Initialize only — no One Tap prompt on every page.
+            // Sign-in buttons call renderButton where needed.
             window.google.accounts.id.initialize({
                 client_id: googleClientId,
                 callback: handleGoogleResponse,
                 auto_select: false,
             });
-
-            const isLocalhost =
-                window.location.hostname === "localhost" ||
-                window.location.hostname === "127.0.0.1";
-
-            if (!isLocalhost) {
-                window.google.accounts.id.prompt();
-            }
         };
 
         if (window.google) {
