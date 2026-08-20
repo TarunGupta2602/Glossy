@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { WHATSAPP_URL } from '@/lib/constants';
 
 export function ShareButtons({ title }) {
     const [baseUrl, setBaseUrl] = useState('');
@@ -74,7 +75,7 @@ export function MobileStickyCTA({ title, shopHref, shopLabel }) {
                     {shopHref ? (
                         <a
                             href={shopHref}
-                            className="flex-[1.4] flex items-center justify-center gap-1.5 min-h-11 py-2 px-2 text-[10px] font-bold uppercase tracking-widest text-white bg-[#E91E63] rounded-full"
+                            className="flex-[1.3] flex items-center justify-center gap-1.5 min-h-11 py-2 px-2 text-[10px] font-bold uppercase tracking-widest text-white bg-[#E91E63] rounded-full"
                         >
                             {shortShopLabel || "Shop"}
                         </a>
@@ -84,6 +85,14 @@ export function MobileStickyCTA({ title, shopHref, shopLabel }) {
                             Back
                         </a>
                     )}
+                    <a
+                        href={WHATSAPP_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center min-h-11 py-2 text-[10px] font-bold uppercase tracking-widest text-[#128C7E]"
+                    >
+                        WhatsApp
+                    </a>
                     <div className="w-px h-4 bg-slate-200"></div>
                     <button
                         type="button"

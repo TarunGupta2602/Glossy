@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WHATSAPP_URL, INSTAGRAM_URL } from "@/lib/constants";
 
 /**
  * In-article / sidebar shop CTA for blog posts — pushes gift & category landings.
@@ -8,7 +9,7 @@ export default function BlogShopCta({ cta, compact = false }) {
 
     if (compact) {
         return (
-            <aside className="rounded-2xl border border-pink-100 bg-[#fdf2f6] p-5 shadow-sm">
+            <aside className="rounded-2xl border border-pink-100 bg-[#fdf2f6] p-5">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#E91E63] mb-2">
                     {cta.eyebrow}
                 </p>
@@ -35,6 +36,24 @@ export default function BlogShopCta({ cta, compact = false }) {
                         ))}
                     </div>
                 )}
+                <div className="mt-4 pt-3 border-t border-pink-100/80 flex flex-col gap-2">
+                    <a
+                        href={WHATSAPP_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-semibold text-slate-700 hover:text-[#E91E63]"
+                    >
+                        Ask on WhatsApp before you buy
+                    </a>
+                    <a
+                        href={INSTAGRAM_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-semibold text-slate-700 hover:text-[#E91E63]"
+                    >
+                        See new drops on Instagram
+                    </a>
+                </div>
             </aside>
         );
     }
@@ -69,6 +88,14 @@ export default function BlogShopCta({ cta, compact = false }) {
                         {link.label}
                     </Link>
                 ))}
+                <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-xs font-bold uppercase tracking-widest text-slate-800 hover:border-[#25D366] hover:text-[#128C7E] transition-colors"
+                >
+                    WhatsApp us
+                </a>
             </div>
         </section>
     );

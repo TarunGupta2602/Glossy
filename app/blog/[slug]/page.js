@@ -18,7 +18,10 @@ import {
 } from "@/lib/blogQueries";
 import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { getBlogShopCta } from "@/lib/blogShopCtas";
+import { getBlogProductPicks } from "@/lib/blogProductPicks";
+import { getReviewCounts } from "@/lib/reviewCounts";
 import BlogShopCta from "../../components/BlogShopCta";
+import BlogProductPicks from "../../components/BlogProductPicks";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 
@@ -145,6 +148,12 @@ export default async function BlogDetailPage({ params }) {
 
     const blog = applyBlogSeoOverride(rawBlog, canonicalSlug);
     const shopCta = getBlogShopCta(canonicalSlug);
+    const productPicks = await getBlogProductPicks(
+        supabase,
+        shopCta.pickMode || "popular",
+        4
+    );
+    const reviewCounts = await getReviewCounts(productPicks.map((p) => p.id));
     const relatedPosts = await getRelatedBlogPosts(supabase, blog, 3);
     const keywords = parseBlogKeywords(blog.meta_keywords);
 
@@ -378,6 +387,13 @@ export default async function BlogDetailPage({ params }) {
                         </article>
 
                         <BlogShopCta cta={shopCta} />
+
+                        <BlogProductPicks
+                            products={productPicks}
+                            reviewCounts={reviewCounts}
+                            shopHref={shopCta.primary.href}
+                            shopLabel={shopCta.primary.label}
+                        />
 
                         {blog.faqs && blog.faqs.length > 0 && (
                             <section className="pt-16 border-t border-slate-200">
