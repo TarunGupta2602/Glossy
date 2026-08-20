@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { requireUser, isAdminUser } from "@/lib/requireAuth";
+import { requireUser } from "@/lib/requireAuth";
+import { isAdminUser } from "@/lib/userProfile";
 
 export async function GET(req, { params }) {
     try {

@@ -2,7 +2,8 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { requireUser, isAdminUser } from "@/lib/requireAuth";
+import { requireUser } from "@/lib/requireAuth";
+import { isAdminUser } from "@/lib/userProfile";
 import {
     resolveCheckoutCart,
 } from "@/lib/checkoutTotals";
