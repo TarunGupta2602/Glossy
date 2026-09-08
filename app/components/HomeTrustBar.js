@@ -1,21 +1,26 @@
-import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
-import { PROMO_LABEL, PROMO_SHORT } from "@/lib/promo";
-import TrustStrip from "./TrustStrip";
+import { PROMO_LABEL } from "@/lib/promo";
+
+const ITEMS = [
+    "Waterproof & anti-tarnish",
+    "Perfect gifts for her",
+    "Free shipping over ₹1000",
+    PROMO_LABEL,
+];
 
 export default function HomeTrustBar() {
     return (
-        <section className="border-b border-gray-100 bg-[#faf7f8]">
-            <div className={`${HOME_CONTAINER} py-3.5 md:py-6`}>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
-                    <div className={`${HOME_EDGE_SCROLL} overflow-x-auto no-scrollbar md:overflow-visible`}>
-                        <TrustStrip className="justify-start md:justify-start whitespace-nowrap w-max md:w-auto md:whitespace-normal md:flex-wrap" />
-                    </div>
-                    <p className="text-center md:text-right text-[11px] sm:text-[13px] text-gray-700 leading-snug md:max-w-md">
-                        <span className="font-bold text-[#E91E63]">{PROMO_LABEL}</span>
-                        <span className="hidden sm:inline text-gray-600"> — {PROMO_SHORT}</span>
-                        <span className="sm:hidden text-gray-600"> — unlock a free gift</span>
-                    </p>
-                </div>
+        <section className="bg-[#1a1214] text-white">
+            <div className="mx-auto max-w-[1600px] px-4 sm:px-6">
+                <ul className="flex items-center justify-center gap-x-6 sm:gap-x-10 overflow-x-auto no-scrollbar py-2.5 text-[11px] tracking-wide whitespace-nowrap text-white/85">
+                    {ITEMS.map((item, i) => (
+                        <li key={item} className="flex items-center gap-6 sm:gap-10 shrink-0">
+                            {i > 0 && <span className="text-white/25" aria-hidden>·</span>}
+                            <span className={i === ITEMS.length - 1 ? "text-[#E8C9A0]" : undefined}>
+                                {item}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </section>
     );

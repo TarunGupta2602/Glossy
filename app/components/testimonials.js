@@ -13,19 +13,19 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
     const photoReviews = reviews
         .map((review) => ({ review, visual: getReviewVisual(review) }))
         .filter((item) => item.visual)
-        .slice(0, 8);
+        .slice(0, 5);
 
     const quoteReviews = reviews.slice(0, 3);
 
     return (
-        <section className="py-8 md:py-14 bg-gradient-to-b from-[#FFF5F8] to-white overflow-hidden">
+        <section className="py-14 md:py-20 bg-white overflow-hidden">
             <div className={HOME_CONTAINER}>
-                <div className="text-center mb-5 md:mb-8 px-1">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] text-[#E91E63] uppercase mb-2 block">
+                <div className="text-center mb-8 md:mb-12 px-1">
+                    <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-3">
                         Verified reviews
-                    </span>
-                    <h2 className="text-xl sm:text-3xl md:text-4xl font-playfair font-bold text-gray-900 tracking-tight mb-2">
-                        Loved in real life
+                    </p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-playfair font-medium text-gray-900 tracking-tight mb-3">
+                        Loved in <em className="italic font-normal">real life</em>
                     </h2>
                     {reviewStats?.count > 0 && (
                         <p className="text-sm font-semibold text-gray-600">

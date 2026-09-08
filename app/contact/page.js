@@ -1,4 +1,5 @@
 import ContactForm from "../components/ContactForm";
+import SiteFaqSection from "../components/SiteFaqSection";
 import {
     WHATSAPP_URL,
     SUPPORT_EMAIL,
@@ -6,6 +7,7 @@ import {
     BUSINESS_HOURS,
     SERVICE_AREA_LABEL,
 } from "@/lib/constants";
+import { CONTACT_FAQS } from "@/lib/faqs";
 
 export const metadata = {
     title: "Contact The Luxe Jewels | Noida NCR Jewellery Support",
@@ -32,6 +34,7 @@ export const metadata = {
 
 export default function ContactPage() {
     return (
+        <>
         <section className="bg-white py-12 md:py-20 px-4 sm:px-6">
             <div className="max-w-3xl mx-auto">
                 <div className="text-center mb-8 md:mb-12">
@@ -117,5 +120,15 @@ export default function ContactPage() {
                 <ContactForm />
             </div>
         </section>
+
+        <SiteFaqSection
+            faqs={CONTACT_FAQS}
+            eyebrow="Support"
+            title="Before you"
+            titleAccent="reach out"
+            description="Quick answers on WhatsApp support, order help, gifting advice, and Buy 2 Get 1 Free."
+            idPrefix="contact-faq"
+        />
+        </>
     );
 }

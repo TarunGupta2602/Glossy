@@ -7,6 +7,8 @@ import {
     WHATSAPP_URL,
     SERVICE_AREA_LABEL,
 } from "@/lib/constants";
+import SiteFaqSection from "../components/SiteFaqSection";
+import { STORY_FAQS } from "@/lib/faqs";
 
 export const dynamic = "force-static";
 
@@ -50,6 +52,7 @@ const TIMELINE = [
 
 export default function OurStoryPage() {
     return (
+        <>
         <section className="bg-white py-12 md:py-24">
             <div className={`${SITE_CONTAINER} max-w-5xl`}>
                 <div className="text-center mb-10 md:mb-16">
@@ -134,5 +137,15 @@ export default function OurStoryPage() {
                 </div>
             </div>
         </section>
+
+        <SiteFaqSection
+            faqs={STORY_FAQS}
+            eyebrow="About us"
+            title="Brand"
+            titleAccent="questions"
+            description="Where we’re based, who we design for, and how to reach us for wholesale or special requests."
+            idPrefix="story-faq"
+        />
+        </>
     );
 }

@@ -1,224 +1,121 @@
-"use client";
-
-import { HOME_CONTAINER } from "@/lib/siteLayout";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
-const SLIDES = [
-    {
-        image: "/iloveimg-resized/hero3.png",
-        headline: "Everyday shine that lasts",
-        support: "Anti-tarnish, waterproof 18k gold plated jewellery for daily India.",
-        primary: { label: "Shop bestsellers", href: "/shop?sort=popular" },
-        secondary: { label: "Shop earrings", href: "/earrings" },
-    },
-    {
-        image: "/iloveimg-resized/hero4.png",
-        headline: "Statement earrings, all-day comfort",
-        support: "Lustrous pieces made to wear — not babysit.",
-        primary: { label: "Shop earrings", href: "/earrings" },
-        secondary: { label: "Shop all", href: "/shop" },
-    },
-    {
-        image: "/iloveimg-resized/hero5.png",
-        headline: "Layered necklaces for every look",
-        support: "From everyday chains to evening edits — plus Buy 2 Get 1 Free.",
-        primary: { label: "Shop necklaces", href: "/necklaces" },
-        secondary: { label: "New arrivals", href: "/shop?sort=newest" },
-    },
-];
-
+/**
+ * The Luxe Jewels hero — original brand copy, taller section, larger image.
+ */
 export default function HeroSlider() {
-    const [currentIdx, setCurrentIdx] = useState(0);
-    const [paused, setPaused] = useState(false);
-    const [hydrated, setHydrated] = useState(false);
-    const touchStartX = useRef(null);
-    const activeSlide = SLIDES[currentIdx];
-
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
-
-    const visibleIndexes = useMemo(() => {
-        const set = new Set([currentIdx]);
-        if (hydrated) {
-            set.add((currentIdx + 1) % SLIDES.length);
-            set.add((currentIdx - 1 + SLIDES.length) % SLIDES.length);
-        }
-        return set;
-    }, [currentIdx, hydrated]);
-
-    const goTo = useCallback((idx) => {
-        setCurrentIdx(((idx % SLIDES.length) + SLIDES.length) % SLIDES.length);
-    }, []);
-
-    const next = useCallback(() => goTo(currentIdx + 1), [currentIdx, goTo]);
-    const prev = useCallback(() => goTo(currentIdx - 1), [currentIdx, goTo]);
-
-    useEffect(() => {
-        if (paused) return undefined;
-        const interval = setInterval(() => {
-            setCurrentIdx((prevIdx) => (prevIdx + 1) % SLIDES.length);
-        }, 7000);
-        return () => clearInterval(interval);
-    }, [paused]);
-
-    const onTouchStart = (e) => {
-        touchStartX.current = e.changedTouches[0]?.clientX ?? null;
-        setPaused(true);
-    };
-
-    const onTouchEnd = (e) => {
-        const start = touchStartX.current;
-        const end = e.changedTouches[0]?.clientX;
-        touchStartX.current = null;
-        setPaused(false);
-        if (start == null || end == null) return;
-        const delta = end - start;
-        if (Math.abs(delta) < 40) return;
-        if (delta < 0) next();
-        else prev();
-    };
-
     return (
-        <section
-            className="relative h-[min(74svh,580px)] sm:h-[72vh] md:h-[88vh] flex items-end md:items-center overflow-hidden bg-[#1a1214]"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-            aria-roledescription="carousel"
-            aria-label="Featured jewellery"
-        >
-            <div className="absolute inset-0 z-0">
-                {SLIDES.map((slide, idx) => {
-                    if (!visibleIndexes.has(idx)) return null;
-                    const isActive = idx === currentIdx;
-                    return (
-                        <div
-                            key={slide.image}
-                            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                                isActive ? "opacity-100" : "opacity-0"
-                            }`}
-                            aria-hidden={!isActive}
+        <section className="bg-[#fdfbf7]" aria-label="The Luxe Jewels">
+            <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 py-12 sm:py-14 md:py-16 lg:py-20">
+                <div className="grid md:grid-cols-[1fr_1.05fr] gap-8 md:gap-10 lg:gap-12 items-center">
+                    {/* Left — copy */}
+                    <div className="order-2 md:order-1 text-center md:text-left">
+                        <p
+                            className="text-[11px] font-medium tracking-[0.22em] uppercase mb-4 md:mb-5"
+                            style={{ color: "#b59e7b" }}
                         >
+                            Anti-tarnish · Waterproof · Made for India
+                        </p>
+
+                        <h1 className="font-playfair text-[2.35rem] sm:text-[2.75rem] md:text-[3.15rem] lg:text-[3.4rem] font-medium text-[#2a2724] tracking-tight leading-[1.1] mb-4 md:mb-5">
+                            Shine that stays with you —{" "}
+                            <em className="italic font-normal" style={{ color: "#b59e7b" }}>
+                                every day
+                            </em>
+                        </h1>
+
+                        <p className="text-[15px] sm:text-[16px] text-[#6b6560] leading-relaxed mb-8 md:mb-9 max-w-[400px] mx-auto md:mx-0">
+                            Lightweight anti-tarnish jewellery you can live in — from first meetings to late evenings, with pieces ready to gift.
+                        </p>
+
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            <Link
+                                href="/shop?sort=popular"
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#2a2724] px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#E91E63] transition-colors duration-300"
+                            >
+                                Shop bestsellers
+                                <span aria-hidden>→</span>
+                            </Link>
+                            <Link
+                                href="/gifts/under-999"
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#2a2724]/25 bg-transparent px-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <rect x="3" y="8" width="18" height="13" rx="1" />
+                                    <path d="M12 8V3" />
+                                    <path d="M8.5 3h7" />
+                                    <path d="M12 8v13" />
+                                </svg>
+                                Shop gifts
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Right — larger image */}
+                    <div className="order-1 md:order-2 flex flex-col items-center md:items-stretch">
+                        <div className="relative w-full max-w-[480px] md:max-w-none mx-auto aspect-[3/4] min-h-[420px] sm:min-h-[500px] md:min-h-[560px] lg:min-h-[620px] md:max-h-[660px] overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#efeae4]">
                             <Image
-                                src={slide.image}
-                                alt={slide.headline}
+                                src="/iloveimg-resized/hero2.jpg"
+                                alt="The Luxe Jewels anti-tarnish gold plated jewellery"
                                 fill
-                                priority={idx === 0}
-                                sizes="100vw"
-                                quality={80}
+                                priority
+                                sizes="(max-width: 768px) 480px, 600px"
+                                quality={90}
                                 placeholder="blur"
                                 blurDataURL={IMAGE_BLUR_DATA_URL}
-                                className={`object-cover object-[center_20%] sm:object-[center_22%] md:object-[center_30%] will-change-transform ${
-                                    isActive ? "ken-burns" : "scale-100"
-                                }`}
+                                className="object-cover object-center"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/15 md:bg-gradient-to-r md:from-black/55 md:via-black/20 md:to-black/5" />
+
+                            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+                                <div className="rounded-2xl bg-white/90 backdrop-blur-sm px-3.5 py-2.5 shadow-sm">
+                                    <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a847c]">
+                                        Fresh drop
+                                    </p>
+                                    <p className="text-[13px] font-semibold text-[#2a2724] leading-tight mt-0.5">
+                                        Daily wear edit
+                                    </p>
+                                </div>
+                                <Link
+                                    href="/shop?sort=newest"
+                                    className="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm hover:opacity-90 transition-opacity"
+                                    style={{ backgroundColor: "#b59e7b" }}
+                                    aria-label="Shop new arrivals"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="15"
+                                        height="15"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M5 12h14m-7-7 7 7-7 7" />
+                                    </svg>
+                                </Link>
+                            </div>
                         </div>
-                    );
-                })}
-            </div>
 
-            <div
-                className={`${HOME_CONTAINER} relative z-10 w-full pb-16 pt-16 sm:pb-20 sm:pt-24 md:pb-0 md:pt-0`}
-            >
-                <div className="max-w-xl">
-                    <p className="font-playfair text-white text-2xl sm:text-3xl md:text-4xl tracking-tight mb-3 sm:mb-5">
-                        The Luxe Jewels
-                    </p>
-
-                    <h1
-                        key={`h-${currentIdx}`}
-                        className="hero-copy-in text-[1.65rem] sm:text-4xl md:text-5xl font-playfair font-bold text-white tracking-tight leading-[1.12] mb-3 sm:mb-5"
-                    >
-                        {activeSlide.headline}
-                    </h1>
-
-                    <p
-                        key={`p-${currentIdx}`}
-                        className="hero-copy-in text-[13px] sm:text-base text-white/85 max-w-md leading-relaxed mb-6 sm:mb-9 line-clamp-2 sm:line-clamp-none"
-                    >
-                        {activeSlide.support}
-                    </p>
-
-                    <div
-                        key={`c-${currentIdx}`}
-                        className="hero-copy-in flex flex-row flex-wrap items-center gap-3 sm:gap-5"
-                    >
-                        <Link
-                            href={activeSlide.primary.href}
-                            className="inline-flex items-center justify-center gap-2 bg-[#E91E63] text-white text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] px-5 sm:px-7 py-3.5 sm:py-4 hover:bg-[#c2185b] active:scale-[0.98] transition-all duration-200 min-h-12 rounded-sm shadow-lg shadow-[#E91E63]/25"
-                        >
-                            {activeSlide.primary.label}
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                            >
-                                <path d="M5 12h14m-7-7 7 7-7 7" />
-                            </svg>
-                        </Link>
-                        <Link
-                            href={activeSlide.secondary.href}
-                            className="inline-flex items-center justify-center text-white/90 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] py-3 border-b border-white/35 hover:border-[#E91E63] hover:text-white transition-colors duration-200 min-h-11"
-                        >
-                            {activeSlide.secondary.label}
-                        </Link>
+                        <p className="mt-3 text-right text-[10px] font-medium tracking-[0.2em] uppercase text-[#a39e97]">
+                            Buy 2 get 1 free
+                        </p>
                     </div>
-                </div>
-            </div>
-
-            <div className="absolute bottom-3 right-3 sm:bottom-10 sm:right-10 z-20 flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={prev}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/30 bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/40 active:scale-95 transition-colors"
-                        aria-label="Previous slide"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={next}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/30 bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/40 active:scale-95 transition-colors"
-                        aria-label="Next slide"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-                </div>
-
-                <div className="flex gap-1.5 sm:gap-3" role="tablist" aria-label="Hero slides">
-                    {SLIDES.map((_, idx) => (
-                        <button
-                            key={idx}
-                            type="button"
-                            role="tab"
-                            aria-selected={idx === currentIdx}
-                            onClick={() => goTo(idx)}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${
-                                idx === currentIdx
-                                    ? "w-6 sm:w-8 bg-[#E91E63]"
-                                    : "w-1.5 bg-white/35 hover:bg-white/60"
-                            }`}
-                            aria-label={`Go to slide ${idx + 1}`}
-                        />
-                    ))}
                 </div>
             </div>
         </section>

@@ -48,16 +48,16 @@ export default function Newsletter() {
     }
 
     return (
-        <section className="py-10 md:py-16 bg-gradient-to-b from-white to-[#faf7f8] text-center">
+        <section className="py-14 md:py-20 bg-white text-center border-t border-gray-100">
             <div className={HOME_CONTAINER}>
-                <span className="text-[10px] font-black tracking-[0.2em] uppercase text-[#E91E63] mb-2.5 md:mb-3 block">
+                <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-3">
                     The list
-                </span>
-                <h2 className="text-xl sm:text-2xl md:text-4xl font-playfair font-bold text-gray-900 mb-2.5 md:mb-3 px-1">
-                    Early access to drops & offers
+                </p>
+                <h2 className="text-3xl sm:text-4xl font-playfair font-medium text-gray-900 mb-3 tracking-tight">
+                    Early access to drops
                 </h2>
-                <p className="text-gray-500 text-sm sm:text-[15px] mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed px-1">
-                    Be first to new anti-tarnish releases, exclusive gifting edits, and storewide offers like {PROMO_LABEL}.
+                <p className="text-gray-500 text-[15px] mb-8 max-w-md mx-auto leading-relaxed">
+                    Be first to new anti-tarnish releases and offers like {PROMO_LABEL}.
                 </p>
 
                 <form
@@ -69,7 +69,7 @@ export default function Newsletter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="w-full flex-1 px-4 sm:px-5 py-3.5 rounded-xl border border-gray-200 bg-white text-base focus:outline-none focus:ring-2 focus:ring-[#E91E63]/25 focus:border-[#E91E63]/40"
+                        className="w-full flex-1 px-4 sm:px-5 py-3.5 border border-gray-200 bg-white text-base focus:outline-none focus:border-gray-900"
                         required
                         autoComplete="email"
                         inputMode="email"
@@ -78,7 +78,7 @@ export default function Newsletter() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full sm:w-auto px-6 py-3.5 min-h-12 rounded-xl bg-[#E91E63] text-white font-semibold hover:bg-[#c2185b] transition-colors disabled:opacity-50"
+                        className="w-full sm:w-auto px-6 py-3.5 min-h-12 bg-gray-900 text-white text-[11px] font-semibold uppercase tracking-[0.14em] hover:bg-[#E91E63] transition-colors disabled:opacity-50"
                     >
                         {loading ? "Joining..." : "Join the list"}
                     </button>

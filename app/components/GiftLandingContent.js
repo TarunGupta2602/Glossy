@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
+import SiteFaqSection from "./SiteFaqSection";
 import { PROMO_LABEL } from "@/lib/promo";
+import { GIFT_FAQS } from "@/lib/faqs";
 
 export default function GiftLandingContent({
     title,
@@ -149,6 +151,15 @@ export default function GiftLandingContent({
                     </div>
                 </div>
             </section>
+
+            <SiteFaqSection
+                faqs={GIFT_FAQS}
+                eyebrow="Gifting help"
+                title="Gift"
+                titleAccent="questions"
+                description="Budget picks, anti-tarnish longevity, Buy 2 Get 1 Free, pan-India shipping, and returns."
+                idPrefix={`gift-faq-${maxPrice}`}
+            />
         </main>
     );
 }

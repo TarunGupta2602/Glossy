@@ -48,7 +48,7 @@ export default function CategoryBuyingGuide({ guide }) {
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center md:text-left">
                             Frequently asked questions
                         </h3>
-                        <FaqAccordion items={guide.faqs} />
+                        <FaqAccordion items={guide.faqs} variant="editorial" idPrefix="category-faq" />
                     </div>
                 )}
 

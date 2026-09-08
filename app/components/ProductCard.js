@@ -9,6 +9,15 @@ import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 
+function productHashtag(product) {
+    const source = product.slug || product.name || "jewellery";
+    const tag = String(source)
+        .replace(/[^a-zA-Z0-9]+/g, "")
+        .slice(0, 16)
+        .toUpperCase();
+    return tag ? `#${tag}` : "#JEWELLERY";
+}
+
 export default function ProductCard({
     product,
     reviewCount = 0,
@@ -29,6 +38,7 @@ export default function ProductCard({
     const [wishPulse, setWishPulse] = useState(false);
     const href = getProductPath(product);
     const hoverImage = product.hover_image;
+    const hashtag = productHashtag(product);
 
     const handleWishlist = async (e) => {
         e.preventDefault();
@@ -45,9 +55,8 @@ export default function ProductCard({
     };
 
     return (
-        <article className="group flex flex-col h-full">
-            <div className="relative overflow-hidden rounded-2xl sm:rounded-[1.35rem] bg-[#f3ebe4] aspect-[4/5] w-full shadow-[0_1px_0_rgba(26,18,20,0.04)] ring-1 ring-black/[0.04]">
-                {/* Whole image taps through to PDP — no blocking CTAs on mobile */}
+        <article className="group flex flex-col h-full overflow-hidden rounded-[1.35rem] sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-shadow duration-300 hover:shadow-[0_14px_36px_-16px_rgba(42,39,36,0.4)]">
+            <div className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full">
                 <Link href={href} className="absolute inset-0 z-0 block" aria-label={product.name}>
                     <Image
                         src={product.main_image || "/logo.png"}
@@ -78,20 +87,23 @@ export default function ProductCard({
                     )}
                 </Link>
 
-                <div className="absolute top-2.5 left-2.5 z-20 flex flex-wrap gap-1.5 pointer-events-none max-w-[65%]">
-                    {product.is_bestseller && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#1a1214]/88 text-white text-[8px] font-semibold uppercase tracking-[0.08em] backdrop-blur-sm">
+                <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
+                    <span className="px-2 py-1 rounded-md bg-white text-[9px] font-semibold tracking-[0.06em] text-[#2a2724] uppercase truncate max-w-full">
+                        {hashtag}
+                    </span>
+                    {hasDiscount && (
+                        <span className="px-2 py-0.5 rounded-full bg-[#E91E63] text-white text-[10px] font-bold tracking-wide">
+                            −{discountPercent}%
+                        </span>
+                    )}
+                    {!hasDiscount && product.is_bestseller && (
+                        <span className="px-2 py-0.5 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>
                     )}
-                    {product.is_new && !product.is_bestseller && (
-                        <span className="px-2 py-0.5 rounded-full bg-white/95 text-gray-900 text-[8px] font-semibold uppercase tracking-[0.08em] shadow-sm">
+                    {!hasDiscount && product.is_new && !product.is_bestseller && (
+                        <span className="px-2 py-0.5 rounded-full bg-white text-[#2a2724] text-[9px] font-semibold tracking-wide ring-1 ring-black/5">
                             New
-                        </span>
-                    )}
-                    {hasDiscount && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#E91E63] text-white text-[8px] font-semibold uppercase tracking-[0.08em] shadow-sm">
-                            {discountPercent}% off
                         </span>
                     )}
                 </div>
@@ -101,10 +113,10 @@ export default function ProductCard({
                         type="button"
                         onClick={handleWishlist}
                         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                        className={`absolute top-2.5 right-2.5 z-20 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 shadow-sm ${
+                        className={`absolute top-3 right-3 z-20 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 ${
                             wishlisted
                                 ? "bg-[#E91E63] text-white"
-                                : "bg-white/95 text-gray-600 hover:text-[#E91E63] backdrop-blur-sm"
+                                : "bg-white text-gray-500 hover:text-[#E91E63]"
                         } ${wishPulse ? "scale-110" : ""}`}
                     >
                         <svg
@@ -124,13 +136,11 @@ export default function ProductCard({
                     </button>
                 )}
 
-                {/* Desktop only: View product on hover — hidden on mobile so taps hit the image link */}
-                <div className="hidden md:flex absolute inset-x-0 bottom-0 z-20 p-3 pointer-events-none translate-y-1 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="hidden md:flex absolute inset-x-3 bottom-3 z-20 pointer-events-none translate-y-2 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                     <Link
                         href={href}
-                        className="pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-11 rounded-full border border-white/40 bg-white/95 backdrop-blur-sm text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-900 shadow-sm transition-all duration-250 hover:border-[#E91E63] hover:bg-[#E91E63] hover:text-white"
+                        className="pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-10 rounded-xl bg-[#2a2724]/88 text-[10px] font-semibold tracking-[0.14em] uppercase text-white backdrop-blur-sm hover:bg-[#2a2724] transition-colors"
                     >
-                        View product
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="13"
@@ -138,54 +148,66 @@ export default function ProductCard({
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            strokeWidth="2.2"
+                            strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             aria-hidden="true"
                         >
-                            <path d="M5 12h14m-7-7 7 7-7 7" />
+                            <path d="M6 6h15l-1.5 9h-12z" />
+                            <circle cx="9" cy="20" r="1" />
+                            <circle cx="18" cy="20" r="1" />
+                            <path d="M6 6 5 3H2" />
                         </svg>
+                        Quick view
                     </Link>
                 </div>
             </div>
 
-            <div className="mt-3 sm:mt-3.5 flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col px-3.5 sm:px-4 pt-3.5 pb-4">
                 {!hideCategory && (
-                    <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-gray-400 mb-1 truncate">
+                    <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gray-400 mb-1 truncate">
                         {categoryName}
                     </p>
                 )}
 
                 <Link href={href} className="block active:opacity-70">
-                    <h3 className="font-playfair text-[15px] sm:text-[16.5px] font-medium text-gray-900 leading-[1.35] line-clamp-2 min-h-[2.55rem] sm:min-h-[2.7rem] transition-colors duration-200 group-hover:text-[#E91E63]">
+                    <h3 className="font-playfair text-[15px] sm:text-[16px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.4rem] group-hover:text-[#E91E63] transition-colors">
                         {product.name}
                     </h3>
                 </Link>
 
-                <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-                    <Link href={href} className="text-[15px] sm:text-[16px] font-semibold text-gray-900 tracking-tight tabular-nums">
-                        ₹{price}
-                    </Link>
+                <div className="mt-2.5 flex items-baseline justify-between gap-2">
+                    <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
+                        <Link
+                            href={href}
+                            className="text-[15px] font-bold text-[#2a2724] tabular-nums"
+                        >
+                            ₹{price}
+                        </Link>
+                        {hasDiscount && (
+                            <span className="text-[12px] text-gray-400 line-through tabular-nums">
+                                ₹
+                                {originalPrice.toLocaleString(undefined, {
+                                    maximumFractionDigits: 0,
+                                })}
+                            </span>
+                        )}
+                    </div>
                     {hasDiscount && (
-                        <span className="text-[12px] text-gray-400 line-through tabular-nums">
-                            ₹
-                            {originalPrice.toLocaleString(undefined, {
-                                maximumFractionDigits: 0,
-                            })}
+                        <span
+                            className="shrink-0 text-[11px] font-semibold tabular-nums"
+                            style={{ color: "#b59e7b" }}
+                        >
+                            {discountPercent}% off
                         </span>
                     )}
                 </div>
 
-                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                    {reviewCount > 0 && (
-                        <span className="text-[11px] text-amber-600 font-medium tracking-wide">
-                            ★ {reviewCount}
-                        </span>
-                    )}
-                    <span className="text-[10px] text-gray-400 tracking-wide">
-                        Anti-tarnish · Waterproof
-                    </span>
-                </div>
+                {reviewCount > 0 && (
+                    <p className="mt-1.5 text-[11px] text-gray-400">
+                        <span className="text-amber-500">★</span> {reviewCount}
+                    </p>
+                )}
             </div>
         </article>
     );

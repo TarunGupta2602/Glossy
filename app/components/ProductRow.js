@@ -1,6 +1,6 @@
 "use client";
 
-import { HOME_CONTAINER, HOME_EDGE_SCROLL } from "@/lib/siteLayout";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { PRODUCT_ROW_SIZES } from "@/lib/imageBlur";
@@ -8,11 +8,11 @@ import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function ProductRow({
     title,
+    titleAccent,
     products,
     viewAllLink,
     reviewCounts = {},
-    eyebrow = "Collection",
-    accent = "pink",
+    eyebrow = "Most loved",
 }) {
     const scrollRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -54,64 +54,48 @@ export default function ProductRow({
         }
     };
 
-    const isWarm = accent === "warm";
-
     return (
-        <section
-            className={`py-7 md:py-12 overflow-hidden ${
-                isWarm ? "bg-[#fdf9f7] border-y border-[#f8e5d9]/60" : "bg-white"
-            }`}
-        >
+        <section className="py-14 md:py-20 overflow-hidden bg-white">
             <div className={HOME_CONTAINER}>
-                <div className="flex items-end justify-between mb-5 md:mb-10 gap-3">
-                    <div className="flex flex-col gap-1.5 md:gap-3 min-w-0">
-                        <div className="flex items-center gap-3">
-                            <div
-                                className={`h-px w-8 ${isWarm ? "bg-amber-400" : "bg-[#E91E63]"}`}
-                            />
-                            <span
-                                className={`text-[10px] font-semibold tracking-[0.18em] uppercase ${
-                                    isWarm ? "text-amber-600" : "text-[#E91E63]"
-                                }`}
-                            >
-                                {eyebrow}
-                            </span>
-                        </div>
-                        <h2 className="text-xl sm:text-3xl md:text-5xl font-playfair font-bold text-gray-900 tracking-tight leading-none">
+                <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
+                    <div className="min-w-0 text-left">
+                        <p
+                            className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
+                            style={{ color: "#b59e7b" }}
+                        >
+                            {eyebrow}
+                        </p>
+                        <h2 className="text-3xl sm:text-4xl md:text-[2.75rem] font-playfair font-medium text-[#2a2724] tracking-tight leading-[1.1]">
                             {title}
+                            {titleAccent ? (
+                                <>
+                                    {" "}
+                                    <em className="italic font-normal" style={{ color: "#b59e7b" }}>
+                                        {titleAccent}
+                                    </em>
+                                </>
+                            ) : null}
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-2 sm:gap-4 md:gap-8 flex-shrink-0">
+                    <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
                         {viewAllLink && (
                             <Link
                                 href={viewAllLink}
-                                className="text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
+                                className="hidden sm:inline text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
                             >
-                                View all
+                                View more
                             </Link>
                         )}
-
-                        <div className="flex gap-2 md:gap-3">
+                        <div className="flex gap-2">
                             <button
                                 type="button"
                                 onClick={() => scroll("left")}
                                 disabled={!canScrollLeft}
-                                className="w-9 h-9 md:w-12 md:h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-900 hover:bg-gray-50 hover:border-gray-200 transition-all duration-200 shadow-sm bg-white disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                className="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-800 hover:border-gray-400 transition-colors disabled:opacity-25 disabled:pointer-events-none"
                                 aria-label="Previous"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    aria-hidden="true"
-                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="m15 18-6-6 6-6" />
                                 </svg>
                             </button>
@@ -119,21 +103,10 @@ export default function ProductRow({
                                 type="button"
                                 onClick={() => scroll("right")}
                                 disabled={!canScrollRight}
-                                className="w-9 h-9 md:w-12 md:h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-900 hover:bg-gray-50 hover:border-gray-200 transition-all duration-200 shadow-sm bg-white disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                className="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-800 hover:border-gray-400 transition-colors disabled:opacity-25 disabled:pointer-events-none"
                                 aria-label="Next"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    aria-hidden="true"
-                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="m9 18 6-6-6-6" />
                                 </svg>
                             </button>
@@ -143,12 +116,12 @@ export default function ProductRow({
 
                 <div
                     ref={scrollRef}
-                    className={`flex items-stretch gap-3.5 sm:gap-5 md:gap-6 overflow-x-auto pb-2 md:pb-4 snap-x snap-mandatory no-scrollbar ${HOME_EDGE_SCROLL} scroll-smooth`}
+                    className="flex items-stretch gap-5 sm:gap-6 md:gap-7 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar scroll-smooth"
                 >
                     {products.map((product, index) => (
                         <div
                             key={product.id}
-                            className="shrink-0 w-[46vw] max-w-[210px] sm:w-[240px] sm:max-w-none md:w-[268px] snap-start"
+                            className="shrink-0 w-[48vw] max-w-[240px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
                         >
                             <ProductCard
                                 product={product}
@@ -159,6 +132,17 @@ export default function ProductRow({
                         </div>
                     ))}
                 </div>
+
+                {viewAllLink && (
+                    <div className="sm:hidden mt-8 text-center">
+                        <Link
+                            href={viewAllLink}
+                            className="inline-flex min-h-11 items-center text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-700 border-b border-gray-300"
+                        >
+                            View more
+                        </Link>
+                    </div>
+                )}
             </div>
         </section>
     );
