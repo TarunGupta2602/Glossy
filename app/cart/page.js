@@ -159,7 +159,7 @@ export default function CartPage() {
                             </div>
                             {discountAmount > 0 && (
                                 <div className="flex justify-between gap-4 text-sm text-green-600">
-                                    <span className="font-medium">Offer Discount (Buy 2, get 3rd free)</span>
+                                    <span className="font-medium">Buy 2 Get 1 Free</span>
                                     <span className="font-bold flex-shrink-0">-₹{discountAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                                 </div>
                             )}
@@ -178,9 +178,9 @@ export default function CartPage() {
                             <div className="mb-6 p-4 rounded-2xl bg-[#E91E63]/5 border border-[#E91E63]/10 flex items-start gap-3">
                                 <span className="text-lg">🎁</span>
                                 <div>
-                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Your free gift</p>
+                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Your complimentary gift</p>
                                     <p className="text-xs text-gray-600 font-medium leading-tight">
-                                        Buy 2 items and get the cheapest product from our collection as a free gift. You've unlocked {promo.completeSets} free item{promo.completeSets > 1 ? 's' : ''}!
+                                        Buy 2 Get 1 Free is applied — {promo.completeSets} complimentary gift{promo.completeSets > 1 ? "s" : ""} included with this order.
                                     </p>
                                 </div>
                             </div>
@@ -188,7 +188,7 @@ export default function CartPage() {
 
                         {promo.completeSets > 0 && promo.cheapestFreeItem && (
                             <div className="mb-6 p-4 rounded-2xl bg-white border border-gray-100">
-                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">Free item selected</p>
+                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">Complimentary gift</p>
                                 <div className="space-y-3">
                                     {promo.freeGiftSelections.map((selection) => (
                                         <div key={`${selection.productId}-${selection.setNumber}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">

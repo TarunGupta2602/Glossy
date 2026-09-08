@@ -433,7 +433,7 @@ export default function CheckoutPage() {
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-sm text-green-600">
-                                        <span className="font-medium">Offer Discount (Buy 2 products, get the 3rd one free)</span>
+                                        <span className="font-medium">Buy 2 Get 1 Free</span>
                                         <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
                                     </div>
                                 )}

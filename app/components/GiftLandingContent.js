@@ -119,7 +119,7 @@ export default function GiftLandingContent({
                     <p className="text-[14px] text-gray-600 leading-relaxed mb-3">
                         Every piece here is anti-tarnish and made for everyday Indian wear — so the
                         gift doesn’t sit unused in a box. Perfect for Friendship Day, Raksha Bandhan,
-                        birthdays, and office gifting. Add two paid items to unlock {PROMO_LABEL}, or
+                        birthdays, and office gifting. Add two paid pieces for {PROMO_LABEL}, or
                         pair earrings with a necklace for a ready set.
                     </p>
                     <p className="text-[14px] text-gray-600 leading-relaxed mb-4">

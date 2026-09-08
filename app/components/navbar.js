@@ -497,7 +497,7 @@ export default function Navbar() {
                                     {PROMO_LABEL}
                                 </p>
                                 <p className="text-sm font-semibold text-gray-900 mt-1">
-                                    Unlock a free gift today
+                                    Unlock a complimentary gift
                                 </p>
                             </div>
                             <span className="text-[11px] font-bold uppercase tracking-wider text-[#E91E63]">

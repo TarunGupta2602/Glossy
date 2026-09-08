@@ -76,10 +76,10 @@ export default function CartDrawer() {
                         </p>
                         <p className="text-[11px] text-gray-600 text-right">
                             {freeUnlocked
-                                ? `${promo.completeSets} free gift${promo.completeSets > 1 ? "s" : ""} unlocked`
+                                ? `${promo.completeSets} complimentary gift${promo.completeSets > 1 ? "s" : ""} added`
                                 : untilNext === 1
-                                  ? "Add 1 more for a free gift"
-                                  : "Add 2 items for a free gift"}
+                                  ? "Add 1 more for a complimentary gift"
+                                  : "Add 2 pieces for a complimentary gift"}
                         </p>
                     </div>
                     <div className="h-1.5 rounded-full bg-white overflow-hidden">
