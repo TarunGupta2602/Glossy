@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { normalizeBlogSlug } from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { revalidateBlogSurfaces } from "@/lib/revalidateBlog";
 
 function sanitizeBlogPayload(body) {
     const payload = { ...body };
     if (payload.slug) {
         payload.slug = normalizeBlogSlug(payload.slug);
+    } else if (payload.title) {
+        payload.slug = normalizeBlogSlug(payload.title);
     }
     return payload;
 }
@@ -47,6 +50,13 @@ export async function POST(request) {
         const supabase = getServiceClient();
         const body = sanitizeBlogPayload(await request.json());
 
+        if (!body.slug) {
+            return NextResponse.json(
+                { success: false, error: "A URL slug is required before publishing." },
+                { status: 400 }
+            );
+        }
+
         const { data, error } = await supabase
             .from("blogs")
             .insert([body])
@@ -57,6 +67,8 @@ export async function POST(request) {
             console.error("POST /api/blogs insert error:", JSON.stringify(error));
             throw error;
         }
+
+        revalidateBlogSurfaces(data?.slug || body.slug);
 
         return NextResponse.json({ success: true, blog: data });
     } catch (error) {

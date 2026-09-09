@@ -14,6 +14,7 @@ export default function AdminBlogsPage() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [normalizing, setNormalizing] = useState(false);
+    const [refreshingSitemap, setRefreshingSitemap] = useState(false);
 
     useEffect(() => {
         if (!authLoading) {
@@ -63,6 +64,27 @@ export default function AdminBlogsPage() {
     const missingKeywordsCount = blogs.filter(
         (blog) => !String(blog.meta_keywords || "").trim()
     ).length;
+
+    const handleRefreshSitemap = async () => {
+        setRefreshingSitemap(true);
+        try {
+            const res = await adminFetch("/api/blogs/revalidate-sitemap", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({}),
+            });
+            const data = await res.json();
+            if (!data.success) {
+                throw new Error(data.error || "Failed to refresh sitemap");
+            }
+            alert(
+                "Sitemap refresh queued.\n\nOpen https://www.theluxejewels.in/sitemap.xml in a private window in ~10 seconds, then use URL Inspection in Google Search Console with your full blog URL (you do not need the sitemap for a single URL request)."
+            );
+        } catch (error) {
+            alert(error.message || "Failed to refresh sitemap");
+        }
+        setRefreshingSitemap(false);
+    };
 
     const handleNormalizeSlugs = async () => {
         const message = [
@@ -204,6 +226,14 @@ export default function AdminBlogsPage() {
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                            type="button"
+                            onClick={handleRefreshSitemap}
+                            disabled={refreshingSitemap || loading}
+                            className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {refreshingSitemap ? "Refreshing…" : "Refresh sitemap"}
+                        </button>
                         <button
                             type="button"
                             onClick={handleNormalizeSlugs}

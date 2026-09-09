@@ -1,4 +1,4 @@
-export const revalidate = 3600;
+export const revalidate = 60;
 
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getDedicatedLandingPath } from "@/lib/categoryLanding";
@@ -87,6 +87,7 @@ export default async function sitemap() {
     const { data: blogs } = await supabase
         .from("blogs")
         .select("slug, updated_at, date_posted")
+        .not("slug", "is", null)
         .order("date_posted", { ascending: false });
 
     // Only sitemap the main journal hub — paginated pages are noindex
@@ -99,20 +100,34 @@ export default async function sitemap() {
         },
     ];
 
-    const blogPages = [
-        ...STATIC_BLOG_POSTS.map((blog) => ({
-            url: `${BASE_URL}/blog/${blog.slug}`,
+    const seenBlogUrls = new Set();
+    const blogPages = [];
+
+    for (const blog of STATIC_BLOG_POSTS) {
+        const url = `${BASE_URL}/blog/${blog.slug}`;
+        if (seenBlogUrls.has(url)) continue;
+        seenBlogUrls.add(url);
+        blogPages.push({
+            url,
             lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
             changeFrequency: "monthly",
             priority: 0.75,
-        })),
-        ...(blogs || []).map((blog) => ({
-            url: `${BASE_URL}/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`,
+        });
+    }
+
+    for (const blog of blogs || []) {
+        const slug = normalizeBlogSlug(blog.slug) || blog.slug;
+        if (!slug) continue;
+        const url = `${BASE_URL}/blog/${slug}`;
+        if (seenBlogUrls.has(url)) continue;
+        seenBlogUrls.add(url);
+        blogPages.push({
+            url,
             lastModified: toDate(blog.updated_at || blog.date_posted, blogLastModified),
             changeFrequency: "monthly",
             priority: 0.7,
-        })),
-    ];
+        });
+    }
 
     return [...staticPages, ...blogIndexPages, ...categoryPages, ...productPages, ...blogPages];
 }

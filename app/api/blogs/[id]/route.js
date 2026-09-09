@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { normalizeBlogSlug } from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { revalidateBlogSurfaces } from "@/lib/revalidateBlog";
 
 // GET: Fetch single blog by ID (admin only)
 export async function GET(request, { params }) {
@@ -57,6 +58,8 @@ export async function PATCH(request, { params }) {
             throw error;
         }
 
+        revalidateBlogSurfaces(data?.slug || body.slug);
+
         return NextResponse.json({ success: true, blog: data });
     } catch (error) {
         return NextResponse.json(
@@ -75,30 +78,38 @@ export async function DELETE(request, { params }) {
         const supabase = getServiceClient();
         const { id } = await params;
 
-        // Clean up image from storage if provided
+        const { data: existing } = await supabase
+            .from("blogs")
+            .select("slug, image")
+            .eq("id", id)
+            .maybeSingle();
+
         const { searchParams } = new URL(request.url);
-        const imageUrl = searchParams.get("imageUrl");
+        const imageUrl = searchParams.get("imageUrl") || existing?.image;
         if (imageUrl) {
             try {
                 const parsedUrl = new URL(imageUrl);
-                const pathParts = parsedUrl.pathname.split("/storage/v1/object/public/blog-images/");
+                const pathParts = parsedUrl.pathname.split(
+                    "/storage/v1/object/public/blog-images/"
+                );
                 if (pathParts[1]) {
-                    await supabase.storage.from("blog-images").remove([decodeURIComponent(pathParts[1])]);
+                    await supabase.storage
+                        .from("blog-images")
+                        .remove([decodeURIComponent(pathParts[1])]);
                 }
             } catch (e) {
                 console.error("Error deleting blog image:", e);
             }
         }
 
-        const { error } = await supabase
-            .from("blogs")
-            .delete()
-            .eq("id", id);
+        const { error } = await supabase.from("blogs").delete().eq("id", id);
 
         if (error) {
             console.error("DELETE /api/blogs/[id] error:", JSON.stringify(error));
             throw error;
         }
+
+        revalidateBlogSurfaces(existing?.slug);
 
         return NextResponse.json({ success: true });
     } catch (error) {
