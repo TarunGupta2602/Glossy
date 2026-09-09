@@ -13,7 +13,7 @@ import { STORY_FAQS } from "@/lib/faqs";
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Our Story | The Luxe Jewels — Noida NCR & Pan-India",
+    title: "Our Story — Noida NCR & Pan-India",
     description:
         "Discover The Luxe Jewels story — anti-tarnish jewellery crafted for everyday luxury. Serving shoppers in Noida, Greater Noida, Delhi NCR, and across India.",
     alternates: {

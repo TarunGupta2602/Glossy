@@ -10,7 +10,7 @@ import {
 import { CONTACT_FAQS } from "@/lib/faqs";
 
 export const metadata = {
-    title: "Contact The Luxe Jewels | Noida NCR Jewellery Support",
+    title: "Contact Us | Noida NCR Jewellery Support",
     description:
         "Contact The Luxe Jewels for jewellery support, order help, and custom enquiries. Serving Noida, Greater Noida, Delhi NCR, and pan-India with WhatsApp, phone, and email support.",
     alternates: {
@@ -23,7 +23,7 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Contact The Luxe Jewels | Noida NCR & Pan-India Support",
+        title: "Contact Us | Noida NCR & Pan-India Support",
         description:
             "Reach out for support, custom orders, or shipping help. Serving Noida, Delhi NCR, and pan-India.",
         url: "https://www.theluxejewels.in/contact",

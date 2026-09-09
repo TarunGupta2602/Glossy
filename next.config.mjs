@@ -38,6 +38,53 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
+  // Permanent redirects for corrupted GSC product URLs + blog page noise
+  async redirects() {
+    return [
+      {
+        source: "/product/-idnight-eart-endant-ecklace-51eb751f",
+        destination: "/necklaces",
+        permanent: true,
+      },
+      {
+        source: "/product/-odern-bstract-ave-oop-arrings-448bfb2e",
+        destination: "/earrings",
+        permanent: true,
+      },
+      {
+        source: "/product/-olden-amboo-exagon-uggie-oops-271377b3",
+        destination: "/earrings",
+        permanent: true,
+      },
+      {
+        source: "/product/-olden-eart-loom-uggie-oop-arrings-257ff4b5",
+        destination: "/earrings",
+        permanent: true,
+      },
+      {
+        source: "/product/-tellar-rescent-old-uggie-oops-09826d2c",
+        destination: "/earrings",
+        permanent: true,
+      },
+      {
+        source: "/product/-wisted-ope-olden-val-oops-5a25c8ea",
+        destination: "/earrings",
+        permanent: true,
+      },
+      {
+        source: "/blog",
+        has: [{ type: "query", key: "page", value: "0" }],
+        destination: "/blog",
+        permanent: true,
+      },
+      {
+        source: "/blog",
+        has: [{ type: "query", key: "page", value: "1" }],
+        destination: "/blog",
+        permanent: true,
+      },
+    ];
+  },
   headers: async () => {
     return [
       {

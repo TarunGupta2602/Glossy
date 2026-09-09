@@ -13,7 +13,10 @@ import {
     getProductPath,
     SITE_NAME,
 } from "@/lib/seo";
-import { LEGACY_PRODUCT_REDIRECTS } from "@/lib/legacyProductRedirects";
+import {
+    LEGACY_PRODUCT_REDIRECTS,
+    looksLikeCorruptedProductSlug,
+} from "@/lib/legacyProductRedirects";
 import { getCategoryHref } from "@/lib/categoryLanding";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
@@ -85,6 +88,25 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductPage({ params }) {
     const { slug: param } = await params;
+
+    // Broken GSC slugs (leading "-") → hard redirect before soft recovery
+    if (looksLikeCorruptedProductSlug(param)) {
+        const legacy = LEGACY_PRODUCT_REDIRECTS.find(
+            (entry) => entry.source === `/product/${param}`
+        );
+        if (legacy) permanentRedirect(legacy.destination);
+
+        const recovered = await fetchProductBySlugOrId(param);
+        if (recovered?.slug && !looksLikeCorruptedProductSlug(recovered.slug)) {
+            permanentRedirect(getProductPath(recovered));
+        }
+
+        const lower = String(param || "").toLowerCase();
+        if (/(arring|hoop|oop|stud)/.test(lower)) permanentRedirect("/earrings");
+        if (/(ecklace|endant|chain)/.test(lower)) permanentRedirect("/necklaces");
+        permanentRedirect("/shop");
+    }
+
     const product = await fetchProductBySlugOrId(param);
 
     if (!product) {

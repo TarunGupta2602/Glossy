@@ -74,8 +74,11 @@ export async function generateMetadata({ searchParams }) {
 export default async function BlogPage({ searchParams }) {
     const supabase = getServiceClient();
     const params = await searchParams;
-    const page = parseInt(params?.page || "1", 10);
-    if (isNaN(page) || page < 1) redirect("/blog?page=1");
+    const rawPage = params?.page;
+    // Collapse page=0 / page=1 noise Google still shows in GSC
+    if (rawPage === "0" || rawPage === "1") redirect("/blog");
+    const page = parseInt(rawPage || "1", 10);
+    if (isNaN(page) || page < 1) redirect("/blog");
 
     const { count } = await supabase
         .from("blogs")
