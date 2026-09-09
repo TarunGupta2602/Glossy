@@ -14,18 +14,21 @@ export default function BlogProductPicks({
 
     return (
         <section className="my-10 md:my-12" aria-label="Shop picks from this guide">
-            <div className="flex items-end justify-between gap-4 mb-5">
+            <div className="flex items-end justify-between gap-4 mb-6">
                 <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#E91E63] mb-1">
+                    <p
+                        className="text-[11px] font-medium uppercase tracking-[0.2em] mb-2"
+                        style={{ color: "#b89a6a" }}
+                    >
                         From this guide
                     </p>
-                    <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                    <h2 className="font-playfair text-2xl sm:text-[1.75rem] font-medium text-[#2a2724] tracking-tight">
                         Pieces you can order today
                     </h2>
                 </div>
                 <Link
                     href={shopHref}
-                    className="hidden sm:inline-flex text-xs font-bold uppercase tracking-widest text-[#E91E63] hover:underline shrink-0"
+                    className="hidden sm:inline-flex text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a847c] hover:text-[#E91E63] shrink-0 transition-colors"
                 >
                     {shopLabel}
                 </Link>

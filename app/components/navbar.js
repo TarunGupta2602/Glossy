@@ -1,6 +1,6 @@
 "use client";
 
-import { SITE_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -24,17 +24,17 @@ const PRIMARY_LINKS = [
     { href: "/blog", label: "Blog" },
 ];
 
-const QUICK_LINKS = [
-    { href: "/earrings", label: "Earrings", hint: "Studs, hoops & drops" },
-    { href: "/necklaces", label: "Necklaces", hint: "Chains & pendants" },
-    { href: "/gifts/under-999", label: "Gifts ₹999", hint: "Ready to gift" },
-    { href: "/gifts/under-499", label: "Gifts ₹499", hint: "Light & lovely" },
+const FEATURED_EDITS = [
+    { href: "/shop?sort=newest", label: "New arrivals", hint: "Just dropped" },
+    { href: "/shop?sort=popular", label: "Bestsellers", hint: "Most loved" },
+    { href: "/gifts/under-999", label: "Under ₹999", hint: "Gift-ready" },
+    { href: "/gifts/under-499", label: "Under ₹499", hint: "Everyday sparkle" },
 ];
 
 function IconBtn({ as: Comp = "button", className = "", children, ...props }) {
     return (
         <Comp
-            className={`relative inline-flex items-center justify-center min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 rounded-full text-gray-800 hover:text-[#E91E63] hover:bg-[#faf7f8] transition-colors duration-200 ${className}`}
+            className={`relative inline-flex items-center justify-center min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 rounded-full text-[#2a2724] hover:text-[#E91E63] hover:bg-[#fdfbf7] transition-colors duration-200 ${className}`}
             {...props}
         >
             {children}
@@ -121,11 +121,11 @@ export default function Navbar() {
             <nav
                 className={`sticky top-0 z-50 w-full transition-[background,box-shadow,border-color] duration-300 ${
                     scrolled
-                        ? "bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-[0_8px_30px_-18px_rgba(26,18,20,0.35)]"
-                        : "bg-white/90 backdrop-blur-sm border-b border-transparent"
+                        ? "bg-white/97 backdrop-blur-md border-b border-[#efeae4] shadow-[0_6px_24px_-16px_rgba(42,39,36,0.28)]"
+                        : "bg-white/95 backdrop-blur-sm border-b border-transparent"
                 }`}
             >
-                <div className={`${SITE_CONTAINER} flex items-center justify-between gap-3 h-14 sm:h-16 md:h-[4.25rem]`}>
+                <div className={`${HOME_CONTAINER} flex items-center justify-between gap-2 h-14 sm:h-16 md:h-[4.25rem]`}>
                     {/* Brand */}
                     <Link
                         href="/"
@@ -134,10 +134,13 @@ export default function Navbar() {
                         aria-label="The Luxe Jewels home"
                     >
                         <div className="leading-none">
-                            <span className="block text-[8px] md:text-[9px] font-semibold uppercase tracking-[0.28em] text-[#E91E63] mb-0.5">
+                            <span
+                                className="block text-[8px] md:text-[9px] font-medium uppercase tracking-[0.28em] mb-0.5"
+                                style={{ color: "#b89a6a" }}
+                            >
                                 The
                             </span>
-                            <span className="font-playfair text-[1.05rem] sm:text-xl md:text-[1.35rem] font-semibold tracking-tight text-gray-900 whitespace-nowrap">
+                            <span className="font-playfair text-[1.1rem] sm:text-xl md:text-[1.35rem] font-medium tracking-tight text-[#2a2724] whitespace-nowrap">
                                 Luxe Jewels
                             </span>
                         </div>
@@ -390,21 +393,21 @@ export default function Navbar() {
                             aria-label="Open menu"
                             aria-expanded={isMenuOpen}
                         >
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-                                <line x1="4" y1="7" x2="20" y2="7" />
-                                <line x1="4" y1="12" x2="20" y2="12" />
-                                <line x1="4" y1="17" x2="14" y2="17" />
-                            </svg>
+                            <span className="relative block h-3.5 w-[18px]" aria-hidden>
+                                <span className="absolute left-0 top-0 block h-[1.5px] w-full rounded-full bg-current" />
+                                <span className="absolute left-0 top-[6px] block h-[1.5px] w-full rounded-full bg-current" />
+                                <span className="absolute left-0 top-[12px] block h-[1.5px] w-[65%] rounded-full bg-current" />
+                            </span>
                         </IconBtn>
                     </div>
                 </div>
 
-                {/* Mobile search overlay bar */}
+                {/* Mobile search overlay */}
                 {isSearchOpen && (
-                    <div className="md:hidden absolute inset-x-0 top-0 z-[60] h-14 bg-white border-b border-gray-100 shadow-sm">
-                        <div className={`${SITE_CONTAINER} h-full flex items-center gap-2`}>
-                            <div className="flex-1 flex items-center rounded-full border border-gray-200 bg-[#faf7f8] px-3">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 shrink-0" aria-hidden>
+                    <div className="md:hidden absolute inset-x-0 top-0 z-[60] h-14 bg-white border-b border-[#efeae4]">
+                        <div className={`${HOME_CONTAINER} h-full flex items-center gap-2`}>
+                            <div className="flex-1 flex items-center rounded-full border border-[#efeae4] bg-[#fdfbf7] px-3.5">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-[#a89880] shrink-0" aria-hidden>
                                     <circle cx="11" cy="11" r="8" />
                                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                                 </svg>
@@ -419,31 +422,33 @@ export default function Navbar() {
                                         if (e.key === "Enter") submitSearch();
                                         if (e.key === "Escape") setIsSearchOpen(false);
                                     }}
-                                    className="flex-1 min-w-0 bg-transparent py-2.5 pl-2 text-base text-gray-900 outline-none focus:outline-none focus-visible:outline-none"
+                                    className="flex-1 min-w-0 bg-transparent py-2.5 pl-2.5 text-[15px] text-[#2a2724] placeholder:text-[#a89880] outline-none"
                                     aria-label="Search jewellery"
                                 />
                             </div>
                             <button
                                 type="button"
                                 onClick={submitSearch}
-                                className="min-h-11 px-2 text-[11px] font-bold uppercase tracking-wider text-[#E91E63]"
+                                className="min-h-11 px-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2a2724]"
                             >
                                 Go
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setIsSearchOpen(false)}
-                                className="min-w-11 min-h-11 text-gray-500"
+                                className="min-w-11 min-h-11 rounded-full text-[#6b6560] hover:bg-[#fdfbf7]"
                                 aria-label="Close search"
                             >
-                                ✕
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                                    <path d="M18 6 6 18M6 6l12 12" />
+                                </svg>
                             </button>
                         </div>
                     </div>
                 )}
             </nav>
 
-            {/* Mobile / tablet drawer */}
+            {/* Mobile / tablet full-screen menu */}
             <div
                 className={`lg:hidden fixed inset-0 z-[80] ${
                     isMenuOpen ? "pointer-events-auto" : "pointer-events-none"
@@ -452,7 +457,7 @@ export default function Navbar() {
             >
                 <button
                     type="button"
-                    className={`absolute inset-0 bg-black/45 backdrop-blur-[2px] transition-opacity duration-300 ${
+                    className={`absolute inset-0 bg-[#2a2724]/35 transition-opacity duration-300 ${
                         isMenuOpen ? "opacity-100" : "opacity-0"
                     }`}
                     aria-label="Close menu"
@@ -460,80 +465,135 @@ export default function Navbar() {
                 />
 
                 <div
-                    className={`absolute inset-y-0 right-0 w-[min(100%,22.5rem)] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
+                    className={`absolute inset-y-0 right-0 flex w-full max-w-[26rem] flex-col bg-[#fdfbf7] shadow-[-12px_0_40px_-20px_rgba(42,39,36,0.35)] transition-transform ease-out ${
                         isMenuOpen ? "translate-x-0" : "translate-x-full"
                     }`}
                     role="dialog"
                     aria-modal="true"
                     aria-label="Menu"
+                    style={{ transitionDuration: "300ms" }}
                 >
-                    <div className="flex items-center justify-between px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-4 border-b border-gray-100">
-                        <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#E91E63]">
+                    <div className="flex items-center justify-between gap-3 px-5 sm:px-7 pt-[max(0.85rem,env(safe-area-inset-top))] pb-3.5 border-b border-[#efeae4] bg-white">
+                        <Link href="/" onClick={closeMenu} className="min-w-0">
+                            <p
+                                className="text-[9px] font-medium uppercase tracking-[0.24em]"
+                                style={{ color: "#b89a6a" }}
+                            >
                                 The Luxe Jewels
                             </p>
-                            <p className="font-playfair text-xl font-semibold text-gray-900 mt-0.5">
-                                Menu
+                            <p className="font-playfair text-[1.25rem] font-medium text-[#2a2724] mt-0.5 tracking-tight">
+                                Explore
                             </p>
-                        </div>
+                        </Link>
                         <button
                             type="button"
                             onClick={closeMenu}
-                            className="w-11 h-11 rounded-full bg-[#faf7f8] text-gray-600 inline-flex items-center justify-center"
+                            className="w-10 h-10 rounded-full border border-[#efeae4] bg-[#fdfbf7] text-[#2a2724] inline-flex items-center justify-center active:scale-95 transition-transform"
                             aria-label="Close menu"
                         >
-                            ✕
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                                <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+                    <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5">
                         <Link
                             href="/shop?sort=popular"
                             onClick={closeMenu}
-                            className="mb-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-[#fdf2f6] to-[#fff7f9] border border-[#E91E63]/15 px-4 py-4 active:scale-[0.99] transition-transform"
+                            className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-[#efeae4] bg-white px-4 py-3.5 active:scale-[0.99] transition-transform"
                         >
-                            <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#E91E63]">
+                            <div className="min-w-0">
+                                <p
+                                    className="text-[9px] font-medium uppercase tracking-[0.18em]"
+                                    style={{ color: "#b89a6a" }}
+                                >
                                     {PROMO_LABEL}
                                 </p>
-                                <p className="text-sm font-semibold text-gray-900 mt-1">
-                                    Unlock a complimentary gift
+                                <p className="text-[13px] font-medium text-[#2a2724] mt-1 leading-snug">
+                                    Complimentary gift with every 2 pieces
                                 </p>
                             </div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#E91E63]">
-                                Shop →
+                            <span
+                                className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em]"
+                                style={{ color: "#b89a6a" }}
+                            >
+                                Shop
                             </span>
                         </Link>
 
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400 mb-2.5">
-                            Explore
+                        <nav className="mb-7" aria-label="Primary">
+                            <ul>
+                                {[
+                                    { href: "/shop", label: "Shop all" },
+                                    { href: "/earrings", label: "Earrings" },
+                                    { href: "/necklaces", label: "Necklaces" },
+                                    { href: "/collection", label: "Collections" },
+                                    { href: "/blog", label: "Journal" },
+                                    { href: "/our-story", label: "Our story" },
+                                ].map((item) => (
+                                    <li key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            onClick={closeMenu}
+                                            className={`group flex items-center justify-between py-3 border-b border-[#efeae4]/80 ${
+                                                isActive(item.href) ? "text-[#E91E63]" : "text-[#2a2724]"
+                                            }`}
+                                        >
+                                            <span className="font-playfair text-[1.4rem] font-medium tracking-tight leading-none">
+                                                {item.label}
+                                            </span>
+                                            <span
+                                                className="text-[#d4cbc0] text-base transition-transform group-active:translate-x-0.5"
+                                                aria-hidden
+                                            >
+                                                →
+                                            </span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+
+                        <p
+                            className="text-[9px] font-medium uppercase tracking-[0.18em] mb-2.5"
+                            style={{ color: "#b89a6a" }}
+                        >
+                            Featured
                         </p>
-                        <div className="grid grid-cols-2 gap-2.5 mb-6">
-                            {QUICK_LINKS.map((item) => (
+                        <div className="grid grid-cols-2 gap-2 mb-7">
+                            {FEATURED_EDITS.map((item) => (
                                 <Link
                                     key={item.href}
                                     href={item.href}
                                     onClick={closeMenu}
-                                    className="rounded-2xl border border-gray-100 bg-[#fafafa] p-3.5 active:bg-[#fdf2f6] transition-colors"
+                                    className="rounded-xl border border-[#efeae4] bg-white px-3.5 py-3 active:bg-[#f4f2f0] transition-colors"
                                 >
-                                    <p className="text-sm font-semibold text-gray-900">{item.label}</p>
-                                    <p className="text-[11px] text-gray-500 mt-0.5">{item.hint}</p>
+                                    <p className="text-[13px] font-semibold text-[#2a2724] leading-none">
+                                        {item.label}
+                                    </p>
+                                    <p className="text-[11px] text-[#8a847c] mt-1.5 leading-snug">
+                                        {item.hint}
+                                    </p>
                                 </Link>
                             ))}
                         </div>
 
                         {categories.length > 0 && (
-                            <div className="mb-6">
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400 mb-2.5">
+                            <div className="mb-7">
+                                <p
+                                    className="text-[9px] font-medium uppercase tracking-[0.18em] mb-2.5"
+                                    style={{ color: "#b89a6a" }}
+                                >
                                     Categories
                                 </p>
-                                <div className="flex flex-wrap gap-2">
-                                    {categories.slice(0, 10).map((cat) => (
+                                <div className="flex flex-wrap gap-1.5">
+                                    {categories.slice(0, 8).map((cat) => (
                                         <Link
                                             key={cat.id}
                                             href={getCategoryHref(cat)}
                                             onClick={closeMenu}
-                                            className="rounded-full border border-gray-200 bg-white px-3.5 py-2 text-[12px] font-medium text-gray-800 active:border-[#E91E63] active:text-[#E91E63]"
+                                            className="rounded-full border border-[#efeae4] bg-white px-3 py-1.5 text-[12px] font-medium text-[#3d3935] active:border-[#b89a6a]"
                                         >
                                             {cat.name}
                                         </Link>
@@ -541,7 +601,7 @@ export default function Navbar() {
                                     <Link
                                         href="/collection"
                                         onClick={closeMenu}
-                                        className="rounded-full border border-[#E91E63]/25 bg-[#fdf2f6] px-3.5 py-2 text-[12px] font-semibold text-[#E91E63]"
+                                        className="rounded-full border border-[#d4cbc0] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#2a2724]"
                                     >
                                         View all
                                     </Link>
@@ -549,15 +609,14 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400 mb-2.5">
-                            More
+                        <p
+                            className="text-[9px] font-medium uppercase tracking-[0.18em] mb-1.5"
+                            style={{ color: "#b89a6a" }}
+                        >
+                            Help
                         </p>
-                        <div className="rounded-2xl border border-gray-100 overflow-hidden mb-6">
+                        <div className="space-y-0.5">
                             {[
-                                { href: "/blog", label: "Blog — all articles" },
-                                { href: "/gifts/under-999", label: "Gifts under ₹999" },
-                                { href: "/gifts/under-499", label: "Gifts under ₹499" },
-                                { href: "/our-story", label: "Our story" },
                                 {
                                     href: "/wishlist",
                                     label: wishlist.length
@@ -565,67 +624,71 @@ export default function Navbar() {
                                         : "Wishlist",
                                 },
                                 { href: "/faqs", label: "FAQs" },
+                                { href: "/shipping-returns", label: "Shipping & returns" },
                                 { href: "/contact", label: "Contact" },
-                            ].map((item, idx) => (
+                            ].map((item) => (
                                 <Link
                                     key={item.href}
                                     href={item.href}
                                     onClick={closeMenu}
-                                    className={`flex items-center justify-between px-4 py-3.5 text-sm font-medium text-gray-800 active:bg-[#fdf2f6] ${
-                                        idx > 0 ? "border-t border-gray-50" : ""
-                                    }`}
+                                    className="flex items-center justify-between py-2.5 text-[13px] text-[#6b6560] active:text-[#2a2724] transition-colors"
                                 >
                                     {item.label}
-                                    <span className="text-gray-300" aria-hidden>
+                                    <span className="text-[#d4cbc0]" aria-hidden>
                                         ›
                                     </span>
                                 </Link>
                             ))}
                         </div>
+                    </div>
 
-                        <div className="space-y-2.5">
-                            {user ? (
-                                <>
-                                    <Link
-                                        href="/profile"
-                                        onClick={closeMenu}
-                                        className="flex min-h-12 items-center justify-center rounded-full border border-gray-200 text-sm font-semibold text-gray-900"
-                                    >
-                                        My profile
-                                    </Link>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            signOut();
-                                            closeMenu();
-                                        }}
-                                        className="w-full min-h-11 text-sm font-medium text-gray-500"
-                                    >
-                                        Sign out
-                                    </button>
-                                </>
-                            ) : (
+                    <div className="shrink-0 border-t border-[#efeae4] bg-white px-5 sm:px-7 pt-3.5 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-2">
+                        {user ? (
+                            <div className="flex gap-2">
+                                <Link
+                                    href="/profile"
+                                    onClick={closeMenu}
+                                    className="flex-1 flex min-h-11 items-center justify-center rounded-full bg-[#2a2724] text-[11px] font-semibold uppercase tracking-[0.14em] text-white"
+                                >
+                                    My profile
+                                </Link>
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        setIsLoginModalOpen(true);
+                                        signOut();
                                         closeMenu();
                                     }}
-                                    className="w-full min-h-12 rounded-full bg-[#E91E63] text-sm font-bold uppercase tracking-[0.14em] text-white active:bg-[#C2185B]"
+                                    className="min-h-11 px-4 rounded-full border border-[#efeae4] text-[12px] font-medium text-[#6b6560]"
                                 >
-                                    Sign in
+                                    Sign out
                                 </button>
-                            )}
-
-                            <a
-                                href={WHATSAPP_URL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#25D366]/35 bg-[#F0FFF4] text-sm font-semibold text-[#128C7E]"
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsLoginModalOpen(true);
+                                    closeMenu();
+                                }}
+                                className="w-full min-h-11 rounded-full bg-[#2a2724] text-[11px] font-semibold uppercase tracking-[0.14em] text-white active:bg-[#E91E63] transition-colors"
                             >
-                                WhatsApp support
-                            </a>
-                        </div>
+                                Sign in
+                            </button>
+                        )}
+
+                        <a
+                            href={WHATSAPP_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#efeae4] bg-[#fdfbf7] text-[13px] font-medium text-[#2a2724]"
+                        >
+                            <span
+                                className="inline-block h-2 w-2 rounded-full"
+                                style={{ backgroundColor: "#25D366" }}
+                                aria-hidden
+                            />
+                            Chat on WhatsApp
+                        </a>
                     </div>
                 </div>
             </div>
