@@ -2,45 +2,67 @@ import Image from "next/image";
 import Link from "next/link";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
+const HERO_IMAGE = "/iloveimg-resized/hero2.jpg";
+const HERO_ALT = "The Luxe Jewels anti-tarnish gold plated jewellery";
+
 /**
- * The Luxe Jewels hero — original brand copy, taller section, larger image.
+ * Mobile: full-bleed photo with copy overlaid.
+ * Desktop: cream split layout with portrait image.
  */
 export default function HeroSlider() {
     return (
-        <section className="bg-[#fdfbf7]" aria-label="The Luxe Jewels">
-            <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 py-12 sm:py-14 md:py-16 lg:py-20">
-                <div className="grid md:grid-cols-[1fr_1.05fr] gap-8 md:gap-10 lg:gap-12 items-center">
-                    {/* Left — copy */}
-                    <div className="order-2 md:order-1 text-center md:text-left">
-                        <p
-                            className="text-[11px] font-medium tracking-[0.22em] uppercase mb-4 md:mb-5"
-                            style={{ color: "#b59e7b" }}
-                        >
+        <section
+            className="relative md:bg-[#fdfbf7] overflow-hidden"
+            aria-label="The Luxe Jewels"
+        >
+            {/* Mobile background only */}
+            <div className="absolute inset-0 md:hidden" aria-hidden="true">
+                <Image
+                    src={HERO_IMAGE}
+                    alt=""
+                    fill
+                    priority
+                    sizes="100vw"
+                    quality={90}
+                    placeholder="blur"
+                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                    className="object-cover object-[center_20%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/78" />
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-16 lg:py-20">
+                <div className="grid w-full md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-12 items-center">
+                    {/* Copy */}
+                    <div className="text-left pb-2 md:pb-0">
+                        <p className="text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 text-[#e8d5b5] md:text-[#b59e7b]">
                             Anti-tarnish · Waterproof · Made for India
                         </p>
 
-                        <h1 className="font-playfair text-[2.35rem] sm:text-[2.75rem] md:text-[3.15rem] lg:text-[3.4rem] font-medium text-[#2a2724] tracking-tight leading-[1.1] mb-4 md:mb-5">
+                        <h1 className="font-playfair text-[2.45rem] sm:text-[2.75rem] md:text-[3.15rem] lg:text-[3.4rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] md:max-w-none">
                             Shine that stays with you —{" "}
-                            <em className="italic font-normal" style={{ color: "#b59e7b" }}>
+                            <em className="italic font-normal text-[#e8d5b5] md:text-[#b59e7b]">
                                 every day
                             </em>
                         </h1>
 
-                        <p className="text-[15px] sm:text-[16px] text-[#6b6560] leading-relaxed mb-8 md:mb-9 max-w-[400px] mx-auto md:mx-0">
-                            Lightweight anti-tarnish jewellery you can live in — from first meetings to late evenings, with pieces ready to gift.
+                        <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed mb-7 md:mb-9 max-w-[34ch] md:max-w-[400px] text-white/80 md:text-[#6b6560]">
+                            Lightweight anti-tarnish jewellery you can live in — from first meetings
+                            to late evenings
+                            <span className="hidden md:inline">, with pieces ready to gift</span>.
                         </p>
 
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             <Link
                                 href="/shop?sort=popular"
-                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#2a2724] px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#E91E63] transition-colors duration-300"
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 bg-white text-[#2a2724] hover:bg-[#E91E63] hover:text-white md:bg-[#2a2724] md:text-white md:hover:bg-[#E91E63]"
                             >
                                 Shop bestsellers
                                 <span aria-hidden>→</span>
                             </Link>
                             <Link
                                 href="/gifts/under-999"
-                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#2a2724]/25 bg-transparent px-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -52,6 +74,7 @@ export default function HeroSlider() {
                                     strokeWidth="1.8"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
+                                    className="hidden md:block"
                                     aria-hidden="true"
                                 >
                                     <rect x="3" y="8" width="18" height="13" rx="1" />
@@ -62,17 +85,21 @@ export default function HeroSlider() {
                                 Shop gifts
                             </Link>
                         </div>
+
+                        <p className="mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase text-white/55">
+                            Buy 2 get 1 free
+                        </p>
                     </div>
 
-                    {/* Right — larger image */}
-                    <div className="order-1 md:order-2 flex flex-col items-center md:items-stretch">
-                        <div className="relative w-full max-w-[480px] md:max-w-none mx-auto aspect-[3/4] min-h-[420px] sm:min-h-[500px] md:min-h-[560px] lg:min-h-[620px] md:max-h-[660px] overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#efeae4]">
+                    {/* Desktop portrait image */}
+                    <div className="hidden md:flex flex-col items-stretch">
+                        <div className="relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] bg-[#efeae4]">
                             <Image
-                                src="/iloveimg-resized/hero2.jpg"
-                                alt="The Luxe Jewels anti-tarnish gold plated jewellery"
+                                src={HERO_IMAGE}
+                                alt={HERO_ALT}
                                 fill
                                 priority
-                                sizes="(max-width: 768px) 480px, 600px"
+                                sizes="600px"
                                 quality={90}
                                 placeholder="blur"
                                 blurDataURL={IMAGE_BLUR_DATA_URL}
