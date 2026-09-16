@@ -86,13 +86,13 @@ export const metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "The Luxe Jewels - Premium Jewellery Collection",
+        alt: "The Luxe Jewels — anti-tarnish jewellery logo",
       },
       {
-        url: "/favicon-symbol.png",
+        url: "/logo.png",
         width: 512,
         height: 512,
-        alt: "The Luxe Jewels Logo",
+        alt: "The Luxe Jewels logo",
       }
     ],
     locale: "en_IN",
@@ -102,7 +102,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "The Luxe Jewels | Modern Luxury Jewellery India",
     description: "Defining modern luxury through waterproof and anti-tarnish fine jewellery. Handcrafted with love.",
-    images: ["/og-image.png", "/favicon-symbol.png"],
+    images: ["/og-image.png", "/logo.png"],
   },
   robots: {
     index: true,
@@ -116,12 +116,17 @@ export const metadata = {
     },
   },
   icons: {
-   icon: [
+    icon: [
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
     ],
     apple: [
       { url: "/apple-touch-icon-180x180.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/favicon.svg", color: "#E91E63" },
     ],
   },
   manifest: "/site.webmanifest",
@@ -134,8 +139,13 @@ export default function RootLayout({ children }) {
     "@type": "Organization",
     "name": BRAND_NAME,
     "url": BRAND_URL,
-    "logo": `${BRAND_URL}/favicon-symbol.png`,
-    "description": "Defining modern luxury through intentional design and sustainable practices in fine jewellery. Serving Noida, Delhi NCR, and pan-India.",
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${BRAND_URL}/logo.png`,
+      "width": 1024,
+      "height": 1024,
+      "caption": "The Luxe Jewels logo",
+    },
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
@@ -161,7 +171,7 @@ export default function RootLayout({ children }) {
       "@type": "Organization",
       "name": BRAND_NAME,
       "url": BRAND_URL,
-      "logo": `${BRAND_URL}/favicon-symbol.png`
+      "logo": `${BRAND_URL}/logo.png`
     }
   };
 
@@ -173,7 +183,7 @@ export default function RootLayout({ children }) {
     "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Ghaziabad, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
     "url": BRAND_URL,
     "image": `${BRAND_URL}/og-image.png`,
-    "logo": `${BRAND_URL}/favicon-symbol.png`,
+    "logo": `${BRAND_URL}/logo.png`,
     "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
     "email": SUPPORT_EMAIL,
     "address": {

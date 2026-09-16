@@ -14,6 +14,7 @@ import { useOverlayOpen } from "../context/OverlayContext";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { WHATSAPP_URL } from "@/lib/constants";
 import { PROMO_LABEL } from "@/lib/promo";
+import BrandLogo from "./BrandLogo";
 
 const PRIMARY_LINKS = [
     { href: "/shop", label: "Shop" },
@@ -127,24 +128,7 @@ export default function Navbar() {
             >
                 <div className={`${HOME_CONTAINER} flex items-center justify-between gap-2 h-14 sm:h-16 md:h-[4.25rem]`}>
                     {/* Brand */}
-                    <Link
-                        href="/"
-                        onClick={closeMenu}
-                        className="group flex-shrink-0 min-w-0 focus:outline-none"
-                        aria-label="The Luxe Jewels home"
-                    >
-                        <div className="leading-none">
-                            <span
-                                className="block text-[8px] md:text-[9px] font-medium uppercase tracking-[0.28em] mb-0.5"
-                                style={{ color: "#b89a6a" }}
-                            >
-                                The
-                            </span>
-                            <span className="font-playfair text-[1.1rem] sm:text-xl md:text-[1.35rem] font-medium tracking-tight text-[#2a2724] whitespace-nowrap">
-                                Luxe Jewels
-                            </span>
-                        </div>
-                    </Link>
+                    <BrandLogo href="/" onClick={closeMenu} size="md" priority />
 
                     {/* Desktop links */}
                     <div className="hidden lg:flex items-center gap-1 xl:gap-1.5">
@@ -474,17 +458,7 @@ export default function Navbar() {
                     style={{ transitionDuration: "300ms" }}
                 >
                     <div className="flex items-center justify-between gap-3 px-5 sm:px-7 pt-[max(0.85rem,env(safe-area-inset-top))] pb-3.5 border-b border-[#efeae4] bg-white">
-                        <Link href="/" onClick={closeMenu} className="min-w-0">
-                            <p
-                                className="text-[9px] font-medium uppercase tracking-[0.24em]"
-                                style={{ color: "#b89a6a" }}
-                            >
-                                The Luxe Jewels
-                            </p>
-                            <p className="font-playfair text-[1.25rem] font-medium text-[#2a2724] mt-0.5 tracking-tight">
-                                Explore
-                            </p>
-                        </Link>
+                        <BrandLogo href="/" onClick={closeMenu} size="sm" />
                         <button
                             type="button"
                             onClick={closeMenu}

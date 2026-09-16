@@ -16,6 +16,7 @@ import {
 } from "@/lib/constants";
 import { PROMO_LABEL } from "@/lib/promo";
 import PaymentIcons from "./PaymentIcons";
+import BrandLogo from "./BrandLogo";
 
 const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
@@ -80,14 +81,7 @@ export default function Footer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-12 py-10 md:py-14 border-b border-gray-100">
                     <div className="md:col-span-5 lg:col-span-4">
-                        <Link href="/" className="inline-block mb-5 group">
-                            <span className="block text-[9px] font-semibold uppercase tracking-[0.28em] text-[#E91E63] mb-1">
-                                The
-                            </span>
-                            <span className="font-playfair text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 group-hover:text-[#E91E63] transition-colors">
-                                Luxe Jewels
-                            </span>
-                        </Link>
+                        <BrandLogo href="/" size="lg" className="mb-5" />
 
                         <p className="text-[14px] leading-relaxed text-gray-600 max-w-sm mb-3">
                             Anti-tarnish, waterproof jewellery made for everyday India —
