@@ -6,9 +6,9 @@ import { SHIPPING_FAQS } from "@/lib/faqs";
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "Shipping & Returns | Delivery Times Across India",
+    title: "Shipping Times, Tracking & 10-Day Returns",
     description:
-        "The Luxe Jewels shipping times, free delivery over ₹1000, tracking, and 10-day return policy for anti-tarnish jewellery across India.",
+        "Delivery times across India, free shipping on prepaid orders over ₹1000, order tracking, and our 10-day return policy for jewellery orders.",
     alternates: {
         canonical: "/shipping-returns",
     },

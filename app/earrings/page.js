@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti-Tarnish Waterproof Earrings India (Page ${pageNum})`
-            : "Anti-Tarnish Waterproof Earrings for Daily Wear",
+            ? `Anti Tarnish Earrings India (Page ${pageNum})`
+            : "Anti Tarnish Earrings India | Waterproof Studs & Hoops",
         description:
-            "Shop anti-tarnish waterproof earrings for daily wear in India — hypoallergenic 18k gold plated studs, hoops & drops. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Shop anti tarnish earrings for daily wear in India — waterproof studs, hoops & drops in 18k gold plated finish. Hypoallergenic picks, free shipping over ₹1000 + Buy 2 Get 1 Free.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -36,9 +36,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Waterproof Earrings for Daily Wear",
+            title: "Anti Tarnish Earrings India | Waterproof Studs & Hoops",
             description:
-                "Hypoallergenic 18k gold plated studs, hoops, and drops made for everyday wear in Indian weather.",
+                "Waterproof anti tarnish studs, hoops, and drops made for everyday Indian humidity — office to evening.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -96,10 +96,10 @@ export default async function EarringsPage({ searchParams }) {
         productsWithDiscounts.map((p) => p.id)
     );
 
-    const pageTitle = "Anti-Tarnish Waterproof Earrings";
+    const pageTitle = "Anti Tarnish Earrings for Daily Wear";
     const pageDescription =
         category?.description ||
-        "Hypoallergenic 18k gold plated studs, hoops & drops made for Indian humidity — wear them to office, college, and evenings without babysitting the shine. Buy 2 Get 1 Free across the store.";
+        "Shop anti tarnish earrings made for Indian humidity — waterproof studs, small hoops, and everyday drops in 18k gold plated finish. Wear them to office, college, and evenings without babysitting the shine. Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

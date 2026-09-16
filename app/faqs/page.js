@@ -4,9 +4,9 @@ import SiteFaqSection from "../components/SiteFaqSection";
 export const dynamic = "force-static";
 
 export const metadata = {
-    title: "FAQs | Anti-Tarnish Jewellery, Shipping & Returns",
+    title: "Help Centre: Shipping, Returns & Care",
     description:
-        "Answers about anti-tarnish waterproof jewellery, Buy 2 Get 1 Free, free shipping over ₹1000, returns, COD, and support at The Luxe Jewels — Noida, Delhi NCR & pan-India.",
+        "Answers on shipping times, returns, Buy 2 Get 1 Free, COD, waterproof care, and support — before you place an order.",
     alternates: {
         canonical: "/faqs",
     },
@@ -17,9 +17,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "FAQs | The Luxe Jewels",
+        title: "Help Centre: Shipping, Returns & Care",
         description:
-            "Shipping, returns, anti-tarnish care, and Buy 2 Get 1 Free — clear answers before you shop.",
+            "Shipping, returns, care tips, and Buy 2 Get 1 Free — clear answers before you shop.",
         url: "https://www.theluxejewels.in/faqs",
         siteName: "The Luxe Jewels",
         type: "website",

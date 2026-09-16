@@ -21,10 +21,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti-Tarnish Necklaces for Daily Wear (Page ${pageNum})`
-            : "Anti-Tarnish Necklaces for Daily Wear India",
+            ? `Anti Tarnish Necklaces India (Page ${pageNum})`
+            : "Anti Tarnish Necklace for Daily Wear | India",
         description:
-            "Shop waterproof anti-tarnish necklaces for daily wear in India — 18k gold plated pendants & layered chains. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Shop anti tarnish necklaces for daily wear in India — waterproof pendants, fine chains & everyday layers in 18k gold plated finish. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -35,9 +35,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Necklaces for Daily Wear India",
+            title: "Anti Tarnish Necklace for Daily Wear | India",
             description:
-                "Waterproof pendants and chains designed for everyday elegance — anti-tarnish finishes made for Indian climate and gifting.",
+                "Waterproof anti tarnish pendants and chains for everyday India — layer, gift, and wear without constant polishing.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -91,10 +91,10 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
-    const pageTitle = "Anti-Tarnish Necklaces for Daily Wear";
+    const pageTitle = "Anti Tarnish Necklaces for Daily Wear";
     const pageDescription =
         category?.description ||
-        "Lightweight 18k gold plated pendants and chains made for Indian weather — layer them, gift them, and wear them every day without constant polishing. Buy 2 Get 1 Free across the store.";
+        "Looking for an anti tarnish necklace for daily wear? Shop lightweight 18k gold plated pendants and fine chains made for Indian weather — layer them, gift them, and wear them every day without constant polishing. Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
