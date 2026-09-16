@@ -105,7 +105,7 @@ export default function OurStoryPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-20">
-                    {["/iloveimg-resized/hero1.jpg", "/iloveimg-resized/hero4.png", "/iloveimg-resized/hero5.png"].map((src, i) => (
+                    {["/iloveimg-resized/hero1.jpg", "/iloveimg-resized/hero4.jpg", "/iloveimg-resized/hero5.jpg"].map((src, i) => (
                         <div key={src} className={`relative aspect-square rounded-2xl overflow-hidden bg-gray-100 ${i === 0 ? "md:col-span-1" : ""}`}>
                             <Image
                                 src={src}
