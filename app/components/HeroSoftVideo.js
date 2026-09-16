@@ -5,7 +5,8 @@ import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
 /**
- * Soft looping hero film: poster Image is LCP; muted video fades in once ready.
+ * Soft looping hero film: poster Image is LCP; muted video fades in once playing.
+ * Reduced-motion: poster only (video never loads).
  */
 export default function HeroSoftVideo({
     src,
@@ -24,7 +25,7 @@ export default function HeroSoftVideo({
         if (reduce) return;
 
         const node = videoRef.current?.parentElement;
-        if (!node) {
+        if (!node || typeof IntersectionObserver === "undefined") {
             setShouldLoad(true);
             return;
         }
@@ -36,7 +37,7 @@ export default function HeroSoftVideo({
                     io.disconnect();
                 }
             },
-            { rootMargin: "120px" }
+            { rootMargin: "160px", threshold: 0.01 }
         );
         io.observe(node);
         return () => io.disconnect();
@@ -46,17 +47,33 @@ export default function HeroSoftVideo({
         const video = videoRef.current;
         if (!video || !shouldLoad) return;
 
-        const onCanPlay = () => {
-            setReady(true);
-            const playPromise = video.play();
-            if (playPromise?.catch) playPromise.catch(() => {});
+        let cancelled = false;
+
+        const markPlaying = () => {
+            if (!cancelled) setReady(true);
         };
 
-        video.addEventListener("canplay", onCanPlay);
-        if (video.readyState >= 3) onCanPlay();
+        const tryPlay = () => {
+            const playPromise = video.play();
+            if (playPromise?.then) {
+                playPromise.then(markPlaying).catch(() => {
+                    // Autoplay blocked — keep poster visible
+                });
+            } else {
+                markPlaying();
+            }
+        };
+
+        video.addEventListener("playing", markPlaying);
+        video.addEventListener("loadeddata", tryPlay);
+        // Force load after <source> mounts (preload=auto alone can stall on some mobile)
+        video.load();
+        if (video.readyState >= 2) tryPlay();
 
         return () => {
-            video.removeEventListener("canplay", onCanPlay);
+            cancelled = true;
+            video.removeEventListener("playing", markPlaying);
+            video.removeEventListener("loadeddata", tryPlay);
             video.pause();
         };
     }, [shouldLoad]);
@@ -84,7 +101,8 @@ export default function HeroSoftVideo({
                 muted
                 playsInline
                 loop
-                preload={shouldLoad ? "metadata" : "none"}
+                autoPlay
+                preload={shouldLoad ? "auto" : "none"}
                 poster={poster}
                 aria-hidden="true"
                 tabIndex={-1}
