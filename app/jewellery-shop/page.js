@@ -4,12 +4,12 @@ import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { BRAND_URL, GOOGLE_BUSINESS_URL, SERVICE_AREA_LABEL } from "@/lib/constants";
 
 export const metadata = {
-    title: "Jewellery Shop Near You | Noida, Greater Noida, Ghaziabad & Delhi NCR",
+    title: "Jewellery Shop Near You | Noida & Delhi NCR",
     description:
-        "Find The Luxe Jewels local pages for Noida, Greater Noida, Ghaziabad and Delhi NCR — anti-tarnish jewellery with pan-India shipping.",
+        "Local pages for Noida, Greater Noida, Ghaziabad & Delhi NCR — anti-tarnish jewellery with pan-India shipping.",
     alternates: { canonical: "/jewellery-shop" },
     openGraph: {
-        title: "Jewellery Shop Near You | The Luxe Jewels",
+        title: "Jewellery Shop Near You | Noida & Delhi NCR",
         description: SERVICE_AREA_LABEL,
         url: `${BRAND_URL}/jewellery-shop`,
         images: [{ url: "/og-image.png", width: 1200, height: 630 }],

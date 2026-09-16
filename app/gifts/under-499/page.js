@@ -11,12 +11,12 @@ export const revalidate = 300;
 const MAX = 499;
 
 export const metadata = {
-    title: `Jewellery Gifts Under ₹499 | Waterproof Everyday Picks`,
+    title: `Jewellery Gifts Under ₹499`,
     description:
-        "Shop anti-tarnish jewellery gifts under ₹499 — waterproof earrings, necklaces & more for Friendship Day, birthdays, and everyday gifting in India. Buy 2 Get 1 Free + pan-India shipping.",
+        "Anti-tarnish jewellery gifts under ₹499 — waterproof earrings & necklaces for birthdays and everyday gifting. Buy 2 Get 1 Free.",
     alternates: { canonical: "/gifts/under-499" },
     openGraph: {
-        title: "Jewellery Gifts Under ₹499 | Waterproof Everyday Picks",
+        title: "Jewellery Gifts Under ₹499",
         description:
             "Affordable anti-tarnish jewellery gifts under ₹499 — everyday pieces she’ll actually wear.",
         url: `${BRAND_URL}/gifts/under-499`,

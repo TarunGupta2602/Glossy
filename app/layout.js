@@ -58,10 +58,10 @@ export const viewport = {
 export const metadata = {
   metadataBase: new URL(BRAND_URL),
   title: {
-    default: "The Luxe Jewels | Premium Anti-Tarnish & Waterproof Jewellery India",
+    default: "The Luxe Jewels | Anti-Tarnish Jewellery India",
     template: "%s | The Luxe Jewels"
   },
-  description: "Shop The Luxe Jewels for premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings. Serving Noida, Delhi NCR & pan-India — free delivery on orders over ₹1000.",
+  description: "Premium anti-tarnish, waterproof 18k gold plated jewellery for India — earrings, necklaces & more. Free delivery over ₹1000.",
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,

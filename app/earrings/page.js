@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti Tarnish Earrings India (Page ${pageNum})`
-            : "Anti Tarnish Earrings India | Waterproof Studs & Hoops",
+            ? `Anti-Tarnish Earrings for Daily Wear (Page ${pageNum})`
+            : "Anti-Tarnish Earrings for Daily Wear",
         description:
-            "Shop anti tarnish earrings for daily wear in India — waterproof studs, hoops & drops in 18k gold plated finish. Hypoallergenic picks, free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Shop anti-tarnish earrings for daily wear — waterproof studs, hoops & drops in 18k gold plated finish. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -36,9 +36,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti Tarnish Earrings India | Waterproof Studs & Hoops",
+            title: "Anti-Tarnish Earrings for Daily Wear",
             description:
-                "Waterproof anti tarnish studs, hoops, and drops made for everyday Indian humidity — office to evening.",
+                "Waterproof studs, hoops, and drops made for everyday Indian humidity — office to evening.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -96,10 +96,10 @@ export default async function EarringsPage({ searchParams }) {
         productsWithDiscounts.map((p) => p.id)
     );
 
-    const pageTitle = "Anti Tarnish Earrings for Daily Wear";
+    const pageTitle = "Anti-Tarnish Earrings for Daily Wear";
     const pageDescription =
         category?.description ||
-        "Shop anti tarnish earrings made for Indian humidity — waterproof studs, small hoops, and everyday drops in 18k gold plated finish. Wear them to office, college, and evenings without babysitting the shine. Buy 2 Get 1 Free across the store.";
+        "Waterproof studs, small hoops, and everyday drops in 18k gold plated finish — made for Indian humidity. Wear them to office, college, and evenings. Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

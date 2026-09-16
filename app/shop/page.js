@@ -26,23 +26,22 @@ export async function generateMetadata({ searchParams }) {
     // Filters + pagination should not compete with brand/homepage in GSC.
     const isPaginated = pageNum > 1 && !hasFilters;
     const canonical = hasFilters || isPaginated ? "/shop" : "/shop";
-    const title =
-        isPaginated
-            ? `Shop Anti-Tarnish Gold Plated Jewellery (Page ${pageNum})`
-            : `Shop Anti-Tarnish Gold Plated Jewellery Online India`;
+    const title = isPaginated
+        ? `Shop Anti-Tarnish Jewellery Online (Page ${pageNum})`
+        : `Shop Anti-Tarnish Jewellery Online`;
 
     return {
         title,
         description:
-            "Shop anti-tarnish waterproof 18k gold plated jewellery online in India — earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + free shipping over ₹1000.",
+            "Shop anti-tarnish 18k gold plated jewellery online — earrings, necklaces, bracelets & rings. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: hasFilters || isPaginated
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
         openGraph: {
-            title: "Shop 18k Gold Plated Anti-Tarnish Jewellery Online | India",
+            title: "Shop Anti-Tarnish Jewellery Online",
             description:
-                "Browse every piece in The Luxe Jewels catalogue — waterproof earrings, necklaces, and more with Buy 2 Get 1 Free.",
+                "Browse The Luxe Jewels catalogue — waterproof earrings, necklaces, and more with Buy 2 Get 1 Free.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],

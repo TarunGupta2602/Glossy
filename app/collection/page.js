@@ -8,9 +8,9 @@ import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
 export const revalidate = 3600;
 
 export const metadata = {
-    title: "Browse Jewellery by Category | Earrings, Necklaces & More",
+    title: "Browse Jewellery by Category",
     description:
-        "Explore The Luxe Jewels by category — curated edits of anti-tarnish earrings, necklaces, bracelets, and rings. Pick a collection, then shop waterproof everyday luxury for India.",
+        "Explore curated anti-tarnish earrings, necklaces, bracelets, and rings — then shop everyday waterproof pieces for India.",
     alternates: {
         canonical: "/collection",
     },
@@ -21,9 +21,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Browse by Category | Jewellery Collections",
+        title: "Browse Jewellery by Category",
         description:
-            "Choose a curated jewellery category — earrings, necklaces, bracelets, and more — then shop anti-tarnish pieces made for daily wear.",
+            "Choose a jewellery category — earrings, necklaces, bracelets, and more — then shop pieces made for daily wear.",
         url: "https://www.theluxejewels.in/collection",
         siteName: "The Luxe Jewels",
         images: [{ url: "/logo.png" }],

@@ -13,15 +13,17 @@ export async function generateMetadata({ searchParams }) {
     if (query) {
         return {
             title: `Search: ${query}`,
-            description: `Search results for "${query}" — anti-tarnish earrings, necklaces, and fine jewellery at The Luxe Jewels.`,
+            description: `Search results for "${query}" at The Luxe Jewels.`,
             robots: { index: false, follow: true },
+            alternates: { canonical: "/search" },
         };
     }
 
     return {
         title: "Search Jewellery",
-        description: "Search for anti-tarnish, waterproof, and premium jewellery across The Luxe Jewels collections.",
+        description: "Search anti-tarnish jewellery across The Luxe Jewels collections.",
         robots: { index: false, follow: true },
+        alternates: { canonical: "/search" },
     };
 }
 
