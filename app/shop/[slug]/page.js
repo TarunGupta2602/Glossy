@@ -4,7 +4,7 @@ import CollectionPageContent from "../../components/CollectionPageContent";
 import { notFound, redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
-import { buildLandingRedirect, getDedicatedLandingPath } from "@/lib/categoryLanding";
+import { buildLandingRedirect, getDedicatedLandingPath, getDisplayCategoryName } from "@/lib/categoryLanding";
 import { formatPageTitle, truncateMetaDescription } from "@/lib/seo";
 import {
     PRODUCT_CARD_SELECT,
@@ -33,13 +33,14 @@ export async function generateMetadata({ params }) {
         return { title: "Collection Not Found", robots: { index: false, follow: false } };
     }
 
+    const displayName = getDisplayCategoryName(category);
     const title = formatPageTitle(
-        category.meta_title || `${category.name} | Premium Anti-Tarnish Collection`
+        category.meta_title || `${displayName} | Premium Anti-Tarnish Collection`
     );
     const description = truncateMetaDescription(
         category.meta_description ||
             category.description ||
-            `Explore our ${category.name} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`
+            `Explore our ${displayName} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`
     );
 
     return {
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }) {
             "max-snippet": -1,
         },
         openGraph: {
-            title: `${category.name} | Premium Collection | The Luxe Jewels`,
+            title: `${displayName} | Premium Collection | The Luxe Jewels`,
             description,
             url: `https://www.theluxejewels.in/shop/${slug}`,
             siteName: "The Luxe Jewels",
@@ -64,7 +65,7 @@ export async function generateMetadata({ params }) {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${category.name} | Custom Jewellery Selection`,
+            title: `${displayName} | Custom Jewellery Selection`,
             description,
             images: category.image_url ? [category.image_url] : ["/logo.png"],
         },
@@ -119,11 +120,12 @@ export default async function CollectionDetails({ params, searchParams }) {
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
     const otherCategories = (allCategories || []).filter((c) => c.id !== category.id);
 
+    const displayName = getDisplayCategoryName(category);
     const collectionJsonLd = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        name: category.name,
-        description: category.description || `Explore our ${category.name} collection at The Luxe Jewels.`,
+        name: displayName,
+        description: category.description || `Explore our ${displayName} collection at The Luxe Jewels.`,
         url: `https://www.theluxejewels.in/shop/${slug}`,
         mainEntity: {
             "@type": "ItemList",
@@ -137,7 +139,7 @@ export default async function CollectionDetails({ params, searchParams }) {
                     image: product.main_image,
                     price: product.price,
                     priceCurrency: "INR",
-                    category: category.name,
+                    category: displayName,
                 },
             })),
         },
@@ -149,7 +151,7 @@ export default async function CollectionDetails({ params, searchParams }) {
         itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: "https://www.theluxejewels.in" },
             { "@type": "ListItem", position: 2, name: "Shop", item: "https://www.theluxejewels.in/shop" },
-            { "@type": "ListItem", position: 3, name: category.name, item: `https://www.theluxejewels.in/shop/${slug}` },
+            { "@type": "ListItem", position: 3, name: displayName, item: `https://www.theluxejewels.in/shop/${slug}` },
         ],
     };
 
@@ -165,9 +167,9 @@ export default async function CollectionDetails({ params, searchParams }) {
             />
 
             <CollectionPageContent
-                breadcrumbs={[{ label: "Shop", href: "/shop" }, { label: category.name }]}
+                breadcrumbs={[{ label: "Shop", href: "/shop" }, { label: getDisplayCategoryName(category) }]}
                 heroImageUrl={category.image_url}
-                title={category.name}
+                title={getDisplayCategoryName(category)}
                 description={category.description}
                 count={count}
                 showingCount={productsWithDiscounts.length}

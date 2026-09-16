@@ -9,6 +9,7 @@ import { attachHoverImagesToLists } from "@/lib/hoverImages";
 import { getCategoryHref } from "@/lib/categoryLanding";
 import HomeCollections from "./components/HomeCollections";
 import HomeInstagramReels from "./components/HomeInstagramReels";
+import HomeLifestyleFilm from "./components/HomeLifestyleFilm";
 import HomeStoryTeaser from "./components/HomeStoryTeaser";
 import SiteFaqSection from "./components/SiteFaqSection";
 import HeroSlider from "./components/HeroSlider";
@@ -78,13 +79,13 @@ const COLLECTION_META = [
       c.slug === "glimmer-bracelet" || c.name?.toLowerCase().includes("bracelet"),
     label: "Bracelets",
     order: 3,
-    fallbackImage: "/iloveimg-resized/hero4.png",
+    fallbackImage: "/iloveimg-resized/hero4.jpg",
   },
   {
     match: (c) => c.slug === "sparkle-jewelry-duo" || c.slug?.includes("sparkle"),
     label: "Duos",
     order: 4,
-    fallbackImage: "/iloveimg-resized/hero5.png",
+    fallbackImage: "/iloveimg-resized/hero5.jpg",
   },
   {
     match: (c) =>
@@ -194,7 +195,7 @@ export default async function Home() {
       .limit(12),
     getFeaturedReviews(4),
     getSiteReviewStats(),
-    fetchInstagramReels(6),
+    fetchInstagramReels(3),
   ]);
 
   const matched = [];
@@ -290,6 +291,10 @@ export default async function Home() {
 
       <RevealOnScroll>
         <HomeCollections collections={collections} />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <HomeLifestyleFilm />
       </RevealOnScroll>
 
       <RevealOnScroll>

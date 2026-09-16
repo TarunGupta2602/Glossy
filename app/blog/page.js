@@ -216,6 +216,19 @@ export default async function BlogPage({ searchParams }) {
 
     return (
         <main className="min-h-screen bg-white">
+            {page > 1 && (
+                <link
+                    rel="prev"
+                    href={
+                        page - 1 <= 1
+                            ? `${BRAND_URL}/blog`
+                            : `${BRAND_URL}/blog?page=${page - 1}`
+                    }
+                />
+            )}
+            {page < totalPages && (
+                <link rel="next" href={`${BRAND_URL}/blog?page=${page + 1}`} />
+            )}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
@@ -284,7 +297,7 @@ export default async function BlogPage({ searchParams }) {
                                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         quality={75}
                                                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                                                        priority={index < 3}
+                                                        priority={index < 1}
                                                         placeholder="blur"
                                                         blurDataURL={IMAGE_BLUR_DATA_URL}
                                                     />

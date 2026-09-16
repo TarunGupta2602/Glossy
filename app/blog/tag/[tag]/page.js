@@ -65,7 +65,7 @@ export async function generateMetadata({ params, searchParams }) {
             images: ["/og-image.png"],
             creator: TWITTER_HANDLE,
         },
-        robots: isPaginated
+        robots: isPaginated || totalCount < 2
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
     };

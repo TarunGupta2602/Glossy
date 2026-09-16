@@ -10,7 +10,7 @@ import { getProductPath } from "@/lib/seo";
 export default function FeaturedCollections({
     categories = [],
     featuredProducts = [],
-    fallbackImage = "/iloveimg-resized/hero3.png",
+    fallbackImage = "/iloveimg-resized/hero3.jpg",
 }) {
     const sorted = [...categories].sort((a, b) => {
         const order = {
@@ -126,7 +126,7 @@ export default function FeaturedCollections({
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="object-cover transition-transform duration-[1.2s] ease-out group-active:scale-105 sm:group-hover:scale-105"
                             priority
-                            quality={80}
+                            quality={75}
                             onError={() => {
                                 if (bannerSrc !== fallbackImage) setBannerSrc(fallbackImage);
                             }}

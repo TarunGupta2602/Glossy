@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { optimizeImageUpload, withWebpPath } from "@/lib/optimizeImageUpload";
 
 export async function POST(req) {
     try {
@@ -17,7 +18,6 @@ export async function POST(req) {
 
         const supabaseService = getServiceClient();
 
-        // Delete old image if exists
         if (oldImageUrl) {
             const oldFileName = oldImageUrl.split('/').pop();
             const { error: deleteError } = await supabaseService
@@ -26,24 +26,25 @@ export async function POST(req) {
                 .remove([oldFileName]);
             if (deleteError) {
                 console.error("Delete error:", deleteError);
-                // Continue with upload even if delete fails
             }
         }
 
-        // Upload new image
-        const fileName = `category-${Date.now()}-${file.name}`;
+        const arrayBuffer = await file.arrayBuffer();
+        const optimized = await optimizeImageUpload(Buffer.from(arrayBuffer), file.type);
+        const fileName = withWebpPath(`category-${Date.now()}-${file.name}`, optimized.ext);
 
         const { error: uploadError } = await supabaseService
             .storage
             .from('category-images')
-            .upload(fileName, file);
+            .upload(fileName, optimized.buffer, {
+                contentType: optimized.contentType,
+            });
 
         if (uploadError) {
             console.error("Upload error:", uploadError);
             return NextResponse.json({ error: uploadError.message }, { status: 500 });
         }
 
-        // Get public URL
         const { data } = supabaseService
             .storage
             .from('category-images')

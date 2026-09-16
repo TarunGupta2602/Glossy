@@ -20,11 +20,13 @@ import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { getBlogShopCta } from "@/lib/blogShopCtas";
 import { getBlogProductPicks } from "@/lib/blogProductPicks";
 import { getReviewCounts } from "@/lib/reviewCounts";
+import { resolveBlogAuthor } from "@/lib/blogAuthors";
 import BlogShopCta from "../../components/BlogShopCta";
 import BlogProductPicks from "../../components/BlogProductPicks";
+import BlogContentSections from "../../components/BlogContentSections";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import { IMAGE_BLUR_DATA_URL, BLOG_HERO_SIZES } from "@/lib/imageBlur";
 
 export const revalidate = 300;
 
@@ -57,6 +59,7 @@ export async function generateMetadata({ params }) {
     );
     const keywords = parseBlogKeywords(blog.meta_keywords);
     const canonicalPath = `/blog/${canonicalSlug}`;
+    const authorName = resolveBlogAuthor(blog).name;
 
     return {
         title,
@@ -72,7 +75,7 @@ export async function generateMetadata({ params }) {
             type: "article",
             publishedTime: blog.date_posted,
             modifiedTime: blog.updated_at || blog.date_posted,
-            authors: [blog.author || "The Luxe Jewels"],
+            authors: [authorName],
             images: blog.image
                 ? [
                       {
@@ -148,6 +151,8 @@ export default async function BlogDetailPage({ params }) {
     }
 
     const blog = applyBlogSeoOverride(rawBlog, canonicalSlug);
+    const authorProfile = resolveBlogAuthor(blog);
+    const sections = blog.content_sections || {};
     const shopCta = getBlogShopCta(canonicalSlug);
     const productPicks = await getBlogProductPicks(
         supabase,
@@ -207,7 +212,10 @@ export default async function BlogDetailPage({ params }) {
         image: blog.image || `${BRAND_URL}/og-image.png`,
         author: {
             "@type": "Person",
-            name: blog.author || "The Luxe Jewels Team",
+            name: authorProfile.name,
+            ...(authorProfile.bio
+                ? { description: authorProfile.bio }
+                : {}),
         },
         publisher: {
             "@type": "Organization",
@@ -330,13 +338,32 @@ export default async function BlogDetailPage({ params }) {
                                 {blog.title}
                             </h1>
 
-                            <div className="flex items-center gap-4 py-4 border-y border-[#efeae4]">
-                                <div className="flex-1">
+                            <div className="flex items-start gap-4 py-4 border-y border-[#efeae4]">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#efeae4] text-[13px] font-semibold text-[#2a2724]">
+                                    {authorProfile.name
+                                        .split(/\s+/)
+                                        .slice(0, 2)
+                                        .map((p) => p[0])
+                                        .join("")
+                                        .toUpperCase()}
+                                </div>
+                                <div className="flex-1 min-w-0">
                                     <p className="text-[13px] font-medium text-[#2a2724]">
-                                        Written by {blog.author || "The Luxe Jewels"}
+                                        {authorProfile.name}
+                                        {authorProfile.role ? (
+                                            <span className="text-[#8a847c] font-normal">
+                                                {" "}
+                                                · {authorProfile.role}
+                                            </span>
+                                        ) : null}
                                     </p>
+                                    {authorProfile.bio ? (
+                                        <p className="mt-1 text-[12px] text-[#6b6560] leading-relaxed">
+                                            {authorProfile.bio}
+                                        </p>
+                                    ) : null}
                                     <time
-                                        className="text-[12px] text-[#8a847c]"
+                                        className="mt-1.5 block text-[12px] text-[#8a847c]"
                                         dateTime={blog.date_posted}
                                     >
                                         Published on {formatDate(blog.date_posted)}
@@ -352,8 +379,8 @@ export default async function BlogDetailPage({ params }) {
                                     src={blog.image}
                                     alt={blog.title}
                                     fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
-                                    quality={82}
+                                    sizes={BLOG_HERO_SIZES}
+                                    quality={80}
                                     className="object-cover"
                                     priority
                                     placeholder="blur"
@@ -378,6 +405,12 @@ export default async function BlogDetailPage({ params }) {
                         >
                             <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
                         </article>
+
+                        <BlogContentSections
+                            whyThisMatters={sections.why_this_matters}
+                            comparisonTable={sections.comparison_table}
+                            tipsMistakes={sections.tips_mistakes}
+                        />
 
                         <BlogShopCta cta={shopCta} />
 

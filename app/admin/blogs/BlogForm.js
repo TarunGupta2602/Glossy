@@ -52,8 +52,32 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
         initialData?.slug ? normalizeBlogSlug(initialData.slug) : ""
     );
     const [author, setAuthor] = useState(initialData?.author || "");
+    const [authorBio, setAuthorBio] = useState(initialData?.author_bio || "");
     const [description, setDescription] = useState(initialData?.description || "");
     const [content, setContent] = useState(initialData?.content || "");
+    const [whyThisMatters, setWhyThisMatters] = useState(
+        initialData?.content_sections?.why_this_matters ||
+            initialData?.why_this_matters ||
+            ""
+    );
+    const [tipsMistakes, setTipsMistakes] = useState(
+        initialData?.content_sections?.tips_mistakes ||
+            initialData?.tips_mistakes ||
+            []
+    );
+    const [comparisonHeaders, setComparisonHeaders] = useState(
+        (initialData?.content_sections?.comparison_table?.headers ||
+            initialData?.comparison_table?.headers ||
+            ["Option", "Best for", "Notes"]
+        ).join(" | ")
+    );
+    const [comparisonRowsText, setComparisonRowsText] = useState(() => {
+        const rows =
+            initialData?.content_sections?.comparison_table?.rows ||
+            initialData?.comparison_table?.rows ||
+            [];
+        return rows.map((r) => (Array.isArray(r) ? r.join(" | ") : "")).join("\n");
+    });
     const [datePosted, setDatePosted] = useState(
         initialData?.date_posted || new Date().toISOString().split("T")[0]
     );
@@ -100,6 +124,20 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
 
     const removeFaq = (index) => {
         setFaqs(faqs.filter((_, i) => i !== index));
+    };
+
+    const addTip = () => {
+        setTipsMistakes([...tipsMistakes, { title: "", body: "" }]);
+    };
+
+    const updateTip = (index, field, value) => {
+        const updated = [...tipsMistakes];
+        updated[index][field] = value;
+        setTipsMistakes(updated);
+    };
+
+    const removeTip = (index) => {
+        setTipsMistakes(tipsMistakes.filter((_, i) => i !== index));
     };
 
     const applyMetaDescriptionTrim = () => {
@@ -200,10 +238,31 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
 
             if (finalContent !== content) setContent(finalContent);
 
+            const headers = comparisonHeaders
+                .split("|")
+                .map((h) => h.trim())
+                .filter(Boolean);
+            const rows = comparisonRowsText
+                .split("\n")
+                .map((line) => line.split("|").map((c) => c.trim()))
+                .filter((cells) => cells.some((c) => c.length > 0));
+
+            const content_sections = {
+                why_this_matters: whyThisMatters.trim() || null,
+                tips_mistakes: tipsMistakes.filter(
+                    (t) => t?.title?.trim() && t?.body?.trim()
+                ),
+                comparison_table:
+                    headers.length && rows.length
+                        ? { headers, rows }
+                        : null,
+            };
+
             const blogData = {
                 title,
                 slug: generateSlug(slug || title),
                 author,
+                author_bio: authorBio.trim() || null,
                 description,
                 content: finalContent,
                 date_posted: datePosted,
@@ -211,6 +270,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                 meta_description: finalMetaDescription,
                 meta_keywords: metaKeywords,
                 faqs: faqs.filter((f) => f.question.trim() && f.answer.trim()),
+                content_sections,
                 image: finalImageUrl,
             };
 
@@ -264,13 +324,26 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                         </label>
                         <input
                             type="text"
-                            placeholder="Author name"
+                            placeholder="e.g. Priya Sharma"
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all"
                             value={author}
                             onChange={(e) => setAuthor(e.target.value)}
                             required
                         />
                     </div>
+                </div>
+
+                <div>
+                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">
+                        Author bio (E-E-A-T)
+                    </label>
+                    <textarea
+                        placeholder="Short bio shown on the post page — expertise, role, audience."
+                        rows="2"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all resize-none"
+                        value={authorBio}
+                        onChange={(e) => setAuthorBio(e.target.value)}
+                    />
                 </div>
 
                 <div>
@@ -523,6 +596,112 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                             <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
                                 No keywords yet — this post won’t appear on any{" "}
                                 <code>/blog/tag/...</code> pages until you add some.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="pt-8 border-t border-gray-100">
+                <h2 className="text-xl font-bold mb-2 text-gray-900 px-1">Long-form sections</h2>
+                <p className="text-xs text-gray-400 mb-6 px-1">
+                    Optional structure for richer SEO content. Leave blank until the editorial team
+                    fills them in — empty sections are hidden on the public page.
+                </p>
+
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">
+                            Why this matters (200+ words)
+                        </label>
+                        <textarea
+                            placeholder="Expanded intro: why the topic matters for everyday jewellery shoppers in India…"
+                            rows="6"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all resize-y"
+                            value={whyThisMatters}
+                            onChange={(e) => setWhyThisMatters(e.target.value)}
+                        />
+                        <p className="mt-1 text-[11px] text-gray-400 px-1">
+                            {whyThisMatters.trim().split(/\s+/).filter(Boolean).length} words
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">
+                            Comparison table headers
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Option | Best for | Notes"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all font-mono text-sm"
+                            value={comparisonHeaders}
+                            onChange={(e) => setComparisonHeaders(e.target.value)}
+                        />
+                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 mt-4 px-1">
+                            Comparison rows (one per line, cells separated by |)
+                        </label>
+                        <textarea
+                            placeholder={"Studs | Office & daily wear | Lightweight\nHoops | Evenings | Pair with simple neckline"}
+                            rows="4"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] focus:ring-1 focus:ring-[#E91E63] outline-none transition-all resize-y font-mono text-sm"
+                            value={comparisonRowsText}
+                            onChange={(e) => setComparisonRowsText(e.target.value)}
+                        />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest px-1">
+                                Tips & mistakes
+                            </label>
+                            <button
+                                type="button"
+                                onClick={addTip}
+                                className="px-3 py-1.5 bg-gray-100 text-gray-700 font-semibold text-xs rounded-lg hover:bg-gray-200"
+                            >
+                                Add tip
+                            </button>
+                        </div>
+                        {tipsMistakes.length === 0 ? (
+                            <p className="text-sm text-gray-400 px-1">
+                                No tips yet — add 3–5 practical tips or common mistakes.
+                            </p>
+                        ) : (
+                            <div className="space-y-3">
+                                {tipsMistakes.map((tip, index) => (
+                                    <div
+                                        key={index}
+                                        className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-2"
+                                    >
+                                        <div className="flex justify-between gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder="Tip title"
+                                                className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm"
+                                                value={tip.title}
+                                                onChange={(e) =>
+                                                    updateTip(index, "title", e.target.value)
+                                                }
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeTip(index)}
+                                                className="text-gray-400 hover:text-red-500 text-sm"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                        <textarea
+                                            placeholder="Tip details…"
+                                            rows="2"
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm resize-none"
+                                            value={tip.body}
+                                            onChange={(e) =>
+                                                updateTip(index, "body", e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>

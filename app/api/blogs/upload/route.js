@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { optimizeImageUpload, withWebpPath } from "@/lib/optimizeImageUpload";
 
 // POST: Upload image to blog-images bucket
 export async function POST(request) {
@@ -20,17 +21,15 @@ export async function POST(request) {
         }
 
         const supabase = getServiceClient();
-        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-
-        // Convert file to buffer
+        const baseName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
         const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        const optimized = await optimizeImageUpload(Buffer.from(arrayBuffer), file.type);
+        const fileName = withWebpPath(baseName, optimized.ext);
 
-        // Upload new image
         const { error: uploadError } = await supabase.storage
             .from("blog-images")
-            .upload(fileName, buffer, {
-                contentType: file.type,
+            .upload(fileName, optimized.buffer, {
+                contentType: optimized.contentType,
                 upsert: false,
             });
 
@@ -43,7 +42,6 @@ export async function POST(request) {
             .from("blog-images")
             .getPublicUrl(fileName);
 
-        // Delete old image if provided
         if (oldImageUrl) {
             try {
                 const url = new URL(oldImageUrl);

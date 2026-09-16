@@ -93,7 +93,7 @@ export default function GiftLandingContent({
                                     key={product.id}
                                     product={product}
                                     reviewCount={reviewCounts[product.id] || 0}
-                                    priority={index < 4}
+                                    priority={index < 1}
                                 />
                             ))}
                         </div>

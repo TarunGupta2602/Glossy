@@ -8,6 +8,7 @@ import {
     SERVICE_AREA_LABEL,
 } from "@/lib/constants";
 import SiteFaqSection from "../components/SiteFaqSection";
+import LazyVideo from "../components/LazyVideo";
 import { STORY_FAQS } from "@/lib/faqs";
 
 export const dynamic = "force-static";
@@ -63,17 +64,24 @@ export default function OurStoryPage() {
                     </p>
                 </div>
 
-                <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-10 md:mb-16 shadow-lg">
+                <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-10 md:mb-16 shadow-lg bg-[#efeae4]">
                     <Image
-                        src="/iloveimg-resized/hero3.png"
+                        src="/videos/jewelry-flatlay-poster.jpg"
                         alt="The Luxe Jewels — handcrafted anti-tarnish jewellery"
                         fill
                         sizes="(max-width: 768px) 100vw, 1024px"
                         className="object-cover"
                         priority
+                        quality={70}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 md:bottom-10 md:left-10 md:right-auto text-white max-w-md">
+                    <LazyVideo
+                        src="/videos/jewelry-flatlay.mp4"
+                        className="absolute inset-0"
+                        rootMargin="0px"
+                        ariaLabel="Gold jewellery lifestyle film"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute bottom-4 left-4 right-4 md:bottom-10 md:left-10 md:right-auto text-white max-w-md z-10">
                         <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-pink-200 mb-1 md:mb-2">The Luxe Jewels</p>
                         <p className="text-lg md:text-2xl font-playfair font-bold leading-snug">
                             Jewellery that celebrates confidence, not compromise.
@@ -105,7 +113,7 @@ export default function OurStoryPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-20">
-                    {["/iloveimg-resized/hero1.jpg", "/iloveimg-resized/hero4.png", "/iloveimg-resized/hero5.png"].map((src, i) => (
+                    {["/iloveimg-resized/hero1.jpg", "/iloveimg-resized/hero4.jpg", "/iloveimg-resized/hero5.jpg"].map((src, i) => (
                         <div key={src} className={`relative aspect-square rounded-2xl overflow-hidden bg-gray-100 ${i === 0 ? "md:col-span-1" : ""}`}>
                             <Image
                                 src={src}

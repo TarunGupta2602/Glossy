@@ -57,6 +57,7 @@ export default function CollectionHero({
                     fill
                     priority
                     sizes="100vw"
+                    quality={75}
                     className="object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20 sm:bg-gradient-to-r sm:from-black/80 sm:via-black/45 sm:to-black/10" />

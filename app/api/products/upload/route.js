@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { guardAdmin } from "@/lib/requireAdmin";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { optimizeImageUpload, withWebpPath } from "@/lib/optimizeImageUpload";
 
 const BUCKET = "product-images";
 
@@ -41,12 +42,13 @@ export async function POST(request) {
 
         const supabase = getServiceClient();
         const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        const optimized = await optimizeImageUpload(Buffer.from(arrayBuffer), file.type);
+        const storagePath = withWebpPath(path, optimized.ext);
 
         const { error: uploadError } = await supabase.storage
             .from(BUCKET)
-            .upload(path, buffer, {
-                contentType: file.type,
+            .upload(storagePath, optimized.buffer, {
+                contentType: optimized.contentType,
                 upsert: false,
             });
 
@@ -57,7 +59,7 @@ export async function POST(request) {
 
         const { data: urlData } = supabase.storage
             .from(BUCKET)
-            .getPublicUrl(path);
+            .getPublicUrl(storagePath);
 
         if (oldImageUrl) {
             const oldPath = getStoragePath(oldImageUrl);

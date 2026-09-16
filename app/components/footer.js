@@ -12,6 +12,7 @@ import {
     INSTAGRAM_URL,
     INSTAGRAM_HANDLE,
     BUSINESS_HOURS,
+    GOOGLE_BUSINESS_URL,
 } from "@/lib/constants";
 import { PROMO_LABEL } from "@/lib/promo";
 import PaymentIcons from "./PaymentIcons";
@@ -27,6 +28,7 @@ const SHOP_LINKS = [
 const HELP_LINKS = [
     { href: "/blog", label: "Blog" },
     { href: "/our-story", label: "Our story" },
+    { href: "/jewellery-shop/noida", label: "Jewellery shop in Noida" },
     { href: "/shipping-returns", label: "Shipping & returns" },
     { href: "/faqs", label: "FAQs" },
     { href: "/contact", label: "Contact" },
@@ -203,6 +205,16 @@ export default function Footer() {
                                 </svg>
                                 {INSTAGRAM_HANDLE}
                             </a>
+                            {GOOGLE_BUSINESS_URL ? (
+                                <a
+                                    href={GOOGLE_BUSINESS_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mt-3 inline-flex min-h-11 items-center text-[12px] font-medium text-gray-500 hover:text-[#E91E63] transition-colors"
+                                >
+                                    Google Business Profile →
+                                </a>
+                            ) : null}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import { IMAGE_BLUR_DATA_URL, COLLECTION_TILE_SIZES } from "@/lib/imageBlur";
 
 /** Soft rounded collection edits — Born-style calm tiles. */
 export default function HomeCollections({ collections = [] }) {
@@ -48,8 +48,8 @@ export default function HomeCollections({ collections = [] }) {
                                         src={item.image || "/logo.png"}
                                         alt={title}
                                         fill
-                                        sizes="(max-width: 768px) 42vw, 18vw"
-                                        quality={index < 2 ? 78 : 65}
+                                        sizes={COLLECTION_TILE_SIZES}
+                                        quality={index < 2 ? 70 : 60}
                                         placeholder="blur"
                                         blurDataURL={IMAGE_BLUR_DATA_URL}
                                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

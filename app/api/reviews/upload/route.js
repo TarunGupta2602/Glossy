@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { requireUser } from "@/lib/requireAuth";
 import { isAdminUser } from "@/lib/userProfile";
+import { optimizeImageUpload } from "@/lib/optimizeImageUpload";
 
 export async function POST(req) {
     try {
@@ -33,17 +34,18 @@ export async function POST(req) {
         }
 
         const supabase = getServiceClient();
+        const arrayBuffer = await file.arrayBuffer();
+        const optimized = await optimizeImageUpload(Buffer.from(arrayBuffer), file.type);
 
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(2, 15);
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${userId}/${timestamp}-${random}.${fileExt}`;
+        const fileName = `${userId}/${timestamp}-${random}.${optimized.ext || "webp"}`;
 
         const { error: uploadError } = await supabase.storage
             .from("review-images")
-            .upload(fileName, file, {
+            .upload(fileName, optimized.buffer, {
                 upsert: false,
-                contentType: file.type,
+                contentType: optimized.contentType,
             });
 
         if (uploadError) {

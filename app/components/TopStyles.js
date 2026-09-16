@@ -93,7 +93,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
                                     <ProductCard
                                         product={product}
                                         reviewCount={reviewCounts[product.id] || 0}
-                                        priority={index < 2}
+                                        priority={index < 1}
                                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                     />
                                 </div>

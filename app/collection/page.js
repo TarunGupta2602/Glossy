@@ -3,7 +3,7 @@ import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
-import { getCategoryHref } from "@/lib/categoryLanding";
+import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
 
 export const revalidate = 3600;
 
@@ -67,7 +67,9 @@ export default async function FeaturedCollections() {
 
             <div className={`${SITE_CONTAINER} pb-4`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-                    {categories?.map((category) => (
+                    {categories?.map((category) => {
+                        const displayName = getDisplayCategoryName(category);
+                        return (
                         <Link
                             key={category.id}
                             href={getCategoryHref(category)}
@@ -75,15 +77,16 @@ export default async function FeaturedCollections() {
                         >
                             <Image
                                 src={category.image_url || "/logo.png"}
-                                alt={category.name}
+                                alt={displayName}
                                 fill
                                 sizes="(max-width: 640px) 100vw, 50vw"
+                                quality={70}
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                             <div className="absolute inset-0 p-5 sm:p-6 md:p-8 flex flex-col justify-end">
                                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
-                                    {category.name}
+                                    {displayName}
                                 </h2>
                                 {category.description && (
                                     <p className="text-sm text-white/75 mt-1 line-clamp-2 max-w-sm">
@@ -98,7 +101,8 @@ export default async function FeaturedCollections() {
                                 </span>
                             </div>
                         </Link>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>

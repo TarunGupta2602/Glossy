@@ -118,7 +118,7 @@ export default function ProductRow({
                     ref={scrollRef}
                     className="flex items-stretch gap-5 sm:gap-6 md:gap-7 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar scroll-smooth"
                 >
-                    {products.map((product, index) => (
+                    {products.map((product) => (
                         <div
                             key={product.id}
                             className="shrink-0 w-[48vw] max-w-[240px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
@@ -126,7 +126,6 @@ export default function ProductRow({
                             <ProductCard
                                 product={product}
                                 reviewCount={reviewCounts[product.id] || 0}
-                                priority={index < 2}
                                 sizes={PRODUCT_ROW_SIZES}
                             />
                         </div>

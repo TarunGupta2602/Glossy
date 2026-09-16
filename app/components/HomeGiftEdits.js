@@ -11,7 +11,7 @@ export default function HomeGiftEdits() {
                 <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
                     <div className="relative w-full max-w-[400px] mx-auto md:mx-0 h-[280px] sm:h-[320px] md:h-[360px] overflow-hidden rounded-[1.75rem] bg-[#f6f4f1]">
                         <Image
-                            src="/iloveimg-resized/hero4.png"
+                            src="/iloveimg-resized/hero4.jpg"
                             alt="Gift-ready anti-tarnish jewellery"
                             fill
                             sizes="400px"

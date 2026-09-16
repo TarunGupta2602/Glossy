@@ -1,30 +1,23 @@
-import Image from "next/image";
 import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { BRAND_NAME, SERVICE_AREA_LABEL } from "@/lib/constants";
+import LazyVideo from "./LazyVideo";
 
-/** Editorial Our Story teaser — framed image + calm typography. */
+/** Editorial Our Story teaser — framed lifestyle film + calm typography. */
 export default function HomeStoryTeaser() {
     return (
         <section className="bg-[#fdfbf7] py-16 md:py-24 lg:py-28">
             <div className={HOME_CONTAINER}>
                 <div className="grid md:grid-cols-2 gap-12 md:gap-14 lg:gap-20 items-center">
-                    {/* Image — framed portrait */}
+                    {/* Film — framed portrait */}
                     <div className="order-1">
                         <div className="relative mx-auto max-w-[420px] md:max-w-none md:mx-0">
-                            <div className="relative aspect-[4/5] overflow-hidden bg-[#efeae4]">
-                                <Image
-                                    src="/iloveimg-resized/hero4.png"
-                                    alt="The Luxe Jewels anti-tarnish jewellery"
-                                    fill
-                                    sizes="(max-width: 768px) 90vw, 42vw"
-                                    quality={80}
-                                    placeholder="blur"
-                                    blurDataURL={IMAGE_BLUR_DATA_URL}
-                                    className="object-cover object-center"
-                                />
-                            </div>
+                            <LazyVideo
+                                src="/videos/earring-model.mp4"
+                                poster="/videos/earring-model-poster.jpg"
+                                className="relative aspect-[4/5] bg-[#efeae4]"
+                                ariaLabel="The Luxe Jewels anti-tarnish jewellery film"
+                            />
 
                             {/* Gold corner accents */}
                             <span

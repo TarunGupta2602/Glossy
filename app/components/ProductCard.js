@@ -5,18 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { getProductPath } from "@/lib/seo";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
+import { getDisplayCategoryName } from "@/lib/categoryLanding";
 import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
-
-function productHashtag(product) {
-    const source = product.slug || product.name || "jewellery";
-    const tag = String(source)
-        .replace(/[^a-zA-Z0-9]+/g, "")
-        .slice(0, 16)
-        .toUpperCase();
-    return tag ? `#${tag}` : "#JEWELLERY";
-}
 
 export default function ProductCard({
     product,
@@ -26,7 +18,7 @@ export default function ProductCard({
     sizes = PRODUCT_CARD_SIZES,
     showQuickActions = true,
 }) {
-    const categoryName = product.categories?.name || "Jewellery";
+    const categoryName = getDisplayCategoryName(product.categories);
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
         : "0";
@@ -34,11 +26,10 @@ export default function ProductCard({
     const { isInWishlist, toggleWishlist } = useWishlist();
     const { showToast } = useToast();
     const wishlisted = isInWishlist(product.id);
-    const [imgLoaded, setImgLoaded] = useState(false);
+    const [loadHover, setLoadHover] = useState(false);
     const [wishPulse, setWishPulse] = useState(false);
     const href = getProductPath(product);
     const hoverImage = product.hover_image;
-    const hashtag = productHashtag(product);
 
     const handleWishlist = async (e) => {
         e.preventDefault();
@@ -56,30 +47,34 @@ export default function ProductCard({
 
     return (
         <article className="group flex flex-col h-full overflow-hidden rounded-[1.35rem] sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-shadow duration-300 hover:shadow-[0_14px_36px_-16px_rgba(42,39,36,0.4)]">
-            <div className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full">
+            <div
+                className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full"
+                onMouseEnter={() => {
+                    if (hoverImage) setLoadHover(true);
+                }}
+            >
                 <Link href={href} className="absolute inset-0 z-0 block" aria-label={product.name}>
                     <Image
                         src={product.main_image || "/logo.png"}
                         alt={product.image_alt || product.name}
                         fill
                         sizes={sizes}
-                        quality={priority ? 75 : 60}
+                        quality={priority ? 70 : 55}
                         priority={priority}
                         loading={priority ? "eager" : "lazy"}
                         placeholder="blur"
                         blurDataURL={IMAGE_BLUR_DATA_URL}
-                        onLoad={() => setImgLoaded(true)}
                         className={`object-cover transition-[transform,opacity] duration-[700ms] ease-out will-change-transform md:group-hover:scale-[1.03] ${
-                            imgLoaded ? "opacity-100" : "opacity-0"
-                        } ${hoverImage ? "md:group-hover:opacity-0" : ""}`}
+                            hoverImage ? "md:group-hover:opacity-0" : ""
+                        }`}
                     />
-                    {hoverImage && (
+                    {hoverImage && loadHover && (
                         <Image
                             src={hoverImage}
                             alt=""
                             fill
                             sizes={sizes}
-                            quality={60}
+                            quality={55}
                             loading="lazy"
                             aria-hidden
                             className="object-cover opacity-0 transition-opacity duration-500 md:group-hover:opacity-100"
@@ -88,24 +83,20 @@ export default function ProductCard({
                 </Link>
 
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
-                    <span className="px-2 py-1 rounded-md bg-white text-[9px] font-semibold tracking-[0.06em] text-[#2a2724] uppercase truncate max-w-full">
-                        {hashtag}
-                    </span>
-                    {hasDiscount && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#E91E63] text-white text-[10px] font-bold tracking-wide">
-                            −{discountPercent}%
+                    {hasDiscount ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E91E63] text-white text-[10px] font-bold tracking-wide shadow-sm">
+                            <span aria-hidden>−</span>
+                            {discountPercent}% OFF
                         </span>
-                    )}
-                    {!hasDiscount && product.is_bestseller && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
+                    ) : product.is_bestseller ? (
+                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>
-                    )}
-                    {!hasDiscount && product.is_new && !product.is_bestseller && (
-                        <span className="px-2 py-0.5 rounded-full bg-white text-[#2a2724] text-[9px] font-semibold tracking-wide ring-1 ring-black/5">
+                    ) : product.is_new ? (
+                        <span className="px-2.5 py-1 rounded-full bg-white text-[#2a2724] text-[9px] font-semibold tracking-wide ring-1 ring-black/5">
                             New
                         </span>
-                    )}
+                    ) : null}
                 </div>
 
                 {showQuickActions && (

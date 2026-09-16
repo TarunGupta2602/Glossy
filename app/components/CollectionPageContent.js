@@ -53,7 +53,7 @@ export default function CollectionPageContent({
                                         product={product}
                                         reviewCount={reviewCounts[product.id] || 0}
                                         hideCategory
-                                        priority={index < 4}
+                                        priority={index < 1}
                                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                     />
                                 ))}

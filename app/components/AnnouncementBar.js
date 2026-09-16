@@ -1,5 +1,10 @@
 "use client";
 
+import {
+    BUSINESS_HOURS,
+    BRAND_NAME,
+} from "@/lib/constants";
+
 const announcements = [
     "Buy 2 Get 1 Free on every order",
     "Free shipping on prepaid orders over ₹1000",
@@ -9,7 +14,7 @@ const announcements = [
 
 function MarqueeTrack({ id }) {
     return (
-        <div className="flex items-center shrink-0" aria-hidden={id === "b" ? true : undefined}>
+        <div className="flex items-center shrink-0" aria-hidden="true">
             {announcements.map((text) => (
                 <div key={`${id}-${text}`} className="flex items-center shrink-0">
                     <span className="px-6 md:px-10 text-[12px] md:text-[13px] font-semibold tracking-[0.12em] uppercase text-[#3d342c]">
@@ -29,6 +34,8 @@ function MarqueeTrack({ id }) {
 }
 
 export default function AnnouncementBar() {
+    const accessibleSummary = `${announcements.join(". ")}. Store hours: ${BUSINESS_HOURS}.`;
+
     return (
         <div
             className="announce-bar group relative overflow-hidden h-10 md:h-11 flex items-center z-50 border-b border-[#eadfce]"
@@ -37,23 +44,27 @@ export default function AnnouncementBar() {
                     "linear-gradient(180deg, #f7f1e8 0%, #f0e6d8 100%)",
             }}
             role="region"
-            aria-label="Store announcements"
+            aria-label={`${BRAND_NAME} announcements`}
         >
-            {/* Soft side fades so text enters/exits cleanly */}
+            {/* Single accessible copy — marquee tracks are decorative duplicates */}
+            <p className="sr-only">{accessibleSummary}</p>
+
             <div
                 className="pointer-events-none absolute inset-y-0 left-0 w-10 md:w-16 z-10"
                 style={{
                     background: "linear-gradient(90deg, #f3ebe0 0%, transparent 100%)",
                 }}
+                aria-hidden
             />
             <div
                 className="pointer-events-none absolute inset-y-0 right-0 w-10 md:w-16 z-10"
                 style={{
                     background: "linear-gradient(270deg, #f3ebe0 0%, transparent 100%)",
                 }}
+                aria-hidden
             />
 
-            <div className="announce-marquee flex whitespace-nowrap will-change-transform">
+            <div className="announce-marquee flex whitespace-nowrap will-change-transform" aria-hidden="true">
                 <MarqueeTrack id="a" />
                 <MarqueeTrack id="b" />
             </div>

@@ -4,6 +4,18 @@ import { normalizeBlogSlug } from "@/lib/seo";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { revalidateBlogSurfaces } from "@/lib/revalidateBlog";
 
+function withoutOptionalCmsFields(payload) {
+    const next = { ...payload };
+    delete next.author_bio;
+    delete next.content_sections;
+    return next;
+}
+
+function isMissingColumnError(error) {
+    const msg = String(error?.message || error?.details || "");
+    return /author_bio|content_sections|schema cache|Could not find/i.test(msg);
+}
+
 // GET: Fetch single blog by ID (admin only)
 export async function GET(request, { params }) {
     try {
@@ -52,6 +64,27 @@ export async function PATCH(request, { params }) {
             .eq("id", id)
             .select()
             .single();
+
+        if (error && isMissingColumnError(error)) {
+            const fallback = withoutOptionalCmsFields(body);
+            const retry = await supabase
+                .from("blogs")
+                .update({ ...fallback, updated_at: new Date().toISOString() })
+                .eq("id", id)
+                .select()
+                .single();
+            if (retry.error) {
+                console.error("PATCH /api/blogs/[id] error:", JSON.stringify(retry.error));
+                throw retry.error;
+            }
+            revalidateBlogSurfaces(retry.data?.slug || body.slug);
+            return NextResponse.json({
+                success: true,
+                blog: retry.data,
+                warning:
+                    "Updated without author_bio/content_sections — run supabase/migrations/20260316_blog_content_sections.sql",
+            });
+        }
 
         if (error) {
             console.error("PATCH /api/blogs/[id] error:", JSON.stringify(error));

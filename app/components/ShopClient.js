@@ -290,7 +290,7 @@ export default function ShopClient({
                                     key={product.id}
                                     product={product}
                                     reviewCount={reviewCounts[product.id] || 0}
-                                    priority={index < 4}
+                                    priority={index < 1}
                                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                                 />
                             ))}

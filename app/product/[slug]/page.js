@@ -17,7 +17,7 @@ import {
     LEGACY_PRODUCT_REDIRECTS,
     looksLikeCorruptedProductSlug,
 } from "@/lib/legacyProductRedirects";
-import { getCategoryHref } from "@/lib/categoryLanding";
+import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }) {
         return { title: "Product Not Found", robots: { index: false, follow: false } };
     }
 
-    const categoryName = product.categories?.name || "Fine Jewellery";
+    const categoryName = getDisplayCategoryName(product.categories, "Fine Jewellery");
     const seoTitle = formatPageTitle(product.meta_title || `${product.name} | ${categoryName}`);
     const seoDescription = truncateMetaDescription(
         product.meta_description ||
@@ -213,7 +213,7 @@ export default async function ProductPage({ params }) {
                 image: images.length ? images : [`${BASE_URL}/logo.png`],
                 description: product.meta_description || product.description || `Premium ${product.name} from ${SITE_NAME}.`,
                 brand: { "@type": "Brand", name: SITE_NAME },
-                category: product.categories?.name,
+                category: getDisplayCategoryName(product.categories),
                 ...(totalReviews > 0 && {
                     aggregateRating: {
                         "@type": "AggregateRating",
@@ -272,7 +272,7 @@ export default async function ProductPage({ params }) {
                     {
                         "@type": "ListItem",
                         position: 2,
-                        name: product.categories?.name || "Jewellery",
+                        name: getDisplayCategoryName(product.categories),
                         item: `${BASE_URL}${getCategoryHref(product.categories)}`,
                     },
                     { "@type": "ListItem", position: 3, name: product.name, item: productUrl },

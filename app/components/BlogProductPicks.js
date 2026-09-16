@@ -39,7 +39,7 @@ export default function BlogProductPicks({
                         key={product.id}
                         product={product}
                         reviewCount={reviewCounts[product.id] || 0}
-                        priority={index < 2}
+                        priority={index < 1}
                         hideCategory
                     />
                 ))}

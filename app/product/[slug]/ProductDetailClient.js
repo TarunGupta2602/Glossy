@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
-import { getCategoryHref } from "@/lib/categoryLanding";
+import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
 import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
 import TrustStrip from "../../components/TrustStrip";
@@ -14,7 +14,7 @@ import ProductCard from "../../components/ProductCard";
 import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
 import { trackRecentlyViewed } from "@/lib/recentlyViewed";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import { IMAGE_BLUR_DATA_URL, PDP_MAIN_SIZES, PDP_THUMB_SIZES } from "@/lib/imageBlur";
 
 export default function ProductDetailClient({
     product,
@@ -24,7 +24,7 @@ export default function ProductDetailClient({
     initialReviews = [],
     initialReviewStats = null,
 }) {
-    const categoryName = product.categories?.name || "Jewellery";
+    const categoryName = getDisplayCategoryName(product.categories);
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -166,9 +166,9 @@ export default function ProductDetailClient({
                                 src={allImages[activeIdx]}
                                 alt={activeIdx === 0 ? (product.image_alt || product.name) : `${product.name} - View ${activeIdx + 1}`}
                                 fill
-                                priority
-                                sizes="(max-width: 1024px) 90vw, 45vw"
-                                quality={80}
+                                priority={activeIdx === 0}
+                                sizes={PDP_MAIN_SIZES}
+                                quality={activeIdx === 0 ? 80 : 70}
                                 placeholder="blur"
                                 blurDataURL={IMAGE_BLUR_DATA_URL}
                                 className="object-cover transition-transform duration-200 ease-out lg:pointer-events-auto pointer-events-none"
@@ -193,7 +193,7 @@ export default function ProductDetailClient({
                             )}
                         </div>
 
-                        {/* Thumbnail strip — scrollable on mobile when many images */}
+                        {/* Thumbnail strip — all lazy to avoid duplicating the LCP main image fetch */}
                         <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1 -mx-0.5 px-0.5">
                             {allImages.map((img, idx) => (
                                 <button
@@ -205,15 +205,17 @@ export default function ProductDetailClient({
                                         : "opacity-60 hover:opacity-100"
                                         }`}
                                     style={{ aspectRatio: "1/1" }}
+                                    aria-label={`View image ${idx + 1}`}
+                                    aria-current={activeIdx === idx ? "true" : undefined}
                                 >
                                     <Image
                                         src={img}
-                                        alt={`${product.name} - Thumbnail ${idx + 1}`}
+                                        alt=""
                                         fill
-                                        sizes="72px"
-                                        quality={60}
+                                        sizes={PDP_THUMB_SIZES}
+                                        quality={50}
                                         className="object-cover"
-                                        loading={idx === 0 ? "eager" : "lazy"}
+                                        loading="lazy"
                                     />
                                 </button>
                             ))}

@@ -14,6 +14,18 @@ function sanitizeBlogPayload(body) {
     return payload;
 }
 
+function withoutOptionalCmsFields(payload) {
+    const next = { ...payload };
+    delete next.author_bio;
+    delete next.content_sections;
+    return next;
+}
+
+function isMissingColumnError(error) {
+    const msg = String(error?.message || error?.details || "");
+    return /author_bio|content_sections|schema cache|Could not find/i.test(msg);
+}
+
 // GET: Fetch all blogs (admin only)
 export async function GET(req) {
     try {
@@ -62,6 +74,26 @@ export async function POST(request) {
             .insert([body])
             .select()
             .single();
+
+        if (error && isMissingColumnError(error)) {
+            const fallback = withoutOptionalCmsFields(body);
+            const retry = await supabase
+                .from("blogs")
+                .insert([fallback])
+                .select()
+                .single();
+            if (retry.error) {
+                console.error("POST /api/blogs insert error:", JSON.stringify(retry.error));
+                throw retry.error;
+            }
+            revalidateBlogSurfaces(retry.data?.slug || body.slug);
+            return NextResponse.json({
+                success: true,
+                blog: retry.data,
+                warning:
+                    "Saved without author_bio/content_sections — run supabase/migrations/20260316_blog_content_sections.sql",
+            });
+        }
 
         if (error) {
             console.error("POST /api/blogs insert error:", JSON.stringify(error));

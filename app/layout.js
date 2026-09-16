@@ -28,7 +28,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL } from "@/lib/constants";
+import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL, INSTAGRAM_URL, BUSINESS_ADDRESS, GOOGLE_BUSINESS_URL } from "@/lib/constants";
 
 function buildSiteVerification() {
     const verification = {
@@ -143,9 +143,7 @@ export default function RootLayout({ children }) {
       "areaServed": "IN",
       "availableLanguage": ["English", "Hindi"]
     },
-    "sameAs": [
-      "https://www.instagram.com/theluxejewels.in_?igsh=MTQ1NWkyaTh1cDJ6Mg%3D%3D"
-    ]
+    "sameAs": [INSTAGRAM_URL, ...(GOOGLE_BUSINESS_URL ? [GOOGLE_BUSINESS_URL] : [])]
   };
 
   const webSiteJsonLd = {
@@ -169,12 +167,23 @@ export default function RootLayout({ children }) {
 
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
-    "@type": "OnlineStore",
+    "@type": ["OnlineStore", "JewelryStore"],
+    "@id": `${BRAND_URL}/#store`,
     "name": BRAND_NAME,
-    "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
+    "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Ghaziabad, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
     "url": BRAND_URL,
+    "image": `${BRAND_URL}/og-image.png`,
+    "logo": `${BRAND_URL}/favicon-symbol.png`,
     "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
     "email": SUPPORT_EMAIL,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": BUSINESS_ADDRESS.streetAddress,
+      "addressLocality": BUSINESS_ADDRESS.addressLocality,
+      "addressRegion": BUSINESS_ADDRESS.addressRegion,
+      "postalCode": BUSINESS_ADDRESS.postalCode,
+      "addressCountry": BUSINESS_ADDRESS.addressCountry,
+    },
     "areaServed": [
       { "@type": "City", "name": "Noida" },
       { "@type": "City", "name": "Greater Noida" },
@@ -183,12 +192,15 @@ export default function RootLayout({ children }) {
       { "@type": "Country", "name": "India" }
     ],
     "priceRange": "₹₹",
+    "currenciesAccepted": "INR",
+    "paymentAccepted": "UPI, Credit Card, Debit Card, Net Banking",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       "opens": "10:00",
       "closes": "19:00"
-    }
+    },
+    "sameAs": [INSTAGRAM_URL, ...(GOOGLE_BUSINESS_URL ? [GOOGLE_BUSINESS_URL] : [])]
   };
 
   return (

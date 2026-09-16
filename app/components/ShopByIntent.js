@@ -42,7 +42,7 @@ export default function ShopByIntent({ intents = [] }) {
                                 sizes="(max-width: 1024px) 50vw, 25vw"
                                 quality={75}
                                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                priority={index < 2}
+                                priority={index < 1}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5" />
                             <div className="absolute inset-0 flex flex-col justify-end p-3.5 sm:p-5">
