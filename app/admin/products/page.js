@@ -13,6 +13,7 @@ export default function ProductsListPage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [autofilling, setAutofilling] = useState(false);
+    const [normalizing, setNormalizing] = useState(false);
 
     useEffect(() => {
         if (!authLoading) {
@@ -60,6 +61,71 @@ export default function ProductsListPage() {
         product.original_price == null;
 
     const sparseCount = products.filter(isSparse).length;
+
+    const longTitleCount = products.filter((p) => {
+        const t = (p.meta_title || "").trim();
+        return t.length > 42 || /piecess/i.test(t) || /\|\s*/.test(t);
+    }).length;
+
+    const piecessCount = products.filter((p) =>
+        /piecess/i.test(
+            [p.meta_title, p.categories?.name, p.categories?.slug].filter(Boolean).join(" ")
+        )
+    ).length;
+
+    const handleNormalizeSeo = async () => {
+        const ok = confirm(
+            [
+                "Fix product SEO titles + Statement Piecess typo?",
+                "",
+                "This will:",
+                "• Shorten meta titles to ≤42 chars (name only)",
+                "• Rename category Statement Piecess → Statement Pieces",
+                "• Scrub Piecess from meta description / keywords / alt",
+                "",
+                longTitleCount || piecessCount
+                    ? `Detected now: ${longTitleCount} long/messy title(s), ${piecessCount} Piecess hit(s).`
+                    : "No obvious issues detected — safe to re-run.",
+            ].join("\n")
+        );
+        if (!ok) return;
+
+        setNormalizing(true);
+        try {
+            const res = await adminFetch("/api/products/normalize-seo", {
+                method: "POST",
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || "Normalize failed");
+
+            const lines = [
+                `Scanned: ${data.scanned}`,
+                `Updated: ${data.updated}`,
+                `Already clean: ${data.skipped}`,
+                `Categories fixed: ${data.categoriesFixed || 0}`,
+            ];
+            if (data.changes?.length) {
+                lines.push("", "Examples:");
+                data.changes.slice(0, 10).forEach((c) => {
+                    lines.push(
+                        `• ${c.name}: ${(c.fromTitle || "").slice(0, 36)} → ${(c.toTitle || "").slice(0, 36)}`
+                    );
+                });
+                if (data.changes.length > 10) {
+                    lines.push(`…and ${data.changes.length - 10} more`);
+                }
+            }
+            if (data.failures?.length) {
+                lines.push("", `Failed: ${data.failures.length}`);
+            }
+            alert(lines.join("\n"));
+            await fetchProducts();
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + (err.message || "Could not fix product SEO"));
+        }
+        setNormalizing(false);
+    };
 
     const handleAutofillAll = async () => {
         const ok = confirm(
@@ -185,9 +251,29 @@ export default function ProductsListPage() {
                                     · {sparseCount} missing detail fields
                                 </span>
                             ) : null}
+                            {longTitleCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}
+                                    · {longTitleCount} long SEO titles
+                                </span>
+                            ) : null}
+                            {piecessCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}
+                                    · {piecessCount} Piecess typo
+                                </span>
+                            ) : null}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                            type="button"
+                            onClick={handleNormalizeSeo}
+                            disabled={normalizing || loading || products.length === 0}
+                            className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50"
+                        >
+                            {normalizing ? "Fixing SEO…" : "Fix titles + Piecess"}
+                        </button>
                         <button
                             type="button"
                             onClick={handleAutofillAll}

@@ -7,7 +7,7 @@ import {
 } from "@/lib/productQueries";
 import {
     BASE_URL,
-    formatPageTitle,
+    truncateMetaTitle,
     truncateMetaDescription,
     getProductCanonicalUrl,
     getProductPath,
@@ -38,7 +38,10 @@ export async function generateMetadata({ params }) {
     }
 
     const categoryName = getDisplayCategoryName(product.categories, "Fine Jewellery");
-    const seoTitle = formatPageTitle(product.meta_title || `${product.name} | ${categoryName}`);
+    const seoTitle = truncateMetaTitle(
+        product.meta_title || product.name || `${product.name} | ${categoryName}`,
+        42
+    );
     const seoDescription = truncateMetaDescription(
         product.meta_description ||
         product.description ||
