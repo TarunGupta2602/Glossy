@@ -2,7 +2,7 @@ import Link from "next/link";
 import HeroSoftVideo from "./HeroSoftVideo";
 
 const HERO_IMAGE = "/iloveimg-resized/hero2.jpg";
-const HERO_VIDEO = "/videos/hero-jewellery-v2.mp4";
+const HERO_VIDEO = "/videos/hero-soft.mp4";
 const HERO_ALT = "The Luxe Jewels anti-tarnish gold plated jewellery";
 
 /**

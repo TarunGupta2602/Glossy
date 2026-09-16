@@ -4,10 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
-/**
- * Soft looping hero film: poster Image is LCP; muted video fades in once playing.
- * Reduced-motion: poster only (video never loads).
- */
+/** Poster first (LCP). Soft muted loop fades in when ready. Reduced-motion = image only. */
 export default function HeroSoftVideo({
     src,
     poster,
@@ -21,11 +18,10 @@ export default function HeroSoftVideo({
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduce) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
         const node = videoRef.current?.parentElement;
-        if (!node || typeof IntersectionObserver === "undefined") {
+        if (!node) {
             setShouldLoad(true);
             return;
         }
@@ -37,7 +33,7 @@ export default function HeroSoftVideo({
                     io.disconnect();
                 }
             },
-            { rootMargin: "160px", threshold: 0.01 }
+            { rootMargin: "120px" }
         );
         io.observe(node);
         return () => io.disconnect();
@@ -47,33 +43,19 @@ export default function HeroSoftVideo({
         const video = videoRef.current;
         if (!video || !shouldLoad) return;
 
-        let cancelled = false;
-
-        const markPlaying = () => {
-            if (!cancelled) setReady(true);
+        const onPlaying = () => setReady(true);
+        const start = () => {
+            video.play()?.catch(() => {});
         };
 
-        const tryPlay = () => {
-            const playPromise = video.play();
-            if (playPromise?.then) {
-                playPromise.then(markPlaying).catch(() => {
-                    // Autoplay blocked — keep poster visible
-                });
-            } else {
-                markPlaying();
-            }
-        };
-
-        video.addEventListener("playing", markPlaying);
-        video.addEventListener("loadeddata", tryPlay);
-        // Force load after <source> mounts (preload=auto alone can stall on some mobile)
+        video.addEventListener("playing", onPlaying);
+        video.addEventListener("loadeddata", start);
         video.load();
-        if (video.readyState >= 2) tryPlay();
+        if (video.readyState >= 2) start();
 
         return () => {
-            cancelled = true;
-            video.removeEventListener("playing", markPlaying);
-            video.removeEventListener("loadeddata", tryPlay);
+            video.removeEventListener("playing", onPlaying);
+            video.removeEventListener("loadeddata", start);
             video.pause();
         };
     }, [shouldLoad]);
@@ -101,7 +83,6 @@ export default function HeroSoftVideo({
                 muted
                 playsInline
                 loop
-                autoPlay
                 preload={shouldLoad ? "auto" : "none"}
                 poster={poster}
                 aria-hidden="true"
