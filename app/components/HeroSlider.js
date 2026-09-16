@@ -1,13 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import HeroSoftVideo from "./HeroSoftVideo";
 
 const HERO_IMAGE = "/iloveimg-resized/hero2.jpg";
+const HERO_VIDEO = "/videos/hero-jewellery.mp4";
 const HERO_ALT = "The Luxe Jewels anti-tarnish gold plated jewellery";
 
 /**
- * Mobile: full-bleed photo with copy overlaid.
- * Desktop: cream split layout with portrait image.
+ * Mobile: full-bleed soft film + copy overlay.
+ * Desktop: cream split with portrait soft video (poster = LCP image).
  */
 export default function HeroSlider() {
     return (
@@ -15,17 +15,14 @@ export default function HeroSlider() {
             className="relative md:bg-[#fdfbf7] overflow-hidden"
             aria-label="The Luxe Jewels"
         >
-            {/* Mobile background only */}
+            {/* Mobile background film */}
             <div className="absolute inset-0 md:hidden" aria-hidden="true">
-                <Image
-                    src={HERO_IMAGE}
+                <HeroSoftVideo
+                    src={HERO_VIDEO}
+                    poster={HERO_IMAGE}
                     alt=""
-                    fill
                     priority
                     sizes="100vw"
-                    quality={90}
-                    placeholder="blur"
-                    blurDataURL={IMAGE_BLUR_DATA_URL}
                     className="object-cover object-[center_20%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/78" />
@@ -91,22 +88,19 @@ export default function HeroSlider() {
                         </p>
                     </div>
 
-                    {/* Desktop portrait image */}
+                    {/* Desktop portrait — soft film over still */}
                     <div className="hidden md:flex flex-col items-stretch">
                         <div className="relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] bg-[#efeae4]">
-                            <Image
-                                src={HERO_IMAGE}
+                            <HeroSoftVideo
+                                src={HERO_VIDEO}
+                                poster={HERO_IMAGE}
                                 alt={HERO_ALT}
-                                fill
                                 priority
                                 sizes="600px"
-                                quality={90}
-                                placeholder="blur"
-                                blurDataURL={IMAGE_BLUR_DATA_URL}
                                 className="object-cover object-center"
                             />
 
-                            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+                            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 z-10">
                                 <div className="rounded-2xl bg-white/90 backdrop-blur-sm px-3.5 py-2.5 shadow-sm">
                                     <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a847c]">
                                         Fresh drop
