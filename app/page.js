@@ -9,7 +9,6 @@ import { attachHoverImagesToLists } from "@/lib/hoverImages";
 import { getCategoryHref } from "@/lib/categoryLanding";
 import HomeCollections from "./components/HomeCollections";
 import HomeInstagramReels from "./components/HomeInstagramReels";
-import HomeLifestyleFilm from "./components/HomeLifestyleFilm";
 import HomeStoryTeaser from "./components/HomeStoryTeaser";
 import SiteFaqSection from "./components/SiteFaqSection";
 import HeroSlider from "./components/HeroSlider";
@@ -291,10 +290,6 @@ export default async function Home() {
 
       <RevealOnScroll>
         <HomeCollections collections={collections} />
-      </RevealOnScroll>
-
-      <RevealOnScroll>
-        <HomeLifestyleFilm />
       </RevealOnScroll>
 
       <RevealOnScroll>

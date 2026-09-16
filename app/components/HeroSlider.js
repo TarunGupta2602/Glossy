@@ -1,59 +1,35 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
-import LazyVideo from "./LazyVideo";
 
 const HERO_IMAGE = "/iloveimg-resized/hero2.jpg";
 const HERO_ALT = "The Luxe Jewels anti-tarnish gold plated jewellery";
-const HERO_VIDEO = "/videos/necklace-wear.mp4";
-const HERO_VIDEO_WEBM = "/videos/necklace-wear.webm";
-const HERO_VIDEO_POSTER = "/iloveimg-resized/hero-video-poster.jpg";
 
 /**
  * Mobile: full-bleed photo with copy overlaid.
- * Desktop: cream split layout with portrait video (poster = LCP image).
- * Only one hero image is priority-loaded per viewport to avoid dual LCP fetches.
+ * Desktop: cream split layout with portrait image.
  */
 export default function HeroSlider() {
-    const [isDesktop, setIsDesktop] = useState(null);
-
-    useEffect(() => {
-        const mq = window.matchMedia("(min-width: 768px)");
-        const sync = () => setIsDesktop(mq.matches);
-        sync();
-        mq.addEventListener("change", sync);
-        return () => mq.removeEventListener("change", sync);
-    }, []);
-
-    // SSR / first paint: assume mobile (most LCP traffic) until we know the viewport.
-    const showMobileImage = isDesktop !== true;
-    const showDesktopMedia = isDesktop !== false;
-
     return (
         <section
             className="relative md:bg-[#fdfbf7] overflow-hidden"
             aria-label="The Luxe Jewels"
         >
-            {/* Mobile background only — static image for fastest LCP */}
-            {showMobileImage && (
-                <div className="absolute inset-0 md:hidden" aria-hidden="true">
-                    <Image
-                        src={HERO_IMAGE}
-                        alt=""
-                        fill
-                        priority={isDesktop !== true}
-                        sizes="100vw"
-                        quality={70}
-                        placeholder="blur"
-                        blurDataURL={IMAGE_BLUR_DATA_URL}
-                        className="object-cover object-[center_20%]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/78" />
-                </div>
-            )}
+            {/* Mobile background only */}
+            <div className="absolute inset-0 md:hidden" aria-hidden="true">
+                <Image
+                    src={HERO_IMAGE}
+                    alt=""
+                    fill
+                    priority
+                    sizes="100vw"
+                    quality={90}
+                    placeholder="blur"
+                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                    className="object-cover object-[center_20%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/78" />
+            </div>
 
             <div className="relative z-10 mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-16 lg:py-20">
                 <div className="grid w-full md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-12 items-center">
@@ -115,35 +91,22 @@ export default function HeroSlider() {
                         </p>
                     </div>
 
-                    {/* Desktop portrait — poster Image for LCP, video fades in after */}
+                    {/* Desktop portrait image */}
                     <div className="hidden md:flex flex-col items-stretch">
                         <div className="relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] bg-[#efeae4]">
-                            {showDesktopMedia && (
-                                <>
-                                    <Image
-                                        src={HERO_VIDEO_POSTER}
-                                        alt={HERO_ALT}
-                                        fill
-                                        priority={isDesktop === true}
-                                        sizes="600px"
-                                        quality={70}
-                                        placeholder="blur"
-                                        blurDataURL={IMAGE_BLUR_DATA_URL}
-                                        className="object-cover object-center"
-                                    />
-                                    {isDesktop === true && (
-                                        <LazyVideo
-                                            src={HERO_VIDEO}
-                                            webmSrc={HERO_VIDEO_WEBM}
-                                            className="absolute inset-0"
-                                            rootMargin="0px"
-                                            ariaLabel="Jewellery lifestyle film"
-                                        />
-                                    )}
-                                </>
-                            )}
+                            <Image
+                                src={HERO_IMAGE}
+                                alt={HERO_ALT}
+                                fill
+                                priority
+                                sizes="600px"
+                                quality={90}
+                                placeholder="blur"
+                                blurDataURL={IMAGE_BLUR_DATA_URL}
+                                className="object-cover object-center"
+                            />
 
-                            <div className="absolute bottom-4 left-4 right-4 z-10 flex items-end justify-between gap-3">
+                            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
                                 <div className="rounded-2xl bg-white/90 backdrop-blur-sm px-3.5 py-2.5 shadow-sm">
                                     <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a847c]">
                                         Fresh drop
