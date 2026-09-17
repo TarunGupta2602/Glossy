@@ -19,7 +19,7 @@ export async function generateMetadata({ searchParams }) {
     const canonical = getPaginatedCanonical("/blog", pageNum);
     const isPaginated = pageNum > 1;
 
-    title: isPaginated
+    const title = isPaginated
         ? `Jewellery Tips & Gift Guides — Page ${pageNum}`
         : "Jewellery Tips & Gift Guides for India";
     const description = isPaginated
