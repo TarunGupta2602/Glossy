@@ -8,6 +8,7 @@ import {
 } from "@/lib/seo";
 import { getDisplayCategoryName } from "@/lib/categoryLanding";
 import { revalidatePath } from "next/cache";
+import { revalidateStorefront } from "@/lib/revalidateSite";
 
 /**
  * POST /api/products/normalize-seo
@@ -171,20 +172,16 @@ export async function POST(request) {
         }
 
         try {
-            revalidatePath("/sitemap.xml");
-            revalidatePath("/shop");
-            revalidatePath("/earrings");
-            revalidatePath("/necklaces");
-            revalidatePath("/bracelets");
-            revalidatePath("/rings");
-            revalidatePath("/collection");
+            const extra = [];
             for (const change of changes) {
-                if (change.slug) revalidatePath(`/product/${change.slug}`);
+                if (change.slug) extra.push(`/product/${change.slug}`);
             }
             for (const fix of categoryFixes.filter((c) => c.ok && c.slug)) {
                 const clean = String(fix.slug).replace(/^-+/, "");
-                if (clean) revalidatePath(`/shop/${clean}`);
+                if (clean) extra.push(`/shop/${clean}`);
             }
+            revalidateStorefront(extra);
+            revalidatePath("/", "layout");
         } catch (revalidateError) {
             console.error("normalize-seo revalidate:", revalidateError);
         }
