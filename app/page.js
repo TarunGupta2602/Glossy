@@ -1,4 +1,5 @@
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
+import { unstable_noStore as noStore } from "next/cache";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -18,11 +19,11 @@ import RevealOnScroll from "./components/RevealOnScroll";
 import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 
-const Testimonials = dynamic(() => import("./components/testimonials"), {
+const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
 });
 
-const Newsletter = dynamic(() => import("./components/newsletter"), {
+const Newsletter = nextDynamic(() => import("./components/newsletter"), {
   loading: () => <div className="h-[160px] bg-white" />,
 });
 
@@ -180,6 +181,7 @@ function buildTopStyleTabs(collections, latestProducts) {
 }
 
 export default async function Home() {
+  noStore();
   const supabase = getServiceClient();
 
   const [
