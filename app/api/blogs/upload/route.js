@@ -13,7 +13,7 @@ export async function POST(request) {
         const file = formData.get("file");
         const oldImageUrl = formData.get("oldImageUrl");
 
-        if (!file) {
+        if (!file || typeof file === "string") {
             return NextResponse.json(
                 { success: false, error: "No file provided" },
                 { status: 400 }
@@ -21,33 +21,65 @@ export async function POST(request) {
         }
 
         const supabase = getServiceClient();
-        const baseName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-        const arrayBuffer = await file.arrayBuffer();
-        const optimized = await optimizeImageUpload(Buffer.from(arrayBuffer), file.type);
-        const fileName = withWebpPath(baseName, optimized.ext);
+        const originalName =
+            typeof file.name === "string" && file.name.trim()
+                ? file.name.replace(/\s+/g, "-")
+                : `blog-${Date.now()}.jpg`;
+        const baseName = `${Date.now()}-${originalName}`;
+
+        let arrayBuffer;
+        try {
+            arrayBuffer = await file.arrayBuffer();
+        } catch (err) {
+            return NextResponse.json(
+                { success: false, error: `Could not read upload: ${err?.message || err}` },
+                { status: 400 }
+            );
+        }
+
+        const inputBuffer = Buffer.from(arrayBuffer);
+        if (!inputBuffer.length) {
+            return NextResponse.json(
+                { success: false, error: "Empty upload file" },
+                { status: 400 }
+            );
+        }
+
+        const optimized = await optimizeImageUpload(inputBuffer, file.type || "");
+        const fileName = withWebpPath(baseName, optimized.ext) || baseName;
 
         const { error: uploadError } = await supabase.storage
             .from("blog-images")
             .upload(fileName, optimized.buffer, {
-                contentType: optimized.contentType,
+                contentType: optimized.contentType || "application/octet-stream",
                 upsert: false,
             });
 
         if (uploadError) {
             console.error("Storage upload error:", JSON.stringify(uploadError));
-            throw uploadError;
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: uploadError.message || "Storage upload failed",
+                },
+                { status: 500 }
+            );
         }
 
         const { data: urlData } = supabase.storage
             .from("blog-images")
             .getPublicUrl(fileName);
 
-        if (oldImageUrl) {
+        if (oldImageUrl && typeof oldImageUrl === "string") {
             try {
                 const url = new URL(oldImageUrl);
-                const pathParts = url.pathname.split("/storage/v1/object/public/blog-images/");
+                const pathParts = url.pathname.split(
+                    "/storage/v1/object/public/blog-images/"
+                );
                 if (pathParts[1]) {
-                    await supabase.storage.from("blog-images").remove([decodeURIComponent(pathParts[1])]);
+                    await supabase.storage
+                        .from("blog-images")
+                        .remove([decodeURIComponent(pathParts[1])]);
                 }
             } catch (e) {
                 console.error("Error deleting old image:", e);
@@ -61,7 +93,7 @@ export async function POST(request) {
     } catch (error) {
         console.error("POST /api/blogs/upload error:", error);
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: String(error?.message || error || "Upload failed") },
             { status: 500 }
         );
     }
