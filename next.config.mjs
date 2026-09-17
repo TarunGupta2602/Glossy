@@ -39,6 +39,13 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
+  // Keep client Router Cache short so soft-nav back to "/" doesn't keep a stale homepage.
+  experimental: {
+    staleTimes: {
+      dynamic: 0,
+      static: 30,
+    },
+  },
   // Permanent redirects for corrupted GSC product URLs + blog page noise
   async redirects() {
     return [

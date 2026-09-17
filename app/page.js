@@ -49,7 +49,9 @@ export const metadata = {
   },
 };
 
-export const revalidate = 60;
+/** Always fresh — homepage is the #1 crawl hub; stale ISR was serving old nav/footer/edits. */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function pickImage(...candidates) {
   return (
@@ -63,6 +65,7 @@ const COLLECTION_META = [
     match: (c) =>
       c.slug?.includes("statement") || c.name?.toLowerCase().includes("earring"),
     label: "Earrings",
+    href: "/earrings",
     order: 1,
     fallbackImage: "/earring.png",
   },
@@ -70,13 +73,17 @@ const COLLECTION_META = [
     match: (c) =>
       c.slug === "the-necklace-edit" || c.name?.toLowerCase().includes("necklace"),
     label: "Necklaces",
+    href: "/necklaces",
     order: 2,
     fallbackImage: "/neck.png",
   },
   {
     match: (c) =>
-      c.slug === "glimmer-bracelet" || c.name?.toLowerCase().includes("bracelet"),
+      c.slug === "glimmer-bracelet" ||
+      c.slug?.includes("bracelet") ||
+      c.name?.toLowerCase().includes("bracelet"),
     label: "Bracelets",
+    href: "/bracelets",
     order: 3,
     fallbackImage: "/iloveimg-resized/hero4.jpg",
   },
@@ -87,9 +94,19 @@ const COLLECTION_META = [
     fallbackImage: "/iloveimg-resized/hero5.jpg",
   },
   {
-    match: (c) =>
-      c.slug === "uniqueness-rings" || c.name?.toLowerCase().includes("ring"),
+    match: (c) => {
+      const slug = c.slug?.toLowerCase() || "";
+      const name = c.name?.toLowerCase() || "";
+      if (/earring/.test(slug) || /earring/.test(name)) return false;
+      return (
+        slug === "uniqueness-rings" ||
+        slug.includes("uniqueness") ||
+        /(^|-)rings?(-|$)/.test(slug) ||
+        /\brings?\b/.test(name)
+      );
+    },
     label: "Rings",
+    href: "/rings",
     order: 5,
     fallbackImage: "/iloveimg-resized/hero2.jpg",
   },
@@ -119,7 +136,7 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
       id: category.id,
       label: meta.label,
       name: category.name || meta.label,
-      href: getCategoryHref(category),
+      href: meta.href || getCategoryHref(category),
       order: meta.order,
       image: pickImage(
         category.image_url,
