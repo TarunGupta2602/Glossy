@@ -49,9 +49,15 @@ export async function generateMetadata({ params }) {
     );
     const canonicalPath = getProductPath(product);
 
+    const keywords = String(product.meta_keywords || "")
+        .split(",")
+        .map((k) => k.trim())
+        .filter(Boolean);
+
     return {
         title: seoTitle,
         description: seoDescription,
+        ...(keywords.length ? { keywords } : {}),
         robots: {
             index: true,
             follow: true,

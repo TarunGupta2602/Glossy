@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req, { params }) {
     try {
@@ -43,6 +44,20 @@ export async function PATCH(req, { params }) {
         if (error) {
             console.error("Update Category Error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+        try {
+            revalidatePath("/shop");
+            revalidatePath("/earrings");
+            revalidatePath("/necklaces");
+            revalidatePath("/collection");
+            revalidatePath("/sitemap.xml");
+            if (data?.slug) {
+                const clean = String(data.slug).replace(/^-+/, "");
+                if (clean) revalidatePath(`/shop/${clean}`);
+            }
+        } catch (revalidateError) {
+            console.error("category revalidate:", revalidateError);
         }
 
         return NextResponse.json({ success: true, category: data });

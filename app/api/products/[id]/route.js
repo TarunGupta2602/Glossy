@@ -3,6 +3,7 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { buildProductSeo, generateProductSlug, isUuid } from "@/lib/seo";
 import { applyProductDetailsDefaults } from "@/lib/productDefaults";
 import { guardAdmin } from "@/lib/requireAdmin";
+import { revalidateProductSurfaces } from "@/lib/revalidateProduct";
 
 async function enrichProductPayload(body, supabase, existingProduct) {
     const payload = { ...body };
@@ -150,6 +151,7 @@ export async function PATCH(req, { params }) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
+        revalidateProductSurfaces(data);
         return NextResponse.json({ success: true, product: data });
     } catch (error) {
         console.error("Product PATCH Error:", error);

@@ -3,11 +3,11 @@ import { guardAdmin } from "@/lib/requireAdmin";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import {
     buildProductSeo,
-    buildProductFeatures,
     enrichProductDescription,
     scrubCategoryTypos,
 } from "@/lib/seo";
 import { getDisplayCategoryName } from "@/lib/categoryLanding";
+import { revalidatePath } from "next/cache";
 
 /**
  * POST /api/products/normalize-seo
@@ -83,7 +83,7 @@ export async function POST(request) {
         const { data: products, error } = await supabase
             .from("products")
             .select(
-                "id, name, description, price, plating, features, meta_title, meta_description, meta_keywords, image_alt, categories(name, slug)"
+                "id, name, slug, description, price, plating, meta_title, meta_description, meta_keywords, image_alt, categories(name, slug)"
             )
             .order("created_at", { ascending: true });
 
@@ -113,12 +113,6 @@ export async function POST(request) {
                 categoryName,
                 price: product.price,
                 plating: product.plating,
-            });
-
-            const nextFeatures = buildProductFeatures({
-                name: product.name,
-                categoryName,
-                description: product.description,
             });
 
             const payload = {};
@@ -151,32 +145,14 @@ export async function POST(request) {
                 payload.description = nextDescription;
             }
 
-            const hasFeatures =
-                Array.isArray(product.features) && product.features.length > 0;
-            if (!hasFeatures && nextFeatures.length) {
-                payload.features = nextFeatures;
-            }
-
             if (Object.keys(payload).length === 0) continue;
 
             payload.updated_at = new Date().toISOString();
 
-            let { error: upErr } = await supabase
+            const { error: upErr } = await supabase
                 .from("products")
                 .update(payload)
                 .eq("id", product.id);
-
-            // If features column missing, retry without it
-            if (upErr && /features|schema cache|Could not find/i.test(upErr.message || "")) {
-                const retryPayload = { ...payload };
-                delete retryPayload.features;
-                const retry = await supabase
-                    .from("products")
-                    .update(retryPayload)
-                    .eq("id", product.id);
-                upErr = retry.error;
-                if (!upErr) delete payload.features;
-            }
 
             if (upErr) {
                 failures.push({ id: product.id, name: product.name, error: upErr.message });
@@ -187,10 +163,28 @@ export async function POST(request) {
             changes.push({
                 id: product.id,
                 name: product.name,
+                slug: product.slug || null,
                 fromTitle: product.meta_title,
                 toTitle: payload.meta_title || product.meta_title,
                 fields: Object.keys(payload).filter((k) => k !== "updated_at"),
             });
+        }
+
+        try {
+            revalidatePath("/sitemap.xml");
+            revalidatePath("/shop");
+            revalidatePath("/earrings");
+            revalidatePath("/necklaces");
+            revalidatePath("/collection");
+            for (const change of changes) {
+                if (change.slug) revalidatePath(`/product/${change.slug}`);
+            }
+            for (const fix of categoryFixes.filter((c) => c.ok && c.slug)) {
+                const clean = String(fix.slug).replace(/^-+/, "");
+                if (clean) revalidatePath(`/shop/${clean}`);
+            }
+        } catch (revalidateError) {
+            console.error("normalize-seo revalidate:", revalidateError);
         }
 
         return NextResponse.json({
