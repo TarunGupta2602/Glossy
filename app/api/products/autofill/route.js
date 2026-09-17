@@ -12,7 +12,6 @@ const ALLOWED_UPDATE_KEYS = [
     "weight",
     "size_info",
     "stock_count",
-    "original_price",
     "description",
     "is_new",
     "is_bestseller",

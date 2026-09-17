@@ -14,6 +14,7 @@ export default function ProductsListPage() {
     const [loading, setLoading] = useState(true);
     const [autofilling, setAutofilling] = useState(false);
     const [normalizing, setNormalizing] = useState(false);
+    const [auditingMrp, setAuditingMrp] = useState(false);
 
     useEffect(() => {
         if (!authLoading) {
@@ -57,8 +58,7 @@ export default function ProductsListPage() {
         !product.care_instructions ||
         !product.weight ||
         !product.size_info ||
-        product.stock_count == null ||
-        product.original_price == null;
+        product.stock_count == null;
 
     const sparseCount = products.filter(isSparse).length;
 
@@ -72,6 +72,14 @@ export default function ProductsListPage() {
             [p.meta_title, p.categories?.name, p.categories?.slug].filter(Boolean).join(" ")
         )
     ).length;
+
+    const inflatedMrpCount = products.filter((p) => {
+        const price = Number(p.price) || 0;
+        const orig = Number(p.original_price) || 0;
+        if (!price || !orig || orig <= price) return false;
+        const pct = ((orig - price) / orig) * 100;
+        return pct >= 28 && pct <= 42;
+    }).length;
 
     const handleNormalizeSeo = async () => {
         const ok = confirm(
@@ -135,7 +143,6 @@ export default function ProductsListPage() {
                 "Auto-fill empty fields on all products?",
                 "",
                 "Will fill only blanks:",
-                "• MRP (~1.5× price)",
                 "• Stock (30)",
                 "• Material, plating, care",
                 "• Weight & size (by product type)",
@@ -143,6 +150,7 @@ export default function ProductsListPage() {
                 "• Best Seller (only if name says bestseller)",
                 "• Missing SEO fields",
                 "",
+                "Does NOT invent MRP / compare-at prices.",
                 "Existing values are never overwritten.",
                 sparseCount ? `\n${sparseCount} product(s) look incomplete.` : "",
             ].join("\n")
@@ -190,6 +198,50 @@ export default function ProductsListPage() {
             alert("Error: " + (err.message || "Autofill failed"));
         }
         setAutofilling(false);
+    };
+
+    const handleAuditMrp = async () => {
+        const ok = confirm(
+            [
+                "Clear fake / inflated compare-at (MRP) prices?",
+                "",
+                "This removes original_price when it looks like autofill",
+                "(typical ~33–40% OFF on every item).",
+                "",
+                "Modest real sale prices (e.g. ~10–15% off) are kept.",
+                inflatedMrpCount
+                    ? `\nAbout ${inflatedMrpCount} product(s) currently look inflated.`
+                    : "\nCatalogue already looks clean.",
+            ].join("\n")
+        );
+        if (!ok) return;
+
+        setAuditingMrp(true);
+        try {
+            const res = await adminFetch("/api/products/audit-mrp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ dryRun: false }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || "MRP audit failed");
+
+            alert(
+                [
+                    data.message,
+                    "",
+                    `Scanned: ${data.scanned}`,
+                    `Cleared: ${data.cleared}`,
+                    `Kept: ${data.kept}`,
+                    `Already clean: ${data.alreadyClean}`,
+                ].join("\n")
+            );
+            await fetchProducts();
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + (err.message || "MRP audit failed"));
+        }
+        setAuditingMrp(false);
     };
 
     const handleDelete = async (id, mainImageUrl) => {
@@ -265,9 +317,23 @@ export default function ProductsListPage() {
                                     · {piecessCount} Piecess typo
                                 </span>
                             ) : null}
+                            {inflatedMrpCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}
+                                    · {inflatedMrpCount} inflated MRPs
+                                </span>
+                            ) : null}
                         </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={handleAuditMrp}
+                            disabled={auditingMrp || loading || products.length === 0}
+                            className="px-5 py-3 bg-white border border-amber-200 text-amber-900 font-bold rounded-xl hover:border-amber-400 transition-all disabled:opacity-50"
+                        >
+                            {auditingMrp ? "Clearing fake MRPs…" : "Clear fake MRPs"}
+                        </button>
                         <button
                             type="button"
                             onClick={handleNormalizeSeo}
