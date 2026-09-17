@@ -76,16 +76,18 @@ export default function ProductsListPage() {
     const handleNormalizeSeo = async () => {
         const ok = confirm(
             [
-                "Fix product SEO titles + Statement Piecess typo?",
+                "Fix product SEO for ranking (all products)?",
                 "",
                 "This will:",
-                "• Shorten meta titles to ≤42 chars (name only)",
+                "• Rebuild short meta titles (≤42 chars)",
+                "• Write search-focused meta descriptions + keywords",
+                "• Enrich descriptions with anti-tarnish / B2G1 close",
+                "• Fill empty features bullets",
                 "• Rename category Statement Piecess → Statement Pieces",
-                "• Scrub Piecess from meta description / keywords / alt",
                 "",
                 longTitleCount || piecessCount
                     ? `Detected now: ${longTitleCount} long/messy title(s), ${piecessCount} Piecess hit(s).`
-                    : "No obvious issues detected — safe to re-run.",
+                    : "Safe to re-run anytime to refresh SEO fields.",
             ].join("\n")
         );
         if (!ok) return;
@@ -272,7 +274,7 @@ export default function ProductsListPage() {
                             disabled={normalizing || loading || products.length === 0}
                             className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50"
                         >
-                            {normalizing ? "Fixing SEO…" : "Fix titles + Piecess"}
+                            {normalizing ? "Boosting SEO…" : "Boost all product SEO"}
                         </button>
                         <button
                             type="button"

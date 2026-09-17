@@ -3,23 +3,34 @@ import { guardAdmin } from "@/lib/requireAdmin";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import {
     buildProductSeo,
+    buildProductFeatures,
+    enrichProductDescription,
     scrubCategoryTypos,
-    truncateMetaDescription,
-    truncateMetaTitle,
 } from "@/lib/seo";
 import { getDisplayCategoryName } from "@/lib/categoryLanding";
 
 /**
  * POST /api/products/normalize-seo
- * Admin-only:
- * - Fix "Statement Piecess" category name/slug
- * - Shorten product meta_title to ≤42 (name-based)
- * - Scrub Piecess from other SEO fields
+ * Admin-only full SEO rewrite for ranking PDPs:
+ * - Fix Statement Piecess category
+ * - Rebuild meta_title / meta_description / meta_keywords / image_alt
+ * - Enrich thin descriptions with commercial SEO close
+ * - Fill empty features[] with kind-based bullets
+ *
+ * Body: { force?: boolean } — force=true overwrites existing SEO fields (default true)
  */
 export async function POST(request) {
     try {
         const denied = await guardAdmin(request);
         if (denied) return denied;
+
+        let force = true;
+        try {
+            const body = await request.json();
+            if (typeof body?.force === "boolean") force = body.force;
+        } catch {
+            // empty body OK
+        }
 
         const supabase = getServiceClient();
 
@@ -72,7 +83,7 @@ export async function POST(request) {
         const { data: products, error } = await supabase
             .from("products")
             .select(
-                "id, name, description, price, meta_title, meta_description, meta_keywords, image_alt, categories(name, slug)"
+                "id, name, description, price, plating, features, meta_title, meta_description, meta_keywords, image_alt, categories(name, slug)"
             )
             .order("created_at", { ascending: true });
 
@@ -93,57 +104,79 @@ export async function POST(request) {
                 categoryName,
                 price: product.price,
                 imageAlt: product.image_alt,
+                plating: product.plating,
             });
 
-            const nextTitle = truncateMetaTitle(
-                product.meta_title || product.name || autoSeo.meta_title,
-                42
-            );
-            // Prefer rebuilt short title from name when current title is long or has typo/category suffix
-            const preferredTitle =
-                !product.meta_title?.trim() ||
-                product.meta_title.length > 42 ||
-                /piecess/i.test(product.meta_title) ||
-                /\|\s*/.test(product.meta_title)
-                    ? autoSeo.meta_title
-                    : nextTitle;
+            const nextDescription = enrichProductDescription({
+                name: product.name,
+                description: product.description,
+                categoryName,
+                price: product.price,
+                plating: product.plating,
+            });
+
+            const nextFeatures = buildProductFeatures({
+                name: product.name,
+                categoryName,
+                description: product.description,
+            });
 
             const payload = {};
 
-            if (preferredTitle && preferredTitle !== product.meta_title) {
-                payload.meta_title = preferredTitle;
-            }
-
-            if (product.meta_description) {
-                const scrubbed = scrubCategoryTypos(product.meta_description);
-                const nextDesc = truncateMetaDescription(scrubbed, 160);
-                if (nextDesc !== product.meta_description) {
-                    payload.meta_description = nextDesc;
+            if (force || !product.meta_title?.trim() || product.meta_title.length > 42 || /piecess|\|/i.test(product.meta_title)) {
+                if (autoSeo.meta_title !== product.meta_title) {
+                    payload.meta_title = autoSeo.meta_title;
                 }
             }
 
-            if (product.meta_keywords) {
-                const nextKw = scrubCategoryTypos(product.meta_keywords);
-                if (nextKw !== product.meta_keywords) {
-                    payload.meta_keywords = nextKw;
+            if (force || !product.meta_description?.trim() || product.meta_description.length < 120 || /piecess/i.test(product.meta_description || "")) {
+                if (autoSeo.meta_description !== product.meta_description) {
+                    payload.meta_description = autoSeo.meta_description;
                 }
             }
 
-            if (product.image_alt) {
-                const nextAlt = scrubCategoryTypos(product.image_alt);
-                if (nextAlt !== product.image_alt) {
-                    payload.image_alt = nextAlt;
+            if (force || !product.meta_keywords?.trim() || /piecess/i.test(product.meta_keywords || "") || (product.meta_keywords || "").split(",").length < 6) {
+                if (autoSeo.meta_keywords !== product.meta_keywords) {
+                    payload.meta_keywords = autoSeo.meta_keywords;
                 }
+            }
+
+            if (force || !product.image_alt?.trim() || /piecess/i.test(product.image_alt || "")) {
+                if (autoSeo.image_alt !== product.image_alt) {
+                    payload.image_alt = autoSeo.image_alt;
+                }
+            }
+
+            if (nextDescription && nextDescription !== product.description) {
+                payload.description = nextDescription;
+            }
+
+            const hasFeatures =
+                Array.isArray(product.features) && product.features.length > 0;
+            if (!hasFeatures && nextFeatures.length) {
+                payload.features = nextFeatures;
             }
 
             if (Object.keys(payload).length === 0) continue;
 
             payload.updated_at = new Date().toISOString();
 
-            const { error: upErr } = await supabase
+            let { error: upErr } = await supabase
                 .from("products")
                 .update(payload)
                 .eq("id", product.id);
+
+            // If features column missing, retry without it
+            if (upErr && /features|schema cache|Could not find/i.test(upErr.message || "")) {
+                const retryPayload = { ...payload };
+                delete retryPayload.features;
+                const retry = await supabase
+                    .from("products")
+                    .update(retryPayload)
+                    .eq("id", product.id);
+                upErr = retry.error;
+                if (!upErr) delete payload.features;
+            }
 
             if (upErr) {
                 failures.push({ id: product.id, name: product.name, error: upErr.message });
@@ -162,6 +195,7 @@ export async function POST(request) {
 
         return NextResponse.json({
             success: true,
+            force,
             scanned: (products || []).length,
             updated,
             skipped: (products || []).length - updated - failures.length,
