@@ -58,10 +58,11 @@ export const viewport = {
 export const metadata = {
   metadataBase: new URL(BRAND_URL),
   title: {
-    default: "The Luxe Jewels | Anti-Tarnish Jewellery India",
+    default: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
     template: "%s | The Luxe Jewels"
   },
-  description: "Premium anti-tarnish, waterproof 18k gold plated jewellery for India — earrings, necklaces & more. Free delivery over ₹1000.",
+  description:
+    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + free delivery over ₹1000.",
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
@@ -77,8 +78,9 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "The Luxe Jewels | Premium Waterproof & Anti-Tarnish Jewellery",
-    description: "Handcrafted, hypoallergenic, and tarnish-free jewellery designed for modern luxury. Shop the best of 18k gold plated pieces in India.",
+    title: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
+    description:
+      "Anti-tarnish jewellery for daily wear and gifting — Noida, Delhi NCR, and pan-India. Buy 2 Get 1 Free.",
     url: BRAND_URL,
     siteName: BRAND_NAME,
         images: [
@@ -100,8 +102,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Luxe Jewels | Modern Luxury Jewellery India",
-    description: "Defining modern luxury through waterproof and anti-tarnish fine jewellery. Handcrafted with love.",
+    title: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
+    description:
+      "Anti-tarnish jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free.",
     images: ["/og-image.png", "/logo.png"],
   },
   robots: {
@@ -161,7 +164,7 @@ export default function RootLayout({ children }) {
     "@type": "WebSite",
     "name": BRAND_NAME,
     "url": BRAND_URL,
-    "description": "Shop premium anti-tarnish, waterproof, and hypoallergenic jewellery in India. Discover handcrafted 18k gold plated necklaces, earrings, and signature rings.",
+    "description": "Anti-tarnish, waterproof 18k gold plated jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free + free delivery over ₹1000.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": `${BRAND_URL}/search?q={search_term_string}`,
