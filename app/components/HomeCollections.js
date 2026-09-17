@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL, COLLECTION_TILE_SIZES } from "@/lib/imageBlur";
 
 /** Soft rounded collection edits — Born-style calm tiles. */
@@ -10,7 +10,7 @@ export default function HomeCollections({ collections = [] }) {
     const items = collections.slice(0, 5);
 
     return (
-        <section className="bg-white py-14 md:py-20">
+        <section className={`bg-white ${HOME_SECTION_Y}`}>
             <div className={HOME_CONTAINER}>
                 <div className="flex items-end justify-between gap-4 mb-8 md:mb-12">
                     <div>

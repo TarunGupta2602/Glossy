@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
 import { SUPPORT_EMAIL, WHATSAPP_URL } from "@/lib/constants";
 import { buildFaqJsonLd } from "@/lib/faqs";
 import FaqAccordion from "./FaqAccordion";
@@ -27,7 +27,7 @@ export default function SiteFaqSection({
 
     return (
         <section
-            className={`bg-[#fdfbf7] py-14 md:py-20 lg:py-24 border-t border-[#efeae4] ${className}`}
+            className={`bg-[#fdfbf7] ${HOME_SECTION_Y} border-t border-[#efeae4] ${className}`}
             aria-labelledby={`${idPrefix}-heading`}
         >
             {faqJsonLd && (
@@ -38,7 +38,7 @@ export default function SiteFaqSection({
             )}
 
             <div className={`${HOME_CONTAINER} max-w-[760px]`}>
-                <div className="text-center mb-8 md:mb-12">
+                <div className={`text-center ${HOME_SECTION_HEADER_GAP}`}>
                     <p
                         className="text-[11px] font-medium tracking-[0.22em] uppercase mb-4"
                         style={{ color: "#b89a6a" }}

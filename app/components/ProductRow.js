@@ -1,6 +1,6 @@
 "use client";
 
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { PRODUCT_ROW_SIZES } from "@/lib/imageBlur";
@@ -55,9 +55,9 @@ export default function ProductRow({
     };
 
     return (
-        <section className="py-14 md:py-20 overflow-hidden bg-white">
+        <section className={`${HOME_SECTION_Y} overflow-hidden bg-white`}>
             <div className={HOME_CONTAINER}>
-                <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
+                <div className={`flex items-end justify-between ${HOME_SECTION_HEADER_GAP} gap-4`}>
                     <div className="min-w-0 text-left">
                         <p
                             className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"

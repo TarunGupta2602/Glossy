@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
 
 export default function TopStyles({ tabs = [], reviewCounts = {} }) {
@@ -29,9 +29,9 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
     };
 
     return (
-        <section className="py-14 md:py-20 bg-white">
+        <section className={`${HOME_SECTION_Y} bg-white`}>
             <div className={HOME_CONTAINER}>
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 md:mb-12 px-1">
+                <div className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}>
                     <div className="text-left">
                         <p
                             className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
@@ -55,7 +55,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
                     </Link>
                 </div>
 
-                <div className="mb-8 md:mb-10 overflow-x-auto no-scrollbar">
+                <div className="mb-8 md:mb-8 lg:mb-10 overflow-x-auto no-scrollbar">
                     <div className="flex md:flex-wrap items-center justify-start gap-2 sm:gap-2.5 w-max md:w-auto">
                         {safeTabs.map((tab) => {
                             const isActive = tab.id === activeTab.id;

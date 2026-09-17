@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HOME_CONTAINER } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y_SOFT } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { BRAND_NAME, SERVICE_AREA_LABEL } from "@/lib/constants";
 
 /** Editorial Our Story teaser — framed image + calm typography. */
 export default function HomeStoryTeaser() {
     return (
-        <section className="bg-[#fdfbf7] py-16 md:py-24 lg:py-28">
+        <section className={`bg-[#fdfbf7] ${HOME_SECTION_Y_SOFT}`}>
             <div className={HOME_CONTAINER}>
                 <div className="grid md:grid-cols-2 gap-12 md:gap-14 lg:gap-20 items-center">
                     {/* Image — framed portrait */}
