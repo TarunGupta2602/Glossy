@@ -175,6 +175,8 @@ export async function POST(request) {
             revalidatePath("/shop");
             revalidatePath("/earrings");
             revalidatePath("/necklaces");
+            revalidatePath("/bracelets");
+            revalidatePath("/rings");
             revalidatePath("/collection");
             for (const change of changes) {
                 if (change.slug) revalidatePath(`/product/${change.slug}`);

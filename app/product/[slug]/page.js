@@ -22,6 +22,7 @@ import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
+import { toAbsoluteSiteMediaUrl } from "@/lib/siteMedia";
 
 export const revalidate = 300;
 
@@ -175,7 +176,9 @@ export default async function ProductPage({ params }) {
     const relatedReviewCounts = await getReviewCounts(relatedProducts.map((p) => p.id));
 
     const productUrl = getProductCanonicalUrl(product);
-    const images = [product.main_image, ...galleryImages].filter(Boolean);
+    const images = [product.main_image, ...galleryImages]
+        .filter(Boolean)
+        .map((src) => toAbsoluteSiteMediaUrl(src));
 
     // Calculate review statistics for schema
     const totalReviews = reviews.length;

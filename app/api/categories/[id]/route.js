@@ -50,6 +50,8 @@ export async function PATCH(req, { params }) {
             revalidatePath("/shop");
             revalidatePath("/earrings");
             revalidatePath("/necklaces");
+            revalidatePath("/bracelets");
+            revalidatePath("/rings");
             revalidatePath("/collection");
             revalidatePath("/sitemap.xml");
             if (data?.slug) {

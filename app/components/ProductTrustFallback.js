@@ -1,11 +1,16 @@
 import {
     INSTAGRAM_HANDLE,
     INSTAGRAM_URL,
-    TRUST_CUSTOMER_COUNT_LABEL,
     TRUST_INSTAGRAM_LABEL,
+    WHATSAPP_URL,
 } from "@/lib/constants";
+import { PROMO_LABEL } from "@/lib/promo";
 
-/** Shown when a product has zero reviews — soft trust, not fake ratings. */
+/**
+ * Shown when a product has zero reviews.
+ * Avoid “10,000+ customers” here — it contradicts “No reviews yet” and hurts trust.
+ * AggregateRating is only emitted on PDP when real approved reviews exist.
+ */
 export default function ProductTrustFallback({ className = "" }) {
     return (
         <div
@@ -16,15 +21,21 @@ export default function ProductTrustFallback({ className = "" }) {
             </p>
             <p className="text-lg font-semibold text-[#2a2724] mb-2">No reviews yet</p>
             <p className="text-sm text-[#6b6560] mb-5 max-w-md">
-                This piece is new to the journal of reviews — shoppers still trust The Luxe Jewels
-                for everyday anti-tarnish wear.
+                Ordered this piece? Share how it wears — real reviews help the next shopper and unlock
+                star ratings in Google. We moderate every review before it goes live.
             </p>
             <ul className="flex flex-col sm:flex-row flex-wrap gap-3 text-[13px] font-medium text-[#2a2724]">
                 <li className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04]">
                     <span className="text-[#E91E63]" aria-hidden>
                         ✓
                     </span>
-                    {TRUST_CUSTOMER_COUNT_LABEL}
+                    Anti-tarnish &amp; waterproof daily wear
+                </li>
+                <li className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04]">
+                    <span className="text-[#E91E63]" aria-hidden>
+                        ✓
+                    </span>
+                    {PROMO_LABEL}
                 </li>
                 <li>
                     <a
@@ -37,6 +48,19 @@ export default function ProductTrustFallback({ className = "" }) {
                             ✓
                         </span>
                         {TRUST_INSTAGRAM_LABEL || `Loved on Instagram ${INSTAGRAM_HANDLE}`}
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href={`${WHATSAPP_URL}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04] hover:text-[#E91E63] transition-colors"
+                    >
+                        <span className="text-[#E91E63]" aria-hidden>
+                            ✓
+                        </span>
+                        Ask us on WhatsApp after delivery
                     </a>
                 </li>
             </ul>

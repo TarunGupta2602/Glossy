@@ -86,6 +86,15 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/media/:path*",
+        destination:
+          "https://wsrbnmovzebjxvsacgvb.supabase.co/storage/v1/object/public/:path*",
+      },
+    ];
+  },
   headers: async () => {
     return [
       {

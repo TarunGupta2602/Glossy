@@ -22,6 +22,8 @@ const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
     { href: "/earrings", label: "Earrings" },
     { href: "/necklaces", label: "Necklaces" },
+    { href: "/bracelets", label: "Bracelets" },
+    { href: "/rings", label: "Rings" },
     { href: "/gifts/under-999", label: "Gifts under ₹999" },
     { href: "/gifts/under-499", label: "Gifts under ₹499" },
 ];
@@ -30,6 +32,9 @@ const HELP_LINKS = [
     { href: "/blog", label: "Blog" },
     { href: "/our-story", label: "Our story" },
     { href: "/jewellery-shop/noida", label: "Jewellery shop in Noida" },
+    { href: "/jewellery-shop/greater-noida", label: "Jewellery shop in Greater Noida" },
+    { href: "/jewellery-shop/ghaziabad", label: "Jewellery shop in Ghaziabad" },
+    { href: "/jewellery-shop/delhi-ncr", label: "Jewellery shop in Delhi NCR" },
     { href: "/shipping-returns", label: "Shipping & returns" },
     { href: "/faqs", label: "FAQs" },
     { href: "/contact", label: "Contact" },
