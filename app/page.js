@@ -274,7 +274,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]">
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20260917c">
+      {/* home-rev:20260917c — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 
       <RevealOnScroll>

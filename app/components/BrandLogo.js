@@ -60,6 +60,7 @@ export default function BrandLogo({
         <Link
             href={href}
             onClick={onClick}
+            prefetch={href === "/" ? false : undefined}
             className="group flex-shrink-0 min-w-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E91E63]/40 rounded-sm"
             aria-label="The Luxe Jewels home"
         >

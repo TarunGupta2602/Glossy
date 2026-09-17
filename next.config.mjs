@@ -105,6 +105,16 @@ const nextConfig = {
   headers: async () => {
     return [
       {
+        // Homepage must never sit in a shared CDN HTML cache.
+        source: "/",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-cache, no-store, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
         source: "/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
