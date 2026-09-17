@@ -7,7 +7,7 @@ import {
     getBlogsByTagSlug,
     BLOG_PAGE_SIZE,
 } from "@/lib/blogQueries";
-import { getPaginatedCanonical, normalizeBlogSlug, formatPageTitle } from "@/lib/seo";
+import { getPaginatedCanonical, normalizeBlogSlug, formatPageTitle, normalizeBlogImageSrc } from "@/lib/seo";
 import { BRAND_URL, TWITTER_HANDLE } from "@/lib/constants";
 
 export const revalidate = 300;
@@ -145,7 +145,7 @@ export default async function BlogTagPage({ params, searchParams }) {
                                 <div className="relative aspect-14/9 overflow-hidden bg-gray-100">
                                     {blog.image ? (
                                         <Image
-                                            src={blog.image}
+                                            src={normalizeBlogImageSrc(blog.image)}
                                             alt={blog.title}
                                             fill
                                             sizes="(max-width: 768px) 100vw, 33vw"

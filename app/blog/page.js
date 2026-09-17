@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { BLOG_PAGE_SIZE, getBlogPageCount } from "@/lib/blogQueries";
-import { getPaginatedCanonical } from "@/lib/seo";
+import { getPaginatedCanonical, normalizeBlogImageSrc } from "@/lib/seo";
 import { BRAND_URL, TWITTER_HANDLE } from "@/lib/constants";
 import { normalizeBlogSlug } from "@/lib/seo";
 import { listStaticBlogSummaries } from "@/lib/staticBlogPosts";
@@ -291,7 +291,7 @@ export default async function BlogPage({ searchParams }) {
                                             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#efeae4] mb-4">
                                                 {blog.image ? (
                                                     <Image
-                                                        src={blog.image}
+                                                        src={normalizeBlogImageSrc(blog.image)}
                                                         alt={blog.title}
                                                         fill
                                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

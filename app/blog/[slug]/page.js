@@ -9,6 +9,8 @@ import {
     formatPageTitle,
     truncateMetaDescription,
     normalizeBlogSlug,
+    normalizeBlogImageSrc,
+    absoluteBlogImageUrl,
 } from "@/lib/seo";
 import {
     findBlogBySlug,
@@ -60,6 +62,7 @@ export async function generateMetadata({ params }) {
     const keywords = parseBlogKeywords(blog.meta_keywords);
     const canonicalPath = `/blog/${canonicalSlug}`;
     const authorName = resolveBlogAuthor(blog).name;
+    const ogImage = absoluteBlogImageUrl(blog.image);
 
     return {
         title,
@@ -79,7 +82,7 @@ export async function generateMetadata({ params }) {
             images: blog.image
                 ? [
                       {
-                          url: blog.image,
+                          url: ogImage,
                           width: 1200,
                           height: 630,
                           alt: title,
@@ -91,7 +94,7 @@ export async function generateMetadata({ params }) {
             card: "summary_large_image",
             title,
             description,
-            images: blog.image ? [blog.image] : ["/og-image.png"],
+            images: blog.image ? [ogImage] : ["/og-image.png"],
             creator: TWITTER_HANDLE,
         },
         robots: {
@@ -203,13 +206,15 @@ export default async function BlogDetailPage({ params }) {
     const seoDescription = truncateMetaDescription(
         blog.meta_description || blog.description || ""
     );
+    const heroImageSrc = normalizeBlogImageSrc(blog.image);
+    const heroImageAbsolute = absoluteBlogImageUrl(blog.image);
 
     const articleJsonLd = {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: seoTitle,
         description: seoDescription,
-        image: blog.image || `${BRAND_URL}/og-image.png`,
+        image: heroImageAbsolute,
         author: {
             "@type": "Person",
             name: authorProfile.name,
@@ -373,10 +378,10 @@ export default async function BlogDetailPage({ params }) {
                             </div>
                         </header>
 
-                        {blog.image && (
+                        {heroImageSrc && (
                             <figure className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl md:rounded-[1.5rem] bg-[#efeae4]">
                                 <Image
-                                    src={blog.image}
+                                    src={heroImageSrc}
                                     alt={blog.title}
                                     fill
                                     sizes={BLOG_HERO_SIZES}
@@ -565,7 +570,7 @@ export default async function BlogDetailPage({ params }) {
                                         >
                                             <div className="relative w-[72px] h-[72px] shrink-0 overflow-hidden rounded-xl bg-[#efeae4]">
                                                 <Image
-                                                    src={post.image || "/logo.png"}
+                                                    src={normalizeBlogImageSrc(post.image) || "/logo.png"}
                                                     alt={post.title}
                                                     fill
                                                     sizes="72px"
