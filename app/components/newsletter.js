@@ -1,6 +1,6 @@
 "use client";
 
-import { HOME_CONTAINER, HOME_SECTION_Y } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_IVORY, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import { PROMO_LABEL } from "@/lib/promo";
 import { useState } from "react";
 
@@ -48,7 +48,7 @@ export default function Newsletter() {
     }
 
     return (
-        <section className={`${HOME_SECTION_Y} bg-white text-center border-t border-gray-100`}>
+        <section className={`${HOME_SECTION_Y} ${HOME_SURFACE_IVORY} text-center ${HOME_SURFACE_EDGE}`}>
             <div className={HOME_CONTAINER}>
                 <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-3">
                     The list

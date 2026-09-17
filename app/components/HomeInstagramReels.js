@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { HOME_CONTAINER, HOME_SECTION_Y } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_MIST, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/constants";
 import { INSTAGRAM_FALLBACK_IMAGES } from "@/lib/instagram";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
@@ -90,7 +90,7 @@ export default function HomeInstagramReels({ reels = [] }) {
 
     return (
         <section
-            className={`bg-[#fdfbf7] ${HOME_SECTION_Y} border-t border-[#efeae4]`}
+            className={`${HOME_SURFACE_MIST} ${HOME_SECTION_Y} ${HOME_SURFACE_EDGE}`}
             aria-label="Instagram reels"
         >
             <div className={HOME_CONTAINER}>

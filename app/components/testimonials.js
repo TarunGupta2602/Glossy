@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getInitials, getReviewVisual } from "@/lib/featuredReviews";
 import { getProductPath } from "@/lib/seo";
-import { HOME_CONTAINER, HOME_EDGE_SCROLL, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_EDGE_SCROLL, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_SAND, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 
 export default function Testimonials({ reviews = [], reviewStats = null }) {
@@ -18,7 +18,7 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
     const quoteReviews = reviews.slice(0, 3);
 
     return (
-        <section className={`${HOME_SECTION_Y} bg-white overflow-hidden`}>
+        <section className={`${HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE} overflow-hidden`}>
             <div className={HOME_CONTAINER}>
                 <div className={`text-center ${HOME_SECTION_HEADER_GAP} px-1`}>
                     <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-gray-400 mb-3">

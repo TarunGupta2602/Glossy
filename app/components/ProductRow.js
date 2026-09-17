@@ -13,6 +13,7 @@ export default function ProductRow({
     viewAllLink,
     reviewCounts = {},
     eyebrow = "Most loved",
+    surfaceClassName = "bg-[#fdfbf7]",
 }) {
     const scrollRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -55,7 +56,7 @@ export default function ProductRow({
     };
 
     return (
-        <section className={`${HOME_SECTION_Y} overflow-hidden bg-white`}>
+        <section className={`${HOME_SECTION_Y} overflow-hidden ${surfaceClassName}`}>
             <div className={HOME_CONTAINER}>
                 <div className={`flex items-end justify-between ${HOME_SECTION_HEADER_GAP} gap-4`}>
                     <div className="min-w-0 text-left">

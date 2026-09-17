@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_MIST, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import { SUPPORT_EMAIL, WHATSAPP_URL } from "@/lib/constants";
 import { buildFaqJsonLd } from "@/lib/faqs";
 import FaqAccordion from "./FaqAccordion";
@@ -27,7 +27,7 @@ export default function SiteFaqSection({
 
     return (
         <section
-            className={`bg-[#fdfbf7] ${HOME_SECTION_Y} border-t border-[#efeae4] ${className}`}
+            className={`${HOME_SURFACE_MIST} ${HOME_SECTION_Y} ${HOME_SURFACE_EDGE} ${className}`}
             aria-labelledby={`${idPrefix}-heading`}
         >
             {faqJsonLd && (

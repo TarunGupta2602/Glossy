@@ -255,7 +255,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#fdfbf7]">
       <HeroSlider />
 
       <RevealOnScroll>
@@ -271,6 +271,7 @@ export default async function Home() {
             products={newArrivalProducts}
             viewAllLink="/shop?sort=newest"
             reviewCounts={reviewCounts}
+            surfaceClassName="bg-[#fdfbf7] border-t border-[#efeae4]"
           />
         </RevealOnScroll>
       )}
@@ -284,6 +285,7 @@ export default async function Home() {
             products={bestSellerProducts}
             viewAllLink="/shop?sort=popular"
             reviewCounts={reviewCounts}
+            surfaceClassName="bg-[#faf7f2] border-t border-[#efeae4]"
           />
         </RevealOnScroll>
       )}

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/siteLayout";
+import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_SAND, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
 
 export default function TopStyles({ tabs = [], reviewCounts = {} }) {
@@ -29,7 +29,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
     };
 
     return (
-        <section className={`${HOME_SECTION_Y} bg-white`}>
+        <section className={`${HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE}`}>
             <div className={HOME_CONTAINER}>
                 <div className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}>
                     <div className="text-left">
