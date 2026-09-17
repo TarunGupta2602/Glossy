@@ -26,9 +26,16 @@ import { resolveBlogAuthor } from "@/lib/blogAuthors";
 import BlogShopCta from "../../components/BlogShopCta";
 import BlogProductPicks from "../../components/BlogProductPicks";
 import BlogContentSections from "../../components/BlogContentSections";
+import BlogKeepReading from "../../components/BlogKeepReading";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { IMAGE_BLUR_DATA_URL, BLOG_HERO_SIZES } from "@/lib/imageBlur";
+import {
+    looksLikeHtml,
+    extractHtmlHeadings,
+    enhanceBlogHtml,
+    ensureBlogInterlinks,
+} from "@/lib/blogFormat";
 
 export const revalidate = 300;
 
@@ -167,12 +174,13 @@ export default async function BlogDetailPage({ params }) {
     const keywords = parseBlogKeywords(blog.meta_keywords);
 
     const plainText = blog.content
-        ? blog.content.replace(/[#_*`>\[\]\(\)\-]/g, " ")
+        ? blog.content.replace(/<[^>]+>/g, " ").replace(/[#_*`>\[\]\(\)\-]/g, " ")
         : "";
     const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
     const readMinutes = Math.max(1, Math.ceil(wordCount / 220));
 
-    const tocItems = blog.content ? getMarkdownHeadings(blog.content) : [];
+    const contentIsHtml = looksLikeHtml(blog.content);
+    const markdownToc = !contentIsHtml && blog.content ? getMarkdownHeadings(blog.content) : [];
 
     const renderer = {
         heading({ tokens, depth, raw }) {
@@ -181,27 +189,45 @@ export default async function BlogDetailPage({ params }) {
             const headingSlug = createSlug(cleanRaw || text);
             // Demote markdown H1 to H2 so the page keeps a single H1
             const level = depth === 1 ? 2 : depth;
-            return `<h${level} id="${headingSlug}" class="scroll-mt-24 group flex items-center">
-                ${text}
-                <a href="#${headingSlug}" class="ml-2 opacity-0 group-hover:opacity-100 text-pink-300 hover:text-pink-600 transition-all" aria-hidden="true">#</a>
-            </h${level}>`;
+            return `<h${level} id="${headingSlug}" class="scroll-mt-24">${text}</h${level}>`;
         },
         link({ href, title, tokens }) {
             const text = this.parser.parseInline(tokens);
             const isExternal =
                 href.startsWith("http") && !href.includes("theluxejewels.in");
-            return `<a href="${href}" 
+            const localHref = href.replace(
+                /^https?:\/\/(?:www\.)?theluxejewels\.in/i,
+                ""
+            );
+            return `<a href="${localHref || href}" 
                 ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ""} 
-                class="text-pink-600 hover:text-pink-700 font-bold underline decoration-pink-200 decoration-2 underline-offset-4 hover:decoration-pink-500 transition-all"
                 ${title ? `title="${title}"` : ""}>${text}</a>`;
         },
     };
 
     marked.use({ renderer });
 
-    const htmlContent = blog.content
-        ? sanitizeHtml(await marked.parse(blog.content))
-        : "";
+    let htmlContent = "";
+    if (blog.content) {
+        const parsed = contentIsHtml
+            ? blog.content
+            : await marked.parse(blog.content);
+        htmlContent = sanitizeHtml(
+            ensureBlogInterlinks(enhanceBlogHtml(parsed), {
+                shopLinks: [
+                    ...(shopCta.links || []),
+                    shopCta.primary,
+                ].filter(Boolean),
+                blogLinks: (relatedPosts || []).slice(0, 2).map((p) => ({
+                    href: `/blog/${p.slug}`,
+                    label: p.title,
+                })),
+            })
+        );
+    }
+
+    const tocItems =
+        markdownToc.length > 0 ? markdownToc : extractHtmlHeadings(htmlContent);
     const seoTitle = formatPageTitle(blog.meta_title || blog.title);
     const seoDescription = truncateMetaDescription(
         blog.meta_description || blog.description || ""
@@ -397,19 +423,30 @@ export default async function BlogDetailPage({ params }) {
                         <article
                             className="prose prose-neutral prose-base sm:prose-lg max-w-none
                             prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
-                            prose-h2:text-[1.55rem] sm:prose-h2:text-[1.85rem] prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
-                            prose-h3:text-[1.2rem] sm:prose-h3:text-[1.35rem] prose-h3:mt-8 prose-h3:mb-3
-                            prose-p:text-[#6b6560] prose-p:leading-relaxed prose-p:mb-5
+                            prose-h2:text-[1.65rem] sm:prose-h2:text-[2rem] prose-h2:leading-snug prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
+                            prose-h3:text-[1.25rem] sm:prose-h3:text-[1.4rem] prose-h3:mt-8 prose-h3:mb-3
+                            prose-p:text-[#6b6560] prose-p:leading-[1.75] prose-p:mb-5
                             prose-strong:text-[#2a2724] prose-strong:font-semibold
                             prose-a:text-[#b89a6a] prose-a:font-medium prose-a:no-underline hover:prose-a:text-[#E91E63] hover:prose-a:underline prose-a:underline-offset-4
                             prose-ul:pl-5 prose-li:text-[#6b6560] prose-li:mb-2
                             prose-ol:pl-5
                             prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#6b6560] prose-blockquote:rounded-r-xl
                             prose-img:rounded-2xl prose-img:my-8
+                            [&_.blog-lead]:text-[1.05rem] sm:[&_.blog-lead]:text-[1.15rem] [&_.blog-lead]:text-[#2a2724]/80 [&_.blog-lead]:leading-relaxed [&_.blog-lead]:font-normal
                             "
                         >
                             <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
                         </article>
+
+                        <BlogKeepReading
+                            shopLinks={[
+                                shopCta.primary,
+                                ...(shopCta.links || []),
+                                { href: "/bracelets", label: "Bracelets" },
+                                { href: "/rings", label: "Rings" },
+                            ]}
+                            relatedPosts={relatedPosts}
+                        />
 
                         <BlogContentSections
                             whyThisMatters={sections.why_this_matters}
