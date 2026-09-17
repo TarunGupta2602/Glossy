@@ -4,7 +4,6 @@ import {
     TRUST_INSTAGRAM_LABEL,
     WHATSAPP_URL,
 } from "@/lib/constants";
-import { PROMO_LABEL } from "@/lib/promo";
 
 /**
  * Shown when a product has zero reviews.
@@ -35,7 +34,13 @@ export default function ProductTrustFallback({ className = "" }) {
                     <span className="text-[#E91E63]" aria-hidden>
                         ✓
                     </span>
-                    {PROMO_LABEL}
+                    Hypoallergenic finish · 18k gold plated
+                </li>
+                <li className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04]">
+                    <span className="text-[#E91E63]" aria-hidden>
+                        ✓
+                    </span>
+                    10-day easy returns
                 </li>
                 <li>
                     <a

@@ -17,9 +17,9 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
     const { isInWishlist, toggleWishlist } = useWishlist();
     const { showToast } = useToast();
     const wishlisted = product ? isInWishlist(product.id) : false;
-    const { hasDiscount, originalPrice, discountPercent } = product
+    const { hasDiscount, originalPrice } = product
         ? getProductDiscountInfo(product)
-        : { hasDiscount: false, originalPrice: 0, discountPercent: 0 };
+        : { hasDiscount: false, originalPrice: 0 };
 
     useBodyScrollLock(Boolean(product));
     useOverlayOpen(Boolean(product));
@@ -98,14 +98,9 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
                     <div className="mt-2 flex items-baseline gap-2">
                         <span className="text-lg font-semibold text-gray-900">₹{price}</span>
                         {hasDiscount && (
-                            <>
-                                <span className="text-sm text-gray-400 line-through">
-                                    ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                </span>
-                                <span className="text-[11px] font-semibold text-[#E91E63]">
-                                    {discountPercent}% off
-                                </span>
-                            </>
+                            <span className="text-sm text-gray-400 line-through">
+                                ₹{originalPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </span>
                         )}
                     </div>
 
@@ -114,7 +109,10 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
                             Anti-tarnish
                         </span>
                         <span className="rounded-full bg-[#faf7f8] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-gray-600">
-                            Waterproof
+                            Hypoallergenic
+                        </span>
+                        <span className="rounded-full bg-[#faf7f8] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-gray-600">
+                            10-day returns
                         </span>
                         {reviewCount > 0 && (
                             <span className="rounded-full bg-[#faf7f8] px-2.5 py-1 text-[10px] font-medium text-gray-600">

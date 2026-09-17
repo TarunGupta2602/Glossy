@@ -14,7 +14,6 @@ import {
     BUSINESS_HOURS,
     GOOGLE_BUSINESS_URL,
 } from "@/lib/constants";
-import { PROMO_LABEL } from "@/lib/promo";
 import PaymentIcons from "./PaymentIcons";
 import BrandLogo from "./BrandLogo";
 
@@ -42,9 +41,9 @@ const HELP_LINKS = [
 
 const TRUST = [
     "Anti-tarnish",
-    "Waterproof",
+    "Hypoallergenic finish",
     "Free shipping over ₹1000",
-    PROMO_LABEL,
+    "10-day returns",
 ];
 
 export default function Footer() {

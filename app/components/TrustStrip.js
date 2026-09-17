@@ -3,6 +3,7 @@ export default function TrustStrip({ className = "" }) {
         "Secure prepaid checkout",
         "Free shipping over ₹1000",
         "10-day easy returns",
+        "Hypoallergenic finish",
     ];
 
     return (

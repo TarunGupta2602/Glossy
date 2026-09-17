@@ -15,9 +15,11 @@ import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
 import { trackRecentlyViewed } from "@/lib/recentlyViewed";
 import { IMAGE_BLUR_DATA_URL, PDP_MAIN_SIZES, PDP_THUMB_SIZES } from "@/lib/imageBlur";
-import { PROMO_LABEL } from "@/lib/promo";
-
-const HIGHLIGHT_CHIPS = ["Anti-tarnish", "Waterproof", PROMO_LABEL];
+import {
+    buildProductHighlightChips,
+    getDefaultProductFeatures,
+    getFinishAuthenticityNote,
+} from "@/lib/productTrust";
 
 function CheckIcon({ className = "w-3.5 h-3.5" }) {
     return (
@@ -40,6 +42,11 @@ export default function ProductDetailClient({
     const { isInWishlist, toggleWishlist } = useWishlist();
 
     const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(product);
+    const highlightChips = buildProductHighlightChips(product, { hasDiscount });
+    const authenticityNote = getFinishAuthenticityNote(product);
+    const sizeGuide =
+        product.size_info ||
+        "One size; see product images for scale. Lightweight everyday fit.";
 
     const allImages = [
         ...(product.main_image ? [product.main_image] : []),
@@ -84,20 +91,14 @@ export default function ProductDetailClient({
                 ? product.features
                 : product.features.split("\n").filter(Boolean);
         }
-        return [
-            "Hand-crafted with premium materials",
-            "Hypoallergenic & skin-safe finish",
-            "Ethically sourced components",
-            "Free returns within 10 days",
-            "Complimentary gift wrapping",
-        ];
+        return getDefaultProductFeatures();
     })();
 
     const detailRows = [
         product.material && { label: "Material", value: product.material },
         product.plating && { label: "Plating", value: product.plating },
         product.weight && { label: "Weight", value: product.weight },
-        product.size_info && { label: "Size", value: product.size_info },
+        { label: "Fit / size", value: sizeGuide },
         product.care_instructions && { label: "Care", value: product.care_instructions },
     ].filter(Boolean);
 
@@ -250,8 +251,11 @@ export default function ProductDetailClient({
                             <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-3 sm:p-4 pointer-events-none">
                                 <div className="flex flex-wrap gap-2">
                                     {hasDiscount && (
-                                        <span className="pointer-events-auto rounded-full bg-white/95 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#E91E63]">
-                                            {discountPercent}% off
+                                        <span className="pointer-events-auto rounded-full bg-white/95 px-3 py-1 text-[10px] font-medium tracking-wide text-[#6b6560]">
+                                            Was ₹
+                                            {originalPrice.toLocaleString(undefined, {
+                                                maximumFractionDigits: 0,
+                                            })}
                                         </span>
                                     )}
                                     {lowStock && (
@@ -358,19 +362,19 @@ export default function ProductDetailClient({
                                 ₹{price}
                             </p>
                             {hasDiscount && (
-                                <>
-                                    <p className="text-[15px] text-[#9a948c] line-through font-medium">
-                                        ₹
-                                        {originalPrice.toLocaleString(undefined, {
-                                            maximumFractionDigits: 0,
-                                        })}
-                                    </p>
-                                    <p className="text-[12px] font-semibold tracking-wide text-[#C2185B]">
-                                        {discountPercent}% off
-                                    </p>
-                                </>
+                                <p className="text-[15px] text-[#9a948c] line-through font-medium">
+                                    ₹
+                                    {originalPrice.toLocaleString(undefined, {
+                                        maximumFractionDigits: 0,
+                                    })}
+                                </p>
                             )}
                         </div>
+                        {hasDiscount && (
+                            <p className="mt-1.5 text-[12px] text-[#8a847c]">
+                                Compare-at price · you save about {discountPercent}%
+                            </p>
+                        )}
 
                         {lowStock && (
                             <p className="mt-3 inline-flex self-start rounded-full bg-[#faf0f3] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#C2185B]">
@@ -379,7 +383,7 @@ export default function ProductDetailClient({
                         )}
 
                         <div className="mt-5 flex flex-wrap gap-2">
-                            {HIGHLIGHT_CHIPS.map((chip) => (
+                            {highlightChips.map((chip) => (
                                 <span
                                     key={chip}
                                     className="rounded-full border border-[#efeae4] bg-white/80 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6b6560]"
@@ -387,6 +391,17 @@ export default function ProductDetailClient({
                                     {chip}
                                 </span>
                             ))}
+                        </div>
+
+                        <p className="mt-3 text-[12px] text-[#8a847c] leading-relaxed max-w-md">
+                            {authenticityNote}
+                        </p>
+
+                        <div className="mt-4 rounded-2xl border border-[#efeae4] bg-[#fdfbf7] px-4 py-3.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#b89a6a] mb-1">
+                                Fit &amp; size
+                            </p>
+                            <p className="text-[13px] text-[#5c5752] leading-relaxed">{sizeGuide}</p>
                         </div>
 
                         <div className="mt-6 mb-6 h-px bg-[#efeae4]" />

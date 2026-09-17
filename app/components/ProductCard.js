@@ -22,7 +22,7 @@ export default function ProductCard({
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
         : "0";
-    const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(product);
+    const { hasDiscount, originalPrice } = getProductDiscountInfo(product);
     const { isInWishlist, toggleWishlist } = useWishlist();
     const { showToast } = useToast();
     const wishlisted = isInWishlist(product.id);
@@ -83,12 +83,7 @@ export default function ProductCard({
                 </Link>
 
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
-                    {hasDiscount ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E91E63] text-white text-[10px] font-bold tracking-wide shadow-sm">
-                            <span aria-hidden>−</span>
-                            {discountPercent}% OFF
-                        </span>
-                    ) : product.is_bestseller ? (
+                    {hasDiscount ? null : product.is_bestseller ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>
@@ -167,29 +162,19 @@ export default function ProductCard({
                     </h3>
                 </Link>
 
-                <div className="mt-2.5 flex items-baseline justify-between gap-2">
-                    <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
-                        <Link
-                            href={href}
-                            className="text-[15px] font-bold text-[#2a2724] tabular-nums"
-                        >
-                            ₹{price}
-                        </Link>
-                        {hasDiscount && (
-                            <span className="text-[12px] text-gray-400 line-through tabular-nums">
-                                ₹
-                                {originalPrice.toLocaleString(undefined, {
-                                    maximumFractionDigits: 0,
-                                })}
-                            </span>
-                        )}
-                    </div>
+                <div className="mt-2.5 flex items-baseline gap-2 min-w-0 flex-wrap">
+                    <Link
+                        href={href}
+                        className="text-[15px] font-bold text-[#2a2724] tabular-nums"
+                    >
+                        ₹{price}
+                    </Link>
                     {hasDiscount && (
-                        <span
-                            className="shrink-0 text-[11px] font-semibold tabular-nums"
-                            style={{ color: "#b59e7b" }}
-                        >
-                            {discountPercent}% off
+                        <span className="text-[12px] text-gray-400 line-through tabular-nums">
+                            ₹
+                            {originalPrice.toLocaleString(undefined, {
+                                maximumFractionDigits: 0,
+                            })}
                         </span>
                     )}
                 </div>

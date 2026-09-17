@@ -9,9 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 import CheckoutSteps from "../components/CheckoutSteps";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import PaymentIcons from "../components/PaymentIcons";
 import { trackPurchase } from "@/lib/gtag";
 import { trackMetaPurchase } from "@/lib/metaPixel";
 import { authFetch } from "@/lib/adminApi";
+import { RETURN_POLICY_SHORT, RETURN_POLICY_SUMMARY } from "@/lib/productTrust";
 
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
@@ -268,12 +270,18 @@ export default function CheckoutPage() {
                 <CheckoutSteps current={2} />
                 <h1 className="text-2xl md:text-[32px] font-black tracking-tight text-gray-900 mb-4">Secure Checkout</h1>
 
-                <div className="mb-6 md:mb-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="mb-6 md:mb-8 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                     <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-blue-900">
                         Pay securely with <span className="font-bold">UPI, cards, or net banking</span> via Razorpay. We do not offer cash on delivery.
                     </div>
                     <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-amber-900">
                         Estimated delivery: <span className="font-bold">3–5 business days</span> across India after dispatch.
+                    </div>
+                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-emerald-900">
+                        <span className="font-bold">10-day easy returns</span> on unused pieces in original packaging.{" "}
+                        <Link href="/shipping-returns" className="underline underline-offset-2 font-semibold hover:opacity-80">
+                            Policy
+                        </Link>
                     </div>
                 </div>
 
@@ -461,9 +469,20 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 font-bold tracking-widest uppercase">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            Secure encrypted payments
+                        <div className="space-y-3 pt-1">
+                            <p className="text-center text-[11px] text-gray-500 leading-relaxed">
+                                {RETURN_POLICY_SUMMARY}{" "}
+                                <Link href="/shipping-returns" className="text-gray-700 font-semibold underline underline-offset-2">
+                                    Shipping &amp; returns
+                                </Link>
+                            </p>
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 font-bold tracking-widest uppercase">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    Secure encrypted payments · {RETURN_POLICY_SHORT}
+                                </div>
+                                <PaymentIcons />
+                            </div>
                         </div>
                     </div>
                 </div>
