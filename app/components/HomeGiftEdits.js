@@ -27,7 +27,7 @@ export default function HomeGiftEdits() {
                             className="text-[10px] sm:text-[11px] font-medium tracking-[0.28em] uppercase mb-4"
                             style={{ color: "#b89a6a" }}
                         >
-                            For her
+                            For her · Diwali & Navratri
                         </p>
                         <h2 className="font-playfair text-[1.85rem] sm:text-[2.35rem] md:text-[2.65rem] font-semibold text-gray-900 tracking-tight leading-[1.12] mb-4">
                             Gifts she&apos;ll{" "}
@@ -37,20 +37,26 @@ export default function HomeGiftEdits() {
                             wear
                         </h2>
                         <p className="text-[14px] sm:text-[15px] text-gray-500 leading-relaxed mb-7 max-w-md mx-auto md:mx-0">
-                            Thoughtful anti-tarnish pieces for everyday wear and effortless gifting.
+                            Diwali and Navratri jewellery under ₹999 — anti-tarnish earrings and necklaces for office, puja, and festive nights.
                         </p>
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                             <Link
                                 href="/gifts/under-999"
                                 className="inline-flex h-11 items-center rounded-full bg-[#1a1214] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#E91E63] transition-colors duration-300"
                             >
-                                Gifts under ₹999
+                                Diwali gifts under ₹999
                             </Link>
                             <Link
-                                href="/gifts/under-499"
+                                href="/earrings"
                                 className="inline-flex h-11 items-center rounded-full border border-gray-300 px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-900 hover:border-gray-900 transition-colors"
                             >
-                                Under ₹499
+                                Navratri earrings
+                            </Link>
+                            <Link
+                                href="/blog/diwali-jewellery-gifts-under-999-india-2026"
+                                className="inline-flex h-11 items-center text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-600 hover:text-[#E91E63] transition-colors"
+                            >
+                                Gift guide →
                             </Link>
                         </div>
                     </div>

@@ -11,9 +11,9 @@ export const revalidate = 300;
 const MAX = 499;
 
 export const metadata = {
-    title: `Jewellery Gifts Under ₹499`,
+        title: `Jewellery Gifts Under ₹499`,
     description:
-        "Anti-tarnish jewellery gifts under ₹499 — waterproof earrings & necklaces for birthdays and everyday gifting. Buy 2 Get 1 Free.",
+        "Diwali & birthday jewellery gifts under ₹499 — waterproof anti-tarnish earrings she’ll actually wear. Buy 2 Get 1 Free.",
     alternates: { canonical: "/gifts/under-499" },
     openGraph: {
         title: "Jewellery Gifts Under ₹499",
@@ -65,7 +65,7 @@ export default async function GiftsUnder499Page() {
             />
             <GiftLandingContent
                 title="Jewellery gifts under ₹499"
-                subtitle="Thoughtful, wearable anti-tarnish pieces for Friendship Day, birthdays, and last-minute gifting — without stretching the budget."
+                subtitle="Thoughtful, wearable anti-tarnish pieces for Diwali, birthdays, and last-minute gifting — without stretching the budget."
                 maxPrice={MAX}
                 products={products}
                 reviewCounts={reviewCounts}

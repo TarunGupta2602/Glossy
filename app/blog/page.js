@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }) {
         : "Jewellery Tips & Gift Guides for India";
     const description = isPaginated
         ? `Page ${pageNum} of The Luxe Jewels journal — care tips, gift ideas, and everyday styling.`
-        : "Jewellery care, 18k gold plated meaning, Friendship Day gifts, and styling tips for earrings & necklaces in India.";
+        : "Jewellery care, 18k gold plated meaning, Diwali gifts under ₹999, and styling tips for earrings & necklaces in India.";
 
     // Paginated journal pages: noindex + canonicalize to hub so Google
     // doesn't keep /blog?page=2 in the index (still happening in GSC).

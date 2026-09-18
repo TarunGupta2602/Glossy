@@ -13,12 +13,12 @@ const MAX = 999;
 export const metadata = {
     title: `Jewellery Gifts Under ₹999`,
     description:
-        "Anti-tarnish jewellery gifts under ₹999 for Friendship Day, Rakhi & birthdays — earrings, necklaces & bracelets. Buy 2 Get 1 Free.",
+        "Diwali, Navratri & birthday jewellery gifts under ₹999 — anti-tarnish earrings, necklaces & bracelets. Buy 2 Get 1 Free + pan-India shipping.",
     alternates: { canonical: "/gifts/under-999" },
     openGraph: {
         title: "Jewellery Gifts Under ₹999",
         description:
-            "Gift-ready waterproof jewellery under ₹999 — shoppable picks with Buy 2 Get 1 Free.",
+            "Diwali-ready waterproof jewellery under ₹999 — shoppable picks with Buy 2 Get 1 Free.",
         url: `${BRAND_URL}/gifts/under-999`,
         siteName: "The Luxe Jewels",
         images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -65,7 +65,7 @@ export default async function GiftsUnder999Page() {
             />
             <GiftLandingContent
                 title="Jewellery gifts under ₹999"
-                subtitle="Festive-ready and everyday-friendly anti-tarnish jewellery under ₹999 — perfect for Raksha Bandhan, Friendship Day, and thoughtful year-round gifting."
+                subtitle="Diwali, Navratri, and birthday-ready anti-tarnish jewellery under ₹999 — office-to-puja earrings and necklaces she’ll wear after the festival."
                 maxPrice={MAX}
                 products={products}
                 reviewCounts={reviewCounts}

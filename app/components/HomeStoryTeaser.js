@@ -79,7 +79,19 @@ export default function HomeStoryTeaser() {
                         </p>
 
                         <p className="text-[13px] text-[#8a847c] leading-relaxed mb-8 md:mb-10">
-                            {SERVICE_AREA_LABEL}.
+                            {SERVICE_AREA_LABEL}. Looking for a jewellery shop in Noida or Sector 18?{" "}
+                            <Link href="/jewellery-shop/noida" className="underline hover:text-[#E91E63]">
+                                Shop the Noida landing
+                            </Link>
+                            {" · "}
+                            <Link href="/earrings" className="underline hover:text-[#E91E63]">
+                                waterproof earrings
+                            </Link>
+                            {" · "}
+                            <Link href="/necklaces" className="underline hover:text-[#E91E63]">
+                                everyday necklaces
+                            </Link>
+                            .
                         </p>
 
                         <div className="mb-9 md:mb-11">

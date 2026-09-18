@@ -11,6 +11,7 @@ import { getCategoryHref } from "@/lib/categoryLanding";
 import HomeCollections from "./components/HomeCollections";
 import HomeInstagramReels from "./components/HomeInstagramReels";
 import HomeStoryTeaser from "./components/HomeStoryTeaser";
+import HomeGiftEdits from "./components/HomeGiftEdits";
 import SiteFaqSection from "./components/SiteFaqSection";
 import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
@@ -274,8 +275,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20260917c">
-      {/* home-rev:20260917c — if View Source lacks this, you are on a stale cache */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20260918a">
+      {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 
       <RevealOnScroll>
@@ -312,6 +313,10 @@ export default async function Home() {
 
       <RevealOnScroll>
         <HomeCollections collections={collections} />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <HomeGiftEdits />
       </RevealOnScroll>
 
       <RevealOnScroll>

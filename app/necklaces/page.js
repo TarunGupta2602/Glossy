@@ -21,10 +21,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti-Tarnish Necklaces for Daily Wear (Page ${pageNum})`
-            : "Anti-Tarnish Necklaces for Daily Wear",
+            ? `Waterproof Everyday Necklaces (Page ${pageNum})`
+            : "Waterproof Everyday Necklaces",
         description:
-            "Shop anti-tarnish necklaces for daily wear — waterproof pendants, fine chains & layers in 18k gold plated finish. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Shop a waterproof everyday necklace in anti-tarnish 18k gold plated finish — pendants, fine chains & layers. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -35,9 +35,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Necklaces for Daily Wear",
+            title: "Waterproof Everyday Necklaces",
             description:
-                "Waterproof pendants and chains for everyday wear — layer, gift, and wear without constant polishing.",
+                "A waterproof everyday necklace for Indian weather — layer, gift, and wear without constant polishing.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -91,10 +91,10 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
-    const pageTitle = "Anti-Tarnish Necklaces for Daily Wear";
+    const pageTitle = "Waterproof Everyday Necklaces";
     const pageDescription =
         category?.description ||
-        "Lightweight 18k gold plated pendants and fine chains made for Indian weather — layer them, gift them, and wear them every day. Buy 2 Get 1 Free across the store.";
+        "Find a waterproof everyday necklace in lightweight 18k gold plated anti-tarnish finish — pendants and fine chains made for Indian weather. Layer them, gift them, wear them every day. Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -124,6 +124,13 @@ export default async function NecklacesPage({ searchParams }) {
                 reviewCounts={reviewCounts}
                 pagination={totalPages > 1 ? { basePath: "/necklaces", page, totalPages } : null}
                 otherCategories={otherCategories}
+                intentLinks={[
+                    { href: "/earrings", label: "Waterproof earrings" },
+                    { href: "/bracelets", label: "Daily-wear bracelets" },
+                    { href: "/gifts/under-999", label: "Diwali gifts under ₹999" },
+                    { href: "/blog/diwali-jewellery-gifts-under-999-india-2026", label: "Diwali gift guide" },
+                ]}
+                quickFaqs={NECKLACES_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={NECKLACES_GUIDE} />

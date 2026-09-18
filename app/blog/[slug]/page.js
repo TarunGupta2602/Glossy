@@ -18,6 +18,7 @@ import {
     parseBlogKeywords,
     keywordToTagSlug,
 } from "@/lib/blogQueries";
+import { getStaticBlogBySlug } from "@/lib/staticBlogPosts";
 import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { getBlogShopCta } from "@/lib/blogShopCtas";
 import { getBlogProductPicks } from "@/lib/blogProductPicks";
@@ -41,12 +42,18 @@ export const revalidate = 300;
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    const supabase = getServiceClient();
-    const { blog: rawBlog, requested, canonicalSlug } = await findBlogBySlug(
-        supabase,
-        slug,
-        "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author, faqs"
-    );
+    const staticHit = getStaticBlogBySlug(slug) || getStaticBlogBySlug(normalizeBlogSlug(slug));
+    const { blog: rawBlog, requested, canonicalSlug } = staticHit
+        ? {
+              blog: staticHit,
+              requested: String(slug || ""),
+              canonicalSlug: staticHit.slug,
+          }
+        : await findBlogBySlug(
+              getServiceClient(),
+              slug,
+              "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author, faqs"
+          );
 
     if (!rawBlog) {
         return {
@@ -148,7 +155,12 @@ function getMarkdownHeadings(content) {
 
 export default async function BlogDetailPage({ params }) {
     const { slug } = await params;
-    const supabase = getServiceClient();
+    let supabase = null;
+    try {
+        supabase = getServiceClient();
+    } catch {
+        supabase = null;
+    }
 
     const { blog: rawBlog, requested, canonicalSlug } = await findBlogBySlug(supabase, slug);
 
@@ -164,12 +176,12 @@ export default async function BlogDetailPage({ params }) {
     const authorProfile = resolveBlogAuthor(blog);
     const sections = blog.content_sections || {};
     const shopCta = getBlogShopCta(canonicalSlug);
-    const productPicks = await getBlogProductPicks(
-        supabase,
-        shopCta.pickMode || "popular",
-        4
-    );
-    const reviewCounts = await getReviewCounts(productPicks.map((p) => p.id));
+    const productPicks = supabase
+        ? await getBlogProductPicks(supabase, shopCta.pickMode || "popular", 4)
+        : [];
+    const reviewCounts = supabase
+        ? await getReviewCounts(productPicks.map((p) => p.id))
+        : {};
     const relatedPosts = await getRelatedBlogPosts(supabase, blog, 3);
     const keywords = parseBlogKeywords(blog.meta_keywords);
 

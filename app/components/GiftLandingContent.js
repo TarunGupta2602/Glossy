@@ -118,8 +118,8 @@ export default function GiftLandingContent({
                     </h2>
                     <p className="text-[14px] text-gray-600 leading-relaxed mb-3">
                         Every piece here is anti-tarnish and made for everyday Indian wear — so the
-                        gift doesn’t sit unused in a box. Perfect for Friendship Day, Raksha Bandhan,
-                        birthdays, and office gifting. Add two paid pieces for {PROMO_LABEL}, or
+                        gift doesn’t sit unused in a box. Perfect for Diwali, Navratri, birthdays,
+                        and office gifting. Add two paid pieces for {PROMO_LABEL}, or
                         pair earrings with a necklace for a ready set.
                     </p>
                     <p className="text-[14px] text-gray-600 leading-relaxed mb-4">
@@ -133,8 +133,8 @@ export default function GiftLandingContent({
                         <Link href="/necklaces" className="hover:underline">
                             Necklaces
                         </Link>
-                        <Link href="/shop?sort=popular" className="hover:underline">
-                            Bestsellers
+                        <Link href="/shop" className="hover:underline">
+                            Full catalogue
                         </Link>
                         <Link
                             href={maxPrice <= 499 ? "/gifts/under-999" : "/gifts/under-499"}
@@ -143,10 +143,16 @@ export default function GiftLandingContent({
                             {maxPrice <= 499 ? "Under ₹999" : "Under ₹499"}
                         </Link>
                         <Link
-                            href="/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026"
+                            href="/blog/diwali-jewellery-gifts-under-999-india-2026"
                             className="hover:underline"
                         >
-                            Festive gift guide
+                            Diwali gift guide
+                        </Link>
+                        <Link
+                            href="/blog/navratri-everyday-festive-earrings-india-2026"
+                            className="hover:underline"
+                        >
+                            Navratri earrings
                         </Link>
                     </div>
                 </div>

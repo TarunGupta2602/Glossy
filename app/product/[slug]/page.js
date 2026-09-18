@@ -32,6 +32,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
     const { slug: param } = await params;
+    const legacy = LEGACY_PRODUCT_REDIRECTS.find(
+        (entry) => entry.source === `/product/${param}`
+    );
+    if (legacy) permanentRedirect(legacy.destination);
+
     const product = await fetchProductBySlugOrId(param);
 
     if (!product) {

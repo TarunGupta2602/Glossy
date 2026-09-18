@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti-Tarnish Earrings for Daily Wear (Page ${pageNum})`
-            : "Anti-Tarnish Earrings for Daily Wear",
+            ? `Anti-Tarnish Waterproof Earrings (Page ${pageNum})`
+            : "Anti-Tarnish Waterproof Earrings",
         description:
-            "Shop anti-tarnish earrings for daily wear — waterproof studs, hoops & drops in 18k gold plated finish. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Shop anti tarnish waterproof earrings for daily wear — studs, hoops & drops in 18k gold plated finish. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -36,9 +36,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Earrings for Daily Wear",
+            title: "Anti-Tarnish Waterproof Earrings",
             description:
-                "Waterproof studs, hoops, and drops made for everyday Indian humidity — office to evening.",
+                "Anti tarnish waterproof earrings for everyday Indian humidity — office, college, and evenings.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -96,10 +96,10 @@ export default async function EarringsPage({ searchParams }) {
         productsWithDiscounts.map((p) => p.id)
     );
 
-    const pageTitle = "Anti-Tarnish Earrings for Daily Wear";
+    const pageTitle = "Anti-Tarnish Waterproof Earrings";
     const pageDescription =
         category?.description ||
-        "Waterproof studs, small hoops, and everyday drops in 18k gold plated finish — made for Indian humidity. Wear them to office, college, and evenings. Buy 2 Get 1 Free across the store.";
+        "Anti tarnish waterproof earrings for daily wear in India — studs, small hoops, and everyday drops in 18k gold plated finish. Wear them to office, college, and evenings. Buy 2 Get 1 Free across the store.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -129,6 +129,13 @@ export default async function EarringsPage({ searchParams }) {
                 reviewCounts={reviewCounts}
                 pagination={totalPages > 1 ? { basePath: "/earrings", page, totalPages } : null}
                 otherCategories={otherCategories}
+                intentLinks={[
+                    { href: "/necklaces", label: "Waterproof necklaces" },
+                    { href: "/bracelets", label: "Daily-wear bracelets" },
+                    { href: "/gifts/under-999", label: "Diwali gifts under ₹999" },
+                    { href: "/blog/navratri-everyday-festive-earrings-india-2026", label: "Navratri earrings" },
+                ]}
+                quickFaqs={EARRINGS_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={EARRINGS_GUIDE} />
