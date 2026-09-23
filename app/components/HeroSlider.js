@@ -1,150 +1,244 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
-import { getFestivalHero, isFestivalSeason } from "@/lib/festivalSeason";
 import FestivalCountdown from "./FestivalCountdown";
 
-const EVERYDAY_IMAGE = "/iloveimg-resized/hero2.jpg";
-const EVERYDAY_ALT = "The Luxe Jewels anti-tarnish gold plated jewellery";
+const SLIDES = [
+    {
+        id: "main",
+        eyebrow: "Anti-tarnish · Waterproof · Made for India",
+        title: ["Shine that stays with you — ", "every day"],
+        accentClass: "text-[#e8d5b5] md:text-[#b59e7b]",
+        eyebrowClass: "text-[#e8d5b5] md:text-[#b59e7b]",
+        body: "Lightweight anti-tarnish jewellery you can live in — from first meetings to late evenings, with pieces ready to gift.",
+        image: "/iloveimg-resized/hero2.jpg",
+        alt: "The Luxe Jewels anti-tarnish gold plated jewellery",
+        primary: { href: "/shop?sort=popular", label: "Shop bestsellers" },
+        secondary: { href: "/shop?sort=newest", label: "New arrivals" },
+        chip: "Daily wear edit",
+        chipEyebrow: "Fresh drop",
+        surface: "md:bg-[#fdfbf7]",
+        frame: "bg-[#efeae4]",
+        button: "#b59e7b",
+        isMain: true,
+    },
+    {
+        id: "navratri",
+        eyebrow: "Navratri edit",
+        title: ["Navratri edit: nine days, ", "everyday sparkle"],
+        accentClass: "text-[#e8d5b5] md:text-[#7a2248]",
+        eyebrowClass: "text-[#e8d5b5] md:text-[#7a2248]",
+        body: "Desk to dandiya — lightweight colourful earrings and necklaces under ₹999. Buy 2 Get 1 Free on every order.",
+        image: "/festive/navratri-festive-portrait.jpg",
+        alt: "Navratri jewellery from The Luxe Jewels",
+        primary: { href: "/festive/navratri", label: "Shop Navratri" },
+        secondary: { href: "/festive/diwali", label: "Shop Diwali" },
+        chip: "Buy 2 Get 1 Free",
+        chipEyebrow: "Festive offer",
+        surface: "md:bg-[#f8f0f4]",
+        frame: "bg-[#ead4de]",
+        button: "#7a2248",
+        festival: "navratri",
+    },
+    {
+        id: "diwali",
+        eyebrow: "Diwali edit",
+        title: ["Diwali edit: light up in ", "anti-tarnish gold"],
+        accentClass: "text-[#e8d5b5] md:text-[#8a5a28]",
+        eyebrowClass: "text-[#e8d5b5] md:text-[#8a5a28]",
+        body: "Office to puja — gold-look necklaces and earrings she can wear after the diyas are packed away.",
+        image: "/festive/diwali-festive-portrait.jpg",
+        alt: "Diwali jewellery from The Luxe Jewels",
+        primary: { href: "/festive/diwali", label: "Shop Diwali" },
+        secondary: { href: "/festive/navratri", label: "Shop Navratri" },
+        chip: "Buy 2 Get 1 Free",
+        chipEyebrow: "Festive offer",
+        surface: "md:bg-[#f7f1e8]",
+        frame: "bg-[#ead9c4]",
+        button: "#8a5a28",
+        festival: "diwali",
+    },
+];
+
+const INTERVAL_MS = 6500;
 
 /**
- * Mobile: full-bleed image + copy overlay.
- * Desktop: cream (or festive ivory) split with portrait still.
- * During the festive window the hero swaps copy, image, and CTAs.
+ * Homepage hero carousel: brand header, then Navratri, then Diwali.
+ * Mobile: full-bleed image + copy overlay. Desktop: cream split with portrait still.
  */
 export default function HeroSlider() {
-    const festive = isFestivalSeason();
-    const hero = festive ? getFestivalHero() : null;
-    const image = hero?.image || EVERYDAY_IMAGE;
-    const alt = hero ? `${hero.lead.name} jewellery from The Luxe Jewels` : EVERYDAY_ALT;
+    const [index, setIndex] = useState(0);
+    const [paused, setPaused] = useState(false);
+    const slide = SLIDES[index];
+    const Heading = slide.isMain ? "h1" : "p";
+
+    const goTo = useCallback((next) => {
+        setIndex((next + SLIDES.length) % SLIDES.length);
+    }, []);
+
+    useEffect(() => {
+        if (paused) return undefined;
+        if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return undefined;
+        }
+        const timer = window.setInterval(() => goTo(index + 1), INTERVAL_MS);
+        return () => window.clearInterval(timer);
+    }, [index, paused, goTo]);
 
     return (
         <section
-            className={`relative overflow-hidden ${
-                festive ? "md:bg-[#f7f1e8]" : "md:bg-[#fdfbf7]"
-            }`}
+            className={`relative overflow-hidden ${slide.surface}`}
+            aria-roledescription="carousel"
             aria-label="The Luxe Jewels"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
         >
             <div className="absolute inset-0 md:hidden" aria-hidden="true">
-                <Image
-                    src={image}
-                    alt=""
-                    fill
-                    priority
-                    sizes="100vw"
-                    quality={90}
-                    placeholder="blur"
-                    blurDataURL={IMAGE_BLUR_DATA_URL}
-                    className="object-cover object-[center_20%]"
-                />
+                {SLIDES.map((item, i) => (
+                    <Image
+                        key={item.id}
+                        src={item.image}
+                        alt=""
+                        fill
+                        priority={i === 0}
+                        sizes="100vw"
+                        quality={90}
+                        placeholder="blur"
+                        blurDataURL={IMAGE_BLUR_DATA_URL}
+                        className={`object-cover object-[center_20%] transition-opacity duration-700 ${
+                            i === index ? "opacity-100" : "opacity-0"
+                        }`}
+                    />
+                ))}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/80" />
             </div>
 
             <div className="relative z-10 mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-16 lg:py-20">
                 <div className="grid w-full md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-12 items-center">
-                    <div className="text-left pb-2 md:pb-0">
+                    <div className="text-left pb-2 md:pb-0" aria-live="polite">
                         <p
-                            className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 ${
-                                festive
-                                    ? "text-[#e8d5b5] md:text-[#8a5a28]"
-                                    : "text-[#e8d5b5] md:text-[#b59e7b]"
-                            }`}
+                            className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 ${slide.eyebrowClass}`}
                         >
-                            {hero?.eyebrow || "Anti-tarnish · Waterproof · Made for India"}
+                            {slide.eyebrow}
                         </p>
 
-                        {festive ? (
-                            <h1 className="font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.3rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] md:max-w-[16ch]">
-                                {hero.lead.slug === "diwali" ? (
-                                    <>
-                                        Diwali edit: light up in{" "}
-                                        <em className="italic font-normal text-[#e8d5b5] md:text-[#8a5a28]">
-                                            anti-tarnish gold
-                                        </em>
-                                    </>
-                                ) : (
-                                    <>
-                                        Navratri edit: nine days,{" "}
-                                        <em className="italic font-normal text-[#e8d5b5] md:text-[#7a2248]">
-                                            everyday sparkle
-                                        </em>
-                                    </>
-                                )}
-                            </h1>
-                        ) : (
-                            <h1 className="font-playfair text-[2.45rem] sm:text-[2.75rem] md:text-[3.15rem] lg:text-[3.4rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] md:max-w-none">
-                                Shine that stays with you —{" "}
-                                <em className="italic font-normal text-[#e8d5b5] md:text-[#b59e7b]">
-                                    every day
-                                </em>
-                            </h1>
-                        )}
+                        <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.3rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
+                            {slide.title[0]}
+                            <em className={`italic font-normal ${slide.accentClass}`}>
+                                {slide.title[1]}
+                            </em>
+                        </Heading>
 
                         <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed mb-6 md:mb-8 max-w-[34ch] md:max-w-[400px] text-white/80 md:text-[#6b6560]">
-                            {hero?.body || (
-                                <>
-                                    Lightweight anti-tarnish jewellery you can live in — from first
-                                    meetings to late evenings
-                                    <span className="hidden md:inline">, with pieces ready to gift</span>.
-                                </>
-                            )}
+                            {slide.body}
                         </p>
 
-                        {festive ? <FestivalCountdown className="mb-6 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#e8d5b5] md:text-[#8a5a28]" /> : null}
+                        {slide.festival ? (
+                            <FestivalCountdown
+                                slug={slide.festival}
+                                className={`mb-6 text-[12px] font-semibold uppercase tracking-[0.16em] ${slide.eyebrowClass}`}
+                            />
+                        ) : null}
 
                         <div className="flex flex-wrap items-center gap-3">
                             <Link
-                                href={hero?.primary.href || "/shop?sort=popular"}
+                                href={slide.primary.href}
                                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 bg-white text-[#2a2724] hover:bg-[#E91E63] hover:text-white md:bg-[#2a2724] md:text-white md:hover:bg-[#E91E63]"
                             >
-                                {hero?.primary.label || "Shop bestsellers"}
+                                {slide.primary.label}
                                 <span aria-hidden>→</span>
                             </Link>
                             <Link
-                                href={hero?.secondary.href || "/festive/diwali"}
+                                href={slide.secondary.href}
                                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent"
                             >
-                                {hero?.secondary.label || "Shop Diwali"}
+                                {slide.secondary.label}
                             </Link>
                         </div>
 
                         <p className="mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase text-white/55">
                             Buy 2 get 1 free
                         </p>
+
+                        <div className="mt-7 flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => goTo(index - 1)}
+                                className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                                aria-label="Previous slide"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
+                                    <path d="M19 12H5m7 7-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <div className="flex items-center gap-2" role="tablist" aria-label="Hero slides">
+                                {SLIDES.map((item, i) => (
+                                    <button
+                                        key={item.id}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={i === index}
+                                        aria-label={`${item.eyebrow}`}
+                                        onClick={() => goTo(i)}
+                                        className={`h-2 rounded-full transition-all ${
+                                            i === index
+                                                ? "w-7 bg-white md:bg-[#2a2724]"
+                                                : "w-2 bg-white/45 md:bg-[#2a2724]/25 hover:bg-white/70 md:hover:bg-[#2a2724]/45"
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => goTo(index + 1)}
+                                className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                                aria-label="Next slide"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
+                                    <path d="M5 12h14m-7-7 7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <div className="hidden md:flex flex-col items-stretch">
                         <div
-                            className={`relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] ${
-                                festive ? "bg-[#ead9c4]" : "bg-[#efeae4]"
-                            }`}
+                            className={`relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] ${slide.frame}`}
                         >
-                            <Image
-                                src={image}
-                                alt={alt}
-                                fill
-                                priority
-                                sizes="600px"
-                                quality={90}
-                                placeholder="blur"
-                                blurDataURL={IMAGE_BLUR_DATA_URL}
-                                className="object-cover object-center"
-                            />
+                            {SLIDES.map((item, i) => (
+                                <Image
+                                    key={item.id}
+                                    src={item.image}
+                                    alt={i === index ? item.alt : ""}
+                                    fill
+                                    priority={i === 0}
+                                    sizes="600px"
+                                    quality={90}
+                                    placeholder="blur"
+                                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                                    className={`object-cover object-center transition-opacity duration-700 ${
+                                        i === index ? "opacity-100" : "opacity-0"
+                                    }`}
+                                />
+                            ))}
 
                             <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 z-10">
                                 <div className="rounded-2xl bg-white/90 backdrop-blur-sm px-3.5 py-2.5 shadow-sm">
                                     <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a847c]">
-                                        {festive ? "Festive offer" : "Fresh drop"}
+                                        {slide.chipEyebrow}
                                     </p>
                                     <p className="text-[13px] font-semibold text-[#2a2724] leading-tight mt-0.5">
-                                        {festive ? "Buy 2 Get 1 Free" : "Daily wear edit"}
+                                        {slide.chip}
                                     </p>
                                 </div>
                                 <Link
-                                    href={hero?.primary.href || "/shop?sort=newest"}
+                                    href={slide.primary.href}
                                     className="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm hover:opacity-90 transition-opacity"
-                                    style={{ backgroundColor: festive ? "#8a5a28" : "#b59e7b" }}
-                                    aria-label={hero?.primary.label || "Shop new arrivals"}
+                                    style={{ backgroundColor: slide.button }}
+                                    aria-label={slide.primary.label}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"

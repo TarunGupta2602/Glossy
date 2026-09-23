@@ -1,17 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { daysUntil, getLeadFestival } from "@/lib/festivalSeason";
+import { daysUntil, getLeadFestival, FESTIVAL_SEASON } from "@/lib/festivalSeason";
 
-export default function FestivalCountdown({ className = "", style }) {
+export default function FestivalCountdown({ className = "", style, slug }) {
     const [days, setDays] = useState(null);
     const [name, setName] = useState("Diwali");
 
     useEffect(() => {
+        if (slug === "diwali") {
+            setName("Diwali");
+            setDays(daysUntil(FESTIVAL_SEASON.diwali));
+            return;
+        }
+        if (slug === "navratri") {
+            setName("Navratri");
+            setDays(daysUntil(FESTIVAL_SEASON.navratriStart));
+            return;
+        }
         const lead = getLeadFestival();
         setName(lead.name);
         setDays(daysUntil(lead.date));
-    }, []);
+    }, [slug]);
 
     if (days == null || days < 0) return null;
 
