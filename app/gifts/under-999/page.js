@@ -65,7 +65,7 @@ export default async function GiftsUnder999Page() {
             />
             <GiftLandingContent
                 title="Jewellery gifts under ₹999"
-                subtitle="Diwali, Navratri, and birthday-ready anti-tarnish jewellery under ₹999 — office-to-puja earrings and necklaces she’ll wear after the festival."
+                subtitle="Shop by budget — wearable anti-tarnish jewellery under ₹999. For a festival look, open the Diwali or Navratri edit."
                 maxPrice={MAX}
                 products={products}
                 reviewCounts={reviewCounts}

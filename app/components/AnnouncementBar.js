@@ -1,13 +1,9 @@
 "use client";
 
 import { BUSINESS_HOURS, BRAND_NAME } from "@/lib/constants";
+import { getFestivalAnnouncements } from "@/lib/festivalSeason";
 
-const announcements = [
-    "Buy 2 Get 1 Free on every order",
-    "Free shipping on prepaid orders over ₹1000",
-    "Anti-tarnish & waterproof jewellery",
-    "Pan-India delivery from The Luxe Jewels",
-];
+const announcements = getFestivalAnnouncements();
 
 function MarqueeTrack({ trackId }) {
     return (

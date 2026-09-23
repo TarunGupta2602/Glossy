@@ -57,7 +57,8 @@ export default function CheckoutPage() {
         city: "",
         state: "",
         pincode: "",
-        phone: ""
+        phone: "",
+        giftNote: "",
     });
 
     useEffect(() => {
@@ -381,6 +382,19 @@ export default function CheckoutPage() {
                                         value={shippingInfo.phone}
                                         onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })}
                                         className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63]"
+                                    />
+                                </div>
+                                <div className="col-span-2 space-y-1">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                                        Gift note <span className="normal-case tracking-normal font-medium text-gray-400">(optional)</span>
+                                    </label>
+                                    <textarea
+                                        rows={2}
+                                        maxLength={160}
+                                        placeholder="Buying for someone else? We’ll include this with festive gift wrap."
+                                        value={shippingInfo.giftNote}
+                                        onChange={(e) => setShippingInfo({ ...shippingInfo, giftNote: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#E91E63] resize-none"
                                     />
                                 </div>
                             </div>

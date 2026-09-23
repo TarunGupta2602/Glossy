@@ -143,17 +143,11 @@ export default function GiftLandingContent({
                         >
                             {maxPrice <= 499 ? "Under ₹999" : "Under ₹499"}
                         </Link>
-                        <Link
-                            href="/blog/diwali-jewellery-gifts-under-999-india-2026"
-                            className="hover:underline"
-                        >
-                            Diwali gift guide
+                        <Link href="/festive/diwali" className="hover:underline">
+                            Diwali jewellery
                         </Link>
-                        <Link
-                            href="/blog/navratri-everyday-festive-earrings-india-2026"
-                            className="hover:underline"
-                        >
-                            Navratri earrings
+                        <Link href="/festive/navratri" className="hover:underline">
+                            Navratri jewellery
                         </Link>
                     </div>
                 </div>

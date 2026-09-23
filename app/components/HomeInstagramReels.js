@@ -7,6 +7,7 @@ import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_MIST, HOME_SURFACE_EDGE } 
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/constants";
 import { INSTAGRAM_FALLBACK_IMAGES } from "@/lib/instagram";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import { isFestivalSeason } from "@/lib/festivalSeason";
 
 function reelEmbedSrc(permalink) {
     const base = (permalink || "").replace(/\/?$/, "/");
@@ -87,6 +88,7 @@ export default function HomeInstagramReels({ reels = [] }) {
     if (!reels.length) return null;
 
     const visible = reels.slice(0, 3);
+    const festive = isFestivalSeason();
 
     return (
         <section
@@ -109,7 +111,9 @@ export default function HomeInstagramReels({ reels = [] }) {
                             </em>
                         </h2>
                         <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] max-w-md leading-relaxed">
-                            Styling moments, new drops, and everyday shine — tap to play a reel.
+                            {festive
+                                ? "Festive looks from real customers — tap a reel, then shop the Diwali or Navratri edit."
+                                : "Styling moments, new drops, and everyday shine — tap to play a reel."}
                         </p>
                     </div>
                     <Link

@@ -11,6 +11,7 @@ export default function CollectionHero({
     showingCount,
     breadcrumbs,
     eyebrow = "Collection",
+    accent = "#FF80AB",
 }) {
     const pieceLabel =
         count > 0
@@ -23,8 +24,11 @@ export default function CollectionHero({
                 <div className={`${SITE_CONTAINER} py-6 md:py-8`}>
                     {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-4" />}
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="h-px w-10 bg-[#E91E63]" />
-                        <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase">
+                        <div className="h-px w-10" style={{ backgroundColor: accent }} />
+                        <span
+                            className="text-[10px] font-black tracking-[0.2em] uppercase"
+                            style={{ color: accent }}
+                        >
                             {eyebrow}
                         </span>
                     </div>
@@ -75,8 +79,11 @@ export default function CollectionHero({
                         <div className={`${SITE_CONTAINER} w-full pb-7 sm:pb-8 md:pb-0 md:py-10`}>
                             <div className="max-w-2xl">
                                 <div className="flex items-center gap-3 mb-2 md:mb-4">
-                                    <div className="h-px w-8 md:w-10 bg-[#FF80AB]" />
-                                    <span className="text-[10px] font-black tracking-[0.25em] text-[#FF80AB] uppercase">
+                                    <div className="h-px w-8 md:w-10" style={{ backgroundColor: accent }} />
+                                    <span
+                                        className="text-[10px] font-black tracking-[0.25em] uppercase"
+                                        style={{ color: accent }}
+                                    >
                                         {eyebrow}
                                     </span>
                                 </div>

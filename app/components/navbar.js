@@ -15,6 +15,7 @@ import { WHATSAPP_URL } from "@/lib/constants";
 import { PROMO_LABEL } from "@/lib/promo";
 import { getProductPath } from "@/lib/seo";
 import BrandLogo from "./BrandLogo";
+import { isFestivalSeason } from "@/lib/festivalSeason";
 
 const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
@@ -32,7 +33,7 @@ const SHOP_EXTRAS = [
 const GIFT_LINKS = [
     { href: "/gifts/under-999", label: "Gifts under ₹999", hint: "Gift-ready" },
     { href: "/gifts/under-499", label: "Gifts under ₹499", hint: "Everyday sparkle" },
-    { href: "/festive/diwali", label: "Diwali jewellery", hint: "Festive under ₹999" },
+    { href: "/festive/diwali", label: "Diwali jewellery", hint: "Office to puja", badge: "Festive" },
     { href: "/festive/navratri", label: "Navratri jewellery", hint: "Desk to dandiya" },
 ];
 
@@ -340,6 +341,11 @@ export default function Navbar() {
                                 onClick={() => setIsGiftsMenuOpen((v) => !v)}
                             >
                                 Gifts
+                                {isFestivalSeason() ? (
+                                    <span className="ml-1 rounded-full bg-[#8a5a28] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-[#f7f1e8]">
+                                        Diwali
+                                    </span>
+                                ) : null}
                                 <svg
                                     width="12"
                                     height="12"
@@ -371,7 +377,14 @@ export default function Navbar() {
                                                     : "text-gray-700 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
                                             }`}
                                         >
-                                            <span className="block text-[13px] font-medium">{item.label}</span>
+                                            <span className="flex items-center gap-2">
+                                                <span className="block text-[13px] font-medium">{item.label}</span>
+                                                {item.badge && isFestivalSeason() ? (
+                                                    <span className="rounded-full bg-[#8a5a28] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-[#f7f1e8]">
+                                                        {item.badge}
+                                                    </span>
+                                                ) : null}
+                                            </span>
                                             {item.hint ? (
                                                 <span className="block text-[11px] text-[#8a847c] mt-0.5">
                                                     {item.hint}
@@ -723,8 +736,13 @@ export default function Navbar() {
                                     }`}
                                     aria-expanded={mobileOpen === "gifts"}
                                 >
-                                    <span className="font-playfair text-[1.4rem] font-medium tracking-tight leading-none">
+                                    <span className="inline-flex items-center gap-2 font-playfair text-[1.4rem] font-medium tracking-tight leading-none">
                                         Gifts
+                                        {isFestivalSeason() ? (
+                                            <span className="rounded-full bg-[#8a5a28] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-[#f7f1e8] font-sans">
+                                                Diwali
+                                            </span>
+                                        ) : null}
                                     </span>
                                     <span
                                         className={`text-[#d4cbc0] text-base transition-transform ${
@@ -746,7 +764,14 @@ export default function Navbar() {
                                                     isActive(item.href) ? "text-[#E91E63]" : "text-[#6b6560]"
                                                 }`}
                                             >
-                                                <span className="block text-[14px] font-medium">{item.label}</span>
+                                                <span className="flex items-center gap-2">
+                                                    <span className="block text-[14px] font-medium">{item.label}</span>
+                                                    {item.badge && isFestivalSeason() ? (
+                                                        <span className="rounded-full bg-[#8a5a28] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-[#f7f1e8]">
+                                                            {item.badge}
+                                                        </span>
+                                                    ) : null}
+                                                </span>
                                                 {item.hint ? (
                                                     <span className="block text-[12px] text-[#8a847c] mt-0.5">
                                                         {item.hint}

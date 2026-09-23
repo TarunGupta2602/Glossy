@@ -9,6 +9,7 @@ import { getDisplayCategoryName } from "@/lib/categoryLanding";
 import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
+import { isSellingFast } from "@/lib/festivalSeason";
 
 export default function ProductCard({
     product,
@@ -84,7 +85,11 @@ export default function ProductCard({
                 </Link>
 
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
-                    {hasDiscount ? null : product.is_bestseller ? (
+                    {isSellingFast(product) ? (
+                        <span className="px-2.5 py-1 rounded-full bg-[#8a5a28] text-[#f7f1e8] text-[9px] font-semibold tracking-wide">
+                            Selling fast
+                        </span>
+                    ) : hasDiscount ? null : product.is_bestseller ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
-import CollectionPageContent from "../../components/CollectionPageContent";
+import FestiveCollectionContent from "../../components/FestiveCollectionContent";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { attachHoverImages } from "@/lib/hoverImages";
@@ -9,6 +9,7 @@ import {
     getFestiveCollection,
     listFestiveCollections,
     fetchFestiveProducts,
+    curateFestiveEdit,
 } from "@/lib/festiveCollections";
 
 export const revalidate = 300;
@@ -52,10 +53,11 @@ export default async function FestiveCollectionPage({ params }) {
         .select("id, name, slug, image_url, description");
 
     const rawProducts = await fetchFestiveProducts(supabase, categories || []);
-    const products = await attachHoverImages(
+    const decorated = await attachHoverImages(
         supabase,
         rawProducts.map(withCalculatedDiscount)
     );
+    const { products, sections } = curateFestiveEdit(decorated, collection);
     const reviewCounts = await getReviewCounts(products.map((p) => p.id));
 
     const sibling = listFestiveCollections().find((item) => item.slug !== collection.slug);
@@ -78,18 +80,14 @@ export default async function FestiveCollectionPage({ params }) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
 
-            <CollectionPageContent
+            <FestiveCollectionContent
+                collection={collection}
                 breadcrumbs={[
                     { label: "Shop", href: "/shop" },
                     { label: collection.title },
                 ]}
-                heroImageUrl={collection.heroImage}
-                eyebrow={collection.eyebrow}
-                title={collection.title}
-                description={collection.intro}
-                count={products.length}
-                showingCount={products.length}
                 products={products}
+                sections={sections}
                 reviewCounts={reviewCounts}
                 intentLinks={[
                     { href: "/earrings", label: "Earrings" },

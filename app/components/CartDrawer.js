@@ -9,6 +9,7 @@ import { useOverlayOpen } from "../context/OverlayContext";
 import { PROMO_LABEL } from "@/lib/promo";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { getProductPath } from "@/lib/seo";
+import { getCompleteTheLook } from "@/lib/festivalSeason";
 
 export default function CartDrawer() {
     const {
@@ -37,6 +38,8 @@ export default function CartDrawer() {
     }, [isCartOpen, closeCart]);
 
     if (!isCartOpen) return null;
+
+    const completeLook = getCompleteTheLook(cart);
 
     const untilNext = promo?.itemsUntilNextFree ?? 0;
     const freeUnlocked = promo?.completeSets > 0;
@@ -171,6 +174,18 @@ export default function CartDrawer() {
                             ))}
                         </ul>
                     )}
+                    {cart.length > 0 && completeLook ? (
+                        <Link
+                            href={completeLook.href}
+                            onClick={closeCart}
+                            className="mt-5 block rounded-xl border border-[#efeae4] bg-[#fdfbf7] px-4 py-3 text-[13px] text-[#2a2724] hover:border-[#E91E63] hover:text-[#E91E63]"
+                        >
+                            <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b89a6a] mb-1">
+                                Complete the look
+                            </span>
+                            {completeLook.label} →
+                        </Link>
+                    ) : null}
                 </div>
 
                 {cart.length > 0 && (
