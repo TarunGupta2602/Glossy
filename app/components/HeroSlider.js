@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
@@ -63,38 +63,57 @@ const SLIDES = [
     },
 ];
 
-const INTERVAL_MS = 6500;
+const INTERVAL_MS = 5500;
+const MANUAL_RESUME_MS = 9000;
 
 /**
  * Homepage hero carousel: brand header, then Navratri, then Diwali.
- * Mobile: full-bleed image + copy overlay. Desktop: cream split with portrait still.
+ * Auto-advances on its own. Arrows/dots only pause briefly after a tap.
  */
 export default function HeroSlider() {
     const [index, setIndex] = useState(0);
-    const [paused, setPaused] = useState(false);
+    const [hold, setHold] = useState(false);
+    const resumeTimer = useRef(null);
     const slide = SLIDES[index];
     const Heading = slide.isMain ? "h1" : "p";
 
     const goTo = useCallback((next) => {
-        setIndex((next + SLIDES.length) % SLIDES.length);
+        setIndex(((next % SLIDES.length) + SLIDES.length) % SLIDES.length);
+    }, []);
+
+    const goToManual = useCallback(
+        (next) => {
+            goTo(next);
+            setHold(true);
+            if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+            resumeTimer.current = window.setTimeout(() => setHold(false), MANUAL_RESUME_MS);
+        },
+        [goTo]
+    );
+
+    useEffect(() => {
+        return () => {
+            if (resumeTimer.current) window.clearTimeout(resumeTimer.current);
+        };
     }, []);
 
     useEffect(() => {
-        if (paused) return undefined;
-        if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (hold) return undefined;
+        if (typeof window === "undefined") return undefined;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             return undefined;
         }
-        const timer = window.setInterval(() => goTo(index + 1), INTERVAL_MS);
+        const timer = window.setInterval(() => {
+            setIndex((current) => (current + 1) % SLIDES.length);
+        }, INTERVAL_MS);
         return () => window.clearInterval(timer);
-    }, [index, paused, goTo]);
+    }, [hold]);
 
     return (
         <section
             className={`relative overflow-hidden ${slide.surface}`}
             aria-roledescription="carousel"
             aria-label="The Luxe Jewels"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
         >
             <div className="absolute inset-0 md:hidden" aria-hidden="true">
                 {SLIDES.map((item, i) => (
@@ -119,44 +138,46 @@ export default function HeroSlider() {
             <div className="relative z-10 mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-16 lg:py-20">
                 <div className="grid w-full md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-12 items-center">
                     <div className="text-left pb-2 md:pb-0" aria-live="polite">
-                        <p
-                            className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 ${slide.eyebrowClass}`}
-                        >
-                            {slide.eyebrow}
-                        </p>
-
-                        <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.3rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
-                            {slide.title[0]}
-                            <em className={`italic font-normal ${slide.accentClass}`}>
-                                {slide.title[1]}
-                            </em>
-                        </Heading>
-
-                        <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed mb-6 md:mb-8 max-w-[34ch] md:max-w-[400px] text-white/80 md:text-[#6b6560]">
-                            {slide.body}
-                        </p>
-
-                        {slide.festival ? (
-                            <FestivalCountdown
-                                slug={slide.festival}
-                                className={`mb-6 text-[12px] font-semibold uppercase tracking-[0.16em] ${slide.eyebrowClass}`}
-                            />
-                        ) : null}
-
-                        <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                                href={slide.primary.href}
-                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 bg-white text-[#2a2724] hover:bg-[#E91E63] hover:text-white md:bg-[#2a2724] md:text-white md:hover:bg-[#E91E63]"
+                        <div key={slide.id} className="hero-copy-in">
+                            <p
+                                className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 ${slide.eyebrowClass}`}
                             >
-                                {slide.primary.label}
-                                <span aria-hidden>→</span>
-                            </Link>
-                            <Link
-                                href={slide.secondary.href}
-                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent"
-                            >
-                                {slide.secondary.label}
-                            </Link>
+                                {slide.eyebrow}
+                            </p>
+
+                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.3rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
+                                {slide.title[0]}
+                                <em className={`italic font-normal ${slide.accentClass}`}>
+                                    {slide.title[1]}
+                                </em>
+                            </Heading>
+
+                            <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed mb-6 md:mb-8 max-w-[34ch] md:max-w-[400px] text-white/80 md:text-[#6b6560]">
+                                {slide.body}
+                            </p>
+
+                            {slide.festival ? (
+                                <FestivalCountdown
+                                    slug={slide.festival}
+                                    className={`mb-6 text-[12px] font-semibold uppercase tracking-[0.16em] ${slide.eyebrowClass}`}
+                                />
+                            ) : null}
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                <Link
+                                    href={slide.primary.href}
+                                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 bg-white text-[#2a2724] hover:bg-[#E91E63] hover:text-white md:bg-[#2a2724] md:text-white md:hover:bg-[#E91E63]"
+                                >
+                                    {slide.primary.label}
+                                    <span aria-hidden>→</span>
+                                </Link>
+                                <Link
+                                    href={slide.secondary.href}
+                                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent"
+                                >
+                                    {slide.secondary.label}
+                                </Link>
+                            </div>
                         </div>
 
                         <p className="mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase text-white/55">
@@ -166,7 +187,7 @@ export default function HeroSlider() {
                         <div className="mt-7 flex items-center gap-3">
                             <button
                                 type="button"
-                                onClick={() => goTo(index - 1)}
+                                onClick={() => goToManual(index - 1)}
                                 className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
                                 aria-label="Previous slide"
                             >
@@ -182,18 +203,29 @@ export default function HeroSlider() {
                                         role="tab"
                                         aria-selected={i === index}
                                         aria-label={`${item.eyebrow}`}
-                                        onClick={() => goTo(i)}
-                                        className={`h-2 rounded-full transition-all ${
+                                        onClick={() => goToManual(i)}
+                                        className={`relative h-2 overflow-hidden rounded-full transition-all ${
                                             i === index
-                                                ? "w-7 bg-white md:bg-[#2a2724]"
+                                                ? "w-8 bg-white/35 md:bg-[#2a2724]/20"
                                                 : "w-2 bg-white/45 md:bg-[#2a2724]/25 hover:bg-white/70 md:hover:bg-[#2a2724]/45"
                                         }`}
-                                    />
+                                    >
+                                        {i === index ? (
+                                            <span
+                                                key={`${item.id}-${hold ? "hold" : "play"}`}
+                                                className={`absolute inset-y-0 left-0 w-full rounded-full bg-white md:bg-[#2a2724] ${
+                                                    hold ? "" : "hero-progress-bar"
+                                                }`}
+                                                style={hold ? { transform: "scaleX(1)" } : undefined}
+                                                aria-hidden
+                                            />
+                                        ) : null}
+                                    </button>
                                 ))}
                             </div>
                             <button
                                 type="button"
-                                onClick={() => goTo(index + 1)}
+                                onClick={() => goToManual(index + 1)}
                                 className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
                                 aria-label="Next slide"
                             >

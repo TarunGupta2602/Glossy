@@ -68,6 +68,20 @@ select:focus-visible,
   }
 }
 
+@keyframes hero-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-progress-bar {
+  transform-origin: left center;
+  animation: hero-progress 5.5s linear forwards;
+}
+
 @keyframes slideInRight {
   from {
     transform: translateX(100%);
@@ -121,7 +135,8 @@ select:focus-visible,
   .hero-copy-in,
   .animate-fade-in-up,
   .img-shimmer,
-  .ken-burns {
+  .ken-burns,
+  .hero-progress-bar {
     animation: none !important;
   }
 

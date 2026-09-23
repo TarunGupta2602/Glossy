@@ -329,7 +329,7 @@ export default async function BlogDetailPage({ params }) {
                 />
             )}
 
-            <div className={`${HOME_CONTAINER} py-8 md:py-12 lg:py-14`}>
+            <div className={`${HOME_CONTAINER} py-10 md:py-14 lg:py-16`}>
                 <nav
                     className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-8 md:mb-10 overflow-hidden whitespace-nowrap"
                     aria-label="Breadcrumb"
@@ -348,7 +348,7 @@ export default async function BlogDetailPage({ params }) {
                 </nav>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-16">
-                    <div className="lg:col-span-8 space-y-8 md:space-y-10">
+                    <div className="lg:col-span-8 space-y-10 md:space-y-14">
                         <header className="space-y-5">
                             <div className="flex flex-wrap items-center gap-3">
                                 {keywords.slice(0, 1).map((tag) => (
@@ -427,16 +427,17 @@ export default async function BlogDetailPage({ params }) {
                         <article
                             className="prose prose-neutral prose-base sm:prose-lg max-w-none
                             prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
-                            prose-h2:text-[1.65rem] sm:prose-h2:text-[2rem] prose-h2:leading-snug prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
-                            prose-h3:text-[1.25rem] sm:prose-h3:text-[1.4rem] prose-h3:mt-8 prose-h3:mb-3
-                            prose-p:text-[#6b6560] prose-p:leading-[1.75] prose-p:mb-5
+                            prose-h2:text-[1.7rem] sm:prose-h2:text-[2.05rem] prose-h2:leading-snug prose-h2:mt-14 sm:prose-h2:mt-16 prose-h2:mb-5 prose-h2:pb-3.5 prose-h2:border-b prose-h2:border-[#efeae4]
+                            prose-h3:text-[1.25rem] sm:prose-h3:text-[1.45rem] prose-h3:mt-10 prose-h3:mb-3.5
+                            prose-p:text-[#6b6560] prose-p:leading-[1.85] prose-p:mb-6
                             prose-strong:text-[#2a2724] prose-strong:font-semibold
                             prose-a:text-[#b89a6a] prose-a:font-medium prose-a:no-underline hover:prose-a:text-[#E91E63] hover:prose-a:underline prose-a:underline-offset-4
-                            prose-ul:pl-5 prose-li:text-[#6b6560] prose-li:mb-2
-                            prose-ol:pl-5
-                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#6b6560] prose-blockquote:rounded-r-xl
-                            prose-img:rounded-2xl prose-img:my-8
-                            [&_.blog-lead]:text-[1.05rem] sm:[&_.blog-lead]:text-[1.15rem] [&_.blog-lead]:text-[#2a2724]/80 [&_.blog-lead]:leading-relaxed [&_.blog-lead]:font-normal
+                            prose-ul:my-7 prose-ul:pl-5 prose-li:text-[#6b6560] prose-li:mb-2.5 prose-li:leading-relaxed
+                            prose-ol:my-7 prose-ol:pl-5 prose-ol:space-y-2
+                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#6b6560] prose-blockquote:rounded-r-xl prose-blockquote:my-8
+                            prose-img:rounded-2xl prose-img:my-10
+                            [&_.blog-lead]:text-[1.12rem] sm:[&_.blog-lead]:text-[1.22rem] [&_.blog-lead]:text-[#2a2724]/80 [&_.blog-lead]:leading-[1.8] [&_.blog-lead]:font-normal [&_.blog-lead]:mb-8
+                            [&_.blog-inline-cta]:my-10
                             "
                         >
                             <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
@@ -468,7 +469,7 @@ export default async function BlogDetailPage({ params }) {
                         />
 
                         {blog.faqs && blog.faqs.length > 0 && (
-                            <section className="pt-12 border-t border-[#efeae4]">
+                            <section className="pt-14 md:pt-16 border-t border-[#efeae4]">
                                 <p
                                     className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
                                     style={{ color: "#b89a6a" }}

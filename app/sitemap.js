@@ -11,7 +11,7 @@ const BASE_URL = "https://www.theluxejewels.in";
 const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
 
 /** Fresh lastmod so Google recrawls new festive / gift / journal URLs. */
-const FESTIVE_LAST_MODIFIED = new Date("2026-09-23T06:00:00.000Z");
+const FESTIVE_LAST_MODIFIED = new Date("2026-09-23T12:00:00.000Z");
 const FRESH_PATHS = new Set([
     "/festive/diwali",
     "/festive/navratri",

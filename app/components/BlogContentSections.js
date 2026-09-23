@@ -21,7 +21,7 @@ export default function BlogContentSections({
     if (!hasWhy && !hasComparison && tips.length === 0) return null;
 
     return (
-        <div className="space-y-10 md:space-y-12">
+        <div className="space-y-12 md:space-y-16 pt-4">
             {hasWhy && (
                 <section aria-labelledby="why-this-matters">
                     <p

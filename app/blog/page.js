@@ -278,13 +278,13 @@ export default async function BlogPage({ searchParams }) {
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 lg:gap-x-12 lg:gap-y-16">
                             {blogs.map((blog, index) => {
                                 const href = `/blog/${normalizeBlogSlug(blog.slug) || blog.slug}`;
                                 return (
                                     <Link href={href} key={blog.id || href} className="group block">
                                         <article>
-                                            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#efeae4] mb-4">
+                                            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#efeae4] mb-5">
                                                 {blog.image ? (
                                                     <Image
                                                         src={normalizeBlogImageSrc(blog.image)}
@@ -314,7 +314,7 @@ export default async function BlogPage({ searchParams }) {
                                             </h2>
 
                                             {blog.description ? (
-                                                <p className="mt-2.5 text-[14px] text-[#6b6560] leading-relaxed line-clamp-2">
+                                                <p className="mt-3 text-[14.5px] text-[#6b6560] leading-[1.7] line-clamp-3">
                                                     {blog.description}
                                                 </p>
                                             ) : null}
