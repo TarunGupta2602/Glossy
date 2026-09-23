@@ -16,6 +16,7 @@ import {
 import PaymentIcons from "./PaymentIcons";
 import BrandLogo from "./BrandLogo";
 import Newsletter from "./newsletter";
+import { JOURNAL_LINKS } from "@/lib/siteInterlinks";
 
 const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
@@ -135,7 +136,7 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    <div className="md:col-span-7 lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                    <div className="md:col-span-7 lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
                         <div>
                             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                                 Shop
@@ -169,6 +170,32 @@ export default function Footer() {
                                         </Link>
                                     </li>
                                 ))}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
+                                Journal
+                            </h3>
+                            <ul className="space-y-2.5">
+                                {JOURNAL_LINKS.slice(0, 6).map((link) => (
+                                    <li key={link.href}>
+                                        <Link
+                                            href={link.href}
+                                            className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                                <li>
+                                    <Link
+                                        href="/blog"
+                                        className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                    >
+                                        All guides
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
 

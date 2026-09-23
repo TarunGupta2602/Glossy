@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import FestiveCollectionContent from "../../components/FestiveCollectionContent";
+import RelatedGuides from "../../components/RelatedGuides";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { attachHoverImages } from "@/lib/hoverImages";
@@ -102,6 +103,7 @@ export default async function FestiveCollectionPage({ params }) {
                         : null,
                 ].filter(Boolean)}
             />
+            <RelatedGuides page="festive" title="Guides, cities, and the rest of the shop" />
         </section>
     );
 }

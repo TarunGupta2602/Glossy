@@ -9,6 +9,7 @@ import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { EARRINGS_GUIDE } from "@/lib/categoryGuides";
 import { attachHoverImages } from "@/lib/hoverImages";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -133,12 +134,14 @@ export default async function EarringsPage({ searchParams }) {
                     { href: "/necklaces", label: "Waterproof necklaces" },
                     { href: "/bracelets", label: "Daily-wear bracelets" },
                     { href: "/gifts/under-499", label: "Gifts under ₹499" },
+                    { href: "/festive/navratri", label: "Navratri jewellery" },
                     { href: "/blog/navratri-everyday-festive-earrings-india-2026", label: "Navratri earrings" },
                 ]}
                 quickFaqs={EARRINGS_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={EARRINGS_GUIDE} />
+            <RelatedGuides page="category" title="More to shop and read" />
         </section>
     );
 }

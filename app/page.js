@@ -13,6 +13,7 @@ import HomeInstagramReels from "./components/HomeInstagramReels";
 import HomeStoryTeaser from "./components/HomeStoryTeaser";
 import HomeGiftEdits from "./components/HomeGiftEdits";
 import SiteFaqSection from "./components/SiteFaqSection";
+import RelatedGuides from "./components/RelatedGuides";
 import HeroSlider from "./components/HeroSlider";
 import ProductRow from "./components/ProductRow";
 import TopStyles from "./components/TopStyles";
@@ -330,6 +331,8 @@ export default async function Home() {
       <RevealOnScroll>
         <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
       </RevealOnScroll>
+
+      <RelatedGuides page="home" title="Shop, festivals, and the journal" />
 
       <Newsletter />
 

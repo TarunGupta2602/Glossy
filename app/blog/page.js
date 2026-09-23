@@ -9,6 +9,7 @@ import { BRAND_URL, TWITTER_HANDLE } from "@/lib/constants";
 import { normalizeBlogSlug } from "@/lib/seo";
 import { listStaticBlogSummaries } from "@/lib/staticBlogPosts";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -245,6 +246,18 @@ export default async function BlogPage({ searchParams }) {
                                 Shop necklaces
                             </Link>
                             <span className="text-[#d4cbc0]">·</span>
+                            <Link href="/festive/diwali" className="hover:text-[#E91E63] transition-colors">
+                                Diwali edit
+                            </Link>
+                            <span className="text-[#d4cbc0]">·</span>
+                            <Link href="/festive/navratri" className="hover:text-[#E91E63] transition-colors">
+                                Navratri edit
+                            </Link>
+                            <span className="text-[#d4cbc0]">·</span>
+                            <Link href="/gifts/under-499" className="hover:text-[#E91E63] transition-colors">
+                                Gifts under ₹499
+                            </Link>
+                            <span className="text-[#d4cbc0]">·</span>
                             <Link href="/shop" className="hover:text-[#E91E63] transition-colors">
                                 Shop all
                             </Link>
@@ -319,6 +332,7 @@ export default async function BlogPage({ searchParams }) {
                     </>
                 )}
             </section>
+            <RelatedGuides page="blogIndex" title="Shop what you just read about" />
         </main>
     );
 }

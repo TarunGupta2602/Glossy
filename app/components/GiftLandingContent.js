@@ -7,6 +7,7 @@ import SiteFaqSection from "./SiteFaqSection";
 import { PROMO_LABEL } from "@/lib/promo";
 import { reviewCardProps } from "@/lib/reviewCounts";
 import { GIFT_FAQS } from "@/lib/faqs";
+import RelatedGuides from "./RelatedGuides";
 
 export default function GiftLandingContent({
     title,
@@ -218,6 +219,11 @@ export default function GiftLandingContent({
                     </div>
                 </div>
             </section>
+
+            <RelatedGuides
+                page="gift"
+                title="Festival looks and gift guides"
+            />
 
             <SiteFaqSection
                 faqs={GIFT_FAQS}

@@ -9,6 +9,7 @@ import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
 import { attachHoverImages } from "@/lib/hoverImages";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -131,6 +132,7 @@ export default async function BraceletsPage({ searchParams }) {
             />
 
             <CategoryBuyingGuide guide={BRACELETS_GUIDE} />
+            <RelatedGuides page="category" title="More to shop and read" />
         </section>
     );
 }

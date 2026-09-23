@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 3600;
 
@@ -105,6 +106,7 @@ export default async function FeaturedCollections() {
                     })}
                 </div>
             </div>
+            <RelatedGuides page="collection" title="Festive edits and reading" />
         </section>
     );
 }

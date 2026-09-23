@@ -1,5 +1,6 @@
 import { SITE_FAQS } from "@/lib/faqs";
 import SiteFaqSection from "../components/SiteFaqSection";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const dynamic = "force-static";
 
@@ -28,6 +29,7 @@ export const metadata = {
 
 export default function FAQsPage() {
     return (
+        <>
         <SiteFaqSection
             faqs={SITE_FAQS}
             eyebrow="Help centre"
@@ -40,5 +42,7 @@ export default function FAQsPage() {
             idPrefix="faqs-page"
             className="border-t-0 min-h-[60vh]"
         />
+        <RelatedGuides page="faqs" title="Care guides and where to shop" />
+        </>
     );
 }

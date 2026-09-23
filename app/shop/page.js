@@ -10,6 +10,7 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { attachHoverImages } from "@/lib/hoverImages";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { BRAND_URL } from "@/lib/constants";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -156,6 +157,7 @@ export default async function ShopPage({ searchParams }) {
                         reviewCounts={reviewCounts}
                     />
             </section>
+            <RelatedGuides page="home" title="Festivals, gifts, and guides" />
         </main>
     );
 }

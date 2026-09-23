@@ -8,6 +8,7 @@ import {
     SERVICE_AREA_LABEL,
 } from "@/lib/constants";
 import { CONTACT_FAQS } from "@/lib/faqs";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const metadata = {
     title: "Contact Us | Noida NCR Support",
@@ -120,6 +121,8 @@ export default function ContactPage() {
                 <ContactForm />
             </div>
         </section>
+
+        <RelatedGuides page="contact" title="Browse while you wait" />
 
         <SiteFaqSection
             faqs={CONTACT_FAQS}

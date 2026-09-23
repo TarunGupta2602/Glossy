@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listCityLandings } from "@/lib/cityLandings";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { BRAND_URL, SERVICE_AREA_LABEL } from "@/lib/constants";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const metadata = {
     title: "Jewellery Shop Near You | Noida & Delhi NCR",
@@ -53,6 +54,7 @@ export default function JewelleryShopIndexPage() {
                     ))}
                 </ul>
             </div>
+            <RelatedGuides page="jewelleryShop" title="Shop from your city" />
         </main>
     );
 }

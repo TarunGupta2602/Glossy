@@ -10,6 +10,7 @@ import {
 } from "@/lib/constants";
 import SiteFaqSection from "../components/SiteFaqSection";
 import { STORY_FAQS } from "@/lib/faqs";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const dynamic = "force-static";
 
@@ -153,6 +154,8 @@ export default function OurStoryPage() {
                 </div>
             </div>
         </section>
+
+        <RelatedGuides page="story" title="Shop the story — and read the journal" />
 
         <SiteFaqSection
             faqs={STORY_FAQS}

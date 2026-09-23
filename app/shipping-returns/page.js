@@ -2,6 +2,7 @@ import LegalPageLayout, { LegalSection } from "../components/LegalPageLayout";
 import SiteFaqSection from "../components/SiteFaqSection";
 import { SUPPORT_EMAIL } from "@/lib/constants";
 import { SHIPPING_FAQS } from "@/lib/faqs";
+import RelatedGuides from "../components/RelatedGuides";
 
 export const dynamic = "force-static";
 
@@ -70,6 +71,8 @@ export default function ShippingReturns() {
                     </p>
                 </LegalSection>
             </LegalPageLayout>
+
+            <RelatedGuides page="faqs" title="Shop while your order is on the way" />
 
             <SiteFaqSection
                 faqs={SHIPPING_FAQS}
