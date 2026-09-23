@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
-import ReviewImportForm from "./ReviewImportForm";
 
 export default function ReviewsListPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -170,7 +169,7 @@ export default function ReviewsListPage() {
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900">Manage Reviews</h1>
                         <p className="text-sm text-gray-500 mt-1">
-                            Approve site reviews or import WhatsApp / Instagram feedback.
+                            Approve or remove reviews left on product pages.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -206,8 +205,6 @@ export default function ReviewsListPage() {
                         </button>
                     </div>
                 </div>
-
-                <ReviewImportForm onImported={fetchReviews} />
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     {loading ? (

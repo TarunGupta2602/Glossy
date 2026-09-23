@@ -68,6 +68,75 @@ function NavLinkClass(active) {
     }`;
 }
 
+function SearchField({
+    inputRef,
+    value,
+    onChange,
+    onFocus,
+    onSubmit,
+    onClear,
+    variant = "bar",
+}) {
+    const compact = variant === "compact";
+    return (
+        <form
+            className={compact ? "hidden lg:flex items-center" : "flex items-center w-full"}
+            onSubmit={(e) => {
+                e.preventDefault();
+                onSubmit();
+            }}
+        >
+            <label
+                className={`flex items-center rounded-full border border-[#efeae4] bg-[#fdfbf7] ${
+                    compact
+                        ? "h-10 w-48 xl:w-56 px-3.5 focus-within:w-64 focus-within:border-[#e2d5c8] transition-[width,border-color]"
+                        : "h-10 w-full px-3.5"
+                }`}
+            >
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="text-[#a89880] shrink-0"
+                    aria-hidden
+                >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                    ref={inputRef}
+                    type="search"
+                    enterKeyHint="search"
+                    placeholder="Search jewellery"
+                    value={value}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onKeyDown={(e) => {
+                        if (e.key === "Escape") onClear();
+                    }}
+                    className="flex-1 min-w-0 bg-transparent py-2 pl-2.5 text-[14px] text-[#2a2724] placeholder:text-[#a89880] outline-none"
+                    aria-label="Search catalogue"
+                />
+                {value ? (
+                    <button
+                        type="button"
+                        onClick={onClear}
+                        className="shrink-0 text-[#8a847c] p-1 -mr-1"
+                        aria-label="Clear search"
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                ) : null}
+            </label>
+        </form>
+    );
+}
+
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -107,12 +176,6 @@ export default function Navbar() {
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
-
-    useEffect(() => {
-        if (!isSearchOpen) return undefined;
-        const id = window.setTimeout(() => searchInputRef.current?.focus(), 30);
-        return () => window.clearTimeout(id);
-    }, [isSearchOpen]);
 
     useEffect(() => {
         if (!isSearchOpen || catalog || catalogLoading) return undefined;
@@ -157,6 +220,12 @@ export default function Navbar() {
         setSearchQuery("");
     };
 
+    const clearSearch = () => {
+        setSearchQuery("");
+        setIsSearchOpen(false);
+        searchInputRef.current?.blur();
+    };
+
     const searchHits = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
         if (!q || !Array.isArray(catalog)) return [];
@@ -192,7 +261,7 @@ export default function Navbar() {
                         : "bg-white/95 backdrop-blur-sm border-b border-transparent"
                 }`}
             >
-                <div className={`${HOME_CONTAINER} flex items-center justify-between gap-2 h-14 sm:h-16 md:h-[4.25rem]`}>
+                <div className={`${HOME_CONTAINER} flex items-center justify-between gap-2 h-12 sm:h-14 md:h-16`}>
                     <BrandLogo href="/" onClick={closeMenu} size="md" priority />
 
                     <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
@@ -331,20 +400,21 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
-                        <IconBtn
-                            type="button"
-                            aria-label="Search jewellery"
-                            aria-expanded={isSearchOpen}
-                            onClick={() => {
-                                setIsSearchOpen((v) => !v);
+                        <SearchField
+                            inputRef={searchInputRef}
+                            variant="compact"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setIsSearchOpen(true);
+                            }}
+                            onFocus={() => {
+                                setIsSearchOpen(true);
                                 setIsUserMenuOpen(false);
                             }}
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </IconBtn>
+                            onSubmit={submitSearch}
+                            onClear={clearSearch}
+                        />
 
                         {user ? (
                             <div className="relative hidden sm:block shrink-0">
@@ -418,12 +488,14 @@ export default function Navbar() {
                             </span>
                         )}
 
+                        <span className="hidden lg:inline-flex">
                         <IconBtn as={Link} href="/wishlist" aria-label="Wishlist">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                             </svg>
                             <NavBadge count={wishlist.length} />
                         </IconBtn>
+                        </span>
 
                         <IconBtn
                             type="button"
@@ -469,103 +541,71 @@ export default function Navbar() {
                     </div>
                 </div>
 
-                {isSearchOpen && (
-                    <div className="absolute inset-x-0 top-full z-[60] border-b border-[#efeae4] bg-white shadow-[0_16px_40px_-24px_rgba(42,39,36,0.35)]">
-                        <div className={`${HOME_CONTAINER} py-3 sm:py-4`}>
-                            <form
-                                className="flex items-center gap-2"
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    submitSearch();
-                                }}
-                            >
-                                <div className="flex-1 flex items-center rounded-full border border-[#efeae4] bg-[#fdfbf7] px-3.5">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-[#a89880] shrink-0" aria-hidden>
-                                        <circle cx="11" cy="11" r="8" />
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                    </svg>
-                                    <input
-                                        ref={searchInputRef}
-                                        type="search"
-                                        enterKeyHint="search"
-                                        placeholder="Search earrings, necklaces…"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Escape") setIsSearchOpen(false);
-                                        }}
-                                        className="flex-1 min-w-0 bg-transparent py-2.5 pl-2.5 text-[15px] text-[#2a2724] placeholder:text-[#a89880] outline-none"
-                                        aria-label="Search catalogue"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="min-h-11 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2a2724]"
-                                >
-                                    Go
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setIsSearchOpen(false)}
-                                    className="min-w-11 min-h-11 rounded-full text-[#6b6560] hover:bg-[#fdfbf7]"
-                                    aria-label="Close search"
-                                >
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-                                        <path d="M18 6 6 18M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </form>
+                <div className={`${HOME_CONTAINER} lg:hidden pb-2.5`}>
+                    <SearchField
+                        value={searchQuery}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setIsSearchOpen(true);
+                        }}
+                        onFocus={() => {
+                            setIsSearchOpen(true);
+                            setIsUserMenuOpen(false);
+                        }}
+                        onSubmit={submitSearch}
+                        onClear={clearSearch}
+                    />
+                </div>
 
-                            {searchQuery.trim() ? (
-                                <div className="mt-3">
-                                    {catalogLoading && !catalog ? (
-                                        <p className="text-[13px] text-[#8a847c] px-1 py-2">Searching…</p>
-                                    ) : searchHits.length > 0 ? (
-                                        <ul className="divide-y divide-[#efeae4]">
-                                            {searchHits.map((product) => (
-                                                <li key={product.id}>
-                                                    <Link
-                                                        href={getProductPath(product)}
-                                                        onClick={() => setIsSearchOpen(false)}
-                                                        className="flex items-center gap-3 py-2.5 px-1 hover:bg-[#fdfbf7] rounded-xl"
-                                                    >
-                                                        <span className="relative w-11 h-11 shrink-0 overflow-hidden rounded-lg bg-[#f4f2f0]">
-                                                            <Image
-                                                                src={product.main_image || "/logo.png"}
-                                                                alt=""
-                                                                fill
-                                                                sizes="44px"
-                                                                className="object-cover"
-                                                            />
+                {isSearchOpen && searchQuery.trim() && (
+                    <div className="absolute inset-x-0 top-full z-[60] border-b border-[#efeae4] bg-white shadow-[0_16px_40px_-24px_rgba(42,39,36,0.35)]">
+                        <div className={`${HOME_CONTAINER} py-3`}>
+                            {catalogLoading && !catalog ? (
+                                <p className="text-[13px] text-[#8a847c] px-1 py-2">Searching…</p>
+                            ) : searchHits.length > 0 ? (
+                                <ul className="divide-y divide-[#efeae4]">
+                                    {searchHits.map((product) => (
+                                        <li key={product.id}>
+                                            <Link
+                                                href={getProductPath(product)}
+                                                onClick={() => setIsSearchOpen(false)}
+                                                className="flex items-center gap-3 py-2.5 px-1 hover:bg-[#fdfbf7] rounded-xl"
+                                            >
+                                                <span className="relative w-11 h-11 shrink-0 overflow-hidden rounded-lg bg-[#f4f2f0]">
+                                                    <Image
+                                                        src={product.main_image || "/logo.png"}
+                                                        alt=""
+                                                        fill
+                                                        sizes="44px"
+                                                        className="object-cover"
+                                                    />
+                                                </span>
+                                                <span className="min-w-0 flex-1">
+                                                    <span className="block text-[13px] font-medium text-[#2a2724] truncate">
+                                                        {product.name}
+                                                    </span>
+                                                    {product.price != null && (
+                                                        <span className="block text-[12px] text-[#8a847c] tabular-nums">
+                                                            ₹{Number(product.price).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                                                         </span>
-                                                        <span className="min-w-0 flex-1">
-                                                            <span className="block text-[13px] font-medium text-[#2a2724] truncate">
-                                                                {product.name}
-                                                            </span>
-                                                            {product.price != null && (
-                                                                <span className="block text-[12px] text-[#8a847c] tabular-nums">
-                                                                    ₹{Number(product.price).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
-                                                                </span>
-                                                            )}
-                                                        </span>
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="text-[13px] text-[#8a847c] px-1 py-2">
-                                            No matching pieces. Try earrings or necklace.
-                                        </p>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={submitSearch}
-                                        className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E91E63]"
-                                    >
-                                        See all results →
-                                    </button>
-                                </div>
-                            ) : null}
+                                                    )}
+                                                </span>
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-[13px] text-[#8a847c] px-1 py-2">
+                                    No matching pieces. Try earrings or necklace.
+                                </p>
+                            )}
+                            <button
+                                type="button"
+                                onClick={submitSearch}
+                                className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E91E63]"
+                            >
+                                See all results →
+                            </button>
                         </div>
                     </div>
                 )}
