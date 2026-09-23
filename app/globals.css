@@ -64,7 +64,7 @@ select:focus-visible,
     transform: scale(1);
   }
   to {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 }
 
@@ -103,7 +103,6 @@ select:focus-visible,
 }
 
 .ken-burns {
-  transform-origin: 50% 18%;
   animation: ken-burns 8s ease-out forwards;
 }
 
