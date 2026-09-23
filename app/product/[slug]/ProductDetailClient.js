@@ -21,6 +21,7 @@ import {
     getDefaultProductFeatures,
     getFinishAuthenticityNote,
 } from "@/lib/productTrust";
+import { resolveProductSizeInfo } from "@/lib/productDefaults";
 
 function CheckIcon({ className = "w-3.5 h-3.5" }) {
     return (
@@ -45,9 +46,7 @@ export default function ProductDetailClient({
     const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(product);
     const highlightChips = buildProductHighlightChips(product, { hasDiscount });
     const authenticityNote = getFinishAuthenticityNote(product);
-    const sizeGuide =
-        product.size_info ||
-        "One size; see product images for scale. Lightweight everyday fit.";
+    const sizeGuide = resolveProductSizeInfo(product);
 
     const allImages = [
         ...(product.main_image ? [product.main_image] : []),

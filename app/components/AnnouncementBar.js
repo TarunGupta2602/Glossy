@@ -1,9 +1,6 @@
 "use client";
 
-import {
-    BUSINESS_HOURS,
-    BRAND_NAME,
-} from "@/lib/constants";
+import { BUSINESS_HOURS, BRAND_NAME } from "@/lib/constants";
 
 const announcements = [
     "Buy 2 Get 1 Free on every order",
@@ -12,11 +9,11 @@ const announcements = [
     "Pan-India delivery from The Luxe Jewels",
 ];
 
-function MarqueeTrack({ id }) {
+function MarqueeTrack({ trackId }) {
     return (
-        <div className="flex items-center shrink-0" aria-hidden="true">
+        <div className="announce-marquee-track" aria-hidden="true">
             {announcements.map((text) => (
-                <div key={`${id}-${text}`} className="flex items-center shrink-0">
+                <div key={`${trackId}-${text}`} className="flex items-center shrink-0">
                     <span className="px-6 md:px-10 text-[12px] md:text-[13px] font-semibold tracking-[0.12em] uppercase text-[#3d342c]">
                         {text}
                     </span>
@@ -38,15 +35,13 @@ export default function AnnouncementBar() {
 
     return (
         <div
-            className="announce-bar group relative overflow-hidden h-10 md:h-11 flex items-center z-50 border-b border-[#eadfce]"
+            className="announce-bar group relative overflow-hidden h-10 md:h-11 flex items-center z-40 border-b border-[#eadfce]"
             style={{
-                background:
-                    "linear-gradient(180deg, #f7f1e8 0%, #f0e6d8 100%)",
+                background: "linear-gradient(180deg, #f7f1e8 0%, #f0e6d8 100%)",
             }}
             role="region"
             aria-label={`${BRAND_NAME} announcements`}
         >
-            {/* Single accessible copy — marquee tracks are decorative duplicates */}
             <p className="sr-only">{accessibleSummary}</p>
 
             <div
@@ -64,32 +59,10 @@ export default function AnnouncementBar() {
                 aria-hidden
             />
 
-            <div className="announce-marquee flex whitespace-nowrap will-change-transform" aria-hidden="true">
-                <MarqueeTrack id="a" />
-                <MarqueeTrack id="b" />
+            <div className="announce-marquee">
+                <MarqueeTrack trackId="a" />
+                <MarqueeTrack trackId="b" />
             </div>
-
-            <style jsx>{`
-                .announce-marquee {
-                    animation: announce-marquee 40s linear infinite;
-                }
-                .announce-bar:hover .announce-marquee {
-                    animation-play-state: paused;
-                }
-                @keyframes announce-marquee {
-                    from {
-                        transform: translate3d(0, 0, 0);
-                    }
-                    to {
-                        transform: translate3d(-50%, 0, 0);
-                    }
-                }
-                @media (prefers-reduced-motion: reduce) {
-                    .announce-marquee {
-                        animation: none;
-                    }
-                }
-            `}</style>
         </div>
     );
 }

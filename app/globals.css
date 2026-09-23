@@ -158,3 +158,38 @@ select:focus-visible,
 :root {
   --site-header-offset: 5.25rem;
 }
+
+/* Header promo marquee — two identical tracks, slide exactly one track width */
+.announce-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: announce-marquee 36s linear infinite;
+}
+
+.announce-marquee-track {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+@keyframes announce-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .announce-bar:hover .announce-marquee {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announce-marquee {
+    animation: none !important;
+  }
+}

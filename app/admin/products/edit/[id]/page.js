@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../../../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
-import { getProductFormAutofill } from "@/lib/productDefaults";
+import { getProductFormAutofill, isPlaceholderSizeInfo } from "@/lib/productDefaults";
 
 export default function EditProductPage({ params }) {
     const unwrappedParams = use(params);
@@ -141,7 +141,9 @@ export default function EditProductPage({ params }) {
         if (values.plating && !plating) setPlating(values.plating);
         if (values.careInstructions && !careInstructions) setCareInstructions(values.careInstructions);
         if (values.weight && !weight) setWeight(values.weight);
-        if (values.sizeInfo && !sizeInfo) setSizeInfo(values.sizeInfo);
+        if (values.sizeInfo && (!sizeInfo || isPlaceholderSizeInfo(sizeInfo))) {
+            setSizeInfo(values.sizeInfo);
+        }
         if (values.description && !description.trim()) setDescription(values.description);
         if (values.isNew === true) setIsNew(true);
         if (values.isBestseller === true) setIsBestseller(true);
@@ -407,8 +409,9 @@ export default function EditProductPage({ params }) {
                                 <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 4g per pair" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Size</label>
-                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} placeholder="e.g. 1.2 cm diameter" />
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">Fit / size</label>
+                                <input type="text" className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[#E91E63] outline-none transition-all font-medium" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} placeholder="e.g. 1.2 cm stud · 45 cm chain + extender" />
+                                <p className="mt-2 text-[11px] text-gray-400 px-1">Shown on the product page. Prefer a real measurement. Auto-fill writes a type-based fit note if this is blank.</p>
                             </div>
                         </div>
 

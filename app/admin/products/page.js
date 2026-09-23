@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
+import { isPlaceholderSizeInfo } from "@/lib/productDefaults";
 
 export default function ProductsListPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -13,6 +14,7 @@ export default function ProductsListPage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [autofilling, setAutofilling] = useState(false);
+    const [fixingSizes, setFixingSizes] = useState(false);
     const [normalizing, setNormalizing] = useState(false);
     const [auditingMrp, setAuditingMrp] = useState(false);
 
@@ -58,6 +60,7 @@ export default function ProductsListPage() {
         !product.care_instructions ||
         !product.weight ||
         !product.size_info ||
+        isPlaceholderSizeInfo(product.size_info) ||
         product.stock_count == null;
 
     const sparseCount = products.filter(isSparse).length;
@@ -72,6 +75,8 @@ export default function ProductsListPage() {
             [p.meta_title, p.categories?.name, p.categories?.slug].filter(Boolean).join(" ")
         )
     ).length;
+
+    const genericSizeCount = products.filter((p) => isPlaceholderSizeInfo(p.size_info)).length;
 
     const inflatedMrpCount = products.filter((p) => {
         const price = Number(p.price) || 0;
@@ -146,12 +151,13 @@ export default function ProductsListPage() {
                 "• Stock (30)",
                 "• Material, plating, care",
                 "• Weight & size (by product type)",
+                "• Replaces generic “One size; see product images…” size lines",
                 "• New Arrival (if under ~45 days old)",
                 "• Best Seller (only if name says bestseller)",
                 "• Missing SEO fields",
                 "",
                 "Does NOT invent MRP / compare-at prices.",
-                "Existing values are never overwritten.",
+                "Custom measurements you typed are kept.",
                 sparseCount ? `\n${sparseCount} product(s) look incomplete.` : "",
             ].join("\n")
         );
@@ -198,6 +204,48 @@ export default function ProductsListPage() {
             alert("Error: " + (err.message || "Autofill failed"));
         }
         setAutofilling(false);
+    };
+
+    const handleFixSizes = async () => {
+        const ok = confirm(
+            [
+                "Fix Fit / size copy on all products?",
+                "",
+                "Replaces generic lines like “One size; see product images for scale”",
+                "with a real fit note from each product’s type",
+                "(earrings, necklace, bracelet, ring).",
+                "",
+                "Measurements you typed yourself are kept.",
+                genericSizeCount
+                    ? `\n${genericSizeCount} product(s) still have placeholder size copy.`
+                    : "\nNo placeholder size lines detected — safe to re-run.",
+            ].join("\n")
+        );
+        if (!ok) return;
+
+        setFixingSizes(true);
+        try {
+            const res = await adminFetch("/api/products/autofill", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fields: ["size_info"] }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || "Size fix failed");
+
+            alert(
+                [
+                    `Scanned: ${data.scanned}`,
+                    `Updated: ${data.updated}`,
+                    `Already fine: ${data.skipped}`,
+                ].join("\n")
+            );
+            await fetchProducts();
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + (err.message || "Could not fix Fit / size copy"));
+        }
+        setFixingSizes(false);
     };
 
     const handleAuditMrp = async () => {
@@ -323,6 +371,12 @@ export default function ProductsListPage() {
                                     · {inflatedMrpCount} inflated MRPs
                                 </span>
                             ) : null}
+                            {genericSizeCount > 0 ? (
+                                <span className="text-amber-600 font-medium">
+                                    {" "}
+                                    · {genericSizeCount} placeholder Fit / size
+                                </span>
+                            ) : null}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
@@ -349,6 +403,14 @@ export default function ProductsListPage() {
                             className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50"
                         >
                             {autofilling ? "Auto-filling…" : "Auto-fill empty fields"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleFixSizes}
+                            disabled={fixingSizes || loading || products.length === 0}
+                            className="px-5 py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:border-[#E91E63] hover:text-[#E91E63] transition-all disabled:opacity-50"
+                        >
+                            {fixingSizes ? "Fixing Fit / size…" : "Fix Fit / size copy"}
                         </button>
                         <Link
                             href="/admin/add-product"

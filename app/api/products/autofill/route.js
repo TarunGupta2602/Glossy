@@ -94,6 +94,16 @@ export async function POST(req) {
         const denied = await guardAdmin(req);
         if (denied) return denied;
 
+        let body = {};
+        try {
+            body = await req.json();
+        } catch {
+            body = {};
+        }
+        const onlyFields = Array.isArray(body.fields)
+            ? body.fields.filter((key) => ALLOWED_UPDATE_KEYS.includes(key))
+            : null;
+
         const supabase = getServiceClient();
         const { data: products, error } = await supabase
             .from("products")
@@ -146,6 +156,11 @@ export async function POST(req) {
             }
 
             const updatePayload = pickAllowed(details);
+            if (onlyFields?.length) {
+                for (const key of Object.keys(updatePayload)) {
+                    if (!onlyFields.includes(key)) delete updatePayload[key];
+                }
+            }
             const updateKeys = Object.keys(updatePayload);
 
             if (!updateKeys.length) {

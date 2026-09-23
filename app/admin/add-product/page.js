@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
-import { getProductFormAutofill } from "@/lib/productDefaults";
+import { getProductFormAutofill, isPlaceholderSizeInfo } from "@/lib/productDefaults";
 
 export default function AddProductPage() {
     const { user, profile, loading: authLoading } = useAuth();
@@ -69,7 +69,9 @@ export default function AddProductPage() {
         if (values.plating && !plating) setPlating(values.plating);
         if (values.careInstructions && !careInstructions) setCareInstructions(values.careInstructions);
         if (values.weight && !weight) setWeight(values.weight);
-        if (values.sizeInfo && !sizeInfo) setSizeInfo(values.sizeInfo);
+        if (values.sizeInfo && (!sizeInfo || isPlaceholderSizeInfo(sizeInfo))) {
+            setSizeInfo(values.sizeInfo);
+        }
         if (values.description && !description.trim()) setDescription(values.description);
         if (values.isNew === true) setIsNew(true);
         if (values.isBestseller === true) setIsBestseller(true);
@@ -356,8 +358,9 @@ export default function AddProductPage() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Size</label>
-                                <input type="text" placeholder="e.g. 1.2 cm diameter" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none transition-all" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} />
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Fit / size</label>
+                                <input type="text" placeholder="e.g. 1.2 cm stud · 45 cm chain + extender" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#E91E63] outline-none transition-all" value={sizeInfo} onChange={(e) => setSizeInfo(e.target.value)} />
+                                <p className="mt-1.5 text-[11px] text-gray-400 px-1">Shown on the product page. Prefer a real measurement.</p>
                             </div>
                         </div>
 
