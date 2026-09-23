@@ -568,7 +568,7 @@ export default function ProductDetailClient({
                 </div>
 
                 {/* Reviews */}
-                <div className="pt-12 lg:pt-14 border-t border-[#efeae4] mb-12 lg:mb-16">
+                <div id="reviews" className="pt-12 lg:pt-14 border-t border-[#efeae4] mb-12 lg:mb-16">
                     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 lg:mb-10">
                         <div>
                             <span className="text-[10px] font-semibold tracking-[0.2em] text-[#E91E63] uppercase mb-2 block">
@@ -577,6 +577,9 @@ export default function ProductDetailClient({
                             <h2 className="font-playfair text-2xl sm:text-3xl font-medium text-[#2a2724] tracking-tight">
                                 Customer reviews
                             </h2>
+                            <p className="mt-2 text-[13px] text-[#8a847c] max-w-md">
+                                Bought this pair? A short review helps the next shopper — and Google shows review snippets on the product listing.
+                            </p>
                         </div>
                         {!showReviewForm && (
                             <button

@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Anti-Tarnish Bracelets for Daily Wear (Page ${pageNum})`
-            : "Anti-Tarnish Bracelets for Daily Wear",
+            ? `Daily Wear Bracelet India (Page ${pageNum})`
+            : "Daily Wear Bracelet India",
         description:
-            "Shop anti-tarnish bracelets & bangles for daily wear — waterproof 18k gold plated styles. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Daily wear bracelet in India — anti-tarnish waterproof 18k gold plated cuffs, chains & bangles. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -36,9 +36,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Bracelets for Daily Wear",
+            title: "Daily Wear Bracelet India",
             description:
-                "Waterproof bracelets and bangles made for everyday Indian humidity — office to evening.",
+                "Daily wear bracelet and trendy cuffs for India — waterproof anti-tarnish styles for office to evening.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -96,10 +96,9 @@ export default async function BraceletsPage({ searchParams }) {
         productsWithDiscounts.map((p) => p.id)
     );
 
-    const pageTitle = "Anti-Tarnish Bracelets for Daily Wear";
+    const pageTitle = "Daily wear bracelet for India";
     const pageDescription =
-        category?.description ||
-        "Waterproof bracelets, bangles, and wrist stacks in 18k gold plated finish — made for Indian humidity. Wear them to office, college, and evenings. Buy 2 Get 1 Free across the store. (Glimmer Bracelet edit)";
+        "Daily wear bracelet cuffs and chains for India — lightweight anti-tarnish waterproof 18k gold plated styles that stay comfortable from commute to evening. Buy 2 Get 1 Free, free shipping over ₹1000.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -129,6 +128,14 @@ export default async function BraceletsPage({ searchParams }) {
                 reviewCounts={reviewCounts}
                 pagination={totalPages > 1 ? { basePath: "/bracelets", page, totalPages } : null}
                 otherCategories={otherCategories}
+                intentLinks={[
+                    { href: "/earrings", label: "Waterproof earrings" },
+                    { href: "/necklaces", label: "Everyday necklaces" },
+                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
+                    { href: "/festive/navratri", label: "Navratri jewellery" },
+                    { href: "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion", label: "Daily-use bracelet guide" },
+                ]}
+                quickFaqs={BRACELETS_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={BRACELETS_GUIDE} />

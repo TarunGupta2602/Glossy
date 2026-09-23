@@ -16,11 +16,20 @@ const FRESH_PATHS = new Set([
     "/festive/diwali",
     "/festive/navratri",
     "/gifts/under-499",
+    "/jewellery-shop/noida",
+    "/earrings",
+    "/necklaces",
+    "/bracelets",
+    "/shop",
     "/blog/navratri-2026-9-colours-9-jewellery-pairings",
     "/blog/how-to-layer-necklaces-diwali-party-looks",
     "/blog/best-jewellery-gifts-bhai-dooj-karva-chauth",
     "/blog/diwali-jewellery-gifts-under-999-india-2026",
     "/blog/navratri-everyday-festive-earrings-india-2026",
+    "/blog/18k-gold-plated-vs-real-gold-jewelry",
+    "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion",
+    "/blog/25-perfect-gift-ideas-for-girlfriend-under-299-that-shell-actually-love",
+    "/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026",
 ]);
 
 function toDate(value, fallback) {

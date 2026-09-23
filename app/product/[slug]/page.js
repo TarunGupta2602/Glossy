@@ -23,6 +23,7 @@ import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { toAbsoluteSiteMediaUrl } from "@/lib/siteMedia";
+import { PAID_SHIPPING_FEE } from "@/lib/promo";
 
 export const revalidate = 300;
 
@@ -248,10 +249,16 @@ export default async function ProductPage({ params }) {
                     url: productUrl,
                     priceCurrency: "INR",
                     price: product.price,
+                    priceValidUntil: "2027-03-31",
                     availability: getProductAvailability(product),
                     itemCondition: "https://schema.org/NewCondition",
                     shippingDetails: {
                         "@type": "OfferShippingDetails",
+                        shippingRate: {
+                            "@type": "MonetaryAmount",
+                            value: String(PAID_SHIPPING_FEE),
+                            currency: "INR",
+                        },
                         shippingDestination: {
                             "@type": "DefinedRegion",
                             addressCountry: "IN",

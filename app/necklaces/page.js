@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Waterproof Everyday Necklaces (Page ${pageNum})`
-            : "Waterproof Everyday Necklaces",
+            ? `Waterproof Everyday Necklace India (Page ${pageNum})`
+            : "Waterproof Everyday Necklace India",
         description:
-            "Shop a waterproof everyday necklace in anti-tarnish 18k gold plated finish — pendants, fine chains & layers. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Waterproof everyday necklace for India — anti-tarnish 18k gold plated pendants, fine chains & layers. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Waterproof Everyday Necklaces",
+            title: "Waterproof Everyday Necklace India",
             description:
                 "A waterproof everyday necklace for Indian weather — layer, gift, and wear without constant polishing.",
             url: `${BRAND_URL}${canonical}`,
@@ -92,10 +92,9 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
     const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
 
-    const pageTitle = "Waterproof Everyday Necklaces";
+    const pageTitle = "Waterproof everyday necklace for India";
     const pageDescription =
-        category?.description ||
-        "Find a waterproof everyday necklace in lightweight 18k gold plated anti-tarnish finish — pendants and fine chains made for Indian weather. Layer them, gift them, wear them every day. Buy 2 Get 1 Free across the store.";
+        "A waterproof everyday necklace for Indian weather — lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to festive dinner. Buy 2 Get 1 Free, free shipping over ₹1000.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

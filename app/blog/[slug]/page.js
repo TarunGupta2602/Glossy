@@ -408,6 +408,10 @@ export default async function BlogDetailPage({ params }) {
                             </div>
                         </header>
 
+                        <div className="lg:hidden">
+                            <BlogShopCta cta={shopCta} compact />
+                        </div>
+
                         {heroImageSrc && (
                             <figure className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl md:rounded-[1.5rem] bg-[#efeae4]">
                                 <Image

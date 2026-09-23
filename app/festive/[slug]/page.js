@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import FestiveCollectionContent from "../../components/FestiveCollectionContent";
 import RelatedGuides from "../../components/RelatedGuides";
+import SiteFaqSection from "../../components/SiteFaqSection";
+import { buildFaqJsonLd } from "@/lib/faqs";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { attachHoverImages } from "@/lib/hoverImages";
@@ -80,12 +82,20 @@ export default async function FestiveCollectionPage({ params }) {
         ],
     };
 
+    const festiveFaqs = collection.faqs || [];
+
     return (
         <section className="pb-10 md:pb-14 bg-white">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
+            {festiveFaqs.length > 0 && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(festiveFaqs)) }}
+                />
+            )}
 
             <FestiveCollectionContent
                 collection={collection}
@@ -109,6 +119,14 @@ export default async function FestiveCollectionPage({ params }) {
                         : null,
                 ].filter(Boolean)}
             />
+            {festiveFaqs.length > 0 && (
+                <SiteFaqSection
+                    faqs={festiveFaqs}
+                    idPrefix={`festive-${collection.slug}-faq`}
+                    includeJsonLd={false}
+                    description="Shipping, Buy 2 Get 1 Free, and what to wear from office to puja or garba."
+                />
+            )}
             <RelatedGuides page="festive" title="Guides, cities, and the rest of the shop" />
         </section>
     );

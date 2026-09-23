@@ -11,6 +11,8 @@ import { attachHoverImages } from "@/lib/hoverImages";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { BRAND_URL } from "@/lib/constants";
 import RelatedGuides from "../components/RelatedGuides";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
+import { SHOP_GUIDE } from "@/lib/categoryGuides";
 
 export const revalidate = 300;
 
@@ -28,21 +30,21 @@ export async function generateMetadata({ searchParams }) {
     const isPaginated = pageNum > 1 && !hasFilters;
     const canonical = hasFilters || isPaginated ? "/shop" : "/shop";
     const title = isPaginated
-        ? `Shop Anti-Tarnish Earrings & Necklaces (Page ${pageNum})`
-        : `Shop Anti-Tarnish Earrings & Necklaces`;
+        ? `Shop Anti-Tarnish Jewellery India (Page ${pageNum})`
+        : `Shop Anti-Tarnish Jewellery India`;
 
     return {
         title,
         description:
-            "Browse the anti-tarnish jewellery catalogue — waterproof earrings, necklaces, bracelets and rings. Filter by category, Buy 2 Get 1 Free, free shipping over ₹1000.",
+            "Shop anti-tarnish jewellery in India — waterproof earrings, everyday necklaces, daily-wear bracelets. Buy 2 Get 1 Free + free shipping over ₹1000.",
         alternates: { canonical },
         robots: hasFilters || isPaginated
             ? { index: false, follow: true }
             : { index: true, follow: true, "max-image-preview": "large" },
         openGraph: {
-            title: "Shop Anti-Tarnish Earrings & Necklaces",
+            title: "Shop Anti-Tarnish Jewellery India",
             description:
-                "Full catalogue of waterproof earrings, necklaces, bracelets and rings — filter, sort, and shop with Buy 2 Get 1 Free.",
+                "Full catalogue of anti-tarnish earrings, waterproof everyday necklaces, and daily-wear bracelets — Buy 2 Get 1 Free.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -115,9 +117,9 @@ export default async function ShopPage({ searchParams }) {
             </section>
 
             <section className={`${SITE_CONTAINER} pt-2 pb-3 text-center`}>
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop anti-tarnish jewellery</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop anti-tarnish jewellery in India</h1>
                 <p className="text-sm md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto mb-4">
-                    This is the full catalogue — filter by category and price, then add two paid pieces for Buy 2 Get 1 Free. For a faster start, open a dedicated edit instead of scrolling the whole grid.
+                    The full anti-tarnish catalogue for Indian weather — waterproof earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Free shipping on prepaid orders over ₹1000.
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
                     <Link href="/earrings" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
@@ -157,6 +159,7 @@ export default async function ShopPage({ searchParams }) {
                         reviewCounts={reviewCounts}
                     />
             </section>
+            <CategoryBuyingGuide guide={SHOP_GUIDE} />
             <RelatedGuides page="home" title="Festivals, gifts, and guides" />
         </main>
     );

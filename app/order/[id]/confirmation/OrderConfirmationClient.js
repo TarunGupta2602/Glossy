@@ -79,6 +79,34 @@ export default function OrderConfirmationClient() {
 
                 <OrderInvoice order={order} showActions />
 
+                {(order.items || []).some((item) => item.slug) && (
+                    <div className="no-print mt-8 rounded-2xl border border-[#efeae4] bg-white p-6 sm:p-8 text-center">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#E91E63] mb-2">
+                            Help the next shopper
+                        </p>
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">
+                            Review your jewellery
+                        </h2>
+                        <p className="text-sm text-gray-500 max-w-md mx-auto mb-5">
+                            A short review after it arrives lifts product snippets in Google — and helps someone pick their first pair.
+                        </p>
+                        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3">
+                            {(order.items || [])
+                                .filter((item) => item.slug && !item.isFreeGift)
+                                .slice(0, 3)
+                                .map((item) => (
+                                    <Link
+                                        key={item.slug}
+                                        href={`/product/${item.slug}#reviews`}
+                                        className="px-5 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                                    >
+                                        Review {item.name}
+                                    </Link>
+                                ))}
+                        </div>
+                    </div>
+                )}
+
                 <div className="no-print mt-8 flex flex-wrap justify-center gap-4">
                     <Link
                         href="/shop"

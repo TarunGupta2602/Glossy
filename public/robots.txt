@@ -10,3 +10,4 @@ Disallow: /order/
 
 Sitemap: https://www.theluxejewels.in/sitemap.xml
 # Blog RSS: https://www.theluxejewels.in/feed.xml
+# Google Merchant Center: https://www.theluxejewels.in/feeds/merchant.xml
