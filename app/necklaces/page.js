@@ -127,7 +127,7 @@ export default async function NecklacesPage({ searchParams }) {
                 intentLinks={[
                     { href: "/earrings", label: "Waterproof earrings" },
                     { href: "/bracelets", label: "Daily-wear bracelets" },
-                    { href: "/gifts/under-999", label: "Diwali gifts under ₹999" },
+                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
                     { href: "/blog/diwali-jewellery-gifts-under-999-india-2026", label: "Diwali gift guide" },
                 ]}
                 quickFaqs={NECKLACES_GUIDE.faqs.slice(0, 2)}

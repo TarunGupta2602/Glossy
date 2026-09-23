@@ -11,17 +11,17 @@ export const revalidate = 300;
 const MAX = 499;
 
 export const metadata = {
-        title: `Jewellery Gifts Under ₹499`,
+    title: `Jewellery Gifts Under ₹499`,
     description:
-        "Diwali & birthday jewellery gifts under ₹499 — waterproof anti-tarnish earrings she’ll actually wear. Buy 2 Get 1 Free.",
+        "Everyday anti-tarnish jewellery gifts under ₹499 — waterproof earrings and chains she’ll actually wear. Gift wrap included. Buy 2 Get 1 Free.",
     alternates: { canonical: "/gifts/under-499" },
     openGraph: {
         title: "Jewellery Gifts Under ₹499",
         description:
-            "Affordable anti-tarnish jewellery gifts under ₹499 — everyday pieces she’ll actually wear.",
+            "Everyday anti-tarnish jewellery gifts under ₹499 — wrap included, Buy 2 Get 1 Free.",
         url: `${BRAND_URL}/gifts/under-499`,
         siteName: "The Luxe Jewels",
-        images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+        images: [{ url: "/festive/gifts-under-499-hero.jpg", width: 1280, height: 720 }],
         type: "website",
     },
 };
@@ -65,8 +65,9 @@ export default async function GiftsUnder499Page() {
             />
             <GiftLandingContent
                 title="Jewellery gifts under ₹499"
-                subtitle="Shop by budget — everyday anti-tarnish pieces under ₹499. For festival looks, open the Diwali or Navratri edit."
+                subtitle="Everyday anti-tarnish studs, chains and bracelets under ₹499 — wrap included. For a festival look, open the Diwali or Navratri edit."
                 maxPrice={MAX}
+                heroImage="/festive/gifts-under-499-hero.jpg"
                 products={products}
                 reviewCounts={reviewCounts}
                 breadcrumbs={[{ label: "Gifts under ₹499" }]}

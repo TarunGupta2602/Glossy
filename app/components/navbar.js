@@ -31,7 +31,6 @@ const SHOP_EXTRAS = [
 ];
 
 const GIFT_LINKS = [
-    { href: "/gifts/under-999", label: "Gifts under ₹999", hint: "Gift-ready" },
     { href: "/gifts/under-499", label: "Gifts under ₹499", hint: "Everyday sparkle" },
     { href: "/festive/diwali", label: "Diwali jewellery", hint: "Office to puja", badge: "Festive" },
     { href: "/festive/navratri", label: "Navratri jewellery", hint: "Desk to dandiya" },

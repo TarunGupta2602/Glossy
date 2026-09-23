@@ -23,7 +23,6 @@ const SHOP_LINKS = [
     { href: "/necklaces", label: "Necklaces" },
     { href: "/bracelets", label: "Bracelets" },
     { href: "/rings", label: "Rings" },
-    { href: "/gifts/under-999", label: "Gifts under ₹999" },
     { href: "/gifts/under-499", label: "Gifts under ₹499" },
     { href: "/festive/diwali", label: "Diwali jewellery" },
     { href: "/festive/navratri", label: "Navratri jewellery" },

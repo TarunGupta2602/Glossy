@@ -91,6 +91,11 @@ const nextConfig = {
         destination: "/blog",
         permanent: true,
       },
+      {
+        source: "/gifts/under-999",
+        destination: "/gifts/under-499",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

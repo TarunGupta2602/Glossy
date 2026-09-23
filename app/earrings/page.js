@@ -132,7 +132,7 @@ export default async function EarringsPage({ searchParams }) {
                 intentLinks={[
                     { href: "/necklaces", label: "Waterproof necklaces" },
                     { href: "/bracelets", label: "Daily-wear bracelets" },
-                    { href: "/gifts/under-999", label: "Diwali gifts under ₹999" },
+                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
                     { href: "/blog/navratri-everyday-festive-earrings-india-2026", label: "Navratri earrings" },
                 ]}
                 quickFaqs={EARRINGS_GUIDE.faqs.slice(0, 2)}

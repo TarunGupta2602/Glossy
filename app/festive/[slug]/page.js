@@ -93,7 +93,7 @@ export default async function FestiveCollectionPage({ params }) {
                     { href: "/earrings", label: "Earrings" },
                     { href: "/necklaces", label: "Necklaces" },
                     { href: "/bracelets", label: "Bracelets" },
-                    { href: "/gifts/under-999", label: "Gifts under ₹999" },
+                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
                     sibling
                         ? { href: `/festive/${sibling.slug}`, label: sibling.title }
                         : null,

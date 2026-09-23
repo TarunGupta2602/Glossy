@@ -26,7 +26,6 @@ function staticSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
         { path: "/bracelets", priority: 0.85, changeFrequency: "weekly" },
         { path: "/rings", priority: 0.85, changeFrequency: "weekly" },
         { path: "/gifts/under-499", priority: 0.8, changeFrequency: "weekly" },
-        { path: "/gifts/under-999", priority: 0.8, changeFrequency: "weekly" },
         { path: "/festive/diwali", priority: 0.85, changeFrequency: "weekly" },
         { path: "/festive/navratri", priority: 0.85, changeFrequency: "weekly" },
         { path: "/jewellery-shop", priority: 0.75, changeFrequency: "monthly" },

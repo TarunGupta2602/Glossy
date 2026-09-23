@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { daysUntil, getLeadFestival } from "@/lib/festivalSeason";
 
-export default function FestivalCountdown({ className = "" }) {
+export default function FestivalCountdown({ className = "", style }) {
     const [days, setDays] = useState(null);
     const [name, setName] = useState("Diwali");
 
@@ -16,7 +16,7 @@ export default function FestivalCountdown({ className = "" }) {
     if (days == null || days < 0) return null;
 
     return (
-        <p className={className}>
+        <p className={className} style={style}>
             {days === 0 ? `${name} is today` : `${name} in ${days} day${days === 1 ? "" : "s"}`}
         </p>
     );

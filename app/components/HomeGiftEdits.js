@@ -10,17 +10,17 @@ const CARDS = [
         href: "/festive/diwali",
         title: "Diwali jewellery",
         hint: "Office to puja",
-        image: "/iloveimg-resized/hero4.jpg",
-        alt: "Diwali gold-look jewellery edit",
-        accent: "#c4a574",
+        image: "/festive/diwali-festive-hero.jpg",
+        alt: "Gold Diwali necklace and earrings on ivory silk",
+        accent: "#e8d5b5",
     },
     {
         href: "/festive/navratri",
         title: "Navratri jewellery",
         hint: "Desk to dandiya",
-        image: "/iloveimg-resized/hero3.jpg",
-        alt: "Navratri lightweight jewellery edit",
-        accent: "#7a2248",
+        image: "/festive/navratri-festive-hero.jpg",
+        alt: "Colourful Navratri earrings and pendant on wine silk",
+        accent: "#f3c6d6",
     },
 ];
 
@@ -57,7 +57,7 @@ export default function HomeGiftEdits() {
                         <Link
                             key={card.href}
                             href={card.href}
-                            className="group relative overflow-hidden rounded-[1.5rem] bg-[#f6f4f1] min-h-[220px] sm:min-h-[260px] md:min-h-[300px]"
+                            className="group relative overflow-hidden rounded-[1.5rem] bg-[#f6f4f1] min-h-[240px] sm:min-h-[280px] md:min-h-[340px]"
                         >
                             <Image
                                 src={card.image}
@@ -67,9 +67,9 @@ export default function HomeGiftEdits() {
                                 quality={85}
                                 placeholder="blur"
                                 blurDataURL={IMAGE_BLUR_DATA_URL}
-                                className="object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.03]"
+                                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                             <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
                                 <p
                                     className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-1.5"
@@ -77,7 +77,7 @@ export default function HomeGiftEdits() {
                                 >
                                     {card.hint}
                                 </p>
-                                <p className="font-playfair text-[1.55rem] md:text-[1.75rem] text-white font-medium leading-tight">
+                                <p className="font-playfair text-[1.55rem] md:text-[1.85rem] text-white font-medium leading-tight">
                                     {card.title}
                                 </p>
                                 <span className="inline-flex mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/90">
@@ -89,12 +89,9 @@ export default function HomeGiftEdits() {
                 </div>
 
                 <div className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-[#6b6560]">
-                    <span>Shop by budget instead:</span>
-                    <Link href="/gifts/under-999" className="font-semibold text-[#2a2724] hover:text-[#E91E63]">
-                        Under ₹999
-                    </Link>
+                    <span>Need a smaller gift?</span>
                     <Link href="/gifts/under-499" className="font-semibold text-[#2a2724] hover:text-[#E91E63]">
-                        Under ₹499
+                        Gifts under ₹499
                     </Link>
                 </div>
             </div>
