@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 import ShopSidebar from "./ShopSidebar";
 import { PAGE_SIZE } from "@/lib/shopQueries";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
@@ -289,7 +290,7 @@ export default function ShopClient({
                                 <ProductCard
                                     key={product.id}
                                     product={product}
-                                    reviewCount={reviewCounts[product.id] || 0}
+                                    {...reviewCardProps(reviewCounts, product.id)}
                                     priority={index < 1}
                                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                                 />

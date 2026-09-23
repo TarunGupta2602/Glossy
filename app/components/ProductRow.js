@@ -4,6 +4,7 @@ import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP } from "@/lib/s
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { PRODUCT_ROW_SIZES } from "@/lib/imageBlur";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function ProductRow({
@@ -126,7 +127,7 @@ export default function ProductRow({
                         >
                             <ProductCard
                                 product={product}
-                                reviewCount={reviewCounts[product.id] || 0}
+                                {...reviewCardProps(reviewCounts, product.id)}
                                 sizes={PRODUCT_ROW_SIZES}
                             />
                         </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { listCityLandings } from "@/lib/cityLandings";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
-import { BRAND_URL, GOOGLE_BUSINESS_URL, SERVICE_AREA_LABEL } from "@/lib/constants";
+import { BRAND_URL, SERVICE_AREA_LABEL } from "@/lib/constants";
 
 export const metadata = {
     title: "Jewellery Shop Near You | Noida & Delhi NCR",
@@ -35,24 +35,6 @@ export default function JewelleryShopIndexPage() {
                     {SERVICE_AREA_LABEL}. Pick your city page for local search intent, then shop
                     anti-tarnish everyday wear online.
                 </p>
-                {GOOGLE_BUSINESS_URL ? (
-                    <p className="mt-4 text-[13px]">
-                        <a
-                            href={GOOGLE_BUSINESS_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline hover:text-[#E91E63]"
-                        >
-                            View our Google Business Profile →
-                        </a>
-                    </p>
-                ) : (
-                    <p className="mt-4 text-[13px] text-[#8a847c]">
-                        Tip: set <code>NEXT_PUBLIC_GOOGLE_BUSINESS_URL</code> once your Google
-                        Business Profile is live to link it sitewide.
-                    </p>
-                )}
-
                 <ul className="mt-10 grid sm:grid-cols-2 gap-4 max-w-3xl">
                     {cities.map((city) => (
                         <li key={city.slug}>

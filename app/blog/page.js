@@ -3,7 +3,7 @@ import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { BLOG_PAGE_SIZE, getBlogPageCount } from "@/lib/blogQueries";
+import { BLOG_PAGE_SIZE, getBlogPageCount, mergeBlogFeeds } from "@/lib/blogQueries";
 import { getPaginatedCanonical, normalizeBlogImageSrc } from "@/lib/seo";
 import { BRAND_URL, TWITTER_HANDLE } from "@/lib/constants";
 import { normalizeBlogSlug } from "@/lib/seo";
@@ -81,20 +81,7 @@ export default async function BlogPage({ searchParams }) {
     const page = parseInt(rawPage || "1", 10);
     if (isNaN(page) || page < 1) redirect("/blog");
 
-    const { count } = await supabase
-        .from("blogs")
-        .select("id", { count: "exact", head: true });
-
     const staticSummaries = listStaticBlogSummaries();
-    const dbCount = count || 0;
-    const totalCount = dbCount + staticSummaries.length;
-
-    const from = (page - 1) * BLOG_PAGE_SIZE;
-    const to = from + BLOG_PAGE_SIZE - 1;
-
-    // Merge static growth posts at the front of the journal feed
-    const merged = [...staticSummaries];
-    const staticSlugs = new Set(staticSummaries.map((p) => p.slug));
 
     const { data: dbBlogs } = await supabase
         .from("blogs")
@@ -102,15 +89,11 @@ export default async function BlogPage({ searchParams }) {
         .order("date_posted", { ascending: false })
         .limit(200);
 
-    for (const blog of dbBlogs || []) {
-        const slug = normalizeBlogSlug(blog.slug) || blog.slug;
-        if (staticSlugs.has(slug)) continue;
-        merged.push({ ...blog, slug });
-    }
+    const merged = mergeBlogFeeds(dbBlogs, staticSummaries);
+    const totalCount = merged.length;
 
-    merged.sort(
-        (a, b) => new Date(b.date_posted || 0).getTime() - new Date(a.date_posted || 0).getTime()
-    );
+    const from = (page - 1) * BLOG_PAGE_SIZE;
+    const to = from + BLOG_PAGE_SIZE - 1;
 
     const blogs = merged.slice(from, to + 1);
     const totalPages = getBlogPageCount(totalCount);

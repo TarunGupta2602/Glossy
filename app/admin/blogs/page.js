@@ -206,6 +206,10 @@ export default function AdminBlogsPage() {
                             Back to Dashboard
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900">Manage Blogs</h1>
+                        <p className="text-sm text-gray-500 mt-1 max-w-xl">
+                            Admin posts are live on /blog and win over any in-repo draft with the
+                            same slug. Use New Blog Post → ranking template for festive SEO pieces.
+                        </p>
                         <p className="text-sm text-gray-500 mt-1">
                             {blogs.length} blog post{blogs.length !== 1 ? "s" : ""}
                             {dirtySlugCount > 0 ? (

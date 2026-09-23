@@ -13,6 +13,7 @@ import { useToast } from "../context/ToastContext";
 export default function ProductCard({
     product,
     reviewCount = 0,
+    reviewAverage = 0,
     hideCategory = false,
     priority = false,
     sizes = PRODUCT_CARD_SIZES,
@@ -180,8 +181,9 @@ export default function ProductCard({
                 </div>
 
                 {reviewCount > 0 && (
-                    <p className="mt-1.5 text-[11px] text-gray-400">
-                        <span className="text-amber-500">★</span> {reviewCount}
+                    <p className="mt-1.5 text-[11px] text-gray-400 tabular-nums">
+                        <span className="text-amber-500">★</span>{" "}
+                        {reviewAverage > 0 ? reviewAverage.toFixed(1) : "—"} ({reviewCount})
                     </p>
                 )}
             </div>

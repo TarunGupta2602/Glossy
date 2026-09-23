@@ -134,6 +134,12 @@ export default async function ShopPage({ searchParams }) {
                     <Link href="/gifts/under-999" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Gifts under ₹999
                     </Link>
+                    <Link href="/festive/diwali" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                        Diwali
+                    </Link>
+                    <Link href="/festive/navratri" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                        Navratri
+                    </Link>
                 </div>
             </section>
 

@@ -27,6 +27,8 @@ function staticSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
         { path: "/rings", priority: 0.85, changeFrequency: "weekly" },
         { path: "/gifts/under-499", priority: 0.8, changeFrequency: "weekly" },
         { path: "/gifts/under-999", priority: 0.8, changeFrequency: "weekly" },
+        { path: "/festive/diwali", priority: 0.85, changeFrequency: "weekly" },
+        { path: "/festive/navratri", priority: 0.85, changeFrequency: "weekly" },
         { path: "/jewellery-shop", priority: 0.75, changeFrequency: "monthly" },
         { path: "/jewellery-shop/noida", priority: 0.8, changeFrequency: "monthly" },
         { path: "/jewellery-shop/greater-noida", priority: 0.75, changeFrequency: "monthly" },
@@ -41,23 +43,21 @@ function staticSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
         { path: "/blog", priority: 0.85, changeFrequency: "weekly" },
     ];
 
-    const pages = staticRoutes.map(({ path, priority, changeFrequency }) => ({
+    return staticRoutes.map(({ path, priority, changeFrequency }) => ({
         url: `${BASE_URL}${path}`,
         lastModified,
         changeFrequency,
         priority,
     }));
+}
 
-    for (const blog of STATIC_BLOG_POSTS) {
-        pages.push({
-            url: `${BASE_URL}/blog/${blog.slug}`,
-            lastModified: toDate(blog.updated_at || blog.date_posted, lastModified),
-            changeFrequency: "monthly",
-            priority: 0.75,
-        });
-    }
-
-    return pages;
+function staticBlogSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
+    return STATIC_BLOG_POSTS.map((blog) => ({
+        url: `${BASE_URL}/blog/${blog.slug}`,
+        lastModified: toDate(blog.updated_at || blog.date_posted, lastModified),
+        changeFrequency: "monthly",
+        priority: 0.75,
+    }));
 }
 
 export default async function sitemap() {
@@ -155,9 +155,7 @@ export default async function sitemap() {
             .not("slug", "is", null)
             .order("date_posted", { ascending: false });
 
-        const seenBlogUrls = new Set(
-            base.filter((p) => p.url.includes("/blog/")).map((p) => p.url)
-        );
+        const seenBlogUrls = new Set();
         const blogPages = [];
 
         for (const blog of blogs || []) {
@@ -173,13 +171,19 @@ export default async function sitemap() {
                     blogLastModified
                 ),
                 changeFrequency: "monthly",
-                priority: 0.7,
+                priority: 0.75,
             });
+        }
+
+        for (const page of staticBlogSitemapPages(blogLastModified)) {
+            if (seenBlogUrls.has(page.url)) continue;
+            seenBlogUrls.add(page.url);
+            blogPages.push(page);
         }
 
         return [...base, ...categoryPages, ...productPages, ...blogPages];
     } catch (error) {
         console.error("Sitemap generation failed, returning static fallback:", error);
-        return staticSitemapPages();
+        return [...staticSitemapPages(), ...staticBlogSitemapPages()];
     }
 }

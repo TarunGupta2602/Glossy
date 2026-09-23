@@ -3,6 +3,7 @@
 import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { useEffect } from "react";
 import ProductCard from "../components/ProductCard";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 import CategoryPagination from "../components/CategoryPagination";
 import { PAGE_SIZE } from "@/lib/shopQueries";
 import { trackSearch } from "@/lib/gtag";
@@ -53,7 +54,7 @@ export default function SearchClient({
                             <ProductCard
                                 key={product.id}
                                 product={product}
-                                reviewCount={reviewCounts[product.id] || 0}
+                                {...reviewCardProps(reviewCounts, product.id)}
                             />
                         ))}
                     </div>

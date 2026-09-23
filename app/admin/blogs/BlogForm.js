@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { adminFetch } from "@/lib/adminApi";
 import { normalizeBlogSlug, truncateMetaDescription } from "@/lib/seo";
+import { BLOG_TEMPLATES } from "@/lib/blogTemplates";
 
 function parseKeywords(value) {
     return String(value || "")
@@ -46,13 +47,26 @@ function metaDescTone(length) {
     return "text-red-600";
 }
 
+function wordCount(text) {
+    return String(text || "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+}
+
 export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish Blog Post" }) {
+    const isNewPost = !initialData?.id;
     const [title, setTitle] = useState(initialData?.title || "");
     const [slug, setSlug] = useState(
         initialData?.slug ? normalizeBlogSlug(initialData.slug) : ""
     );
-    const [author, setAuthor] = useState(initialData?.author || "");
-    const [authorBio, setAuthorBio] = useState(initialData?.author_bio || "");
+    const [author, setAuthor] = useState(initialData?.author || "Priya Sharma");
+    const [authorBio, setAuthorBio] = useState(
+        initialData?.author_bio ||
+            (initialData?.id
+                ? ""
+                : "Priya writes The Luxe Jewels journal — practical anti-tarnish care, everyday styling, and gifting guidance for shoppers across Noida, Delhi NCR, and India.")
+    );
     const [description, setDescription] = useState(initialData?.description || "");
     const [content, setContent] = useState(initialData?.content || "");
     const [whyThisMatters, setWhyThisMatters] = useState(
@@ -96,6 +110,51 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
     const h1Count = useMemo(() => countMarkdownH1(content), [content]);
     const keywords = useMemo(() => parseKeywords(metaKeywords), [metaKeywords]);
     const suggestedKeywords = useMemo(() => suggestKeywordsFromTitle(title), [title]);
+    const bodyWords = useMemo(() => wordCount(content) + wordCount(whyThisMatters), [content, whyThisMatters]);
+    const filledFaqs = useMemo(
+        () => faqs.filter((f) => f.question?.trim() && f.answer?.trim()).length,
+        [faqs]
+    );
+    const hasInternalLinks = useMemo(
+        () => /\]\(\/(festive|earrings|necklaces|bracelets|rings|shop|gifts|blog)\//.test(content),
+        [content]
+    );
+
+    const seoChecks = useMemo(
+        () => [
+            { ok: title.trim().length >= 20, label: "Title is specific (20+ characters)" },
+            { ok: slug.trim().length >= 8 && !slug.startsWith("-"), label: "Clean URL slug" },
+            {
+                ok: metaTitle.length >= 40 && metaTitle.length <= 60,
+                label: `Meta title ${metaTitle.length}/60 (aim 40–60)`,
+            },
+            {
+                ok: metaDescription.length >= 120 && metaDescription.length <= 160,
+                label: `Meta description ${metaDescription.length}/160 (aim 120–160)`,
+            },
+            { ok: keywords.length >= 3, label: "At least 3 keyword tags" },
+            { ok: bodyWords >= 800, label: `Long-form body ${bodyWords}/800 words` },
+            { ok: h1Count === 0, label: "Body uses ## headings (one H1 only)" },
+            { ok: Boolean(imagePreview), label: "Cover image uploaded" },
+            { ok: filledFaqs >= 3, label: `FAQ schema ${filledFaqs}/3` },
+            { ok: authorBio.trim().length >= 40, label: "Author bio for E-E-A-T" },
+            { ok: hasInternalLinks, label: "Internal links to shop / festive pages" },
+        ],
+        [
+            title,
+            slug,
+            metaTitle,
+            metaDescription,
+            keywords.length,
+            bodyWords,
+            h1Count,
+            imagePreview,
+            filledFaqs,
+            authorBio,
+            hasInternalLinks,
+        ]
+    );
+    const seoPassed = seoChecks.filter((c) => c.ok).length;
 
     const handleTitleChange = (value) => {
         setTitle(value);
@@ -160,6 +219,35 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
         if (existing.has(keyword.toLowerCase())) return;
         const next = [...parseKeywords(metaKeywords), keyword];
         setMetaKeywords(next.join(", "));
+    };
+
+    const applyTemplate = (template) => {
+        if (!template) return;
+        const hasDraft =
+            title.trim() ||
+            content.trim() ||
+            description.trim() ||
+            metaTitle.trim() ||
+            faqs.some((f) => f.question?.trim());
+        if (hasDraft && !confirm(`Replace the current draft with “${template.label}”?`)) {
+            return;
+        }
+
+        setTitle(template.title || "");
+        setSlug(template.slug || generateSlug(template.title || ""));
+        setAuthor(template.author || "Priya Sharma");
+        setAuthorBio(template.author_bio || "");
+        setDescription(template.description || "");
+        setContent(template.content || "");
+        setWhyThisMatters(template.why_this_matters || "");
+        setTipsMistakes(template.tips_mistakes || []);
+        setComparisonHeaders(template.comparison_headers || "Option | Best for | Notes");
+        setComparisonRowsText(template.comparison_rows || "");
+        setMetaTitle(template.meta_title || "");
+        setMetaDescription(template.meta_description || "");
+        setMetaKeywords(template.meta_keywords || "");
+        setFaqs(template.faqs || []);
+        setDatePosted(new Date().toISOString().split("T")[0]);
     };
 
     const applySuggestedKeywords = () => {
@@ -285,6 +373,73 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
+            {isNewPost && (
+                <div className="rounded-2xl border border-gray-100 bg-[#fdfbf7] p-5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 mb-2">
+                        Start from a ranking template
+                    </p>
+                    <p className="text-sm text-gray-600 mb-4">
+                        Loads slug, meta, FAQs, and shop/festive links. Upload a cover, finish the
+                        copy, then publish — you can edit anytime from Manage Blogs.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {BLOG_TEMPLATES.map((template) => (
+                            <button
+                                key={template.id}
+                                type="button"
+                                onClick={() => applyTemplate(template)}
+                                className="text-left rounded-xl border border-gray-200 bg-white px-4 py-3 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                            >
+                                <span className="block text-sm font-semibold text-gray-900">
+                                    {template.label}
+                                </span>
+                                <span className="block text-[12px] text-gray-500 mt-0.5">
+                                    {template.hint}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className="rounded-2xl border border-gray-100 bg-white p-5">
+                <div className="flex items-end justify-between gap-3 mb-3">
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">
+                            SEO checklist
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Aim for all green before publish — this is what Google uses for snippets
+                            and FAQ rich results.
+                        </p>
+                    </div>
+                    <p
+                        className={`text-sm font-bold tabular-nums ${
+                            seoPassed === seoChecks.length
+                                ? "text-emerald-600"
+                                : seoPassed >= 8
+                                  ? "text-amber-600"
+                                  : "text-gray-500"
+                        }`}
+                    >
+                        {seoPassed}/{seoChecks.length}
+                    </p>
+                </div>
+                <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                    {seoChecks.map((item) => (
+                        <li
+                            key={item.label}
+                            className={`text-[12px] ${item.ok ? "text-emerald-700" : "text-gray-500"}`}
+                        >
+                            <span className="mr-1.5" aria-hidden>
+                                {item.ok ? "✓" : "○"}
+                            </span>
+                            {item.label}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
             <div className="space-y-6">
                 <div>
                     <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">
@@ -414,7 +569,11 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
             </div>
 
             <div className="pt-8 border-t border-gray-100">
-                <h2 className="text-xl font-bold mb-6 text-gray-900 px-1">Featured Image</h2>
+                <h2 className="text-xl font-bold mb-2 text-gray-900 px-1">Featured Image</h2>
+                <p className="text-xs text-gray-400 mb-6 px-1">
+                    Upload a unique cover (ideally 1200×630). This is the Open Graph image Google
+                    and WhatsApp use — avoid the logo.
+                </p>
                 <div className="space-y-4">
                     {imagePreview && (
                         <div className="relative w-full max-w-md h-48 rounded-xl overflow-hidden bg-gray-100">

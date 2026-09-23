@@ -11,6 +11,7 @@ import ReviewList from "../../components/ReviewList";
 import ReviewForm from "../../components/ReviewForm";
 import TrustStrip from "../../components/TrustStrip";
 import ProductCard from "../../components/ProductCard";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 import { trackViewItem } from "@/lib/gtag";
 import { trackMetaViewContent } from "@/lib/metaPixel";
 import { trackRecentlyViewed } from "@/lib/recentlyViewed";
@@ -357,6 +358,14 @@ export default function ProductDetailClient({
                             {product.name}
                         </h1>
 
+                        {initialReviewStats?.totalReviews > 0 && (
+                            <p className="mt-2.5 text-[13px] text-[#8a847c] tabular-nums">
+                                <span className="text-amber-500">★</span>{" "}
+                                {Number(initialReviewStats.avgRating || 0).toFixed(1)} (
+                                {initialReviewStats.totalReviews})
+                            </p>
+                        )}
+
                         <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                             <p className="text-[1.5rem] sm:text-[1.65rem] font-semibold text-[#2a2724] tracking-tight leading-none">
                                 ₹{price}
@@ -631,7 +640,7 @@ export default function ProductDetailClient({
                                 <ProductCard
                                     key={p.id}
                                     product={p}
-                                    reviewCount={relatedReviewCounts[p.id] || 0}
+                                    {...reviewCardProps(relatedReviewCounts, p.id)}
                                 />
                             ))}
                         </div>

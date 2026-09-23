@@ -23,6 +23,7 @@ const PRIMARY_LINKS = [
     { href: "/bracelets", label: "Bracelets" },
     { href: "/rings", label: "Rings" },
     { href: "/gifts/under-999", label: "Gifts" },
+    { href: "/festive/diwali", label: "Festive" },
     { href: "/collection", label: "Collections" },
     { href: "/blog", label: "Blog" },
 ];
@@ -32,6 +33,8 @@ const FEATURED_EDITS = [
     { href: "/shop?sort=popular", label: "Bestsellers", hint: "Most loved" },
     { href: "/gifts/under-999", label: "Under ₹999", hint: "Gift-ready" },
     { href: "/gifts/under-499", label: "Under ₹499", hint: "Everyday sparkle" },
+    { href: "/festive/diwali", label: "Diwali edit", hint: "Festive under ₹999" },
+    { href: "/festive/navratri", label: "Navratri edit", hint: "Desk to dandiya" },
 ];
 
 function IconBtn({ as: Comp = "button", className = "", children, ...props }) {
@@ -99,6 +102,7 @@ export default function Navbar() {
 
     const isActive = (href) => {
         if (href === "/") return pathname === "/";
+        if (href.startsWith("/festive/")) return pathname?.startsWith("/festive");
         return pathname === href || pathname.startsWith(`${href}/`);
     };
 
@@ -133,12 +137,14 @@ export default function Navbar() {
                     <BrandLogo href="/" onClick={closeMenu} size="md" priority />
 
                     {/* Desktop links */}
-                    <div className="hidden lg:flex items-center gap-1 xl:gap-1.5">
+                    <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 min-w-0">
                         {PRIMARY_LINKS.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`relative px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                                className={`relative px-2 xl:px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                                    link.href === "/collection" ? "hidden xl:inline-flex" : ""
+                                } ${
                                     isActive(link.href)
                                         ? "text-[#E91E63]"
                                         : "text-gray-800 hover:text-[#E91E63]"
@@ -212,6 +218,18 @@ export default function Navbar() {
                                             className="block rounded-lg px-2 py-1.5 text-[12px] font-semibold text-gray-800 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
                                         >
                                             Gifts under ₹499
+                                        </Link>
+                                        <Link
+                                            href="/festive/diwali"
+                                            className="block rounded-lg px-2 py-1.5 text-[12px] font-semibold text-gray-800 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
+                                        >
+                                            Diwali jewellery
+                                        </Link>
+                                        <Link
+                                            href="/festive/navratri"
+                                            className="block rounded-lg px-2 py-1.5 text-[12px] font-semibold text-gray-800 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
+                                        >
+                                            Navratri jewellery
                                         </Link>
                                         <Link
                                             href="/collection"
@@ -506,6 +524,7 @@ export default function Navbar() {
                                     { href: "/necklaces", label: "Necklaces" },
                                     { href: "/bracelets", label: "Bracelets" },
                                     { href: "/rings", label: "Rings" },
+                                    { href: "/festive/diwali", label: "Festive" },
                                     { href: "/collection", label: "Collections" },
                                     { href: "/blog", label: "Journal" },
                                     { href: "/our-story", label: "Our story" },

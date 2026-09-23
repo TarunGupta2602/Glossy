@@ -18,7 +18,6 @@ import {
     parseBlogKeywords,
     keywordToTagSlug,
 } from "@/lib/blogQueries";
-import { getStaticBlogBySlug } from "@/lib/staticBlogPosts";
 import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
 import { getBlogShopCta } from "@/lib/blogShopCtas";
 import { getBlogProductPicks } from "@/lib/blogProductPicks";
@@ -42,18 +41,11 @@ export const revalidate = 300;
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    const staticHit = getStaticBlogBySlug(slug) || getStaticBlogBySlug(normalizeBlogSlug(slug));
-    const { blog: rawBlog, requested, canonicalSlug } = staticHit
-        ? {
-              blog: staticHit,
-              requested: String(slug || ""),
-              canonicalSlug: staticHit.slug,
-          }
-        : await findBlogBySlug(
-              getServiceClient(),
-              slug,
-              "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author, faqs"
-          );
+    const { blog: rawBlog, requested, canonicalSlug } = await findBlogBySlug(
+        getServiceClient(),
+        slug,
+        "title, meta_title, meta_description, meta_keywords, description, image, slug, date_posted, updated_at, author, faqs"
+    );
 
     if (!rawBlog) {
         return {

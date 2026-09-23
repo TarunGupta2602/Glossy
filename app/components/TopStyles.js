@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_SAND, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 
 export default function TopStyles({ tabs = [], reviewCounts = {} }) {
     const safeTabs = tabs.filter((tab) => tab?.id && Array.isArray(tab.products));
@@ -92,7 +93,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
                                 >
                                     <ProductCard
                                         product={product}
-                                        reviewCount={reviewCounts[product.id] || 0}
+                                        {...reviewCardProps(reviewCounts, product.id)}
                                         priority={index < 1}
                                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                     />

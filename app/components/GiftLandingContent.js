@@ -3,6 +3,7 @@ import { SITE_CONTAINER } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
 import SiteFaqSection from "./SiteFaqSection";
 import { PROMO_LABEL } from "@/lib/promo";
+import { reviewCardProps } from "@/lib/reviewCounts";
 import { GIFT_FAQS } from "@/lib/faqs";
 
 export default function GiftLandingContent({
@@ -92,7 +93,7 @@ export default function GiftLandingContent({
                                 <ProductCard
                                     key={product.id}
                                     product={product}
-                                    reviewCount={reviewCounts[product.id] || 0}
+                                    {...reviewCardProps(reviewCounts, product.id)}
                                     priority={index < 1}
                                 />
                             ))}

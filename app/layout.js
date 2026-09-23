@@ -28,7 +28,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL, INSTAGRAM_URL, BUSINESS_ADDRESS, GOOGLE_BUSINESS_URL } from "@/lib/constants";
+import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL, INSTAGRAM_URL, BUSINESS_ADDRESS } from "@/lib/constants";
 
 function buildSiteVerification() {
     const verification = {
@@ -156,7 +156,7 @@ export default function RootLayout({ children }) {
       "areaServed": "IN",
       "availableLanguage": ["English", "Hindi"]
     },
-    "sameAs": [INSTAGRAM_URL, ...(GOOGLE_BUSINESS_URL ? [GOOGLE_BUSINESS_URL] : [])]
+    "sameAs": [INSTAGRAM_URL]
   };
 
   const webSiteJsonLd = {
@@ -213,7 +213,7 @@ export default function RootLayout({ children }) {
       "opens": "10:00",
       "closes": "19:00"
     },
-    "sameAs": [INSTAGRAM_URL, ...(GOOGLE_BUSINESS_URL ? [GOOGLE_BUSINESS_URL] : [])]
+    "sameAs": [INSTAGRAM_URL]
   };
 
   return (

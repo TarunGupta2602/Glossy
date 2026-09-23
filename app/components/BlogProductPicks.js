@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ProductCard from "./ProductCard";
+import { reviewCardProps } from "@/lib/reviewDisplay";
 
 /**
  * Live product strip on blog posts — turns readers into shoppers.
@@ -38,7 +39,7 @@ export default function BlogProductPicks({
                     <ProductCard
                         key={product.id}
                         product={product}
-                        reviewCount={reviewCounts[product.id] || 0}
+                        {...reviewCardProps(reviewCounts, product.id)}
                         priority={index < 1}
                         hideCategory
                     />

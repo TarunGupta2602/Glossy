@@ -41,16 +41,16 @@ export default function HomeGiftEdits() {
                         </p>
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                             <Link
-                                href="/gifts/under-999"
+                                href="/festive/diwali"
                                 className="inline-flex h-11 items-center rounded-full bg-[#1a1214] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#E91E63] transition-colors duration-300"
                             >
-                                Diwali gifts under ₹999
+                                Shop Diwali
                             </Link>
                             <Link
-                                href="/earrings"
+                                href="/festive/navratri"
                                 className="inline-flex h-11 items-center rounded-full border border-gray-300 px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-900 hover:border-gray-900 transition-colors"
                             >
-                                Navratri earrings
+                                Shop Navratri
                             </Link>
                             <Link
                                 href="/blog/diwali-jewellery-gifts-under-999-india-2026"

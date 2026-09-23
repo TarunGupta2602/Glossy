@@ -57,7 +57,11 @@ export default function NewBlogPage() {
                 </Link>
 
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <h1 className="text-2xl font-bold mb-8 text-gray-900">New Blog Post</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">New Blog Post</h1>
+                    <p className="text-sm text-gray-500 mt-2 mb-8">
+                        Publish from this form to control slug, meta, FAQs, and cover image. Pick a
+                        festive template below, finish the copy, then hit publish.
+                    </p>
                     <BlogForm onSubmit={handleCreate} submitLabel="Publish Blog Post" />
                 </div>
             </div>

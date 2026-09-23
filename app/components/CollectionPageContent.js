@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 import CategoryPagination from "./CategoryPagination";
 import ExploreCollections from "./ExploreCollections";
 import { getCategoryHref } from "@/lib/categoryLanding";
+import { reviewCardProps } from "@/lib/reviewCounts";
 
 export default function CollectionPageContent({
     breadcrumbs,
@@ -19,6 +20,7 @@ export default function CollectionPageContent({
     otherCategories = [],
     intentLinks = [],
     quickFaqs = [],
+    eyebrow,
 }) {
     const isSmallCollection = products.length <= 4;
 
@@ -36,6 +38,7 @@ export default function CollectionPageContent({
                 count={count}
                 showingCount={showingCount}
                 breadcrumbs={breadcrumbs}
+                eyebrow={eyebrow}
             />
 
             <div className="bg-gradient-to-b from-[#FAFAFA] to-white">
@@ -84,7 +87,7 @@ export default function CollectionPageContent({
                                     <ProductCard
                                         key={product.id}
                                         product={product}
-                                        reviewCount={reviewCounts[product.id] || 0}
+                                        {...reviewCardProps(reviewCounts, product.id)}
                                         hideCategory
                                         priority={index < 1}
                                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

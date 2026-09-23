@@ -10,6 +10,7 @@ export default function CollectionHero({
     count,
     showingCount,
     breadcrumbs,
+    eyebrow = "Collection",
 }) {
     const pieceLabel =
         count > 0
@@ -24,7 +25,7 @@ export default function CollectionHero({
                     <div className="flex items-center gap-3 mb-3">
                         <div className="h-px w-10 bg-[#E91E63]" />
                         <span className="text-[10px] font-black tracking-[0.2em] text-[#E91E63] uppercase">
-                            Collection
+                            {eyebrow}
                         </span>
                     </div>
                     <h1
@@ -76,7 +77,7 @@ export default function CollectionHero({
                                 <div className="flex items-center gap-3 mb-2 md:mb-4">
                                     <div className="h-px w-8 md:w-10 bg-[#FF80AB]" />
                                     <span className="text-[10px] font-black tracking-[0.25em] text-[#FF80AB] uppercase">
-                                        Collection
+                                        {eyebrow}
                                     </span>
                                 </div>
                                 <h1

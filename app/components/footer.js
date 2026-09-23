@@ -12,10 +12,10 @@ import {
     INSTAGRAM_URL,
     INSTAGRAM_HANDLE,
     BUSINESS_HOURS,
-    GOOGLE_BUSINESS_URL,
 } from "@/lib/constants";
 import PaymentIcons from "./PaymentIcons";
 import BrandLogo from "./BrandLogo";
+import Newsletter from "./newsletter";
 
 const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
@@ -25,6 +25,8 @@ const SHOP_LINKS = [
     { href: "/rings", label: "Rings" },
     { href: "/gifts/under-999", label: "Gifts under ₹999" },
     { href: "/gifts/under-499", label: "Gifts under ₹499" },
+    { href: "/festive/diwali", label: "Diwali jewellery" },
+    { href: "/festive/navratri", label: "Navratri jewellery" },
 ];
 
 const HELP_LINKS = [
@@ -203,18 +205,12 @@ export default function Footer() {
                                 </svg>
                                 {INSTAGRAM_HANDLE}
                             </a>
-                            {GOOGLE_BUSINESS_URL ? (
-                                <a
-                                    href={GOOGLE_BUSINESS_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="mt-3 inline-flex min-h-11 items-center text-[12px] font-medium text-gray-500 hover:text-[#E91E63] transition-colors"
-                                >
-                                    Google Business Profile →
-                                </a>
-                            ) : null}
                         </div>
                     </div>
+                </div>
+
+                <div className="py-8 md:py-10 border-b border-gray-100">
+                    <Newsletter variant="footer" />
                 </div>
 
                 <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
