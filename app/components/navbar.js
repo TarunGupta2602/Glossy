@@ -78,9 +78,10 @@ function SearchField({
     variant = "bar",
 }) {
     const compact = variant === "compact";
+    const mobile = variant === "mobile";
     return (
         <form
-            className={compact ? "hidden lg:flex items-center" : "flex items-center w-full"}
+            className={compact ? "hidden lg:flex items-center" : "flex items-center w-full min-w-0"}
             onSubmit={(e) => {
                 e.preventDefault();
                 onSubmit();
@@ -90,7 +91,9 @@ function SearchField({
                 className={`flex items-center rounded-full border border-[#efeae4] bg-[#fdfbf7] ${
                     compact
                         ? "h-10 w-48 xl:w-56 px-3.5 focus-within:w-64 focus-within:border-[#e2d5c8] transition-[width,border-color]"
-                        : "h-10 w-full px-3.5"
+                        : mobile
+                            ? "h-9 w-full px-3"
+                            : "h-10 w-full px-3.5"
                 }`}
             >
                 <svg
@@ -152,6 +155,7 @@ export default function Navbar() {
     const shopMenuTimer = useRef(null);
     const giftsMenuTimer = useRef(null);
     const searchInputRef = useRef(null);
+    const mobileSearchRef = useRef(null);
     const { cartCount, openCart } = useCart();
     const { wishlist } = useWishlist();
     const { user, profile, signOut } = useAuth();
@@ -224,7 +228,22 @@ export default function Navbar() {
         setSearchQuery("");
         setIsSearchOpen(false);
         searchInputRef.current?.blur();
+        mobileSearchRef.current?.blur();
     };
+
+    const openMobileSearch = () => {
+        setIsMenuOpen(false);
+        setIsUserMenuOpen(false);
+        setIsSearchOpen(true);
+    };
+
+    useEffect(() => {
+        if (!isSearchOpen) return undefined;
+        if (typeof window === "undefined") return undefined;
+        if (window.matchMedia("(min-width: 1024px)").matches) return undefined;
+        const frame = window.requestAnimationFrame(() => mobileSearchRef.current?.focus());
+        return () => window.cancelAnimationFrame(frame);
+    }, [isSearchOpen]);
 
     const searchHits = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
@@ -262,7 +281,37 @@ export default function Navbar() {
                 }`}
             >
                 <div className={`${HOME_CONTAINER} flex items-center justify-between gap-2 h-12 sm:h-14 md:h-16`}>
-                    <BrandLogo href="/" onClick={closeMenu} size="md" priority />
+                    <div className={`lg:hidden items-center gap-1.5 min-w-0 flex-1 ${isSearchOpen ? "flex" : "hidden"}`}>
+                        <IconBtn
+                            type="button"
+                            onClick={clearSearch}
+                            aria-label="Close search"
+                            className="shrink-0"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                                <path d="M19 12H5m7 7-7-7 7-7" />
+                            </svg>
+                        </IconBtn>
+                        <SearchField
+                            inputRef={mobileSearchRef}
+                            variant="mobile"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setIsSearchOpen(true);
+                            }}
+                            onFocus={() => {
+                                setIsSearchOpen(true);
+                                setIsUserMenuOpen(false);
+                            }}
+                            onSubmit={submitSearch}
+                            onClear={clearSearch}
+                        />
+                    </div>
+
+                    <div className={isSearchOpen ? "hidden lg:block" : undefined}>
+                        <BrandLogo href="/" onClick={closeMenu} size="md" priority />
+                    </div>
 
                     <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
                         <div
@@ -411,7 +460,18 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+                    <div className={`flex items-center gap-0.5 sm:gap-1 flex-shrink-0 ${isSearchOpen ? "hidden lg:flex" : ""}`}>
+                        <IconBtn
+                            type="button"
+                            className="lg:hidden"
+                            onClick={openMobileSearch}
+                            aria-label="Search jewellery"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </IconBtn>
                         <SearchField
                             inputRef={searchInputRef}
                             variant="compact"
@@ -551,22 +611,6 @@ export default function Navbar() {
                             </span>
                         </IconBtn>
                     </div>
-                </div>
-
-                <div className={`${HOME_CONTAINER} lg:hidden pb-2.5`}>
-                    <SearchField
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setIsSearchOpen(true);
-                        }}
-                        onFocus={() => {
-                            setIsSearchOpen(true);
-                            setIsUserMenuOpen(false);
-                        }}
-                        onSubmit={submitSearch}
-                        onClear={clearSearch}
-                    />
                 </div>
 
                 {isSearchOpen && searchQuery.trim() && (

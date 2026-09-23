@@ -64,7 +64,7 @@ select:focus-visible,
     transform: scale(1);
   }
   to {
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 }
 
@@ -103,6 +103,7 @@ select:focus-visible,
 }
 
 .ken-burns {
+  transform-origin: 50% 18%;
   animation: ken-burns 8s ease-out forwards;
 }
 
@@ -171,7 +172,7 @@ select:focus-visible,
 
 /* Approximate sticky offset under announcement + navbar */
 :root {
-  --site-header-offset: 5.25rem;
+  --site-header-offset: 5.5rem;
 }
 
 /* Header promo marquee — two identical tracks, slide exactly one track width */
