@@ -10,6 +10,19 @@ const BASE_URL = "https://www.theluxejewels.in";
 /** Stable lastmod for rarely edited legal/static pages. Update when content changes. */
 const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
 
+/** Fresh lastmod so Google recrawls new festive / gift / journal URLs. */
+const FESTIVE_LAST_MODIFIED = new Date("2026-09-23T06:00:00.000Z");
+const FRESH_PATHS = new Set([
+    "/festive/diwali",
+    "/festive/navratri",
+    "/gifts/under-499",
+    "/blog/navratri-2026-9-colours-9-jewellery-pairings",
+    "/blog/how-to-layer-necklaces-diwali-party-looks",
+    "/blog/best-jewellery-gifts-bhai-dooj-karva-chauth",
+    "/blog/diwali-jewellery-gifts-under-999-india-2026",
+    "/blog/navratri-everyday-festive-earrings-india-2026",
+]);
+
 function toDate(value, fallback) {
     if (!value) return fallback;
     const date = new Date(value);
@@ -102,6 +115,10 @@ export default async function sitemap() {
         );
 
         const base = staticSitemapPages(catalogLastModified).map((page) => {
+            const path = page.url.replace(BASE_URL, "") || "/";
+            if (FRESH_PATHS.has(path)) {
+                return { ...page, lastModified: FESTIVE_LAST_MODIFIED };
+            }
             if (page.url === `${BASE_URL}/blog`) {
                 return { ...page, lastModified: blogLastModified };
             }
@@ -177,7 +194,19 @@ export default async function sitemap() {
         for (const page of staticBlogSitemapPages(blogLastModified)) {
             if (seenBlogUrls.has(page.url)) continue;
             seenBlogUrls.add(page.url);
-            blogPages.push(page);
+            const path = page.url.replace(BASE_URL, "");
+            blogPages.push(
+                FRESH_PATHS.has(path)
+                    ? { ...page, lastModified: FESTIVE_LAST_MODIFIED }
+                    : page
+            );
+        }
+
+        for (const page of blogPages) {
+            const path = page.url.replace(BASE_URL, "");
+            if (FRESH_PATHS.has(path)) {
+                page.lastModified = FESTIVE_LAST_MODIFIED;
+            }
         }
 
         return [...base, ...categoryPages, ...productPages, ...blogPages];

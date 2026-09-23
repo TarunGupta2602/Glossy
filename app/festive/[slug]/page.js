@@ -32,6 +32,12 @@ export async function generateMetadata({ params }) {
         title: collection.metaTitle,
         description: collection.metaDescription,
         alternates: { canonical },
+        robots: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
         openGraph: {
             title: collection.metaTitle,
             description: collection.metaDescription,
