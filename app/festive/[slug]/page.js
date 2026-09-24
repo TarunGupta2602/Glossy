@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import FestiveCollectionContent from "../../components/FestiveCollectionContent";
-import RelatedGuides from "../../components/RelatedGuides";
-import SiteFaqSection from "../../components/SiteFaqSection";
 import { buildFaqJsonLd } from "@/lib/faqs";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -69,7 +67,6 @@ export default async function FestiveCollectionPage({ params }) {
     const { products, sections } = curateFestiveEdit(decorated, collection);
     const reviewCounts = await getReviewCounts(products.map((p) => p.id));
 
-    const sibling = listFestiveCollections().find((item) => item.slug !== collection.slug);
     const path = `/festive/${collection.slug}`;
 
     const breadcrumbJsonLd = {
@@ -106,28 +103,7 @@ export default async function FestiveCollectionPage({ params }) {
                 products={products}
                 sections={sections}
                 reviewCounts={reviewCounts}
-                intentLinks={[
-                    { href: "/earrings", label: "Earrings" },
-                    { href: "/necklaces", label: "Necklaces" },
-                    { href: "/bracelets", label: "Bracelets" },
-                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
-                    sibling
-                        ? { href: `/festive/${sibling.slug}`, label: sibling.title }
-                        : null,
-                    collection.blogSlug
-                        ? { href: `/blog/${collection.blogSlug}`, label: collection.blogLabel }
-                        : null,
-                ].filter(Boolean)}
             />
-            {festiveFaqs.length > 0 && (
-                <SiteFaqSection
-                    faqs={festiveFaqs}
-                    idPrefix={`festive-${collection.slug}-faq`}
-                    includeJsonLd={false}
-                    description="Shipping, Buy 2 Get 1 Free, and what to wear from office to puja or garba."
-                />
-            )}
-            <RelatedGuides page="festive" title="Guides, cities, and the rest of the shop" />
         </section>
     );
 }

@@ -9,7 +9,6 @@ import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
 import { attachHoverImages } from "@/lib/hoverImages";
-import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -124,18 +123,9 @@ export default async function NecklacesPage({ searchParams }) {
                 reviewCounts={reviewCounts}
                 pagination={totalPages > 1 ? { basePath: "/necklaces", page, totalPages } : null}
                 otherCategories={otherCategories}
-                intentLinks={[
-                    { href: "/earrings", label: "Waterproof earrings" },
-                    { href: "/bracelets", label: "Daily-wear bracelets" },
-                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
-                    { href: "/festive/diwali", label: "Diwali jewellery" },
-                    { href: "/blog/how-to-layer-necklaces-diwali-party-looks", label: "Layer Diwali necklaces" },
-                ]}
-                quickFaqs={NECKLACES_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={NECKLACES_GUIDE} />
-            <RelatedGuides page="category" title="More to shop and read" />
         </section>
     );
 }

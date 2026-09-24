@@ -10,7 +10,6 @@ import { getReviewCounts } from "@/lib/reviewCounts";
 import { attachHoverImages } from "@/lib/hoverImages";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { BRAND_URL } from "@/lib/constants";
-import RelatedGuides from "../components/RelatedGuides";
 import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { SHOP_GUIDE } from "@/lib/categoryGuides";
 
@@ -134,15 +133,6 @@ export default async function ShopPage({ searchParams }) {
                     <Link href="/rings" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Rings
                     </Link>
-                    <Link href="/gifts/under-499" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
-                        Gifts under ₹499
-                    </Link>
-                    <Link href="/festive/diwali" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
-                        Diwali
-                    </Link>
-                    <Link href="/festive/navratri" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
-                        Navratri
-                    </Link>
                 </div>
             </section>
 
@@ -160,7 +150,6 @@ export default async function ShopPage({ searchParams }) {
                     />
             </section>
             <CategoryBuyingGuide guide={SHOP_GUIDE} />
-            <RelatedGuides page="home" title="Festivals, gifts, and guides" />
         </main>
     );
 }

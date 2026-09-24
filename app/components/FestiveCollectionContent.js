@@ -14,7 +14,6 @@ export default function FestiveCollectionContent({
     products = [],
     sections = [],
     reviewCounts = {},
-    intentLinks = [],
 }) {
     const theme = collection.theme || {};
     const accent = theme.accent || "#c4a574";
@@ -193,20 +192,6 @@ export default function FestiveCollectionContent({
                             </div>
                         </div>
                     ) : null}
-
-                    {intentLinks.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-8 md:mb-10">
-                            {intentLinks.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="inline-flex min-h-9 items-center rounded-full border border-[#efeae4] bg-white px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
-                    )}
 
                     {products.length > 0 ? (
                         sections.length > 0 ? (

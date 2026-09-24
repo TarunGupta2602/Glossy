@@ -3,11 +3,9 @@ import Link from "next/link";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import ProductCard from "./ProductCard";
-import SiteFaqSection from "./SiteFaqSection";
 import { PROMO_LABEL } from "@/lib/promo";
 import { reviewCardProps } from "@/lib/reviewCounts";
-import { GIFT_FAQS } from "@/lib/faqs";
-import RelatedGuides from "./RelatedGuides";
+import { GIFT_FAQS, buildFaqJsonLd } from "@/lib/faqs";
 
 export default function GiftLandingContent({
     title,
@@ -196,43 +194,20 @@ export default function GiftLandingContent({
                         gift doesn’t sit unused in a box. Perfect for birthdays, office gifting, and
                         last-minute festive boxes. Add two paid pieces for {PROMO_LABEL}.
                     </p>
-                    <p className="text-[14px] text-gray-600 leading-relaxed mb-4">
+                    <p className="text-[14px] text-gray-600 leading-relaxed">
                         Want a festival look rather than a budget pick? Open the Diwali or Navratri
                         edit — those pages are curated by occasion, not just price.
                     </p>
-                    <div className="flex flex-wrap gap-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#E91E63]">
-                        <Link href="/earrings" className="hover:underline">
-                            Earrings
-                        </Link>
-                        <Link href="/necklaces" className="hover:underline">
-                            Necklaces
-                        </Link>
-                        <Link href="/festive/diwali" className="hover:underline">
-                            Diwali jewellery
-                        </Link>
-                        <Link href="/festive/navratri" className="hover:underline">
-                            Navratri jewellery
-                        </Link>
-                        <Link href="/shop" className="hover:underline">
-                            Full catalogue
-                        </Link>
-                    </div>
                 </div>
             </section>
-
-            <RelatedGuides
-                page="gift"
-                title="Festival looks and gift guides"
-            />
-
-            <SiteFaqSection
-                faqs={GIFT_FAQS}
-                eyebrow="Gifting help"
-                title="Gift"
-                titleAccent="questions"
-                description="Budget picks, anti-tarnish longevity, Buy 2 Get 1 Free, pan-India shipping, and returns."
-                idPrefix={`gift-faq-${maxPrice}`}
-            />
+            {buildFaqJsonLd(GIFT_FAQS) ? (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(buildFaqJsonLd(GIFT_FAQS)),
+                    }}
+                />
+            ) : null}
         </main>
     );
 }

@@ -18,8 +18,6 @@ export default function CollectionPageContent({
     reviewCounts = {},
     pagination,
     otherCategories = [],
-    intentLinks = [],
-    quickFaqs = [],
     eyebrow,
 }) {
     const isSmallCollection = products.length <= 4;
@@ -43,37 +41,6 @@ export default function CollectionPageContent({
 
             <div className="bg-gradient-to-b from-[#FAFAFA] to-white">
                 <div className={`${SITE_CONTAINER} py-10 md:py-14`}>
-                    {(intentLinks.length > 0 || quickFaqs.length > 0) && (
-                        <div className="mb-8 md:mb-10 max-w-3xl">
-                            {quickFaqs.length > 0 && (
-                                <div className="mb-5 space-y-3">
-                                    {quickFaqs.slice(0, 2).map((faq) => (
-                                        <div key={faq.question}>
-                                            <p className="text-[13px] font-semibold text-gray-900">
-                                                {faq.question}
-                                            </p>
-                                            <p className="text-[13px] text-gray-600 leading-relaxed mt-1">
-                                                {faq.answer}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            {intentLinks.length > 0 && (
-                                <div className="flex flex-wrap gap-2">
-                                    {intentLinks.map((link) => (
-                                        <Link
-                                            key={link.href}
-                                            href={link.href}
-                                            className="inline-flex min-h-9 items-center rounded-full border border-gray-200 bg-white px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
                     {products.length > 0 ? (
                         <>
                             {!isSmallCollection && count > 0 && (

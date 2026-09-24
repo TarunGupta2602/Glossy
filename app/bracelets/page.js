@@ -9,7 +9,6 @@ import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
 import { attachHoverImages } from "@/lib/hoverImages";
-import RelatedGuides from "../components/RelatedGuides";
 
 export const revalidate = 300;
 
@@ -128,18 +127,9 @@ export default async function BraceletsPage({ searchParams }) {
                 reviewCounts={reviewCounts}
                 pagination={totalPages > 1 ? { basePath: "/bracelets", page, totalPages } : null}
                 otherCategories={otherCategories}
-                intentLinks={[
-                    { href: "/earrings", label: "Waterproof earrings" },
-                    { href: "/necklaces", label: "Everyday necklaces" },
-                    { href: "/gifts/under-499", label: "Gifts under ₹499" },
-                    { href: "/festive/navratri", label: "Navratri jewellery" },
-                    { href: "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion", label: "Daily-use bracelet guide" },
-                ]}
-                quickFaqs={BRACELETS_GUIDE.faqs.slice(0, 2)}
             />
 
             <CategoryBuyingGuide guide={BRACELETS_GUIDE} />
-            <RelatedGuides page="category" title="More to shop and read" />
         </section>
     );
 }
