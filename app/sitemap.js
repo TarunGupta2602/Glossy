@@ -11,8 +11,9 @@ const BASE_URL = "https://www.theluxejewels.in";
 const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
 
 /** Fresh lastmod so Google recrawls new festive / gift / journal URLs. */
-const FESTIVE_LAST_MODIFIED = new Date("2026-09-23T12:00:00.000Z");
+const FESTIVE_LAST_MODIFIED = new Date("2026-09-24T01:20:00.000Z");
 const FRESH_PATHS = new Set([
+    "/",
     "/festive/diwali",
     "/festive/navratri",
     "/gifts/under-499",
@@ -21,6 +22,9 @@ const FRESH_PATHS = new Set([
     "/necklaces",
     "/bracelets",
     "/shop",
+    "/our-story",
+    "/faqs",
+    "/contact",
     "/blog/navratri-2026-9-colours-9-jewellery-pairings",
     "/blog/how-to-layer-necklaces-diwali-party-looks",
     "/blog/best-jewellery-gifts-bhai-dooj-karva-chauth",

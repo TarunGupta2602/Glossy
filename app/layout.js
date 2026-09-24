@@ -28,7 +28,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-import { BRAND_NAME, BRAND_URL, SUPPORT_PHONE, SUPPORT_EMAIL, INSTAGRAM_URL, BUSINESS_ADDRESS } from "@/lib/constants";
+import { BRAND_NAME, BRAND_URL, BRAND_ALTERNATE_NAMES, BRAND_SLOGAN, SUPPORT_PHONE, SUPPORT_EMAIL, INSTAGRAM_URL, INSTAGRAM_PROFILE_URL, BUSINESS_ADDRESS } from "@/lib/constants";
 
 function buildSiteVerification() {
     const verification = {
@@ -140,7 +140,12 @@ export default function RootLayout({ children }) {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${BRAND_URL}/#organization`,
     "name": BRAND_NAME,
+    "alternateName": BRAND_ALTERNATE_NAMES,
+    "legalName": BRAND_NAME,
+    "slogan": BRAND_SLOGAN,
+    "foundingDate": "2024",
     "url": BRAND_URL,
     "logo": {
       "@type": "ImageObject",
@@ -149,6 +154,13 @@ export default function RootLayout({ children }) {
       "height": 1024,
       "caption": "The Luxe Jewels logo",
     },
+    "description": "The Luxe Jewels is an Indian online jewellery brand from Noida. Anti-tarnish, waterproof 18k gold plated fashion jewellery for everyday wear, shipped pan-India.",
+    "knowsAbout": [
+      "anti-tarnish jewellery",
+      "waterproof jewellery",
+      "18k gold plated jewellery",
+      "everyday jewellery India",
+    ],
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": SUPPORT_PHONE.replace(/\s/g, "-"),
@@ -156,7 +168,7 @@ export default function RootLayout({ children }) {
       "areaServed": "IN",
       "availableLanguage": ["English", "Hindi"]
     },
-    "sameAs": [INSTAGRAM_URL]
+    "sameAs": [INSTAGRAM_PROFILE_URL || INSTAGRAM_URL]
   };
 
   const webSiteJsonLd = {
@@ -170,12 +182,7 @@ export default function RootLayout({ children }) {
       "target": `${BRAND_URL}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": BRAND_NAME,
-      "url": BRAND_URL,
-      "logo": `${BRAND_URL}/logo.png`
-    }
+    "publisher": { "@id": `${BRAND_URL}/#organization` }
   };
 
   const localBusinessJsonLd = {
@@ -183,7 +190,9 @@ export default function RootLayout({ children }) {
     "@type": ["OnlineStore", "JewelryStore"],
     "@id": `${BRAND_URL}/#store`,
     "name": BRAND_NAME,
-    "description": "Premium anti-tarnish and waterproof jewellery store serving Noida, Greater Noida, Ghaziabad, Delhi NCR, and pan-India. Shop 18k gold plated earrings, necklaces, and fine jewellery online.",
+    "alternateName": BRAND_ALTERNATE_NAMES,
+    "brand": { "@id": `${BRAND_URL}/#organization` },
+    "description": "The Luxe Jewels is an Indian online jewellery store from Noida. Shop anti-tarnish, waterproof 18k gold plated earrings, necklaces, bracelets, and rings — Buy 2 Get 1 Free, shipped pan-India.",
     "url": BRAND_URL,
     "image": `${BRAND_URL}/og-image.png`,
     "logo": `${BRAND_URL}/logo.png`,
@@ -213,7 +222,7 @@ export default function RootLayout({ children }) {
       "opens": "10:00",
       "closes": "19:00"
     },
-    "sameAs": [INSTAGRAM_URL]
+    "sameAs": [INSTAGRAM_PROFILE_URL || INSTAGRAM_URL]
   };
 
   return (

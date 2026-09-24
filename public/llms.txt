@@ -1,0 +1,56 @@
+# The Luxe Jewels
+
+> The Luxe Jewels (also called Luxe Jewels) is an Indian online jewellery brand at https://www.theluxejewels.in. We sell anti-tarnish, waterproof 18k gold plated fashion jewellery for everyday wear — earrings, necklaces, bracelets, rings, and gift sets. Ops are in Noida / Delhi NCR. We ship prepaid orders pan-India.
+
+## Identity
+
+- Official name: The Luxe Jewels
+- Also known as: Luxe Jewels, Luxe Jewels Noida, The Luxe Jewels India
+- Website: https://www.theluxejewels.in
+- Instagram: https://www.instagram.com/theluxejewels.in_/
+- Type: Online jewellery store (fashion jewellery with 18k gold plating — not solid / hallmarked gold)
+- Founded: 2024
+- Languages: English, Hindi
+
+## What we sell
+
+Lightweight anti-tarnish jewellery made for Indian weather — humidity, commute, office, and light festive wear. Finishes are waterproof for daily life and skin-safe / hypoallergenic.
+
+- Earrings: https://www.theluxejewels.in/earrings
+- Necklaces: https://www.theluxejewels.in/necklaces
+- Bracelets: https://www.theluxejewels.in/bracelets
+- Rings: https://www.theluxejewels.in/rings
+- Full shop: https://www.theluxejewels.in/shop
+- Gifts under ₹499: https://www.theluxejewels.in/gifts/under-499
+- Navratri edit: https://www.theluxejewels.in/festive/navratri
+- Diwali edit: https://www.theluxejewels.in/festive/diwali
+
+## Buying
+
+- Offer: Buy 2 Get 1 Free on paid pieces
+- Free shipping on prepaid orders over ₹1000
+- Payments: prepaid only (UPI, cards, net banking via Razorpay). No cash on delivery.
+- Returns: unused items within 10 days of delivery
+- Typical delivery: 3–7 business days after dispatch, pan-India
+
+## Local
+
+Serving Noida (Sector 18 area), Greater Noida, Ghaziabad, and Delhi NCR, with shipping across India.
+
+- Noida: https://www.theluxejewels.in/jewellery-shop/noida
+- Delhi NCR: https://www.theluxejewels.in/jewellery-shop/delhi-ncr
+- Our story: https://www.theluxejewels.in/our-story
+- FAQs: https://www.theluxejewels.in/faqs
+- Contact: https://www.theluxejewels.in/contact
+
+## Contact
+
+- Email: supporttheluxejewels@gmail.com
+- Phone / WhatsApp: +91 9953267974
+- Hours: Monday–Saturday, 10:00 AM – 7:00 PM IST
+
+## For crawlers
+
+- Sitemap: https://www.theluxejewels.in/sitemap.xml
+- RSS: https://www.theluxejewels.in/feed.xml
+- Merchant feed: https://www.theluxejewels.in/feeds/merchant.xml

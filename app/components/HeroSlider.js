@@ -135,24 +135,24 @@ export default function HeroSlider() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/80" />
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[1200px] px-6 sm:px-10 md:px-14 lg:px-16 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-16 lg:py-20">
-                <div className="grid w-full md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-12 items-center">
+            <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-12 lg:py-14">
+                <div className="grid w-full md:grid-cols-[1.05fr_0.95fr] lg:grid-cols-[1.08fr_0.92fr] gap-10 lg:gap-14 items-center">
                     <div className="text-left pb-2 md:pb-0" aria-live="polite">
                         <div key={slide.id} className="hero-copy-in">
                             <p
-                                className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-5 ${slide.eyebrowClass}`}
+                                className={`text-[11px] font-medium tracking-[0.22em] uppercase mb-3 md:mb-4 ${slide.eyebrowClass}`}
                             >
                                 {slide.eyebrow}
                             </p>
 
-                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.3rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
+                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.25rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
                                 {slide.title[0]}
                                 <em className={`italic font-normal ${slide.accentClass}`}>
                                     {slide.title[1]}
                                 </em>
                             </Heading>
 
-                            <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed mb-6 md:mb-8 max-w-[34ch] md:max-w-[400px] text-white/80 md:text-[#6b6560]">
+                            <p className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed mb-6 md:mb-7 max-w-[34ch] md:max-w-[38ch] lg:max-w-[440px] text-white/80 md:text-[#6b6560]">
                                 {slide.body}
                             </p>
 
@@ -236,9 +236,9 @@ export default function HeroSlider() {
                         </div>
                     </div>
 
-                    <div className="hidden md:flex flex-col items-stretch">
+                    <div className="hidden md:flex flex-col items-end">
                         <div
-                            className={`relative w-full aspect-[3/4] min-h-[560px] lg:min-h-[620px] max-h-[660px] overflow-hidden rounded-[2.5rem] ${slide.frame}`}
+                            className={`relative w-full max-w-[460px] lg:max-w-[500px] aspect-[3/4] overflow-hidden rounded-[2rem] ${slide.frame}`}
                         >
                             {SLIDES.map((item, i) => (
                                 <Image
@@ -247,13 +247,13 @@ export default function HeroSlider() {
                                     alt={i === index ? item.alt : ""}
                                     fill
                                     priority={i === 0}
-                                    sizes="600px"
+                                    sizes="(min-width: 1024px) 500px, 460px"
                                     quality={90}
                                     placeholder="blur"
                                     blurDataURL={IMAGE_BLUR_DATA_URL}
-                                    className={`object-cover object-center transition-opacity duration-700 ${
-                                        i === index ? "opacity-100" : "opacity-0"
-                                    }`}
+                                    className={`object-cover transition-opacity duration-700 ${
+                                        item.id === "main" ? "object-[46%_12%]" : "object-center"
+                                    } ${i === index ? "opacity-100" : "opacity-0"}`}
                                 />
                             ))}
 
