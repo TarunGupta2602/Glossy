@@ -1,5 +1,4 @@
 import nextDynamic from "next/dynamic";
-import { unstable_noStore as noStore } from "next/cache";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
@@ -51,9 +50,8 @@ export const metadata = {
   },
 };
 
-/** Always fresh — homepage is the #1 crawl hub; stale ISR was serving old nav/footer/edits. */
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+/** Cached for 5 minutes. Product edits call revalidateStorefront(), which includes "/". */
+export const revalidate = 300;
 
 function pickImage(...candidates) {
   return (
@@ -182,7 +180,6 @@ function buildTopStyleTabs(collections, latestProducts) {
 }
 
 export default async function Home() {
-  noStore();
   const supabase = getServiceClient();
 
   const [

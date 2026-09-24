@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -12,12 +12,6 @@ import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -150,8 +144,8 @@ export default function RootLayout({ children }) {
     "logo": {
       "@type": "ImageObject",
       "url": `${BRAND_URL}/logo.png`,
-      "width": 1024,
-      "height": 1024,
+      "width": 512,
+      "height": 512,
       "caption": "The Luxe Jewels logo",
     },
     "description": "The Luxe Jewels is an Indian online jewellery brand from Noida. Anti-tarnish, waterproof 18k gold plated fashion jewellery for everyday wear, shipped pan-India.",
@@ -248,7 +242,7 @@ export default function RootLayout({ children }) {
         <script src="https://accounts.google.com/gsi/client" async defer></script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        className={`${geistSans.variable} ${playfair.variable} antialiased`}
       >
         <Suspense fallback={null}>
           <GoogleAnalytics />
