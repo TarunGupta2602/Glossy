@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
 import {
     INSTAGRAM_HANDLE,
@@ -123,22 +122,7 @@ export default function OurStoryPage() {
                 <div className="text-center pt-12 border-t border-gray-100">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Meet the makers behind the sparkle</h2>
                     <p className="text-gray-600 mb-2">A small, passionate team curating and quality-checking every piece.</p>
-                    <p className="text-sm text-gray-600 mb-1">{SERVICE_AREA_LABEL}</p>
-                    <p className="text-sm text-gray-600 mb-3">
-                        Searching for a jewellery shop in Noida or Sector 18?{" "}
-                        <Link href="/jewellery-shop/noida" className="text-[#E91E63] font-semibold hover:underline">
-                            Read the Noida shop page
-                        </Link>
-                        , or browse{" "}
-                        <Link href="/earrings" className="text-[#E91E63] font-semibold hover:underline">
-                            waterproof earrings
-                        </Link>{" "}
-                        and{" "}
-                        <Link href="/necklaces" className="text-[#E91E63] font-semibold hover:underline">
-                            everyday necklaces
-                        </Link>
-                        .
-                    </p>
+                    <p className="text-sm text-gray-600 mb-3">{SERVICE_AREA_LABEL}</p>
                     <p className="text-sm text-[#E91E63] font-semibold mb-8">{INSTAGRAM_HANDLE} on Instagram</p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`} className="flex items-center justify-center gap-3 text-gray-600 hover:text-[#E91E63] transition-colors">
@@ -162,7 +146,7 @@ export default function OurStoryPage() {
             eyebrow="About us"
             title="Brand"
             titleAccent="questions"
-            description="Where we’re based, who we design for, and how to reach us for wholesale or special requests."
+            description="Where we’re based, who we design for, and how to reach us."
             idPrefix="story-faq"
         />
         </>

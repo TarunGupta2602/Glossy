@@ -11,9 +11,9 @@ import { CONTACT_FAQS } from "@/lib/faqs";
 import RelatedGuides from "../components/RelatedGuides";
 
 export const metadata = {
-    title: "Contact Luxe Jewels Noida",
+    title: "Contact",
     description:
-        "Contact Luxe Jewels Noida (Sector 18 area) — WhatsApp, phone, and email. Online jewellery store, not a wholesale counter. Pan-India delivery.",
+        "WhatsApp, phone, or email The Luxe Jewels — order help, gifting questions, and pan-India shipping support.",
     alternates: {
         canonical: "/contact",
     },
@@ -100,7 +100,7 @@ export default function ContactPage() {
                         </div>
                         <p className="text-gray-600">{SERVICE_AREA_LABEL}</p>
                         <p className="text-sm text-gray-500 mt-2">
-                            Online jewellery from Noida, Sector 18 area — not a wholesale counter. WhatsApp us if you want help picking a pair before you order.
+                            Based in Noida. WhatsApp us if you want help picking a pair before you order.
                         </p>
                     </div>
                 </div>
@@ -114,7 +114,7 @@ export default function ContactPage() {
                         referrerPolicy="no-referrer-when-downgrade"
                     />
                     <p className="px-4 py-3 text-xs text-gray-500 bg-gray-50 text-center">
-                        Luxe Jewels Noida · Sector 18 area · {SERVICE_AREA_LABEL} · Free delivery over ₹1000
+                        Based in Noida · {SERVICE_AREA_LABEL} · Free delivery over ₹1000
                     </p>
                 </div>
 

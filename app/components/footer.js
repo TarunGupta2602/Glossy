@@ -32,7 +32,7 @@ const SHOP_LINKS = [
 const HELP_LINKS = [
     { href: "/blog", label: "Blog" },
     { href: "/our-story", label: "Our story" },
-    { href: "/jewellery-shop/noida", label: "Jewellery shop in Noida / Sector 18" },
+    { href: "/jewellery-shop/noida", label: "Noida" },
     { href: "/jewellery-shop/greater-noida", label: "Jewellery shop in Greater Noida" },
     { href: "/jewellery-shop/ghaziabad", label: "Jewellery shop in Ghaziabad" },
     { href: "/jewellery-shop/delhi-ncr", label: "Jewellery shop in Delhi NCR" },

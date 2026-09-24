@@ -27,14 +27,13 @@ export default function JewelleryShopIndexPage() {
                     className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
                     style={{ color: "#b89a6a" }}
                 >
-                    Local SEO
+                    Noida & Delhi NCR
                 </p>
                 <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl font-medium text-[#2a2724] tracking-tight max-w-3xl">
-                    Jewellery shop pages for Noida & Delhi NCR
+                    We ship from Noida to the rest of India
                 </h1>
                 <p className="mt-4 text-[15px] text-[#6b6560] max-w-2xl leading-relaxed">
-                    {SERVICE_AREA_LABEL}. Pick your city page for local search intent, then shop
-                    anti-tarnish everyday wear online.
+                    {SERVICE_AREA_LABEL}. Open your city if you want a quicker path into the shop.
                 </p>
                 <ul className="mt-10 grid sm:grid-cols-2 gap-4 max-w-3xl">
                     {cities.map((city) => (
@@ -44,7 +43,7 @@ export default function JewelleryShopIndexPage() {
                                 className="block rounded-2xl border border-[#efeae4] bg-white px-5 py-5 hover:border-[#b89a6a] transition-colors"
                             >
                                 <span className="font-playfair text-xl text-[#2a2724]">
-                                    Jewellery shop in {city.name}
+                                    {city.name}
                                 </span>
                                 <span className="mt-1 block text-[12px] uppercase tracking-[0.14em] text-[#8a847c]">
                                     View local page →
