@@ -22,6 +22,8 @@ import {
     getFinishAuthenticityNote,
 } from "@/lib/productTrust";
 import { resolveProductSizeInfo } from "@/lib/productDefaults";
+import { isProductOutOfStock } from "@/lib/productAvailability";
+import ProductShare from "../../components/ProductShare";
 
 function CheckIcon({ className = "w-3.5 h-3.5" }) {
     return (
@@ -102,8 +104,12 @@ export default function ProductDetailClient({
         product.care_instructions && { label: "Care", value: product.care_instructions },
     ].filter(Boolean);
 
+    const outOfStock = isProductOutOfStock(product);
     const lowStock =
-        product.stock_count != null && product.stock_count > 0 && product.stock_count <= 10;
+        !outOfStock &&
+        product.stock_count != null &&
+        product.stock_count > 0 &&
+        product.stock_count <= 10;
 
     const setGalleryIndex = (next) => {
         if (next === activeIdx) return;
@@ -125,6 +131,7 @@ export default function ProductDetailClient({
     };
 
     const handleAddToBag = () => {
+        if (outOfStock) return;
         addToCart(
             {
                 id: product.id,
@@ -132,6 +139,7 @@ export default function ProductDetailClient({
                 price: product.price || 0,
                 image: product.main_image || "/logo.png",
                 category: categoryName,
+                stock_count: product.stock_count,
             },
             qty
         );
@@ -147,6 +155,7 @@ export default function ProductDetailClient({
             price: product.price || 0,
             image: product.main_image || "/logo.png",
             category: categoryName,
+            stock_count: product.stock_count,
         });
     };
 
@@ -250,14 +259,18 @@ export default function ProductDetailClient({
                             {/* Overlays */}
                             <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-3 sm:p-4 pointer-events-none">
                                 <div className="flex flex-wrap gap-2">
-                                    {hasDiscount && (
+                                    {outOfStock ? (
+                                        <span className="pointer-events-auto rounded-full bg-[#2a2724] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white">
+                                            Out of stock
+                                        </span>
+                                    ) : hasDiscount ? (
                                         <span className="pointer-events-auto rounded-full bg-white/95 px-3 py-1 text-[10px] font-medium tracking-wide text-[#6b6560]">
                                             Was ₹
                                             {originalPrice.toLocaleString(undefined, {
                                                 maximumFractionDigits: 0,
                                             })}
                                         </span>
-                                    )}
+                                    ) : null}
                                     {lowStock && (
                                         <span className="pointer-events-auto rounded-full bg-[#faf0f3] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C2185B]">
                                             Only {product.stock_count} left
@@ -353,9 +366,14 @@ export default function ProductDetailClient({
                             {categoryName}
                         </p>
 
-                        <h1 className="font-playfair text-[1.65rem] sm:text-[2rem] lg:text-[2.35rem] font-medium text-[#2a2724] leading-[1.15] tracking-tight">
-                            {product.name}
-                        </h1>
+                        <div className="flex items-start justify-between gap-3">
+                            <h1 className="font-playfair text-[1.65rem] sm:text-[2rem] lg:text-[2.35rem] font-medium text-[#2a2724] leading-[1.15] tracking-tight">
+                                {product.name}
+                            </h1>
+                            <div className="lg:hidden shrink-0 mt-0.5">
+                                <ProductShare name={product.name} price={product.price} />
+                            </div>
+                        </div>
 
                         {initialReviewStats?.totalReviews > 0 && (
                             <p className="mt-2.5 text-[13px] text-[#8a847c] tabular-nums">
@@ -384,11 +402,15 @@ export default function ProductDetailClient({
                             </p>
                         )}
 
-                        {lowStock && (
+                        {outOfStock ? (
+                            <p className="mt-3 inline-flex self-start rounded-full bg-[#f4f2f0] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#6b6560]">
+                                Out of stock — this piece is sold out for now
+                            </p>
+                        ) : lowStock ? (
                             <p className="mt-3 inline-flex self-start rounded-full bg-[#faf0f3] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#C2185B]">
                                 Only {product.stock_count} left — gift-ready stock
                             </p>
-                        )}
+                        ) : null}
 
                         <div className="mt-5 flex flex-wrap gap-2">
                             {highlightChips.map((chip) => (
@@ -444,7 +466,8 @@ export default function ProductDetailClient({
                                     id="pdp-qty"
                                     value={qty}
                                     onChange={(e) => setQty(parseInt(e.target.value, 10))}
-                                    className="h-12 w-[4.5rem] appearance-none rounded-full border border-[#efeae4] bg-white pl-4 pr-8 text-[14px] font-semibold text-[#2a2724] focus:outline-none focus:border-[#E91E63] cursor-pointer"
+                                    disabled={outOfStock}
+                                    className="h-12 w-[4.5rem] appearance-none rounded-full border border-[#efeae4] bg-white pl-4 pr-8 text-[14px] font-semibold text-[#2a2724] focus:outline-none focus:border-[#E91E63] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     {[1, 2, 3, 4, 5].map((n) => (
                                         <option key={n} value={n}>
@@ -471,13 +494,16 @@ export default function ProductDetailClient({
                             <button
                                 type="button"
                                 onClick={handleAddToBag}
-                                className={`flex-1 h-12 rounded-full text-[11px] font-semibold tracking-[0.16em] uppercase transition-all duration-300 active:scale-[0.98] ${
-                                    addedToBag
-                                        ? "bg-[#2a2724] text-white"
-                                        : "bg-[#E91E63] text-white hover:bg-[#C2185B]"
+                                disabled={outOfStock}
+                                className={`flex-1 h-12 rounded-full text-[11px] font-semibold tracking-[0.16em] uppercase transition-all duration-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100 ${
+                                    outOfStock
+                                        ? "bg-[#efeae4] text-[#8a847c]"
+                                        : addedToBag
+                                          ? "bg-[#2a2724] text-white"
+                                          : "bg-[#E91E63] text-white hover:bg-[#C2185B]"
                                 }`}
                             >
-                                {addedToBag ? "Added to bag" : "Add to bag"}
+                                {outOfStock ? "Out of stock" : addedToBag ? "Added to bag" : "Add to bag"}
                             </button>
 
                             <button
@@ -505,34 +531,42 @@ export default function ProductDetailClient({
                                     />
                                 </svg>
                             </button>
+                            <ProductShare name={product.name} price={product.price} />
                         </div>
 
-                        {/* Mobile wishlist (sticky bar handles add) */}
-                        <button
-                            type="button"
-                            onClick={handleWishlist}
-                            className={`lg:hidden mt-1 w-full h-12 rounded-full text-[11px] font-semibold tracking-[0.14em] uppercase border transition-all duration-200 flex items-center justify-center gap-2 ${
-                                isWishlisted
-                                    ? "border-[#E91E63] text-[#E91E63] bg-[#faf0f3]"
-                                    : "border-[#efeae4] text-[#2a2724] bg-white"
-                            }`}
-                        >
-                            <svg
-                                className={`w-4 h-4 ${
-                                    isWishlisted ? "fill-[#E91E63] stroke-[#E91E63]" : "fill-none stroke-current"
+                        {/* Mobile wishlist + share (sticky bar handles add) */}
+                        <div className="lg:hidden mt-1 grid grid-cols-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={handleWishlist}
+                                className={`w-full h-12 rounded-full text-[11px] font-semibold tracking-[0.14em] uppercase border transition-all duration-200 flex items-center justify-center gap-2 ${
+                                    isWishlisted
+                                        ? "border-[#E91E63] text-[#E91E63] bg-[#faf0f3]"
+                                        : "border-[#efeae4] text-[#2a2724] bg-white"
                                 }`}
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.7"
-                                aria-hidden
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                />
-                            </svg>
-                            {isWishlisted ? "Saved to wishlist" : "Save to wishlist"}
-                        </button>
+                                <svg
+                                    className={`w-4 h-4 ${
+                                        isWishlisted ? "fill-[#E91E63] stroke-[#E91E63]" : "fill-none stroke-current"
+                                    }`}
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.7"
+                                    aria-hidden
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                    />
+                                </svg>
+                                {isWishlisted ? "Saved" : "Save"}
+                            </button>
+                            <ProductShare
+                                name={product.name}
+                                price={product.price}
+                                variant="row"
+                            />
+                        </div>
 
                         <TrustStrip className="mt-7" />
 
@@ -666,7 +700,8 @@ export default function ProductDetailClient({
                         value={qty}
                         onChange={(e) => setQty(parseInt(e.target.value, 10))}
                         aria-label="Quantity"
-                        className="h-12 w-14 appearance-none rounded-full border border-[#efeae4] bg-white pl-3.5 pr-6 text-sm font-semibold text-[#2a2724] focus:outline-none focus:border-[#E91E63]"
+                        disabled={outOfStock}
+                        className="h-12 w-14 appearance-none rounded-full border border-[#efeae4] bg-white pl-3.5 pr-6 text-sm font-semibold text-[#2a2724] focus:outline-none focus:border-[#E91E63] disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {[1, 2, 3, 4, 5].map((n) => (
                             <option key={n} value={n}>
@@ -698,11 +733,16 @@ export default function ProductDetailClient({
                 <button
                     type="button"
                     onClick={handleAddToBag}
-                    className={`flex-1 h-12 rounded-full text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-300 ${
-                        addedToBag ? "bg-[#2a2724] text-white" : "bg-[#E91E63] text-white"
+                    disabled={outOfStock}
+                    className={`flex-1 h-12 rounded-full text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-300 disabled:cursor-not-allowed ${
+                        outOfStock
+                            ? "bg-[#efeae4] text-[#8a847c]"
+                            : addedToBag
+                              ? "bg-[#2a2724] text-white"
+                              : "bg-[#E91E63] text-white"
                     }`}
                 >
-                    {addedToBag ? "Added" : "Add to bag"}
+                    {outOfStock ? "Out of stock" : addedToBag ? "Added" : "Add to bag"}
                 </button>
             </div>
         </div>

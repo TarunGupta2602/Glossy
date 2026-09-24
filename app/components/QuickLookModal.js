@@ -11,6 +11,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { useOverlayOpen } from "../context/OverlayContext";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 
 export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
     const { addToCart, openCart } = useCart();
@@ -36,11 +37,13 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
     if (!product) return null;
 
     const href = getProductPath(product);
+    const outOfStock = isProductOutOfStock(product);
     const price = product.price
         ? product.price.toLocaleString(undefined, { maximumFractionDigits: 0 })
         : "0";
 
     const handleAdd = async () => {
+        if (outOfStock) return;
         await addToCart(product, 1);
         showToast("Added to bag", { href: "/cart", hrefLabel: "Bag", tone: "pink" });
         onClose();
@@ -125,9 +128,14 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
                         <button
                             type="button"
                             onClick={handleAdd}
-                            className="flex-1 min-h-12 rounded-full bg-[#E91E63] text-white text-[11px] font-bold uppercase tracking-[0.14em] hover:bg-[#c2185b] active:scale-[0.98] transition-all"
+                            disabled={outOfStock}
+                            className={`flex-1 min-h-12 rounded-full text-[11px] font-bold uppercase tracking-[0.14em] transition-all disabled:cursor-not-allowed ${
+                                outOfStock
+                                    ? "bg-[#efeae4] text-[#8a847c]"
+                                    : "bg-[#E91E63] text-white hover:bg-[#c2185b] active:scale-[0.98]"
+                            }`}
                         >
-                            Add to bag
+                            {outOfStock ? "Out of stock" : "Add to bag"}
                         </button>
                         <button
                             type="button"

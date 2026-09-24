@@ -10,6 +10,7 @@ import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 import { isSellingFast } from "@/lib/festivalSeason";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 
 export default function ProductCard({
     product,
@@ -32,6 +33,7 @@ export default function ProductCard({
     const [wishPulse, setWishPulse] = useState(false);
     const href = getProductPath(product);
     const hoverImage = product.hover_image;
+    const outOfStock = isProductOutOfStock(product);
 
     const handleWishlist = async (e) => {
         e.preventDefault();
@@ -68,7 +70,7 @@ export default function ProductCard({
                         blurDataURL={IMAGE_BLUR_DATA_URL}
                         className={`object-cover transition-[transform,opacity] duration-[700ms] ease-out will-change-transform md:group-hover:scale-[1.03] ${
                             hoverImage ? "md:group-hover:opacity-0" : ""
-                        }`}
+                        } ${outOfStock ? "opacity-70" : ""}`}
                     />
                     {hoverImage && loadHover && (
                         <Image
@@ -85,7 +87,11 @@ export default function ProductCard({
                 </Link>
 
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
-                    {isSellingFast(product) ? (
+                    {outOfStock ? (
+                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
+                            Out of stock
+                        </span>
+                    ) : isSellingFast(product) ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#8a5a28] text-[#f7f1e8] text-[9px] font-semibold tracking-wide">
                             Selling fast
                         </span>
@@ -167,6 +173,12 @@ export default function ProductCard({
                         {product.name}
                     </h3>
                 </Link>
+
+                {outOfStock && (
+                    <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8a847c]">
+                        Out of stock
+                    </p>
+                )}
 
                 <div className="mt-2.5 flex items-baseline gap-2 min-w-0 flex-wrap">
                     <Link

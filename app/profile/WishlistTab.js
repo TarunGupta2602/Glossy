@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getProductPath } from "@/lib/seo";
 import { getProductDiscountInfo } from "@/lib/discountUtils";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 import { WishlistSkeleton } from "./ProfileSkeletons";
 
 export default function WishlistTab({ wishlist, initialized, removeFromWishlist, addToCart }) {
@@ -37,6 +38,7 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
             {wishlist.map((item) => {
                 const price = item.price || 0;
                 const { hasDiscount, originalPrice, discountPercent } = getProductDiscountInfo(item);
+                const outOfStock = isProductOutOfStock(item);
 
                 return (
                     <div key={item.id} className="group flex flex-col h-full bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
@@ -84,10 +86,18 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
 
                             <div className="flex flex-col gap-2">
                                 <button
-                                    onClick={() => addToCart(item)}
-                                    className="w-full bg-gray-900 text-white py-3.5 md:py-4 rounded-xl text-[10px] md:text-[11px] font-black tracking-[0.2em] uppercase hover:bg-black transition-all active:scale-95 shadow-md"
+                                    onClick={() => {
+                                        if (outOfStock) return;
+                                        addToCart(item);
+                                    }}
+                                    disabled={outOfStock}
+                                    className={`w-full py-3.5 md:py-4 rounded-xl text-[10px] md:text-[11px] font-black tracking-[0.2em] uppercase transition-all ${
+                                        outOfStock
+                                            ? "bg-[#efeae4] text-[#8a847c] cursor-not-allowed"
+                                            : "bg-gray-900 text-white hover:bg-black active:scale-95 shadow-md"
+                                    }`}
                                 >
-                                    Add to Bag
+                                    {outOfStock ? "Out of stock" : "Add to Bag"}
                                 </button>
                                 <div className="flex items-center justify-between gap-2 mt-1">
                                     <Link
