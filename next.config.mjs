@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Vercel image optimization returns 402 (OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED)
+    // on uncached /_next/image requests. Serve original URLs until that is paid for.
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     // Include mid sizes so product-card / thumbnail `sizes` don't jump to 1920px
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920],
