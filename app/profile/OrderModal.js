@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { useOverlayOpen } from "../context/OverlayContext";
+import { isCodOrder } from "@/lib/invoice";
 
 const STATUS_LABELS = {
     processing: "Processing",
@@ -117,7 +118,9 @@ export default function OrderModal({ order, onClose, getStatusColor, onCancelOrd
 
                     <div className="rounded-2xl bg-gray-900 text-white p-4">
                         <p className="text-xs text-white/60 uppercase tracking-widest font-semibold mb-1">Payment</p>
-                        <p className="text-sm font-semibold">Paid online via Razorpay</p>
+                        <p className="text-sm font-semibold">
+                            {isCodOrder(order) ? "Cash on delivery — pay when it arrives" : "Paid online via Razorpay"}
+                        </p>
                     </div>
                 </div>
 

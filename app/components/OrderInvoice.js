@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { BRAND_NAME, SUPPORT_EMAIL, SUPPORT_PHONE, BUSINESS_HOURS } from "@/lib/constants";
-import { formatInr, getInvoiceNumber, getInvoiceTotals } from "@/lib/invoice";
+import { formatInr, getInvoiceNumber, getInvoiceTotals, isCodOrder } from "@/lib/invoice";
 
 export default function OrderInvoice({ order, showActions = true }) {
     if (!order) return null;
@@ -76,8 +76,16 @@ export default function OrderInvoice({ order, showActions = true }) {
                     <div>
                         <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Payment details</p>
                         <p className="text-sm text-gray-700">
-                            <span className="font-semibold text-gray-900">Method:</span> Online (Razorpay)
+                            <span className="font-semibold text-gray-900">Method:</span>{" "}
+                            {isCodOrder(order) ? "Cash on delivery" : "Online (Razorpay)"}
                         </p>
+                        {isCodOrder(order) ? (
+                            <p className="text-sm text-gray-700 mt-1">
+                                <span className="font-semibold text-gray-900">Collect on delivery:</span>{" "}
+                                {formatInr(order.total_amount)}
+                            </p>
+                        ) : (
+                            <>
                         {order.razorpay_payment_id && (
                             <p className="text-sm text-gray-700 mt-1 break-all">
                                 <span className="font-semibold text-gray-900">Payment ID:</span> {order.razorpay_payment_id}
@@ -87,6 +95,8 @@ export default function OrderInvoice({ order, showActions = true }) {
                             <p className="text-sm text-gray-700 mt-1 break-all">
                                 <span className="font-semibold text-gray-900">Order ref:</span> {order.razorpay_order_id}
                             </p>
+                        )}
+                            </>
                         )}
                     </div>
                 </div>

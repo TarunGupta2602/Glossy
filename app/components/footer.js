@@ -263,7 +263,7 @@ export default function Footer() {
 
                     <div className="order-1 md:order-2 flex flex-col items-start md:items-end gap-2.5">
                         <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-400">
-                            Secure payments via Razorpay
+                            UPI, cards, and cash on delivery
                         </span>
                         <PaymentIcons />
                     </div>

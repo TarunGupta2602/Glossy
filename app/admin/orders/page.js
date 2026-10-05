@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { adminFetch } from "@/lib/adminApi";
+import { isCodOrder } from "@/lib/invoice";
 
 export default function AdminOrdersPage() {
     const router = useRouter();
@@ -115,6 +116,9 @@ export default function AdminOrdersPage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <p className="text-sm font-black text-gray-900">₹{parseFloat(order.total_amount).toFixed(2)}</p>
+                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-1">
+                                                        {isCodOrder(order) ? "Cash on delivery" : "Paid online"}
+                                                    </p>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${getStatusColor(order.order_status)}`}>
@@ -160,6 +164,16 @@ export default function AdminOrdersPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                 <div className="space-y-4">
                                     <div>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Payment</p>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                            {isCodOrder(selectedOrder)
+                                                ? `Cash on delivery — collect ₹${parseFloat(selectedOrder.total_amount).toFixed(2)}`
+                                                : "Paid online"}
+                                        </p>
+                                    </div>
+                                    {!isCodOrder(selectedOrder) && (
+                                    <>
+                                    <div>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Razorpay Order ID</p>
                                         <p className="text-sm font-semibold text-gray-900">{selectedOrder.razorpay_order_id}</p>
                                     </div>
@@ -167,6 +181,8 @@ export default function AdminOrdersPage() {
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Razorpay Payment ID</p>
                                         <p className="text-sm font-semibold text-gray-900">{selectedOrder.razorpay_payment_id}</p>
                                     </div>
+                                    </>
+                                    )}
                                 </div>
                                 <div className="space-y-4">
                                     <div>

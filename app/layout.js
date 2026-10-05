@@ -209,7 +209,7 @@ export default function RootLayout({ children }) {
     ],
     "priceRange": "₹₹",
     "currenciesAccepted": "INR",
-    "paymentAccepted": "UPI, Credit Card, Debit Card, Net Banking",
+    "paymentAccepted": "UPI, Credit Card, Debit Card, Net Banking, Cash on Delivery",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],

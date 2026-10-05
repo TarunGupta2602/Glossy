@@ -4,7 +4,7 @@ import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
-import { findRingsCategory } from "@/lib/categoryLanding";
+import { findRingsCategory, productMatchesRings } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { RINGS_GUIDE } from "@/lib/categoryGuides";
@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Anti-Tarnish Rings for Daily Wear (Page ${pageNum})`
             : "Buy Anti-Tarnish Rings Online India",
         description:
-            "Shop anti-tarnish rings online in India — waterproof 18k gold plated everyday rings. Free shipping over ₹1000 + Buy 2 Get 1 Free.",
+            "Everyday anti-tarnish rings for India — the open emerald band, stackable rhinestone set, and matching bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -62,29 +62,16 @@ export default async function RingsPage({ searchParams }) {
     const category = findRingsCategory(categories);
     const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
 
-    let products = [];
-    let count = 0;
+    const { data: catalog } = await supabase
+        .from("products")
+        .select(PRODUCT_CARD_SELECT)
+        .order("created_at", { ascending: false });
 
-    if (category?.id) {
-        const from = (page - 1) * PAGE_SIZE;
-        const to = from + PAGE_SIZE - 1;
-
-        const [countResult, productsResult] = await Promise.all([
-            supabase
-                .from("products")
-                .select("id", { count: "exact", head: true })
-                .eq("category_id", category.id),
-            supabase
-                .from("products")
-                .select(PRODUCT_CARD_SELECT)
-                .eq("category_id", category.id)
-                .order("created_at", { ascending: false })
-                .range(from, to),
-        ]);
-
-        count = countResult.count || 0;
-        products = productsResult.data || [];
-    }
+    const matched = (catalog || []).filter((product) =>
+        productMatchesRings(product, category?.id)
+    );
+    const count = matched.length;
+    const products = matched.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
     const productsWithDiscounts = await attachHoverImages(
         supabase,
@@ -97,8 +84,7 @@ export default async function RingsPage({ searchParams }) {
 
     const pageTitle = "Buy Anti-Tarnish Rings Online India";
     const pageDescription =
-        category?.description ||
-        "Lightweight waterproof rings in 18k gold plated finish — made for Indian humidity and everyday stacking. Gift-ready and comfortable for all-day wear. Buy 2 Get 1 Free across the store. (Uniqueness Rings edit)";
+        "Rings only: the Gold Emerald Open Ring, the stackable rhinestone set, and bangle-and-ring sets. Not the full shop. Cash on delivery or UPI, free shipping over ₹1000.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

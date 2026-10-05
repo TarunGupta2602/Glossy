@@ -49,6 +49,7 @@ export default function CheckoutPage() {
     }, [cart, promo.freeGiftSelections]);
 
     const [paymentStatus, setPaymentStatus] = useState("idle");
+    const [payMode, setPayMode] = useState(null);
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
         lastName: "",
@@ -80,6 +81,72 @@ export default function CheckoutPage() {
         });
     };
 
+    const handleCodOrder = async () => {
+        if (!user) {
+            alert("Please sign in to complete checkout.");
+            return;
+        }
+        if (!cart.length) {
+            alert("Your cart is empty.");
+            return;
+        }
+        if (!shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode) {
+            alert("Please fill in your shipping details.");
+            return;
+        }
+
+        setIsProcessing(true);
+        setPayMode("cod");
+
+        try {
+            for (const item of cart) {
+                await authFetch("/api/cart", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        productId: item.id,
+                        quantity: item.quantity || 1,
+                        action: "add",
+                    }),
+                });
+            }
+
+            const storeOrderRes = await authFetch("/api/orders", {
+                method: "POST",
+                body: JSON.stringify({
+                    payment_method: "cod",
+                    shipping_address: shippingInfo,
+                    contact_phone: shippingInfo.phone,
+                    items: cart.map((item) => ({
+                        id: item.id,
+                        quantity: item.quantity || 1,
+                    })),
+                }),
+            });
+            const saved = await storeOrderRes.json();
+            if (!storeOrderRes.ok) {
+                throw new Error(saved.error || "Could not place the order");
+            }
+
+            trackPurchase({
+                transactionId: saved.order.id,
+                value: saved.order.total_amount ?? cartTotal,
+                items: checkoutItems.filter((item) => !item.isFreeGift),
+            });
+            trackMetaPurchase({
+                value: saved.order.total_amount ?? cartTotal,
+                transactionId: saved.order.id,
+            });
+
+            await clearCart();
+            router.push(`/order/${saved.order.id}/confirmation`);
+        } catch (error) {
+            console.error("COD order error:", error);
+            alert(error.message || "Could not place the cash on delivery order.");
+            setIsProcessing(false);
+            setPayMode(null);
+        }
+    };
+
     const handlePayment = async () => {
         if (!user) {
             alert("Please sign in to complete checkout.");
@@ -95,11 +162,13 @@ export default function CheckoutPage() {
         }
 
         setIsProcessing(true);
+        setPayMode("online");
         const res = await loadRazorpay();
 
         if (!res) {
             alert("Razorpay SDK failed to load. Are you online?");
             setIsProcessing(false);
+            setPayMode(null);
             return;
         }
 
@@ -196,6 +265,7 @@ export default function CheckoutPage() {
                 modal: {
                     ondismiss: function () {
                         setIsProcessing(false);
+                        setPayMode(null);
                     }
                 }
             };
@@ -208,6 +278,7 @@ export default function CheckoutPage() {
             alert(error.message || "Something went wrong with the payment.");
             setPaymentStatus("error");
             setIsProcessing(false);
+            setPayMode(null);
         }
     };
 
@@ -233,8 +304,8 @@ export default function CheckoutPage() {
                             LUXE <span className="font-light text-gray-500">JEWELS</span>
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">Your Signature Awaits.</h1>
-                    <p className="text-gray-400 mb-8 md:mb-10 text-sm leading-relaxed px-2 sm:px-4">Log in to complete your acquisition and track your order every step of the way.</p>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">Sign in to place your order</h1>
+                    <p className="text-gray-500 mb-8 md:mb-10 text-sm leading-relaxed px-2 sm:px-4">Your bag stays on this account, so we can prepare the order, ship it, and show it in My Orders.</p>
 
                     <div className="flex justify-center min-h-[50px]">
                         <GoogleSignInButton text="continue_with" />
@@ -273,7 +344,7 @@ export default function CheckoutPage() {
 
                 <div className="mb-6 md:mb-8 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                     <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-blue-900">
-                        Pay securely with <span className="font-bold">UPI, cards, or net banking</span> via Razorpay. We do not offer cash on delivery.
+                        Pay online with <span className="font-bold">UPI, cards, or net banking</span>, or choose <span className="font-bold">cash on delivery</span> and pay when the parcel arrives.
                     </div>
                     <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-amber-900">
                         Estimated delivery: <span className="font-bold">3–5 business days</span> across India after dispatch.
@@ -400,23 +471,38 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
-                        <button
-                            onClick={handlePayment}
-                            disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode}
-                            className={`w-full py-5 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode
-                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                : "bg-gray-900 text-white hover:bg-black transform active:scale-[0.98]"
-                                }`}
-                        >
-                            {isProcessing ? (
-                                <>
-                                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                    Processing...
-                                </>
-                            ) : (
-                                "Pay Now with Razorpay"
-                            )}
-                        </button>
+                        <div className="space-y-3">
+                            <button
+                                onClick={handleCodOrder}
+                                disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode}
+                                className={`w-full py-5 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-900 text-white hover:bg-black transform active:scale-[0.98]"
+                                    }`}
+                            >
+                                {isProcessing && payMode === "cod" ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                        Placing order...
+                                    </>
+                                ) : (
+                                    "Place order · Cash on delivery"
+                                )}
+                            </button>
+                            <button
+                                onClick={handlePayment}
+                                disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode}
+                                className={`w-full py-4 rounded-2xl text-sm font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-3 border ${isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode
+                                    ? "border-gray-100 text-gray-300 cursor-not-allowed"
+                                    : "border-gray-900 text-gray-900 hover:bg-gray-50"
+                                    }`}
+                            >
+                                {isProcessing && payMode === "online" ? "Opening payment..." : "Pay now with UPI or card"}
+                            </button>
+                            <p className="text-center text-[11px] text-gray-500 leading-relaxed">
+                                Cash on delivery is collected by the courier. The order stays on your signed-in account so we can pack and ship it.
+                            </p>
+                        </div>
                     </div>
 
                     {/* Right: Order Details */}
@@ -474,7 +560,9 @@ export default function CheckoutPage() {
                                 )}
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className="font-black tracking-widest uppercase text-green-600">Free</span>
+                                    <span className={shippingFee > 0 ? "font-bold text-gray-900" : "font-black tracking-widest uppercase text-green-600"}>
+                                        {shippingFee > 0 ? `₹${shippingFee}` : "Free"}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>

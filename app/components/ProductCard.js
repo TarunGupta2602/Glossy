@@ -8,6 +8,7 @@ import { getProductDiscountInfo } from "@/lib/discountUtils";
 import { getDisplayCategoryName } from "@/lib/categoryLanding";
 import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
+import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { isSellingFast } from "@/lib/festivalSeason";
 import { isProductOutOfStock } from "@/lib/productAvailability";
@@ -27,10 +28,12 @@ export default function ProductCard({
         : "0";
     const { hasDiscount, originalPrice } = getProductDiscountInfo(product);
     const { isInWishlist, toggleWishlist } = useWishlist();
+    const { addToCart } = useCart();
     const { showToast } = useToast();
     const wishlisted = isInWishlist(product.id);
     const [loadHover, setLoadHover] = useState(false);
     const [wishPulse, setWishPulse] = useState(false);
+    const [addedToBag, setAddedToBag] = useState(false);
     const href = getProductPath(product);
     const hoverImage = product.hover_image;
     const outOfStock = isProductOutOfStock(product);
@@ -47,6 +50,26 @@ export default function ProductCard({
             hrefLabel: "View",
             tone: "pink",
         });
+    };
+
+    const handleAddToBag = async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (outOfStock) return;
+        const added = await addToCart(
+            {
+                id: product.id,
+                name: product.name,
+                price: product.price || 0,
+                image: product.main_image || product.image || "/logo.png",
+                category: categoryName,
+                stock_count: product.stock_count,
+            },
+            1
+        );
+        if (!added) return;
+        setAddedToBag(true);
+        window.setTimeout(() => setAddedToBag(false), 1600);
     };
 
     return (
@@ -203,6 +226,21 @@ export default function ProductCard({
                         {reviewAverage > 0 ? reviewAverage.toFixed(1) : "—"} ({reviewCount})
                     </p>
                 )}
+
+                <button
+                    type="button"
+                    onClick={handleAddToBag}
+                    disabled={outOfStock}
+                    className={`mt-3 w-full min-h-10 rounded-full text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors ${
+                        outOfStock
+                            ? "bg-[#efeae4] text-[#8a847c] cursor-not-allowed"
+                            : addedToBag
+                              ? "bg-[#2a2724] text-white"
+                              : "bg-[#E91E63] text-white active:bg-[#C2185B]"
+                    }`}
+                >
+                    {outOfStock ? "Out of stock" : addedToBag ? "Added" : "Add to bag"}
+                </button>
             </div>
         </article>
     );

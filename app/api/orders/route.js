@@ -7,6 +7,8 @@ import { isAdminUser } from "@/lib/userProfile";
 import {
     resolveCheckoutCart,
 } from "@/lib/checkoutTotals";
+import { COD_AVAILABLE } from "@/lib/constants";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 const CUSTOMER_ALLOWED_STATUSES = new Set(["cancelled", "return requested"]);
 const ADMIN_ALLOWED_STATUSES = new Set([
@@ -44,6 +46,102 @@ function verifyRazorpaySignature(orderId, paymentId, signature) {
     }
 }
 
+function normalizeIndianMobile(phone) {
+    const digits = String(phone || "").replace(/\D/g, "");
+    if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);
+    if (digits.length === 11 && digits.startsWith("0")) return digits.slice(1);
+    return digits;
+}
+
+async function createCodOrder(req, auth, body) {
+    if (!COD_AVAILABLE) {
+        return NextResponse.json(
+            { error: "Cash on delivery is not available" },
+            { status: 400 }
+        );
+    }
+
+    const limited = rateLimit(`cod:${auth.user.id}:${clientIp(req)}`, {
+        limit: 5,
+        windowMs: 10 * 60_000,
+    });
+    if (!limited.ok) {
+        return NextResponse.json(
+            { error: "Too many orders. Please wait a few minutes." },
+            { status: 429 }
+        );
+    }
+
+    const shipping = body.shipping_address || {};
+    const phone = normalizeIndianMobile(body.contact_phone || shipping.phone);
+    const pincode = String(shipping.pincode || "").trim();
+
+    if (!String(shipping.firstName || "").trim() || !String(shipping.address || "").trim()) {
+        return NextResponse.json(
+            { error: "Add your name and delivery address" },
+            { status: 400 }
+        );
+    }
+    if (!/^\d{6}$/.test(pincode)) {
+        return NextResponse.json(
+            { error: "Enter a 6-digit pin code" },
+            { status: 400 }
+        );
+    }
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+        return NextResponse.json(
+            { error: "Enter a valid 10-digit mobile number" },
+            { status: 400 }
+        );
+    }
+
+    const supabaseService = getServiceClient();
+    const clientItems = Array.isArray(body.items) ? body.items : [];
+    const { checkout, error: checkoutError } = await resolveCheckoutCart(
+        supabaseService,
+        auth.user.id,
+        clientItems,
+        { persistFallback: true }
+    );
+
+    if (checkoutError || !checkout) {
+        return NextResponse.json(
+            { error: checkoutError || "Cart is empty" },
+            { status: checkoutError?.includes("stock") ? 409 : 400 }
+        );
+    }
+
+    await decrementStock(supabaseService, checkout.checkoutItems);
+
+    const codRef = `COD-${crypto.randomUUID()}`;
+    const { data, error } = await supabaseService
+        .from("orders")
+        .insert([
+            {
+                user_id: auth.user.id,
+                razorpay_order_id: codRef,
+                razorpay_payment_id: codRef,
+                total_amount: checkout.cartTotal,
+                shipping_address: { ...shipping, phone },
+                contact_phone: phone,
+                items: checkout.checkoutItems,
+                status: "cod",
+                order_status: "processing",
+            },
+        ])
+        .select()
+        .single();
+
+    if (error) {
+        console.error("COD Order Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    await supabaseService.from("cart_items").delete().eq("user_id", auth.user.id);
+
+    return NextResponse.json({ success: true, order: data });
+}
+
 async function decrementStock(supabase, items) {
     for (const item of items) {
         const qty = Number(item.quantity) || 1;
@@ -75,6 +173,10 @@ export async function POST(req) {
         if (auth.error) return auth.error;
 
         const body = await req.json();
+        if (body.payment_method === "cod") {
+            return createCodOrder(req, auth, body);
+        }
+
         const {
             razorpay_order_id,
             razorpay_payment_id,

@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 export const metadata = {
     title: "Shipping Times, Tracking & 10-Day Returns",
     description:
-        "Delivery times across India, free shipping on prepaid orders over ₹1000, order tracking, and our 10-day return policy for jewellery orders.",
+        "Delivery times across India, free shipping on orders over ₹1000, cash on delivery, and our 10-day return policy.",
     alternates: {
         canonical: "/shipping-returns",
     },
@@ -33,7 +33,8 @@ export default function ShippingReturns() {
                     <ul className="list-disc pl-5 space-y-2 mt-3">
                         <li>Standard delivery: 3–7 business days</li>
                         <li>Express delivery: 1–3 business days (where available)</li>
-                        <li>Free shipping on prepaid orders over ₹1000</li>
+                        <li>Free shipping on orders over ₹1000, including cash on delivery</li>
+                        <li>Cash on delivery: sign in at checkout and pay the courier on arrival</li>
                     </ul>
                 </LegalSection>
 

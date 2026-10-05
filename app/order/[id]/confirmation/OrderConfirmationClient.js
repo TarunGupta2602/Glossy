@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import OrderInvoice from "../../../components/OrderInvoice";
 import { authFetch } from "@/lib/adminApi";
+import { isCodOrder } from "@/lib/invoice";
 
 export default function OrderConfirmationClient() {
     const { id } = useParams();
@@ -71,9 +72,13 @@ export default function OrderConfirmationClient() {
                     <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2"><polyline points="20 6 9 17 4 12" /></svg>
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Payment successful</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                        {isCodOrder(order) ? "Order placed" : "Payment successful"}
+                    </h1>
                     <p className="text-gray-500 text-sm max-w-md mx-auto">
-                        Thank you for your order. Your invoice is below — save or print it for your records.
+                        {isCodOrder(order)
+                            ? "Pay cash when the courier arrives. We will prepare this order from the address on your account."
+                            : "Thank you for your order. Your invoice is below — save or print it for your records."}
                     </p>
                 </div>
 

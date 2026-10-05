@@ -129,7 +129,7 @@ export function CartProvider({ children }) {
                     ? "Out of stock"
                     : `Only ${product.stock_count} left in stock`
             );
-            return;
+            return false;
         }
 
         setCart((prevCart) => {
@@ -159,6 +159,7 @@ export function CartProvider({ children }) {
             category: product.category,
         });
 
+        let saved = true;
         if (user) {
             try {
                 const response = await authFetch("/api/cart", {
@@ -175,16 +176,20 @@ export function CartProvider({ children }) {
                     console.error("Cart Add Error:", data.error);
                     setCart(previousCart);
                     if (data.error) alert(data.error);
+                    saved = false;
                 } else {
                     await fetchDBCart();
                 }
             } catch (error) {
                 console.error("Cart context add error:", error);
                 setCart(previousCart);
+                saved = false;
             }
         }
 
+        if (!saved) return false;
         setIsCartOpen(true);
+        return true;
     };
 
     const removeFromCart = async (productId) => {

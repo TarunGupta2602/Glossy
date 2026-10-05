@@ -4,7 +4,7 @@ import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
 import { getReviewCounts } from "@/lib/reviewCounts";
-import { findBraceletsCategory } from "@/lib/categoryLanding";
+import { findBraceletsCategory, productMatchesBracelets } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
 import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Daily Wear Bracelet India (Page ${pageNum})`
             : "Daily Wear Bracelet India",
         description:
-            "Daily wear bracelet in India — anti-tarnish waterproof 18k gold plated cuffs, chains & bangles. Buy 2 Get 1 Free + free shipping over ₹1000.",
+            "Slim anti-tarnish bangles and cuffs for daily wear in India, plus bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -62,29 +62,16 @@ export default async function BraceletsPage({ searchParams }) {
     const category = findBraceletsCategory(categories);
     const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
 
-    let products = [];
-    let count = 0;
+    const { data: catalog } = await supabase
+        .from("products")
+        .select(PRODUCT_CARD_SELECT)
+        .order("created_at", { ascending: false });
 
-    if (category?.id) {
-        const from = (page - 1) * PAGE_SIZE;
-        const to = from + PAGE_SIZE - 1;
-
-        const [countResult, productsResult] = await Promise.all([
-            supabase
-                .from("products")
-                .select("id", { count: "exact", head: true })
-                .eq("category_id", category.id),
-            supabase
-                .from("products")
-                .select(PRODUCT_CARD_SELECT)
-                .eq("category_id", category.id)
-                .order("created_at", { ascending: false })
-                .range(from, to),
-        ]);
-
-        count = countResult.count || 0;
-        products = productsResult.data || [];
-    }
+    const matched = (catalog || []).filter((product) =>
+        productMatchesBracelets(product, category?.id)
+    );
+    const count = matched.length;
+    const products = matched.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
     const productsWithDiscounts = await attachHoverImages(
         supabase,
@@ -97,7 +84,7 @@ export default async function BraceletsPage({ searchParams }) {
 
     const pageTitle = "Daily wear bracelet for India";
     const pageDescription =
-        "Daily wear bracelet cuffs and chains for India — lightweight anti-tarnish waterproof 18k gold plated styles that stay comfortable from commute to evening. Buy 2 Get 1 Free, free shipping over ₹1000.";
+        "Shop slim anti-tarnish bangles and cuffs for Indian office days — screw-motif, mother-of-pearl, and crystal-edge styles, plus matching bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

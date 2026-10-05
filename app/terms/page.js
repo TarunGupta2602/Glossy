@@ -41,8 +41,9 @@ export default function TermsPage() {
             <LegalSection title="Orders & Payments">
                 <p>
                     All orders are subject to availability and confirmation. We reserve the right to
-                    cancel or refuse any order at our discretion. All payments must be completed online
-                    before order processing — we do not offer cash on delivery.
+                    cancel or refuse any order at our discretion. You can pay online with UPI, cards,
+                    or net banking, or choose cash on delivery and pay when the parcel arrives.
+                    Sign in so the order stays on your account and we can prepare it.
                 </p>
             </LegalSection>
 
