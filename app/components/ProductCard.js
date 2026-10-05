@@ -63,6 +63,8 @@ export default function ProductCard({
                 price: product.price || 0,
                 image: product.main_image || product.image || "/logo.png",
                 category: categoryName,
+                description: product.description || "",
+                slug: product.slug,
                 stock_count: product.stock_count,
             },
             1

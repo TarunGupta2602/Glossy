@@ -13,7 +13,7 @@ import EmptyCartSuggestions from "../components/EmptyCartSuggestions";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
 
 export default function CartPage() {
-    const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
+    const { cart, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
 
@@ -50,95 +50,64 @@ export default function CartPage() {
 
     return (
         <div className="bg-white min-h-screen pb-24">
-            <div className={`${SITE_CONTAINER} pt-8 md:pt-16`}>
+            <div className={`${SITE_CONTAINER} pt-6 md:pt-10`}>
                 <CheckoutSteps current={1} />
-                <div className="flex items-baseline justify-between gap-3 mb-5 md:mb-6">
+                <div className="flex items-baseline justify-between gap-3 mb-4 md:mb-5">
                     <h1 className="text-2xl md:text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>
                     <Link href="/shop" className="text-[10px] md:text-xs font-bold text-[#E91E63] tracking-widest uppercase border-b border-[#E91E63] pb-1 hover:text-[#C2185B] hover:border-[#C2185B] transition-all whitespace-nowrap">
                         Continue
                     </Link>
                 </div>
 
-                <div className="mb-6 md:mb-8 rounded-2xl border border-[#efeae4] bg-[#fdfbf7] px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-[#5c5752]">
-                    Your bag is saved on this device. Sign in with Google to place the order, then add the address and pay by UPI or cash on delivery.
-                </div>
+                <TrustStrip className="mb-6 md:mb-8" />
 
-                <TrustStrip className="mb-8 md:mb-10" />
-
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 md:gap-12 items-start">
-                    {/* Items List */}
-                    <div className="space-y-5 md:space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 md:gap-10 items-start">
+                    <div className="space-y-4">
                         {cart.map((item) => (
-                            <div key={item.id} className="flex gap-3 sm:gap-6 pb-5 md:pb-8 border-b border-gray-100 last:border-0 group">
-                                {/* Product Image */}
-                                <Link href={getProductPath(item)} className="relative w-24 sm:w-32 md:w-44 aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
+                            <div key={item.id} className="flex gap-3 sm:gap-4 pb-4 border-b border-gray-100 last:border-0 group">
+                                <Link href={getProductPath(item)} className="relative w-20 sm:w-24 aspect-square rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
                                     <Image
                                         src={item.image}
                                         alt={item.name}
                                         fill
-                                        sizes="100px"
+                                        sizes="96px"
                                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 </Link>
 
-                                {/* Item Info */}
                                 <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                                     <div>
-                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5 sm:gap-3 mb-1">
-                                            <div className="flex flex-col gap-1 min-w-0">
-                                                <Link href={getProductPath(item)} className="text-base sm:text-lg font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-2 sm:line-clamp-1">
-                                                    {item.name}
-                                                </Link>
-                                                {promo.freeProductIds?.includes(item.id) && (
-                                                    <span className="inline-flex w-fit items-center rounded-full bg-[#E91E63]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#E91E63]">
-                                                        Free Gift
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-base sm:text-lg font-bold text-gray-900 flex-shrink-0">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                        <div className="flex items-start justify-between gap-3">
+                                            <Link href={getProductPath(item)} className="text-[15px] sm:text-base font-bold text-gray-900 hover:text-[#E91E63] transition-colors line-clamp-2">
+                                                {item.name}
+                                            </Link>
+                                            <p className="text-[15px] sm:text-base font-bold text-gray-900 flex-shrink-0">₹{(item.price * item.quantity).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                         </div>
-                                        <p className="text-[10px] font-bold tracking-[0.2em] text-[#E91E63] uppercase mb-2 md:mb-3">{item.category}</p>
-                                        {item.description && (
-                                            <p className="hidden sm:block text-sm text-gray-400 font-medium leading-relaxed line-clamp-2 mb-4 max-w-md">
-                                                {item.description}
-                                            </p>
-                                        )}
-
-                                        <div className="hidden sm:flex items-center gap-4 text-[11px] text-gray-400 font-medium mb-4">
-                                            <span className="flex items-center gap-1.5">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                                In Stock
-                                            </span>
-                                            <span className="flex items-center gap-1.5">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                                Ships to India
-                                            </span>
-                                        </div>
+                                        <p className="mt-1 text-[10px] font-bold tracking-[0.16em] text-[#E91E63] uppercase">{item.category}</p>
                                     </div>
 
-                                    <div className="flex items-center justify-between mt-auto gap-2">
-                                        {/* Qty Selector */}
-                                        <div className="flex items-center border border-gray-100 bg-gray-50/50 rounded-xl h-10 sm:h-11 px-1 sm:px-2">
+                                    <div className="flex items-center justify-between mt-3 gap-2">
+                                        <div className="flex items-center border border-gray-100 bg-gray-50/50 rounded-full h-9 px-1">
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
+                                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 rounded-full transition-all"
                                                 disabled={item.quantity <= 1}
+                                                aria-label="Decrease quantity"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                             </button>
-                                            <span className="w-8 sm:w-10 text-center text-sm font-bold text-gray-800">{item.quantity}</span>
+                                            <span className="w-6 text-center text-sm font-bold text-gray-800">{item.quantity}</span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-white rounded-lg transition-all"
+                                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-900 rounded-full transition-all"
+                                                aria-label="Increase quantity"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                             </button>
                                         </div>
-
-                                        {/* Remove Button */}
                                         <button
                                             onClick={() => removeFromCart(item.id)}
-                                            className="text-[10px] sm:text-[11px] font-bold text-gray-300 hover:text-red-500 tracking-widest uppercase transition-colors"
+                                            className="text-[10px] font-bold text-gray-300 hover:text-red-500 tracking-widest uppercase transition-colors"
                                         >
                                             Remove
                                         </button>
@@ -149,77 +118,45 @@ export default function CartPage() {
                     </div>
 
                     {/* Summary Sidebar */}
-                    <aside className="bg-gray-50/80 backdrop-blur-sm rounded-2xl md:rounded-[32px] p-5 sm:p-8 sticky top-28 border border-gray-100">
-                        <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 md:mb-6">Order Summary</h2>
+                    <aside className="bg-gray-50/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 sticky top-28 border border-gray-100">
+                        <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
 
-                        {!user && !authLoading && (
-                            <div className="mb-6 rounded-2xl border border-[#efeae4] bg-white p-4 sm:p-5">
-                                <p className="text-sm font-semibold text-gray-900">Sign in to place this order</p>
-                                <p className="mt-1.5 text-[13px] leading-relaxed text-gray-500">
-                                    Google sign-in keeps this bag, then opens checkout for your address. No extra form.
-                                </p>
-                                <div className="mt-4">
-                                    <ContinueWithGoogle next="/checkout" />
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="space-y-4 mb-6 md:mb-8">
+                        <div className="space-y-3 mb-4">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500 font-medium">Subtotal</span>
+                                <span className="text-gray-500">Subtotal</span>
                                 <span className="font-bold text-gray-900">₹{cartSubtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                             </div>
                             {discountAmount > 0 && (
                                 <div className="flex justify-between gap-4 text-sm text-green-600">
-                                    <span className="font-medium">Buy 2 Get 1 Free</span>
+                                    <span>Buy 2 Get 1 Free</span>
                                     <span className="font-bold flex-shrink-0">-₹{discountAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500 font-medium">Shipping & delivery</span>
+                                <span className="text-gray-500">Shipping</span>
                                 <span className="font-bold text-gray-900">
                                     {shippingFee > 0 ? `₹${shippingFee}` : "—"}
                                 </span>
                             </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-500 font-medium">Estimated Tax</span>
-                                <span className="font-bold text-gray-900">₹0.00</span>
-                            </div>
                         </div>
 
-                        {/* Buy 2 Get 1 Nudge */}
-                        {promo.completeSets > 0 && promo.cheapestFreeItem && (
-                            <div className="mb-6 p-4 rounded-2xl bg-[#E91E63]/5 border border-[#E91E63]/10 flex items-start gap-3">
-                                <span className="text-lg">🎁</span>
-                                <div>
-                                    <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wider mb-0.5">Your complimentary gift</p>
-                                    <p className="text-xs text-gray-600 font-medium leading-tight">
-                                        Buy 2 Get 1 Free is applied — {promo.completeSets} complimentary gift{promo.completeSets > 1 ? "s" : ""} included with this order.
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {promo.completeSets > 0 && promo.cheapestFreeItem && (
-                            <div className="mb-6 p-4 rounded-2xl bg-white border border-gray-100">
-                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">Complimentary gift</p>
-                                <div className="space-y-3">
-                                    {promo.freeGiftSelections.map((selection) => (
-                                        <div key={`${selection.productId}-${selection.setNumber}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
-                                            <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-white border border-gray-100">
-                                                <Image src={selection.image} alt={selection.name} fill sizes="48px" className="object-cover" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-[12px] font-bold text-gray-900">{selection.name}</p>
-                                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">Set {selection.setNumber} • FREE</p>
-                                            </div>
+                        {promo.completeSets > 0 && promo.freeGiftSelections?.length > 0 && (
+                            <div className="mb-4 space-y-2">
+                                {promo.freeGiftSelections.map((selection) => (
+                                    <div key={`${selection.productId}-${selection.setNumber}`} className="flex items-center gap-3 rounded-xl bg-white border border-gray-100 p-2.5">
+                                        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+                                            <Image src={selection.image} alt="" fill sizes="40px" className="object-cover" />
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[12px] font-semibold text-gray-900 truncate">{selection.name}</p>
+                                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#E91E63]">Free gift</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         )}
 
-                        <div className="border-t border-gray-200/60 pt-6 mb-8">
+                        <div className="border-t border-gray-200/60 pt-4 mb-4">
                             <div className="flex justify-between items-end">
                                 <span className="text-base font-bold text-gray-900">Total</span>
                                 <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
@@ -229,34 +166,15 @@ export default function CartPage() {
                         {user ? (
                             <button
                                 onClick={() => router.push("/checkout")}
-                                className="w-full bg-gray-900 text-white py-5 rounded-2xl text-[13px] font-bold tracking-[0.2em] uppercase hover:bg-black transition-all duration-300 transform active:scale-[0.98] mb-6 shadow-xl shadow-gray-200"
+                                className="w-full bg-gray-900 text-white py-4 rounded-2xl text-[12px] font-bold tracking-[0.16em] uppercase hover:bg-black transition-all active:scale-[0.98]"
                             >
                                 Proceed to Checkout
                             </button>
                         ) : authLoading ? (
-                            <div className="mb-6 h-14 rounded-2xl bg-gray-100 animate-pulse" />
-                        ) : null}
-
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100/60">
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0 text-[#E91E63]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-gray-900 tracking-tight">Authenticity Guaranteed</p>
-                                    <p className="text-[10px] text-gray-400 font-medium">100% genuine products.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100/60">
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0 text-[#E91E63]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-gray-900 tracking-tight">Secure Payment</p>
-                                    <p className="text-[10px] text-gray-400 font-medium">SSL encrypted checkout.</p>
-                                </div>
-                            </div>
-                        </div>
+                            <div className="h-12 rounded-2xl bg-gray-100 animate-pulse" />
+                        ) : (
+                            <ContinueWithGoogle next="/checkout" tone="dark" label="Continue with Google" />
+                        )}
                     </aside>
                 </div>
 
@@ -267,7 +185,7 @@ export default function CartPage() {
                         <span className="text-sm text-gray-500">Total</span>
                         <span className="text-lg font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <ContinueWithGoogle next="/checkout" />
+                    <ContinueWithGoogle next="/checkout" tone="dark" label="Continue with Google" />
                 </div>
             )}
         </div>

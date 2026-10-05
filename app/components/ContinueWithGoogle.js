@@ -16,14 +16,20 @@ function GoogleMark() {
 export default function ContinueWithGoogle({
     next = "/checkout",
     label = "Continue with Google",
+    tone = "light",
 }) {
     const { signInWithGoogle } = useAuth();
+    const dark = tone === "dark";
 
     return (
         <button
             type="button"
             onClick={() => signInWithGoogle(next)}
-            className="flex w-full min-h-12 items-center justify-center gap-3 rounded-2xl bg-white px-5 py-4 text-[13px] font-bold text-gray-900 ring-1 ring-gray-200 transition-colors hover:bg-gray-50"
+            className={
+                dark
+                    ? "flex w-full min-h-14 items-center justify-center gap-3 rounded-2xl bg-gray-900 px-5 py-5 text-[13px] font-bold uppercase tracking-[0.16em] text-white shadow-xl shadow-gray-200 transition-all hover:bg-black active:scale-[0.98]"
+                    : "flex w-full min-h-12 items-center justify-center gap-3 rounded-2xl bg-white px-5 py-4 text-[13px] font-bold text-gray-900 ring-1 ring-gray-200 transition-colors hover:bg-gray-50"
+            }
         >
             <GoogleMark />
             {label}

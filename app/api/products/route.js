@@ -59,9 +59,24 @@ export async function GET(req) {
         const categoryId = searchParams.get("category_id");
         const slug = searchParams.get("slug");
         const q = searchParams.get("q");
-        const lite = searchParams.get("lite") === "1";
-
+        const idsParam = searchParams.get("ids");
         const supabaseService = getServiceClient();
+        if (idsParam) {
+            const ids = [...new Set(idsParam.split(",").map((id) => id.trim()).filter(Boolean))].slice(0, 40);
+            if (!ids.length) {
+                return NextResponse.json({ success: true, products: [] });
+            }
+            const { data, error } = await supabaseService
+                .from("products")
+                .select("id, description, slug, categories(name)")
+                .in("id", ids);
+            if (error) {
+                return NextResponse.json({ error: error.message }, { status: 500 });
+            }
+            return NextResponse.json({ success: true, products: data || [] });
+        }
+
+        const lite = searchParams.get("lite") === "1";
 
         const selectCols = lite
             ? `id, name, price, main_image, stock_count, categories ( name )`

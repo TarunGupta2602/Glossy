@@ -101,6 +101,37 @@ export function CartProvider({ children }) {
     }, [cart, isInitialized, user]);
 
     useEffect(() => {
+        if (!isInitialized || !cart.length) return undefined;
+        const missing = [...new Set(cart.filter((item) => item?.id && item.description == null).map((item) => item.id))];
+        if (!missing.length) return undefined;
+
+        let cancelled = false;
+        fetch(`/api/products?ids=${encodeURIComponent(missing.slice(0, 40).join(","))}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (cancelled || !data?.success) return;
+                const byId = Object.fromEntries((data.products || []).map((product) => [product.id, product]));
+                setCart((prev) =>
+                    prev.map((item) => {
+                        if (item.description != null || !missing.includes(item.id)) return item;
+                        const product = byId[item.id];
+                        return {
+                            ...item,
+                            description: product?.description || "",
+                            slug: item.slug || product?.slug,
+                            category: item.category || product?.categories?.name || item.category,
+                        };
+                    })
+                );
+            })
+            .catch(() => {});
+
+        return () => {
+            cancelled = true;
+        };
+    }, [cart, isInitialized]);
+
+    useEffect(() => {
         const fetchAllProducts = async () => {
             try {
                 const response = await fetch("/api/products?lite=1");
