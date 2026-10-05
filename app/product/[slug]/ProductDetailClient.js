@@ -130,9 +130,9 @@ export default function ProductDetailClient({
         setGalleryIndex(activeIdx === allImages.length - 1 ? 0 : activeIdx + 1);
     };
 
-    const handleAddToBag = () => {
+    const handleAddToBag = async () => {
         if (outOfStock) return;
-        addToCart(
+        const added = await addToCart(
             {
                 id: product.id,
                 name: product.name,
@@ -143,7 +143,7 @@ export default function ProductDetailClient({
             },
             qty
         );
-
+        if (!added) return;
         setAddedToBag(true);
         setTimeout(() => setAddedToBag(false), 2200);
     };

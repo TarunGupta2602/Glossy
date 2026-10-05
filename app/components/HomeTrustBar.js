@@ -3,7 +3,7 @@ import { PROMO_LABEL } from "@/lib/promo";
 const ITEMS = [
     "Waterproof & anti-tarnish",
     "Perfect gifts for her",
-    "Free shipping over ₹1000",
+    "Shipping from ₹50",
     PROMO_LABEL,
 ];
 

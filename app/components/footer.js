@@ -44,7 +44,7 @@ const HELP_LINKS = [
 const TRUST = [
     "Anti-tarnish",
     "Hypoallergenic finish",
-    "Free shipping over ₹1000",
+    "Shipping from ₹50",
     "10-day returns",
 ];
 

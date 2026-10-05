@@ -1,7 +1,7 @@
 export default function TrustStrip({ className = "" }) {
     const items = [
         "Cash on delivery or UPI",
-        "Free shipping over ₹1000",
+        "Shipping from ₹50",
         "10-day easy returns",
         "Hypoallergenic finish",
     ];

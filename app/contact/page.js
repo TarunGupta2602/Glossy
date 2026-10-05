@@ -114,7 +114,7 @@ export default function ContactPage() {
                         referrerPolicy="no-referrer-when-downgrade"
                     />
                     <p className="px-4 py-3 text-xs text-gray-500 bg-gray-50 text-center">
-                        Based in Noida · {SERVICE_AREA_LABEL} · Free delivery over ₹1000
+                        Based in Noida · {SERVICE_AREA_LABEL} · Shipping from ₹50
                     </p>
                 </div>
 

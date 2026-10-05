@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import CheckoutSteps from "../components/CheckoutSteps";
-import GoogleSignInButton from "../components/GoogleSignInButton";
+import ContinueWithGoogle from "../components/ContinueWithGoogle";
 import PaymentIcons from "../components/PaymentIcons";
 import { trackPurchase } from "@/lib/gtag";
 import { trackMetaPurchase } from "@/lib/metaPixel";
@@ -17,7 +17,7 @@ import { RETURN_POLICY_SHORT, RETURN_POLICY_SUMMARY } from "@/lib/productTrust";
 
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
     const [checkoutItems, setCheckoutItems] = useState([]);
@@ -294,28 +294,37 @@ export default function CheckoutPage() {
         );
     }
 
-    if (!isInitialized || !user) {
+    if (!isInitialized || authLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-                <div className="max-w-md w-full bg-white rounded-3xl md:rounded-[40px] p-6 sm:p-10 md:p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
-                    <div className="flex flex-col items-center leading-none mb-6 md:mb-8">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-1">THE</span>
-                        <span className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 uppercase">
-                            LUXE <span className="font-light text-gray-500">JEWELS</span>
-                        </span>
-                    </div>
-                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">Sign in to place your order</h1>
-                    <p className="text-gray-500 mb-8 md:mb-10 text-sm leading-relaxed px-2 sm:px-4">Your bag stays on this account, so we can prepare the order, ship it, and show it in My Orders.</p>
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="w-8 h-8 border-4 border-[#E91E63] border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
 
-                    <div className="flex justify-center min-h-[50px]">
-                        <GoogleSignInButton text="continue_with" />
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-[#fdfbf7] flex flex-col items-center justify-center p-6">
+                <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#efeae4]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#E91E63] mb-2">Checkout</p>
+                    <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sign in to place this order</h1>
+                    <p className="mt-2 text-sm leading-relaxed text-gray-500">
+                        Your bag stays with you. Google sign-in opens the address step so we can pack the order on your account.
+                    </p>
+                    {cart.length > 0 && (
+                        <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#fdfbf7] px-4 py-3 text-sm">
+                            <span className="text-gray-500">
+                                {cart.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0)} in your bag
+                            </span>
+                            <span className="font-bold text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                        </div>
+                    )}
+                    <div className="mt-5">
+                        <ContinueWithGoogle next="/checkout" />
                     </div>
-
-                    <div className="mt-12 flex flex-col gap-4">
-                        <Link href="/cart" className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors">
-                            Return to Bag
-                        </Link>
-                    </div>
+                    <Link href="/cart" className="mt-4 block text-center text-[12px] font-semibold text-gray-500 hover:text-gray-900">
+                        Back to bag
+                    </Link>
                 </div>
             </div>
         );
@@ -559,11 +568,14 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-500">Shipping</span>
+                                    <span className="text-gray-500">Shipping & delivery</span>
                                     <span className={shippingFee > 0 ? "font-bold text-gray-900" : "font-black tracking-widest uppercase text-green-600"}>
                                         {shippingFee > 0 ? `₹${shippingFee}` : "Free"}
                                     </span>
                                 </div>
+                                <p className="text-[11px] text-gray-400 leading-relaxed">
+                                    ₹50 under ₹500, ₹80 from ₹500, ₹120 from ₹1000, ₹150 from ₹1500.
+                                </p>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
                                     <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>

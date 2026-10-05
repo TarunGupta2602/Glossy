@@ -3,7 +3,7 @@ import ProductDetailClient from "./ProductDetailClient";
 import {
     fetchProductBySlugOrId,
     getProductStaticParams,
-    PRODUCT_CARD_SELECT,
+    getProductSidecars,
 } from "@/lib/productQueries";
 import {
     BASE_URL,
@@ -18,12 +18,11 @@ import {
     looksLikeCorruptedProductSlug,
 } from "@/lib/legacyProductRedirects";
 import { getCategoryHref, getDisplayCategoryName } from "@/lib/categoryLanding";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { getProductAvailability } from "@/lib/productAvailability";
 import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { getReviewCounts } from "@/lib/reviewCounts";
 import { toAbsoluteSiteMediaUrl } from "@/lib/siteMedia";
 import { PAID_SHIPPING_FEE } from "@/lib/promo";
+import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
 
@@ -52,7 +51,7 @@ export async function generateMetadata({ params }) {
     const seoDescription = truncateMetaDescription(
         product.meta_description ||
         product.description ||
-        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with free shipping across India.`
+        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with shipping from ₹50.`
     );
     const canonicalPath = getProductPath(product);
 
@@ -144,42 +143,18 @@ export default async function ProductPage({ params }) {
     }
 
     const id = product.id;
-    const supabase = getServiceClient();
-
-    // Parallel queries for better performance
-    const [galleryRows, related, reviewsData] = await Promise.all([
-        supabase
-            .from("product_images")
-            .select("image_url")
-            .eq("product_id", id)
-            .order("created_at", { ascending: true })
-            .limit(5),
-        supabase
-            .from("products")
-            .select(PRODUCT_CARD_SELECT)
-            .eq("category_id", product.category_id)
-            .neq("id", id)
-            .order("created_at", { ascending: false })
-            .limit(4),
-        supabase
-            .from("reviews")
-            .select("id, rating, user_name, comment, created_at, images")
-            .eq("product_id", id)
-            .eq("is_approved", true)
-            .order("created_at", { ascending: false })
-            .limit(50),
+    const [{ galleryImages, reviews }, catalog] = await Promise.all([
+        getProductSidecars(id),
+        getStorefrontCatalog(),
     ]);
 
-    const galleryImages = (galleryRows?.data || []).map((r) => r.image_url).filter(Boolean).slice(0, 5);
-    let relatedProducts = (related?.data || []).slice(0, 4);
-    const reviews = reviewsData?.data || [];
+    const relatedProducts = (catalog.products || [])
+        .filter((item) => item.category_id === product.category_id && item.id !== id)
+        .slice(0, 4);
+    const relatedReviewCounts = reviewCountsFor(catalog.reviewCounts, relatedProducts);
 
     // Calculate discount for main product
     const productWithDiscount = withCalculatedDiscount(product);
-
-    // Calculate discounts for related products + review counts in parallel is already sequential here — counts after related known
-    relatedProducts = (relatedProducts || []).map(withCalculatedDiscount);
-    const relatedReviewCounts = await getReviewCounts(relatedProducts.map((p) => p.id));
 
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages]

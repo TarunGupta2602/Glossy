@@ -122,11 +122,18 @@ export function AuthProvider({ children }) {
         };
     }, [fetchProfile, googleClientId]);
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (nextPath) => {
         const origin =
             typeof window !== "undefined"
                 ? window.location.origin
                 : "http://localhost:3000";
+        const next =
+            typeof nextPath === "string" && nextPath.startsWith("/") && !nextPath.startsWith("//")
+                ? nextPath
+                : "/";
+        if (typeof document !== "undefined") {
+            document.cookie = `auth_next=${encodeURIComponent(next)}; Path=/; Max-Age=600; SameSite=Lax`;
+        }
         await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {

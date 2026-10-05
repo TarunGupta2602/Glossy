@@ -4,8 +4,8 @@ import { createServerClient } from "@supabase/ssr";
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
-    const next = searchParams.get("next") || "/";
     const origin = new URL(request.url).origin;
+    const next = safeNext(searchParams.get("next") || request.cookies.get("auth_next")?.value);
 
     if (!code) {
         return NextResponse.redirect(new URL("/?error=auth_missing_code", origin));
@@ -18,6 +18,7 @@ export async function GET(request) {
     }
 
     let response = NextResponse.redirect(new URL(next, origin));
+    response.cookies.set("auth_next", "", { path: "/", maxAge: 0 });
 
     const supabase = createServerClient(url, anonKey, {
         cookies: {
@@ -29,6 +30,7 @@ export async function GET(request) {
                     request.cookies.set(name, value);
                 });
                 response = NextResponse.redirect(new URL(next, origin));
+                response.cookies.set("auth_next", "", { path: "/", maxAge: 0 });
                 cookiesToSet.forEach(({ name, value, options }) => {
                     response.cookies.set(name, value, options);
                 });
@@ -46,4 +48,16 @@ export async function GET(request) {
     }
 
     return response;
+}
+
+function safeNext(value) {
+    if (!value) return "/";
+    let decoded = value;
+    try {
+        decoded = decodeURIComponent(value);
+    } catch {
+        return "/";
+    }
+    if (!decoded.startsWith("/") || decoded.startsWith("//") || decoded.includes("\\")) return "/";
+    return decoded;
 }

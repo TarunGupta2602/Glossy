@@ -1,14 +1,10 @@
-import { getServiceClient } from "@/lib/supabaseServiceClient";
 import CollectionPageContent from "../components/CollectionPageContent";
 import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
-import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { getReviewCounts } from "@/lib/reviewCounts";
 import { findRingsCategory, productMatchesRings } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { RINGS_GUIDE } from "@/lib/categoryGuides";
-import { attachHoverImages } from "@/lib/hoverImages";
+import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
 
@@ -24,7 +20,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Anti-Tarnish Rings for Daily Wear (Page ${pageNum})`
             : "Buy Anti-Tarnish Rings Online India",
         description:
-            "Everyday anti-tarnish rings for India — the open emerald band, stackable rhinestone set, and matching bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.",
+            "Everyday anti-tarnish rings for India — the open emerald band, stackable rhinestone set, and matching bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -49,42 +45,29 @@ export async function generateMetadata({ searchParams }) {
 const PAGE_SIZE = 12;
 
 export default async function RingsPage({ searchParams }) {
-    const supabase = getServiceClient();
     const params = await searchParams;
     const rawPage = params?.page;
     if (rawPage === "1" || rawPage === "0") redirect("/rings");
     const page = parseInt(rawPage || "1", 10);
     if (isNaN(page) || page < 1) redirect("/rings");
 
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name, slug, image_url, description");
+    const { categories, products: catalog, reviewCounts: allReviewCounts } = await getStorefrontCatalog();
     const category = findRingsCategory(categories);
     const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
-
-    const { data: catalog } = await supabase
-        .from("products")
-        .select(PRODUCT_CARD_SELECT)
-        .order("created_at", { ascending: false });
-
-    const matched = (catalog || []).filter((product) =>
-        productMatchesRings(product, category?.id)
+    const sliced = sliceMatchedProducts(
+        catalog,
+        (product) => productMatchesRings(product, category?.id),
+        page,
+        PAGE_SIZE
     );
-    const count = matched.length;
-    const products = matched.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-    const productsWithDiscounts = await attachHoverImages(
-        supabase,
-        products.map(withCalculatedDiscount)
-    );
-    const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
-    const reviewCounts = await getReviewCounts(
-        productsWithDiscounts.map((p) => p.id)
-    );
+    const productsWithDiscounts = sliced.products;
+    const count = sliced.count;
+    const totalPages = sliced.totalPages;
+    const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
     const pageTitle = "Buy Anti-Tarnish Rings Online India";
     const pageDescription =
-        "Rings only: the Gold Emerald Open Ring, the stackable rhinestone set, and bangle-and-ring sets. Not the full shop. Cash on delivery or UPI, free shipping over ₹1000.";
+        "Rings only: the Gold Emerald Open Ring, the stackable rhinestone set, and bangle-and-ring sets. Not the full shop. Cash on delivery or UPI, shipping from ₹50.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

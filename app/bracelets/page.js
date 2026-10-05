@@ -1,14 +1,10 @@
-import { getServiceClient } from "@/lib/supabaseServiceClient";
 import CollectionPageContent from "../components/CollectionPageContent";
 import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
-import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { getReviewCounts } from "@/lib/reviewCounts";
 import { findBraceletsCategory, productMatchesBracelets } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
-import { attachHoverImages } from "@/lib/hoverImages";
+import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
 
@@ -24,7 +20,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Daily Wear Bracelet India (Page ${pageNum})`
             : "Daily Wear Bracelet India",
         description:
-            "Slim anti-tarnish bangles and cuffs for daily wear in India, plus bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.",
+            "Slim anti-tarnish bangles and cuffs for daily wear in India, plus bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -49,42 +45,29 @@ export async function generateMetadata({ searchParams }) {
 const PAGE_SIZE = 12;
 
 export default async function BraceletsPage({ searchParams }) {
-    const supabase = getServiceClient();
     const params = await searchParams;
     const rawPage = params?.page;
     if (rawPage === "1" || rawPage === "0") redirect("/bracelets");
     const page = parseInt(rawPage || "1", 10);
     if (isNaN(page) || page < 1) redirect("/bracelets");
 
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name, slug, image_url, description");
+    const { categories, products: catalog, reviewCounts: allReviewCounts } = await getStorefrontCatalog();
     const category = findBraceletsCategory(categories);
     const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
-
-    const { data: catalog } = await supabase
-        .from("products")
-        .select(PRODUCT_CARD_SELECT)
-        .order("created_at", { ascending: false });
-
-    const matched = (catalog || []).filter((product) =>
-        productMatchesBracelets(product, category?.id)
+    const sliced = sliceMatchedProducts(
+        catalog,
+        (product) => productMatchesBracelets(product, category?.id),
+        page,
+        PAGE_SIZE
     );
-    const count = matched.length;
-    const products = matched.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-    const productsWithDiscounts = await attachHoverImages(
-        supabase,
-        products.map(withCalculatedDiscount)
-    );
-    const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
-    const reviewCounts = await getReviewCounts(
-        productsWithDiscounts.map((p) => p.id)
-    );
+    const productsWithDiscounts = sliced.products;
+    const count = sliced.count;
+    const totalPages = sliced.totalPages;
+    const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
     const pageTitle = "Daily wear bracelet for India";
     const pageDescription =
-        "Shop slim anti-tarnish bangles and cuffs for Indian office days — screw-motif, mother-of-pearl, and crystal-edge styles, plus matching bangle-and-ring sets. Cash on delivery or UPI. Free shipping over ₹1000.";
+        "Shop slim anti-tarnish bangles and cuffs for Indian office days — screw-motif, mother-of-pearl, and crystal-edge styles, plus matching bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

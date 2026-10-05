@@ -1,11 +1,6 @@
 import nextDynamic from "next/dynamic";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
-import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { getReviewCounts } from "@/lib/reviewCounts";
 import { getFeaturedReviews } from "@/lib/featuredReviews";
 import { getSiteReviewStats } from "@/lib/reviewStats";
-import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
-import { attachHoverImagesToLists } from "@/lib/hoverImages";
 import { getCategoryHref } from "@/lib/categoryLanding";
 import HomeCollections from "./components/HomeCollections";
 import HomeInstagramReels from "./components/HomeInstagramReels";
@@ -18,6 +13,7 @@ import TopStyles from "./components/TopStyles";
 import RevealOnScroll from "./components/RevealOnScroll";
 import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
+import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
@@ -32,7 +28,7 @@ export const metadata = {
     absolute: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
   },
   description:
-    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + free delivery over ₹1000.",
+    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + shipping from ₹50.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
@@ -112,17 +108,6 @@ const COLLECTION_META = [
   },
 ];
 
-async function fetchCategoryProducts(supabase, categoryId, limit = 8) {
-  if (!categoryId) return [];
-  const { data } = await supabase
-    .from("products")
-    .select(PRODUCT_CARD_SELECT)
-    .eq("category_id", categoryId)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-  return (data || []).map(withCalculatedDiscount);
-}
-
 function buildCollections(categories = [], productsByCategoryId = {}) {
   const used = new Set();
   const items = [];
@@ -180,61 +165,29 @@ function buildTopStyleTabs(collections, latestProducts) {
 }
 
 export default async function Home() {
-  const supabase = getServiceClient();
-
   const [
-    { data: categories },
-    { data: bestsellers },
-    { data: newArrivals },
-    { data: latest },
+    { categories, products: catalog, reviewCounts: allReviewCounts },
     featuredReviews,
     reviewStats,
     instagramReels,
   ] = await Promise.all([
-    supabase.from("categories").select("id, name, slug, image_url"),
-    supabase
-      .from("products")
-      .select(PRODUCT_CARD_SELECT)
-      .eq("is_bestseller", true)
-      .order("created_at", { ascending: false })
-      .limit(8),
-    supabase
-      .from("products")
-      .select(PRODUCT_CARD_SELECT)
-      .eq("is_new", true)
-      .order("created_at", { ascending: false })
-      .limit(8),
-    supabase
-      .from("products")
-      .select(PRODUCT_CARD_SELECT)
-      .order("created_at", { ascending: false })
-      .limit(12),
+    getStorefrontCatalog(),
     getFeaturedReviews(4),
     getSiteReviewStats(),
     fetchInstagramReels(3),
   ]);
 
-  const matched = [];
-  const used = new Set();
-  for (const meta of COLLECTION_META) {
-    const category = (categories || []).find((c) => !used.has(c.id) && meta.match(c));
-    if (!category) continue;
-    used.add(category.id);
-    matched.push(category);
+  const productsByCategoryId = {};
+  for (const category of categories || []) {
+    productsByCategoryId[category.id] = catalog
+      .filter((product) => product.category_id === category.id)
+      .slice(0, 8);
   }
-
-  const categoryProductResults = await Promise.all(
-    matched.map(async (cat) => [
-      cat.id,
-      await fetchCategoryProducts(supabase, cat.id, 8),
-    ])
-  );
-  const productsByCategoryId = Object.fromEntries(categoryProductResults);
   const collections = buildCollections(categories || [], productsByCategoryId);
 
-  let bestSellerProducts = (bestsellers || []).map(withCalculatedDiscount);
-  let newArrivalProducts = (newArrivals || []).map(withCalculatedDiscount);
-  const latestProducts = (latest || []).map(withCalculatedDiscount);
+  let bestSellerProducts = catalog.filter((product) => product.is_bestseller).slice(0, 8);
+  let newArrivalProducts = catalog.filter((product) => product.is_new).slice(0, 8);
+  const latestProducts = catalog.slice(0, 12);
 
   if (newArrivalProducts.length < 4) {
     const bestIds = new Set(bestSellerProducts.map((p) => p.id));
@@ -247,28 +200,11 @@ export default async function Home() {
     newArrivalProducts = merged;
   }
 
-  const topStyleTabsRaw = buildTopStyleTabs(collections, latestProducts);
-  const tabProductLists = topStyleTabsRaw.map((t) => t.products || []);
-
-  const [bestWithHover, newWithHover, ...tabLists] = await attachHoverImagesToLists(
-    supabase,
-    [bestSellerProducts, newArrivalProducts, ...tabProductLists]
-  );
-
-  bestSellerProducts = bestWithHover;
-  newArrivalProducts = newWithHover;
-
-  const topStyleTabs = topStyleTabsRaw.map((tab, i) => ({
-    ...tab,
-    products: tabLists[i] || tab.products,
-  }));
-
-  const reviewCounts = await getReviewCounts([
-    ...new Set([
-      ...bestSellerProducts.map((p) => p.id),
-      ...newArrivalProducts.map((p) => p.id),
-      ...topStyleTabs.flatMap((t) => (t.products || []).map((p) => p.id)),
-    ]),
+  const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
+  const reviewCounts = reviewCountsFor(allReviewCounts, [
+    ...bestSellerProducts,
+    ...newArrivalProducts,
+    ...topStyleTabs.flatMap((tab) => tab.products || []),
   ]);
 
   return (

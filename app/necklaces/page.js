@@ -1,14 +1,10 @@
-import { getServiceClient } from "@/lib/supabaseServiceClient";
 import CollectionPageContent from "../components/CollectionPageContent";
 import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
-import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { getReviewCounts } from "@/lib/reviewCounts";
 import { findNecklacesCategory } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { PRODUCT_CARD_SELECT } from "@/lib/productQueries";
 import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
-import { attachHoverImages } from "@/lib/hoverImages";
+import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
 
@@ -24,7 +20,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Waterproof Everyday Necklace India (Page ${pageNum})`
             : "Waterproof Everyday Necklace India",
         description:
-            "Waterproof everyday necklace for India — anti-tarnish 18k gold plated pendants, fine chains & layers. Buy 2 Get 1 Free + free shipping over ₹1000.",
+            "Waterproof everyday necklace for India — anti-tarnish 18k gold plated pendants, fine chains & layers. Buy 2 Get 1 Free + shipping from ₹50.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -49,51 +45,29 @@ export async function generateMetadata({ searchParams }) {
 const PAGE_SIZE = 12;
 
 export default async function NecklacesPage({ searchParams }) {
-    const supabase = getServiceClient();
     const params = await searchParams;
     const rawPage = params?.page;
     if (rawPage === "1" || rawPage === "0") redirect("/necklaces");
     const page = parseInt(rawPage || "1", 10);
     if (isNaN(page) || page < 1) redirect("/necklaces");
 
-    const { data: categories } = await supabase.from("categories").select("id, name, slug, image_url, description");
+    const { categories, products: catalog, reviewCounts: allReviewCounts } = await getStorefrontCatalog();
     const category = findNecklacesCategory(categories);
     const otherCategories = (categories || []).filter((c) => c.id !== category?.id);
-
-    let products = [];
-    let count = 0;
-
-    if (category?.id) {
-        const from = (page - 1) * PAGE_SIZE;
-        const to = from + PAGE_SIZE - 1;
-
-        const [countResult, productsResult] = await Promise.all([
-            supabase
-                .from("products")
-                .select("id", { count: "exact", head: true })
-                .eq("category_id", category.id),
-            supabase
-                .from("products")
-                .select(PRODUCT_CARD_SELECT)
-                .eq("category_id", category.id)
-                .order("created_at", { ascending: false })
-                .range(from, to),
-        ]);
-
-        count = countResult.count || 0;
-        products = productsResult.data || [];
-    }
-
-    const productsWithDiscounts = await attachHoverImages(
-        supabase,
-        products.map(withCalculatedDiscount)
+    const sliced = sliceMatchedProducts(
+        catalog,
+        (product) => category?.id && product.category_id === category.id,
+        page,
+        PAGE_SIZE
     );
-    const totalPages = Math.ceil(count / PAGE_SIZE) || 1;
-    const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
+    const productsWithDiscounts = sliced.products;
+    const count = sliced.count;
+    const totalPages = sliced.totalPages;
+    const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
     const pageTitle = "Waterproof everyday necklace for India";
     const pageDescription =
-        "A waterproof everyday necklace for Indian weather — lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to festive dinner. Buy 2 Get 1 Free, free shipping over ₹1000.";
+        "A waterproof everyday necklace for Indian weather — lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to festive dinner. Buy 2 Get 1 Free, shipping from ₹50.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

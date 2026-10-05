@@ -57,7 +57,7 @@ export const metadata = {
     template: "%s | The Luxe Jewels"
   },
   description:
-    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + free delivery over ₹1000.",
+    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + shipping from ₹50.",
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
@@ -171,7 +171,7 @@ export default function RootLayout({ children }) {
     "@type": "WebSite",
     "name": BRAND_NAME,
     "url": BRAND_URL,
-    "description": "Anti-tarnish, waterproof 18k gold plated jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free + free delivery over ₹1000.",
+    "description": "Anti-tarnish, waterproof 18k gold plated jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free + shipping from ₹50.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": `${BRAND_URL}/search?q={search_term_string}`,

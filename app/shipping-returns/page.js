@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 export const metadata = {
     title: "Shipping Times, Tracking & 10-Day Returns",
     description:
-        "Delivery times across India, free shipping on orders over ₹1000, cash on delivery, and our 10-day return policy.",
+        "Delivery times across India, shipping from ₹50, cash on delivery, and our 10-day return policy.",
     alternates: {
         canonical: "/shipping-returns",
     },
@@ -33,7 +33,7 @@ export default function ShippingReturns() {
                     <ul className="list-disc pl-5 space-y-2 mt-3">
                         <li>Standard delivery: 3–7 business days</li>
                         <li>Express delivery: 1–3 business days (where available)</li>
-                        <li>Free shipping on orders over ₹1000, including cash on delivery</li>
+                        <li>Shipping and delivery: ₹50 under ₹500, ₹80 from ₹500, ₹120 from ₹1000, ₹150 from ₹1500</li>
                         <li>Cash on delivery: sign in at checkout and pay the courier on arrival</li>
                     </ul>
                 </LegalSection>
@@ -80,7 +80,7 @@ export default function ShippingReturns() {
                 eyebrow="Delivery help"
                 title="Shipping"
                 titleAccent="questions"
-                description="Delivery timelines, free shipping, returns, and what to do if a package arrives damaged."
+                description="Delivery timelines, shipping charges, returns, and what to do if a package arrives damaged."
                 idPrefix="shipping-faq"
             />
         </>

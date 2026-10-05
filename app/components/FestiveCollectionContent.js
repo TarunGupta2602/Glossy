@@ -84,7 +84,7 @@ export default function FestiveCollectionContent({
                                 },
                                 {
                                     title: "Ships pan-India",
-                                    body: "Prepaid orders over ₹1000 ship free. 10-day unused returns.",
+                                    body: "Shipping starts at ₹50 and rises with the order. 10-day unused returns.",
                                 },
                                 {
                                     title: "Wear after the festival",

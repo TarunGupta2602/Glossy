@@ -1,17 +1,17 @@
 import ShopClient from "../components/ShopClient";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
-import { getServiceClient } from "@/lib/supabaseServiceClient";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { withCalculatedDiscount } from "@/lib/discountUtils";
-import { fetchShopProducts } from "@/lib/shopQueries";
-import { getReviewCounts } from "@/lib/reviewCounts";
-import { attachHoverImages } from "@/lib/hoverImages";
-import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import { BRAND_URL } from "@/lib/constants";
 import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { SHOP_GUIDE } from "@/lib/categoryGuides";
+import { buildShopItemListSchema } from "@/lib/itemListSchema";
+import {
+    getStorefrontCatalog,
+    reviewCountsFor,
+    sliceShopProducts,
+} from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
 
@@ -35,7 +35,7 @@ export async function generateMetadata({ searchParams }) {
     return {
         title,
         description:
-            "Shop anti-tarnish jewellery in India — waterproof earrings, everyday necklaces, daily-wear bracelets. Buy 2 Get 1 Free + free shipping over ₹1000.",
+            "Shop anti-tarnish jewellery in India — waterproof earrings, everyday necklaces, daily-wear bracelets. Buy 2 Get 1 Free + shipping from ₹50.",
         alternates: { canonical },
         robots: hasFilters || isPaginated
             ? { index: false, follow: true }
@@ -64,33 +64,22 @@ export default async function ShopPage({ searchParams }) {
 
     if (isNaN(page) || page < 1) redirect("/shop");
 
-    const supabase = getServiceClient();
+    const { categories, products: catalog, reviewCounts: allReviewCounts } = await getStorefrontCatalog();
+    const shopResult = sliceShopProducts(catalog, {
+        page,
+        sort,
+        categoryIds,
+        minPrice,
+        maxPrice,
+    });
 
-    const [{ data: categories }, shopResult] = await Promise.all([
-        supabase
-            .from("categories")
-            .select("id, name, slug")
-            .order("name", { ascending: true }),
-        fetchShopProducts({
-            page,
-            sort,
-            categoryIds,
-            minPrice,
-            maxPrice,
-        }),
-    ]);
-
-    const { products, totalCount, totalPages } = shopResult;
+    const { products: productsWithDiscounts, count: totalCount, totalPages } = shopResult;
 
     if (page > totalPages && totalCount > 0) {
         redirect(`/shop?page=${totalPages}`);
     }
 
-    const productsWithDiscounts = await attachHoverImages(
-        supabase,
-        products.map(withCalculatedDiscount)
-    );
-    const reviewCounts = await getReviewCounts(productsWithDiscounts.map((p) => p.id));
+    const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -118,7 +107,7 @@ export default async function ShopPage({ searchParams }) {
             <section className={`${SITE_CONTAINER} pt-2 pb-3 text-center`}>
                 <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop anti-tarnish jewellery in India</h1>
                 <p className="text-sm md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto mb-4">
-                    The full anti-tarnish catalogue for Indian weather — waterproof earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Free shipping on prepaid orders over ₹1000.
+                    The full anti-tarnish catalogue for Indian weather — waterproof earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Shipping starts at ₹50 and rises with the order.
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
                     <Link href="/earrings" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
@@ -139,7 +128,9 @@ export default async function ShopPage({ searchParams }) {
             <section className={`${SITE_CONTAINER} pb-20 md:pb-24`}>
                 <ShopClient
                         products={productsWithDiscounts}
-                        categories={categories || []}
+                        categories={[...(categories || [])].sort((a, b) =>
+                            String(a.name || "").localeCompare(String(b.name || ""))
+                        )}
                         totalCount={totalCount}
                         totalPages={totalPages}
                         currentPage={page}

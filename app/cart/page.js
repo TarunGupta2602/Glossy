@@ -10,11 +10,11 @@ import { getProductPath } from "@/lib/seo";
 import CheckoutSteps from "../components/CheckoutSteps";
 import TrustStrip from "../components/TrustStrip";
 import EmptyCartSuggestions from "../components/EmptyCartSuggestions";
-import GoogleSignInButton from "../components/GoogleSignInButton";
+import ContinueWithGoogle from "../components/ContinueWithGoogle";
 
 export default function CartPage() {
     const { cart, cartCount, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const router = useRouter();
 
     if (!isInitialized) {
@@ -59,8 +59,8 @@ export default function CartPage() {
                     </Link>
                 </div>
 
-                <div className="mb-6 md:mb-8 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-blue-900">
-                    <span className="font-bold">Secure online payment</span> via UPI, cards, and net banking. All orders are prepaid for faster dispatch.
+                <div className="mb-6 md:mb-8 rounded-2xl border border-[#efeae4] bg-[#fdfbf7] px-4 py-3 md:px-5 md:py-4 text-xs md:text-sm text-[#5c5752]">
+                    Your bag is saved on this device. Sign in with Google to place the order, then add the address and pay by UPI or cash on delivery.
                 </div>
 
                 <TrustStrip className="mb-8 md:mb-10" />
@@ -152,6 +152,18 @@ export default function CartPage() {
                     <aside className="bg-gray-50/80 backdrop-blur-sm rounded-2xl md:rounded-[32px] p-5 sm:p-8 sticky top-28 border border-gray-100">
                         <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 md:mb-6">Order Summary</h2>
 
+                        {!user && !authLoading && (
+                            <div className="mb-6 rounded-2xl border border-[#efeae4] bg-white p-4 sm:p-5">
+                                <p className="text-sm font-semibold text-gray-900">Sign in to place this order</p>
+                                <p className="mt-1.5 text-[13px] leading-relaxed text-gray-500">
+                                    Google sign-in keeps this bag, then opens checkout for your address. No extra form.
+                                </p>
+                                <div className="mt-4">
+                                    <ContinueWithGoogle next="/checkout" />
+                                </div>
+                            </div>
+                        )}
+
                         <div className="space-y-4 mb-6 md:mb-8">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Subtotal</span>
@@ -164,8 +176,10 @@ export default function CartPage() {
                                 </div>
                             )}
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500 font-medium">Shipping</span>
-                                <span className="font-bold text-green-600">FREE</span>
+                                <span className="text-gray-500 font-medium">Shipping & delivery</span>
+                                <span className="font-bold text-gray-900">
+                                    {shippingFee > 0 ? `₹${shippingFee}` : "—"}
+                                </span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500 font-medium">Estimated Tax</span>
@@ -219,30 +233,9 @@ export default function CartPage() {
                             >
                                 Proceed to Checkout
                             </button>
-                        ) : (
-                            <div className="mb-6 bg-white border border-gray-100 rounded-2xl md:rounded-3xl p-5 sm:p-8 shadow-sm">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="flex flex-col items-center leading-none flex-shrink-0">
-                                        <span className="text-[7px] font-black uppercase tracking-[0.4em] text-[#E91E63] mb-0.5">THE</span>
-                                        <span className="text-sm font-bold tracking-tight text-gray-900 uppercase">
-                                            LUXE <span className="font-light text-gray-400">JEWELS</span>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base sm:text-lg font-black tracking-tight text-gray-900 leading-none mb-1">Join The Signature Club.</h3>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Unlock premium privileges</p>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-500 font-medium mb-6 sm:mb-8 leading-relaxed">Sign in to track orders, save your favorites, and experience our swiftest checkout flow.</p>
-
-                                <div className="flex justify-center min-h-[50px] mb-4">
-                                    <GoogleSignInButton text="signin_with" />
-                                </div>
-                                <p className="mt-8 text-[10px] text-gray-300 font-medium text-center">
-                                    By continuing, you agree to our Terms of Service.
-                                </p>
-                            </div>
-                        )}
+                        ) : authLoading ? (
+                            <div className="mb-6 h-14 rounded-2xl bg-gray-100 animate-pulse" />
+                        ) : null}
 
                         <div className="space-y-4">
                             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100/60">
@@ -268,6 +261,15 @@ export default function CartPage() {
                 </div>
 
             </div>
+            {!user && !authLoading && (
+                <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#efeae4] bg-white/95 backdrop-blur-md px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] lg:hidden">
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                        <span className="text-sm text-gray-500">Total</span>
+                        <span className="text-lg font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                    </div>
+                    <ContinueWithGoogle next="/checkout" />
+                </div>
+            )}
         </div>
     );
 }
