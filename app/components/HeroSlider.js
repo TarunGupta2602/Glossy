@@ -11,11 +11,12 @@ const SLIDES = [
         id: "main",
         eyebrow: "Anti-tarnish · Waterproof · Made for India",
         title: ["Shine that stays with you — ", "every day"],
-        accentClass: "text-[#e8d5b5] md:text-[#b59e7b]",
-        eyebrowClass: "text-[#e8d5b5] md:text-[#b59e7b]",
+        accentClass: "text-[#8a5a28]",
+        eyebrowClass: "text-[#8a5a28]",
         body: "Lightweight anti-tarnish jewellery you can live in — from first meetings to late evenings, with pieces ready to gift.",
-        image: "/iloveimg-resized/hero2.jpg",
-        alt: "The Luxe Jewels anti-tarnish gold plated jewellery",
+        image: "/festive/home-hero-banner.jpg",
+        alt: "Gold necklace, rings, cuff and hoop earrings from The Luxe Jewels",
+        banner: true,
         primary: { href: "/shop?sort=popular", label: "Shop bestsellers" },
         secondary: { href: "/shop?sort=newest", label: "New arrivals" },
         chip: "Daily wear edit",
@@ -125,6 +126,7 @@ export default function HeroSlider() {
                             src={item.image}
                             alt=""
                             fill
+                            priority={item.id === "main"}
                             sizes="100vw"
                             quality={80}
                             placeholder="blur"
