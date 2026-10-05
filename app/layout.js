@@ -9,6 +9,7 @@ import LayoutWrapper from "./components/LayoutWrapper";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import MetaPixel from "./components/MetaPixel";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -248,6 +249,7 @@ export default function RootLayout({ children }) {
           <GoogleAnalytics />
           <MetaPixel />
         </Suspense>
+        <Analytics />
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
