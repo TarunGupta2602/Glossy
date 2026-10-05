@@ -1,6 +1,7 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { BRAND_URL, BRAND_NAME } from "@/lib/constants";
 import { normalizeBlogSlug, truncateMetaDescription } from "@/lib/seo";
+import { listStaticBlogSummaries } from "@/lib/staticBlogPosts";
 
 export const revalidate = 300;
 
@@ -21,7 +22,33 @@ export async function GET() {
         .order("date_posted", { ascending: false })
         .limit(50);
 
-    const items = (blogs || [])
+    const seen = new Set(
+        (blogs || []).map((blog) => normalizeBlogSlug(blog.slug) || blog.slug)
+    );
+    const merged = [...(blogs || [])];
+    for (const post of listStaticBlogSummaries()) {
+        const slug = normalizeBlogSlug(post.slug) || post.slug;
+        if (!slug || seen.has(slug)) continue;
+        seen.add(slug);
+        merged.push({
+            title: post.title,
+            slug,
+            description: post.description,
+            date_posted: post.date_posted,
+            author: post.author,
+            image: post.image?.startsWith("http")
+                ? post.image
+                : `${BRAND_URL}${post.image || ""}`,
+        });
+    }
+    merged.sort(
+        (a, b) =>
+            new Date(b.date_posted || 0).getTime() -
+            new Date(a.date_posted || 0).getTime()
+    );
+
+    const items = merged
+        .slice(0, 50)
         .map((blog) => {
             const slug = normalizeBlogSlug(blog.slug) || blog.slug;
             const link = `${BRAND_URL}/blog/${slug}`;
