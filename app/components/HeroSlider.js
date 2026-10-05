@@ -29,11 +29,12 @@ const SLIDES = [
         id: "navratri",
         eyebrow: "Navratri edit",
         title: ["Navratri edit: nine days, ", "everyday sparkle"],
-        accentClass: "text-[#e8d5b5] md:text-[#7a2248]",
-        eyebrowClass: "text-[#e8d5b5] md:text-[#7a2248]",
+        accentClass: "text-[#7a2248]",
+        eyebrowClass: "text-[#7a2248]",
         body: "Desk to dandiya — lightweight colourful earrings and necklaces under ₹999. Buy 2 Get 1 Free on every order.",
-        image: "/festive/navratri-festive-portrait.jpg",
-        alt: "Navratri jewellery from The Luxe Jewels",
+        image: "/festive/navratri-hero-banner.jpg",
+        alt: "Navratri gold jewellery with dandiya sticks",
+        banner: true,
         primary: { href: "/festive/navratri", label: "Shop Navratri" },
         secondary: { href: "/festive/diwali", label: "Shop Diwali" },
         chip: "Buy 2 Get 1 Free",
@@ -47,11 +48,12 @@ const SLIDES = [
         id: "diwali",
         eyebrow: "Diwali edit",
         title: ["Diwali edit: light up in ", "anti-tarnish gold"],
-        accentClass: "text-[#e8d5b5] md:text-[#8a5a28]",
-        eyebrowClass: "text-[#e8d5b5] md:text-[#8a5a28]",
+        accentClass: "text-[#8a5a28]",
+        eyebrowClass: "text-[#8a5a28]",
         body: "Office to puja — gold-look necklaces and earrings she can wear after the diyas are packed away.",
-        image: "/festive/diwali-festive-portrait.jpg",
-        alt: "Diwali jewellery from The Luxe Jewels",
+        image: "/festive/diwali-hero-banner.jpg",
+        alt: "Diwali gold jewellery styled with a diya",
+        banner: true,
         primary: { href: "/festive/diwali", label: "Shop Diwali" },
         secondary: { href: "/festive/navratri", label: "Shop Navratri" },
         chip: "Buy 2 Get 1 Free",
@@ -111,31 +113,50 @@ export default function HeroSlider() {
 
     return (
         <section
-            className={`relative overflow-hidden ${slide.surface}`}
+            className={`relative overflow-hidden ${slide.banner ? "bg-[#f7f3ee]" : slide.surface}`}
             aria-roledescription="carousel"
             aria-label="The Luxe Jewels"
         >
-            <div className="absolute inset-0 md:hidden" aria-hidden="true">
-                {SLIDES.map((item, i) => (
+            {slide.banner ? (
+                <div className="relative h-[46vh] min-h-[240px] max-h-[460px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
+                    {SLIDES.filter((item) => item.banner).map((item) => (
+                        <Image
+                            key={item.id}
+                            src={item.image}
+                            alt=""
+                            fill
+                            sizes="100vw"
+                            quality={80}
+                            placeholder="blur"
+                            blurDataURL={IMAGE_BLUR_DATA_URL}
+                            className={`object-cover object-[72%_center] transition-opacity duration-700 ${
+                                item.id === slide.id ? "opacity-100" : "opacity-0"
+                            }`}
+                        />
+                    ))}
+                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#f7f3ee] from-[8%] via-[#f7f3ee]/80 via-[46%] to-transparent to-[72%]" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#f7f3ee] to-transparent md:hidden" />
+                </div>
+            ) : (
+                <div className="absolute inset-0 md:hidden" aria-hidden="true">
                     <Image
-                        key={item.id}
-                        src={item.image}
+                        src={SLIDES[0].image}
                         alt=""
                         fill
-                        priority={i === 0}
+                        priority
                         sizes="100vw"
-                        quality={90}
+                        quality={80}
                         placeholder="blur"
                         blurDataURL={IMAGE_BLUR_DATA_URL}
-                        className={`object-cover object-[center_20%] transition-opacity duration-700 ${
-                            i === index ? "opacity-100" : "opacity-0"
-                        }`}
+                        className="object-cover object-[center_20%]"
                     />
-                ))}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/80" />
-            </div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/80" />
+                </div>
+            )}
 
-            <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 min-h-[88svh] md:min-h-0 flex items-end md:items-center py-10 md:py-12 lg:py-14">
+            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-8 md:py-12 lg:py-14 ${
+                slide.banner ? "min-h-0 items-start md:min-h-[620px] md:items-center" : "min-h-[88svh] items-end md:min-h-0 md:items-center"
+            }`}>
                 <div className="grid w-full md:grid-cols-[1.05fr_0.95fr] lg:grid-cols-[1.08fr_0.92fr] gap-10 lg:gap-14 items-center">
                     <div className="text-left pb-2 md:pb-0" aria-live="polite">
                         <div key={slide.id} className="hero-copy-in">
@@ -145,14 +166,14 @@ export default function HeroSlider() {
                                 {slide.eyebrow}
                             </p>
 
-                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.25rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 text-white md:text-[#2a2724] max-w-[18ch] ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
+                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.25rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 max-w-[18ch] ${slide.banner ? "text-[#2a2724]" : "text-white md:text-[#2a2724]"} ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
                                 {slide.title[0]}
                                 <em className={`italic font-normal ${slide.accentClass}`}>
                                     {slide.title[1]}
                                 </em>
                             </Heading>
 
-                            <p className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed mb-6 md:mb-7 max-w-[34ch] md:max-w-[38ch] lg:max-w-[440px] text-white/80 md:text-[#6b6560]">
+                            <p className={`text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed mb-6 md:mb-7 max-w-[34ch] md:max-w-[38ch] lg:max-w-[440px] ${slide.banner ? "text-[#6b6560]" : "text-white/80 md:text-[#6b6560]"}`}>
                                 {slide.body}
                             </p>
 
@@ -166,21 +187,21 @@ export default function HeroSlider() {
                             <div className="flex flex-wrap items-center gap-3">
                                 <Link
                                     href={slide.primary.href}
-                                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 bg-white text-[#2a2724] hover:bg-[#E91E63] hover:text-white md:bg-[#2a2724] md:text-white md:hover:bg-[#E91E63]"
+                                    className={`inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 hover:bg-[#E91E63] hover:text-white ${slide.banner ? "bg-[#2a2724] text-white" : "bg-white text-[#2a2724] md:bg-[#2a2724] md:text-white"}`}
                                 >
                                     {slide.primary.label}
                                     <span aria-hidden>→</span>
                                 </Link>
                                 <Link
                                     href={slide.secondary.href}
-                                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent"
+                                    className={`inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent ${slide.banner ? "border border-[#2a2724]/25 bg-transparent text-[#2a2724] hover:border-[#2a2724]" : "border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20"}`}
                                 >
                                     {slide.secondary.label}
                                 </Link>
                             </div>
                         </div>
 
-                        <p className="mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase text-white/55">
+                        <p className={`mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase ${slide.banner ? "text-[#a39e97]" : "text-white/55"}`}>
                             Buy 2 get 1 free
                         </p>
 
@@ -205,15 +226,19 @@ export default function HeroSlider() {
                                         aria-label={`${item.eyebrow}`}
                                         onClick={() => goToManual(i)}
                                         className={`relative h-2 overflow-hidden rounded-full transition-all ${
-                                            i === index
-                                                ? "w-8 bg-white/35 md:bg-[#2a2724]/20"
-                                                : "w-2 bg-white/45 md:bg-[#2a2724]/25 hover:bg-white/70 md:hover:bg-[#2a2724]/45"
+                                            slide.banner
+                                                ? i === index
+                                                    ? "w-8 bg-[#2a2724]/20"
+                                                    : "w-2 bg-[#2a2724]/25 hover:bg-[#2a2724]/45"
+                                                : i === index
+                                                  ? "w-8 bg-white/35 md:bg-[#2a2724]/20"
+                                                  : "w-2 bg-white/45 md:bg-[#2a2724]/25 hover:bg-white/70 md:hover:bg-[#2a2724]/45"
                                         }`}
                                     >
                                         {i === index ? (
                                             <span
                                                 key={`${item.id}-${hold ? "hold" : "play"}`}
-                                                className={`absolute inset-y-0 left-0 w-full rounded-full bg-white md:bg-[#2a2724] ${
+                                                className={`absolute inset-y-0 left-0 w-full rounded-full ${slide.banner ? "bg-[#2a2724]" : "bg-white md:bg-[#2a2724]"} ${
                                                     hold ? "" : "hero-progress-bar"
                                                 }`}
                                                 style={hold ? { transform: "scaleX(1)" } : undefined}
@@ -236,6 +261,7 @@ export default function HeroSlider() {
                         </div>
                     </div>
 
+                    {!slide.banner ? (
                     <div className="hidden md:flex flex-col items-end">
                         <div
                             className={`relative w-full max-w-[460px] lg:max-w-[500px] aspect-[3/4] overflow-hidden rounded-[2rem] ${slide.frame}`}
@@ -248,7 +274,7 @@ export default function HeroSlider() {
                                     fill
                                     priority={i === 0}
                                     sizes="(min-width: 1024px) 500px, 460px"
-                                    quality={90}
+                                    quality={80}
                                     placeholder="blur"
                                     blurDataURL={IMAGE_BLUR_DATA_URL}
                                     className={`object-cover transition-opacity duration-700 ${
@@ -294,6 +320,9 @@ export default function HeroSlider() {
                             Buy 2 get 1 free
                         </p>
                     </div>
+                    ) : (
+                        <div className="hidden md:block" />
+                    )}
                 </div>
             </div>
         </section>
