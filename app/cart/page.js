@@ -1,6 +1,5 @@
 "use client";
 
-import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
@@ -49,8 +48,8 @@ export default function CartPage() {
     }
 
     return (
-        <div className="bg-white min-h-screen pb-24">
-            <div className={`${SITE_CONTAINER} pt-6 md:pt-10`}>
+        <div className="bg-white pb-28 lg:pb-8">
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8 pt-6 md:pt-8">
                 <CheckoutSteps current={1} />
                 <div className="flex items-baseline justify-between gap-3 mb-4 md:mb-5">
                     <h1 className="text-2xl md:text-[32px] font-bold text-gray-900 tracking-tight">Shopping Bag</h1>
@@ -178,6 +177,12 @@ export default function CartPage() {
                     </aside>
                 </div>
 
+                <EmptyCartSuggestions
+                    excludeIds={cart.map((item) => item.id)}
+                    title="Add one more piece"
+                    subtitle="Two paid pieces unlock a free gift."
+                    className="mt-8 border-t border-gray-100 pt-6"
+                />
             </div>
             {!user && !authLoading && (
                 <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#efeae4] bg-white/95 backdrop-blur-md px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] lg:hidden">

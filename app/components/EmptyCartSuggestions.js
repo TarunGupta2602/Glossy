@@ -5,27 +5,38 @@ import Link from "next/link";
 import Image from "next/image";
 import { getProductPath } from "@/lib/seo";
 
-export default function EmptyCartSuggestions() {
+export default function EmptyCartSuggestions({
+    excludeIds = [],
+    title = "Best Sellers You Might Love",
+    subtitle = "",
+    className = "w-full max-w-4xl mt-16 pt-12 border-t border-gray-100",
+}) {
     const [products, setProducts] = useState([]);
+    const excluded = excludeIds.join(",");
 
     useEffect(() => {
+        const skip = new Set(excluded.split(",").filter(Boolean));
         fetch("/api/products")
             .then((res) => res.json())
             .then((data) => {
                 if (!data.success) return;
-                const best = (data.products || [])
-                    .filter((p) => p.is_bestseller)
-                    .slice(0, 4);
-                setProducts(best.length ? best : (data.products || []).slice(0, 4));
+                const list = (data.products || []).filter((product) => !skip.has(product.id));
+                const best = list.filter((product) => product.is_bestseller).slice(0, 4);
+                setProducts(best.length ? best : list.slice(0, 4));
             })
             .catch(() => {});
-    }, []);
+    }, [excluded]);
 
     if (!products.length) return null;
 
     return (
-        <section className="w-full max-w-4xl mt-16 pt-12 border-t border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 text-center">Best Sellers You Might Love</h2>
+        <section className={className}>
+            <h2 className="text-lg font-bold text-gray-900 mb-1 text-center">{title}</h2>
+            {subtitle ? (
+                <p className="text-sm text-gray-500 mb-5 text-center">{subtitle}</p>
+            ) : (
+                <div className="mb-6" />
+            )}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {products.map((product) => (
                     <Link key={product.id} href={getProductPath(product)} className="group text-center">
