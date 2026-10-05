@@ -212,8 +212,12 @@ export default async function Home() {
       {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 
-      <RevealOnScroll>
-        <TopStyles tabs={topStyleTabs} reviewCounts={reviewCounts} />
+      <RevealOnScroll startVisible>
+        <TopStyles
+          tabs={topStyleTabs}
+          reviewCounts={reviewCounts}
+          className="pt-8 pb-14 md:pt-8 md:pb-14 lg:pt-10 lg:pb-16"
+        />
       </RevealOnScroll>
 
       {newArrivalProducts.length > 0 && (

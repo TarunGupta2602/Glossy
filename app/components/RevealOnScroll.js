@@ -1,16 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
-export default function RevealOnScroll({ children, className = "", delay = 0 }) {
+export default function RevealOnScroll({ children, className = "", delay = 0, startVisible = false }) {
     const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(startVisible);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const el = ref.current;
-        if (!el) return undefined;
+        if (!el || visible) return undefined;
 
-        if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            setVisible(true);
+            return undefined;
+        }
+
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
             setVisible(true);
             return undefined;
         }
@@ -22,12 +28,12 @@ export default function RevealOnScroll({ children, className = "", delay = 0 }) 
                     observer.disconnect();
                 }
             },
-            { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+            { threshold: 0.01, rootMargin: "120px 0px 120px 0px" }
         );
 
         observer.observe(el);
         return () => observer.disconnect();
-    }, []);
+    }, [visible]);
 
     return (
         <div

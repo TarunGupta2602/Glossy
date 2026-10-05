@@ -6,7 +6,7 @@ import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_S
 import ProductCard from "./ProductCard";
 import { reviewCardProps } from "@/lib/reviewDisplay";
 
-export default function TopStyles({ tabs = [], reviewCounts = {} }) {
+export default function TopStyles({ tabs = [], reviewCounts = {}, className = "" }) {
     const safeTabs = tabs.filter((tab) => tab?.id && Array.isArray(tab.products));
     const [activeId, setActiveId] = useState(safeTabs[0]?.id || "all");
     const [isPending, startTransition] = useTransition();
@@ -30,7 +30,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {} }) {
     };
 
     return (
-        <section className={`${HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE}`}>
+        <section className={`${className || HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE}`}>
             <div className={HOME_CONTAINER}>
                 <div className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}>
                     <div className="text-left">

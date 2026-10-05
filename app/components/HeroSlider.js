@@ -131,7 +131,7 @@ export default function HeroSlider() {
                             quality={80}
                             placeholder="blur"
                             blurDataURL={IMAGE_BLUR_DATA_URL}
-                            className={`object-cover object-[72%_center] transition-opacity duration-700 ${
+                            className={`object-cover object-[70%_28%] transition-opacity duration-700 ${
                                 item.id === slide.id ? "opacity-100" : "opacity-0"
                             }`}
                         />
@@ -156,8 +156,8 @@ export default function HeroSlider() {
                 </div>
             )}
 
-            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-8 md:py-12 lg:py-14 ${
-                slide.banner ? "min-h-0 items-start md:min-h-[620px] md:items-center" : "min-h-[88svh] items-end md:min-h-0 md:items-center"
+            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-8 md:py-8 lg:py-10 ${
+                slide.banner ? "min-h-0 items-start md:min-h-[420px] lg:min-h-[460px] xl:min-h-[500px] md:items-center" : "min-h-[88svh] items-end md:min-h-0 md:items-center"
             }`}>
                 <div className="grid w-full md:grid-cols-[1.05fr_0.95fr] lg:grid-cols-[1.08fr_0.92fr] gap-10 lg:gap-14 items-center">
                     <div className="text-left pb-2 md:pb-0" aria-live="polite">
