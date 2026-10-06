@@ -51,7 +51,7 @@ export default async function WholesalePage() {
 
     for (const product of products) {
         const retail = Number(product.price) || 0;
-        if (retail <= 0) continue;
+        if (retail <= 0 || isProductOutOfStock(product)) continue;
         const category = getDisplayCategoryName(product.categories, "Jewellery");
         if (!groups.has(category)) groups.set(category, []);
         groups.get(category).push(product);
@@ -133,7 +133,6 @@ export default async function WholesalePage() {
                             const retail = Number(product.price) || 0;
                             const rate = wholesaleRate(product);
                             const wholesale = wholesalePiecePrice(retail, rate);
-                            const waiting = isProductOutOfStock(product);
                             return (
                                 <article
                                     key={product.id}
@@ -162,9 +161,6 @@ export default async function WholesalePage() {
                                         <p className="mt-1 text-[12px] tabular-nums text-[#6b6560]">
                                             Shop price for 1 piece stays {formatRupee(retail)}
                                         </p>
-                                        {waiting ? (
-                                            <p className="mt-1 text-[12px] text-[#8a5a28]">Confirm stock on WhatsApp</p>
-                                        ) : null}
                                         <a
                                             href={wholesaleWhatsAppUrl(designMessage(product, wholesale))}
                                             className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full bg-[#2a2724] px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-white"
