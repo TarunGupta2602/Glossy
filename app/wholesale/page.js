@@ -35,7 +35,16 @@ export const metadata = {
 };
 
 function designMessage(product, wholesale) {
-    return `Hi, please add ${product.name} to my wholesale order at ${formatRupee(wholesale)} each. I will mix designs and my total will be at least ${formatRupee(WHOLESALE_MIN_AMOUNT)}.`;
+    return [
+        "Hi, I want this in a wholesale order.",
+        "",
+        product.name,
+        `Wholesale rate: ${formatRupee(wholesale)} each`,
+        "Quantity: I will confirm. One piece is fine.",
+        "",
+        `I will mix other designs in the same order. The bill will be at least ${formatRupee(WHOLESALE_MIN_AMOUNT)}.`,
+        "Please confirm this rate.",
+    ].join("\n");
 }
 
 const STEPS = [
