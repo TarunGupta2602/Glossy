@@ -75,7 +75,7 @@ export default function ProductCard({
     };
 
     return (
-        <article className="group flex flex-col h-full overflow-hidden rounded-[1.35rem] sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-shadow duration-300 hover:shadow-[0_14px_36px_-16px_rgba(42,39,36,0.4)]">
+        <article className="group flex flex-col h-full overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-shadow duration-300 hover:shadow-[0_14px_36px_-16px_rgba(42,39,36,0.4)]">
             <div
                 className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full"
                 onMouseEnter={() => {
@@ -186,7 +186,7 @@ export default function ProductCard({
                 </div>
             </div>
 
-            <div className="flex flex-1 flex-col px-3.5 sm:px-4 pt-3.5 pb-4">
+            <div className="flex flex-1 flex-col px-2.5 sm:px-4 pt-2.5 sm:pt-3.5 pb-3 sm:pb-4">
                 {!hideCategory && (
                     <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gray-400 mb-1 truncate">
                         {categoryName}
@@ -194,7 +194,7 @@ export default function ProductCard({
                 )}
 
                 <Link href={href} className="block active:opacity-70">
-                    <h3 className="font-playfair text-[15px] sm:text-[16px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.4rem] group-hover:text-[#E91E63] transition-colors">
+                    <h3 className="font-playfair text-[13px] sm:text-[16px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.15rem] sm:min-h-[2.4rem] group-hover:text-[#E91E63] transition-colors">
                         {product.name}
                     </h3>
                 </Link>
@@ -233,7 +233,7 @@ export default function ProductCard({
                     type="button"
                     onClick={handleAddToBag}
                     disabled={outOfStock}
-                    className={`mt-3 w-full min-h-10 rounded-full text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors ${
+                    className={`mt-2.5 sm:mt-3 w-full min-h-9 sm:min-h-10 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase transition-colors ${
                         outOfStock
                             ? "bg-[#efeae4] text-[#8a847c] cursor-not-allowed"
                             : addedToBag

@@ -118,12 +118,12 @@ export default function ProductRow({
 
                 <div
                     ref={scrollRef}
-                    className="flex items-stretch gap-5 sm:gap-6 md:gap-7 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar scroll-smooth"
+                    className="flex items-stretch gap-3 sm:gap-6 md:gap-7 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar scroll-smooth"
                 >
                     {products.map((product) => (
                         <div
                             key={product.id}
-                            className="shrink-0 w-[48vw] max-w-[240px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
+                            className="shrink-0 w-[72vw] max-w-[260px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
                         >
                             <ProductCard
                                 product={product}

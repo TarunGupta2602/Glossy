@@ -77,81 +77,37 @@ export default function ShopClient({
 
     return (
         <div className="flex flex-col md:flex-row gap-8 lg:gap-10 relative">
-            <div className="md:hidden fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-[90]">
-                <button
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="flex items-center gap-2 bg-gray-950 text-white pl-5 pr-6 py-3.5 min-h-11 rounded-full text-[12px] font-bold tracking-tight shadow-2xl shadow-black/20 active:scale-95 transition-all border border-white/10"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            <div className="md:hidden sticky top-12 sm:top-14 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 bg-white/95 backdrop-blur border-b border-gray-100 mb-4 flex items-center gap-2">
+                <p className="text-[12px] font-semibold text-gray-900 shrink-0 tabular-nums">
+                    {totalCount} {totalCount === 1 ? "piece" : "pieces"}
+                </p>
+                <label className="relative min-w-0 flex-1">
+                    <select
+                        value={sortBy}
+                        onChange={(e) => navigate({ sort: e.target.value, page: 1 })}
+                        aria-label="Sort products"
+                        className="h-10 w-full appearance-none rounded-full bg-[#f4f2f0] pl-3 pr-8 text-[12px] font-semibold text-[#2a2724]"
+                    >
+                        {sortOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                    <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#8a847c]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
-                    Filter & Sort
+                </label>
+                <button
+                    type="button"
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="relative h-10 shrink-0 rounded-full bg-[#2a2724] px-4 text-[12px] font-semibold text-white active:scale-95"
+                >
+                    Filter
                     {hasActiveFilters && (
-                        <span className="ml-0.5 w-2 h-2 rounded-full bg-[#E91E63]" aria-hidden />
+                        <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#E91E63]" aria-hidden />
                     )}
                 </button>
-            </div>
-
-            <div className="md:hidden flex items-center justify-between mb-3 gap-3">
-                <div className="text-[10px] font-black text-gray-600 uppercase tracking-wide">Collection</div>
-                <div className="flex items-center gap-2">
-                    {hasActiveFilters && (
-                        <button
-                            type="button"
-                            onClick={() => router.push("/shop?page=1")}
-                            className="text-[11px] font-bold text-[#E91E63] underline underline-offset-2 min-h-11 px-1"
-                        >
-                            Clear
-                        </button>
-                    )}
-                    <div className="text-[10px] sm:text-[11px] font-bold text-gray-900 bg-gray-50 px-2.5 sm:px-3 py-1 rounded-full border border-gray-100">
-                        {totalCount > 0 ? `Showing ${showingFrom}–${showingTo} of ${totalCount}` : "0 items"}
-                    </div>
-                </div>
-            </div>
-
-            {categories.length > 0 && (
-                <div className="md:hidden flex gap-2 overflow-x-auto pb-3 mb-1 scrollbar-hide -mx-1 px-1">
-                    <button
-                        onClick={() => navigate({ categories: [], page: 1 })}
-                        className={`flex-shrink-0 min-h-11 px-4 py-2 rounded-full text-xs font-bold transition-colors ${selectedCategories.length === 0 ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
-                    >
-                        All
-                    </button>
-                    {categories.map((cat) => {
-                        const isActive = selectedCategories.includes(String(cat.id));
-                        return (
-                            <button
-                                key={cat.id}
-                                onClick={() => {
-                                    const id = String(cat.id);
-                                    const next = isActive
-                                        ? selectedCategories.filter((c) => c !== id)
-                                        : [...selectedCategories, id];
-                                    navigate({ categories: next, page: 1 });
-                                }}
-                                className={`flex-shrink-0 min-h-11 px-4 py-2 rounded-full text-xs font-bold transition-colors ${isActive ? "bg-[#E91E63] text-white" : "bg-gray-100 text-gray-600"}`}
-                            >
-                                {cat.name}
-                            </button>
-                        );
-                    })}
-                </div>
-            )}
-
-            <div className="md:hidden sticky top-[var(--site-header-offset)] z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 bg-white/95 backdrop-blur border-b border-gray-100 mb-3 flex items-center gap-2">
-                <span className="text-[10px] font-semibold text-gray-500 flex-shrink-0">Sort</span>
-                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-                    {sortOptions.map((opt) => (
-                        <button
-                            key={opt.value}
-                            onClick={() => navigate({ sort: opt.value, page: 1 })}
-                            className={`flex-shrink-0 min-h-11 px-3.5 py-2 rounded-full text-[11px] font-bold transition-colors ${sortBy === opt.value ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
-                </div>
             </div>
 
             <div className={`fixed inset-0 z-[100] md:relative md:inset-auto md:z-30 md:block ${isSidebarOpen ? "block" : "hidden md:block"}`}>
@@ -212,7 +168,7 @@ export default function ShopClient({
                 </div>
             </div>
 
-            <div className={`flex-1 min-w-0 relative pb-24 md:pb-0 transition-[opacity,transform] duration-300 ${isPending ? "opacity-55 translate-y-0.5" : "opacity-100 translate-y-0"}`}>
+            <div className={`flex-1 min-w-0 relative pb-4 md:pb-0 transition-[opacity,transform] duration-300 ${isPending ? "opacity-55 translate-y-0.5" : "opacity-100 translate-y-0"}`}>
                 {isPending && (
                     <div className="absolute inset-x-0 top-0 z-10 flex justify-center pointer-events-none">
                         <span className="mt-2 rounded-full bg-white border border-gray-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#E91E63] shadow-sm">
@@ -285,7 +241,7 @@ export default function ShopClient({
 
                 {products.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-5 sm:gap-x-6 sm:gap-y-10">
                             {products.map((product, index) => (
                                 <ProductCard
                                     key={product.id}

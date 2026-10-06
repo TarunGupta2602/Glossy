@@ -82,7 +82,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                 {products.length > 0 ? (
                     <>
                         <div
-                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 lg:gap-7 transition-opacity duration-200 ${
+                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6 lg:gap-7 transition-opacity duration-200 ${
                                 isPending ? "opacity-50" : "opacity-100"
                             }`}
                         >

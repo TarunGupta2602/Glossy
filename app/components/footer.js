@@ -56,7 +56,7 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="relative bg-white border-t border-gray-100 pt-12 md:pt-16 pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:pb-10">
+        <footer className="relative bg-white border-t border-gray-100 pt-8 md:pt-16 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
             <div className={SITE_CONTAINER}>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-10 md:pb-12 border-b border-gray-100">
                     <div className="min-w-0">
@@ -85,7 +85,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-12 py-10 md:py-14 border-b border-gray-100">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-8 lg:gap-12 py-8 md:py-14 border-b border-gray-100">
                     <div className="md:col-span-5 lg:col-span-4">
                         <BrandLogo href="/" size="lg" className="mb-5" />
 
@@ -146,7 +146,7 @@ export default function Footer() {
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
                                         >
                                             {link.label}
                                         </Link>
@@ -164,7 +164,7 @@ export default function Footer() {
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
                                         >
                                             {link.label}
                                         </Link>
@@ -182,7 +182,7 @@ export default function Footer() {
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
                                         >
                                             {link.label}
                                         </Link>
@@ -191,7 +191,7 @@ export default function Footer() {
                                 <li>
                                     <Link
                                         href="/blog"
-                                        className="text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                                        className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
                                     >
                                         All guides
                                     </Link>

@@ -10,7 +10,7 @@ function MarqueeTrack({ trackId }) {
         <div className="announce-marquee-track" aria-hidden="true">
             {announcements.map((text) => (
                 <div key={`${trackId}-${text}`} className="flex items-center shrink-0">
-                    <span className="px-6 md:px-10 text-[12px] md:text-[13px] font-semibold tracking-[0.12em] uppercase text-[#3d342c]">
+                    <span className="px-5 md:px-10 text-[10px] md:text-[13px] font-semibold tracking-[0.12em] uppercase text-[#3d342c]">
                         {text}
                     </span>
                     <span
@@ -31,7 +31,7 @@ export default function AnnouncementBar() {
 
     return (
         <div
-            className="announce-bar group relative overflow-hidden h-10 md:h-11 flex items-center z-40 border-b border-[#eadfce]"
+            className="announce-bar group relative overflow-hidden h-8 md:h-11 flex items-center z-40 border-b border-[#eadfce]"
             style={{
                 background: "linear-gradient(180deg, #f7f1e8 0%, #f0e6d8 100%)",
             }}

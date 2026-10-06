@@ -15,7 +15,7 @@ export default function LayoutWrapper({ children }) {
     const { isOverlayOpen } = useOverlay();
     const isAdmin = pathname?.startsWith("/admin");
     const isProductPage = pathname?.startsWith("/product/");
-    const isShopPage = pathname?.startsWith("/shop");
+    const isCartPage = pathname === "/cart";
     const isBlogPost = pathname?.startsWith("/blog/") && pathname !== "/blog";
 
     if (isAdmin) {
@@ -23,10 +23,8 @@ export default function LayoutWrapper({ children }) {
     }
 
     // Lift FAB above PDP sticky CTA / shop filter chip / blog share bar + iOS home indicator
-    const fabPosition = isProductPage
-        ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6"
-        : isShopPage
-            ? "bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
+    const fabPosition = isProductPage || isCartPage
+        ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
             : isBlogPost
                 ? "bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
                 : "bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6";

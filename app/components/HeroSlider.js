@@ -119,7 +119,7 @@ export default function HeroSlider() {
             aria-label="The Luxe Jewels"
         >
             {slide.banner ? (
-                <div className="relative h-[46vh] min-h-[240px] max-h-[460px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
+                <div className="relative h-[30vh] min-h-[150px] max-h-[200px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
                     {SLIDES.filter((item) => item.banner).map((item) => (
                         <Image
                             key={item.id}
@@ -131,7 +131,7 @@ export default function HeroSlider() {
                             quality={80}
                             placeholder="blur"
                             blurDataURL={IMAGE_BLUR_DATA_URL}
-                            className={`object-cover object-[70%_28%] transition-opacity duration-700 ${
+                            className={`object-cover object-[78%_center] md:object-[70%_28%] transition-opacity duration-700 ${
                                 item.id === slide.id ? "opacity-100" : "opacity-0"
                             }`}
                         />
@@ -156,7 +156,7 @@ export default function HeroSlider() {
                 </div>
             )}
 
-            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-8 md:py-8 lg:py-10 ${
+            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-5 md:py-8 lg:py-10 ${
                 slide.banner ? "min-h-0 items-start md:min-h-[420px] lg:min-h-[460px] xl:min-h-[500px] md:items-center" : "min-h-[88svh] items-end md:min-h-0 md:items-center"
             }`}>
                 <div className="grid w-full md:grid-cols-[1.05fr_0.95fr] lg:grid-cols-[1.08fr_0.92fr] gap-10 lg:gap-14 items-center">
@@ -168,14 +168,14 @@ export default function HeroSlider() {
                                 {slide.eyebrow}
                             </p>
 
-                            <Heading className={`font-playfair text-[2.35rem] sm:text-[2.7rem] md:text-[3.05rem] lg:text-[3.25rem] font-medium tracking-tight leading-[1.08] mb-3 md:mb-5 max-w-[18ch] ${slide.banner ? "text-[#2a2724]" : "text-white md:text-[#2a2724]"} ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
+                            <Heading className={`font-playfair text-[1.85rem] sm:text-[2.35rem] md:text-[3.05rem] lg:text-[3.25rem] font-medium tracking-tight leading-[1.08] mb-2 md:mb-5 max-w-[16ch] ${slide.banner ? "text-[#2a2724]" : "text-white md:text-[#2a2724]"} ${slide.isMain ? "md:max-w-none" : "md:max-w-[16ch]"}`}>
                                 {slide.title[0]}
                                 <em className={`italic font-normal ${slide.accentClass}`}>
                                     {slide.title[1]}
                                 </em>
                             </Heading>
 
-                            <p className={`text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed mb-6 md:mb-7 max-w-[34ch] md:max-w-[38ch] lg:max-w-[440px] ${slide.banner ? "text-[#6b6560]" : "text-white/80 md:text-[#6b6560]"}`}>
+                            <p className={`text-[13px] sm:text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed mb-4 md:mb-7 max-w-[34ch] md:max-w-[38ch] lg:max-w-[440px] line-clamp-2 md:line-clamp-none ${slide.banner ? "text-[#6b6560]" : "text-white/80 md:text-[#6b6560]"}`}>
                                 {slide.body}
                             </p>
 
@@ -186,28 +186,24 @@ export default function HeroSlider() {
                                 />
                             ) : null}
 
-                            <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex items-center gap-2 sm:gap-3">
                                 <Link
                                     href={slide.primary.href}
-                                    className={`inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 hover:bg-[#E91E63] hover:text-white ${slide.banner ? "bg-[#2a2724] text-white" : "bg-white text-[#2a2724] md:bg-[#2a2724] md:text-white"}`}
+                                    className={`inline-flex h-11 md:h-12 flex-1 sm:flex-none items-center justify-center gap-2 rounded-full px-5 md:px-7 text-[11px] font-semibold uppercase tracking-[0.14em] md:tracking-[0.16em] transition-colors duration-300 hover:bg-[#E91E63] hover:text-white ${slide.banner ? "bg-[#2a2724] text-white" : "bg-white text-[#2a2724] md:bg-[#2a2724] md:text-white"}`}
                                 >
                                     {slide.primary.label}
                                     <span aria-hidden>→</span>
                                 </Link>
                                 <Link
                                     href={slide.secondary.href}
-                                    className={`inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent ${slide.banner ? "border border-[#2a2724]/25 bg-transparent text-[#2a2724] hover:border-[#2a2724]" : "border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20"}`}
+                                    className={`inline-flex h-11 md:h-12 flex-1 sm:flex-none items-center justify-center gap-2 rounded-full px-4 md:px-6 text-[11px] font-semibold uppercase tracking-[0.14em] md:tracking-[0.16em] transition-colors md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent ${slide.banner ? "border border-[#2a2724]/25 bg-transparent text-[#2a2724] hover:border-[#2a2724]" : "border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20"}`}
                                 >
                                     {slide.secondary.label}
                                 </Link>
                             </div>
                         </div>
 
-                        <p className={`mt-6 md:hidden text-[10px] font-medium tracking-[0.2em] uppercase ${slide.banner ? "text-[#a39e97]" : "text-white/55"}`}>
-                            Buy 2 get 1 free
-                        </p>
-
-                        <div className="mt-7 flex items-center gap-3">
+                        <div className="mt-4 md:mt-7 flex items-center gap-3">
                             <button
                                 type="button"
                                 onClick={() => goToManual(index - 1)}

@@ -104,22 +104,22 @@ export default async function ShopPage({ searchParams }) {
                 <Breadcrumbs items={[{ label: "Shop anti-tarnish jewellery" }]} />
             </section>
 
-            <section className={`${SITE_CONTAINER} pt-2 pb-3 text-center`}>
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tighter mb-3 md:mb-4">Shop anti-tarnish jewellery in India</h1>
-                <p className="text-sm md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl mx-auto mb-4">
+            <section className={`${SITE_CONTAINER} pt-1 pb-3 md:text-center`}>
+                <h1 className="text-[1.65rem] sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tight md:tracking-tighter mb-2 md:mb-4">Shop anti-tarnish jewellery</h1>
+                <p className="text-[13px] md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl md:mx-auto mb-3 line-clamp-2 md:line-clamp-none">
                     The full anti-tarnish catalogue for Indian weather — waterproof earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Shipping starts at ₹50 and rises with the order.
                 </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                    <Link href="/earrings" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar md:flex-wrap md:justify-center -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0">
+                    <Link href="/earrings" className="inline-flex shrink-0 min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Earrings
                     </Link>
-                    <Link href="/necklaces" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                    <Link href="/necklaces" className="inline-flex shrink-0 min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Necklaces
                     </Link>
-                    <Link href="/bracelets" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                    <Link href="/bracelets" className="inline-flex shrink-0 min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Bracelets
                     </Link>
-                    <Link href="/rings" className="inline-flex min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
+                    <Link href="/rings" className="inline-flex shrink-0 min-h-9 items-center rounded-full border border-gray-200 px-3.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-800 hover:border-[#E91E63] hover:text-[#E91E63]">
                         Rings
                     </Link>
                 </div>

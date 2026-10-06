@@ -55,7 +55,7 @@ export default function CollectionHero({
 
     return (
         <>
-            <div className="relative w-full aspect-[4/5] min-h-[320px] sm:aspect-[16/10] sm:min-h-0 md:aspect-[21/9] max-h-[480px] overflow-hidden bg-gray-900">
+            <div className="relative w-full aspect-[16/9] max-h-[210px] sm:aspect-[16/10] sm:max-h-[360px] md:aspect-[21/9] md:max-h-[480px] overflow-hidden bg-gray-900">
                 <Image
                     src={imageUrl}
                     alt={alt || title}
@@ -109,8 +109,8 @@ export default function CollectionHero({
                 </div>
             </div>
             {description && (
-                <div className={`${SITE_CONTAINER} sm:hidden py-4 border-b border-gray-100`}>
-                    <p className="text-sm text-gray-500 leading-relaxed">{description}</p>
+                <div className={`${SITE_CONTAINER} sm:hidden py-3 border-b border-gray-100`}>
+                    <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-2">{description}</p>
                 </div>
             )}
         </>

@@ -40,7 +40,7 @@ export default function CollectionPageContent({
             />
 
             <div className="bg-gradient-to-b from-[#FAFAFA] to-white">
-                <div className={`${SITE_CONTAINER} py-10 md:py-14`}>
+                <div className={`${SITE_CONTAINER} py-6 md:py-14`}>
                     {products.length > 0 ? (
                         <>
                             {!isSmallCollection && count > 0 && (
