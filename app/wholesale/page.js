@@ -77,10 +77,6 @@ export default async function WholesalePage() {
                     Wholesale. Mix any pieces. Minimum {formatRupee(WHOLESALE_MIN_AMOUNT)}.
                 </h1>
                 <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[#6b6560]">
-                    Har design ka ek piece le sakte ho. Same piece ke 6 ya 12 lene ki zaroorat nahi.
-                    Poora order {formatRupee(WHOLESALE_MIN_AMOUNT)} ya usse upar hona chahiye.
-                </p>
-                <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[#6b6560]">
                     Earrings, bracelets and rings are {Math.round(WHOLESALE_RATE * 100)}% of today’s website price.
                     Necklaces are {Math.round(WHOLESALE_NECKLACE_RATE * 100)}%.
                     This rate is only for a shop order on this page.
