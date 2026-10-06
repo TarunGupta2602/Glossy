@@ -10,16 +10,18 @@ const CARDS = [
         href: "/festive/diwali",
         title: "Diwali jewellery",
         hint: "Office to puja",
-        image: "/festive/diwali-festive-hero.jpg",
-        alt: "Gold Diwali necklace and earrings on ivory silk",
+        image: "/festive/diwali-hero-banner.jpg",
+        alt: "Diwali gold jewellery styled with a diya",
+        position: "object-[72%_center]",
         accent: "#e8d5b5",
     },
     {
         href: "/festive/navratri",
         title: "Navratri jewellery",
         hint: "Desk to dandiya",
-        image: "/festive/navratri-festive-hero.jpg",
-        alt: "Colourful Navratri earrings and pendant on wine silk",
+        image: "/festive/navratri-hero-banner.jpg",
+        alt: "Navratri gold jewellery with dandiya sticks",
+        position: "object-[68%_42%]",
         accent: "#f3c6d6",
     },
 ];
@@ -67,7 +69,7 @@ export default function HomeGiftEdits() {
                                 quality={85}
                                 placeholder="blur"
                                 blurDataURL={IMAGE_BLUR_DATA_URL}
-                                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                                className={`object-cover ${card.position} transition-transform duration-500 group-hover:scale-[1.03]`}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                             <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">

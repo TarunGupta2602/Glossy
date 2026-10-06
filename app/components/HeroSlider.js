@@ -33,8 +33,8 @@ const SLIDES = [
         accentClass: "text-[#7a2248]",
         eyebrowClass: "text-[#7a2248]",
         body: "Desk to dandiya — lightweight colourful earrings and necklaces under ₹999. Buy 2 Get 1 Free on every order.",
-        image: "/festive/navratri-festive-hero.jpg",
-        alt: "Navratri earrings and pendant on wine silk",
+        image: "/festive/navratri-hero-banner.jpg",
+        alt: "Navratri gold jewellery with dandiya sticks",
         banner: true,
         primary: { href: "/festive/navratri", label: "Shop Navratri" },
         secondary: { href: "/festive/diwali", label: "Shop Diwali" },
@@ -52,8 +52,8 @@ const SLIDES = [
         accentClass: "text-[#8a5a28]",
         eyebrowClass: "text-[#8a5a28]",
         body: "Office to puja — gold-look necklaces and earrings she can wear after the diyas are packed away.",
-        image: "/festive/diwali-festive-hero.jpg",
-        alt: "Gold Diwali necklace and jhumka earrings on ivory silk",
+        image: "/festive/diwali-hero-banner.jpg",
+        alt: "Diwali gold jewellery styled with a diya",
         banner: true,
         primary: { href: "/festive/diwali", label: "Shop Diwali" },
         secondary: { href: "/festive/navratri", label: "Shop Navratri" },
@@ -131,9 +131,9 @@ export default function HeroSlider() {
                             quality={80}
                             placeholder="blur"
                             blurDataURL={IMAGE_BLUR_DATA_URL}
-                            className={`object-cover transition-opacity duration-700 ${
-                                item.id === "main" ? "object-[78%_center] md:object-[70%_28%]" : "object-center"
-                            } ${item.id === slide.id ? "opacity-100" : "opacity-0"}`}
+                            className={`object-cover object-[78%_center] md:object-[70%_28%] transition-opacity duration-700 ${
+                                item.id === slide.id ? "opacity-100" : "opacity-0"
+                            }`}
                         />
                     ))}
                     <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#f7f3ee] from-[8%] via-[#f7f3ee]/80 via-[46%] to-transparent to-[72%]" />
