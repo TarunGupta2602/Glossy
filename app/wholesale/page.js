@@ -7,7 +7,7 @@ import { isProductOutOfStock } from "@/lib/productAvailability";
 import { getDisplayCategoryName } from "@/lib/categoryLanding";
 import {
     WHOLESALE_MIN_AMOUNT,
-    WHOLESALE_NECKLACE_RATE,
+    WHOLESALE_LOW_EARRING_RATE,
     WHOLESALE_RATE,
     formatRupee,
     wholesalePiecePrice,
@@ -21,13 +21,13 @@ export const revalidate = 300;
 export const metadata = {
     title: "Wholesale jewellery for shops",
     description:
-        "Mix any designs, even one piece of each. Minimum wholesale order is ₹4,000. Earrings, bracelets and rings are 40% of the website price. Necklaces are 50%.",
+        "Mix any designs, even one piece of each. Minimum wholesale order is ₹4,000. Most designs are 50% of the website price. Earrings around ₹150–₹200 stay at 40%.",
     alternates: { canonical: "/wholesale" },
     robots: { index: true, follow: true, "max-image-preview": "large" },
     openGraph: {
         title: "Wholesale jewellery for shops",
         description:
-            "Mix any designs. Minimum ₹4,000. 40% of the website price, 50% on necklaces. Dispatch from Noida.",
+            "Mix any designs. Minimum ₹4,000. 50% of the website price. Earrings around ₹150–₹200 stay at 40%. Dispatch from Noida.",
         url: `${BRAND_URL}/wholesale`,
         siteName: BRAND_NAME,
         type: "website",
@@ -99,7 +99,7 @@ export default async function WholesalePage() {
                     {[
                         ["Minimum", `${formatRupee(WHOLESALE_MIN_AMOUNT)}`],
                         ["Mix", "1 piece each"],
-                        ["Rate", `${Math.round(WHOLESALE_RATE * 100)}% · necklaces ${Math.round(WHOLESALE_NECKLACE_RATE * 100)}%`],
+                        ["Rate", `${Math.round(WHOLESALE_RATE * 100)}% · ₹199 earrings ${Math.round(WHOLESALE_LOW_EARRING_RATE * 100)}%`],
                         ["Payment", "50% now, rest before dispatch"],
                     ].map(([label, value]) => (
                         <div key={label} className="rounded-2xl border border-[#efeae4] bg-white px-3.5 py-3">
