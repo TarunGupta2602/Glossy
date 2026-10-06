@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import CollectionHero from "./CollectionHero";
 import ProductCard from "./ProductCard";
 import FestivalCountdown from "./FestivalCountdown";
@@ -17,7 +15,6 @@ export default function FestiveCollectionContent({
 }) {
     const theme = collection.theme || {};
     const accent = theme.accent || "#c4a574";
-    const moments = collection.moments || [];
     const gridClass =
         "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-5 sm:gap-y-9";
 
@@ -108,60 +105,6 @@ export default function FestiveCollectionContent({
                             ))}
                         </div>
                     </div>
-
-                    {moments.length > 0 ? (
-                        <div className="mb-10 md:mb-12">
-                            <div className="mb-5 max-w-2xl">
-                                <h2 className="font-playfair text-[1.45rem] sm:text-[1.7rem] font-semibold text-[#2a2724] tracking-tight mb-2">
-                                    {collection.whyTitle}
-                                </h2>
-                                <p className="text-[14px] text-[#6b6560] leading-relaxed">
-                                    {collection.whyBody}
-                                </p>
-                            </div>
-                            <div className="grid sm:grid-cols-3 gap-3 md:gap-4">
-                                {moments.map((moment) => (
-                                    <figure
-                                        key={moment.title}
-                                        className="overflow-hidden rounded-[1.35rem] bg-white border border-[#efeae4]"
-                                    >
-                                        <div className="relative aspect-[5/4] overflow-hidden bg-[#f6f4f1]">
-                                            <Image
-                                                src={moment.image}
-                                                alt={moment.alt || moment.title}
-                                                fill
-                                                sizes="(max-width: 640px) 100vw, 33vw"
-                                                quality={80}
-                                                placeholder="blur"
-                                                blurDataURL={IMAGE_BLUR_DATA_URL}
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                        <figcaption className="px-4 py-3.5">
-                                            <p
-                                                className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-1"
-                                                style={{ color: accent }}
-                                            >
-                                                {moment.title}
-                                            </p>
-                                            <p className="text-[13px] text-[#5c5752] leading-relaxed">
-                                                {moment.blurb}
-                                            </p>
-                                        </figcaption>
-                                    </figure>
-                                ))}
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="mb-8 md:mb-10 max-w-2xl">
-                            <h2 className="font-playfair text-[1.45rem] sm:text-[1.7rem] font-semibold text-[#2a2724] tracking-tight mb-2">
-                                {collection.whyTitle}
-                            </h2>
-                            <p className="text-[14px] text-[#6b6560] leading-relaxed">
-                                {collection.whyBody}
-                            </p>
-                        </div>
-                    )}
 
                     {collection.showColourEdit ? (
                         <div className="mb-10 md:mb-12 rounded-[1.35rem] border border-[#efeae4] bg-white px-5 py-5 sm:px-6">
