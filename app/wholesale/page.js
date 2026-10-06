@@ -47,13 +47,6 @@ function designMessage(product, wholesale) {
     ].join("\n");
 }
 
-const STEPS = [
-    "Pick any designs below. One piece of a design is enough. You do not have to take a full set of the same piece.",
-    "Mix earrings, necklaces, bracelets and rings in one order.",
-    `Keep adding until the wholesale total is at least ${formatRupee(WHOLESALE_MIN_AMOUNT)}.`,
-    "Send the list on WhatsApp. Pay 50% to confirm. Pay the rest before we dispatch from Noida.",
-];
-
 export default async function WholesalePage() {
     const { products } = await getStorefrontCatalog();
     const groups = new Map();
@@ -83,23 +76,20 @@ export default async function WholesalePage() {
                     For shops and Instagram sellers
                 </p>
                 <h1 className="mt-2 max-w-3xl font-playfair text-[2rem] font-medium leading-tight tracking-tight text-[#2a2724] md:text-5xl">
-                    Wholesale. Mix any pieces. Minimum {formatRupee(WHOLESALE_MIN_AMOUNT)}.
+                    Wholesale for shops
                 </h1>
-                <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[#6b6560]">
-                    Earrings, bracelets and rings are {Math.round(WHOLESALE_RATE * 100)}% of today’s website price.
-                    Necklaces are {Math.round(WHOLESALE_NECKLACE_RATE * 100)}%.
-                    This rate is only for a shop order on this page.
-                    One piece from the shop stays at the full price, with cash on delivery and Buy 2 Get 1 Free.
+                <p className="mt-2 text-[15px] text-[#6b6560]">
+                    Mix any designs. One piece of each is fine. Minimum {formatRupee(WHOLESALE_MIN_AMOUNT)}.
                 </p>
 
-                <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                <dl className="mt-5 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
                     {[
-                        ["Minimum", `${formatRupee(WHOLESALE_MIN_AMOUNT)} total`],
-                        ["Mix", "1 piece of each design is fine"],
-                        ["Your rate", "30% · necklaces 40%"],
+                        ["Minimum", `${formatRupee(WHOLESALE_MIN_AMOUNT)}`],
+                        ["Mix", "1 piece each"],
+                        ["Rate", `${Math.round(WHOLESALE_RATE * 100)}% · necklaces ${Math.round(WHOLESALE_NECKLACE_RATE * 100)}%`],
                         ["Payment", "50% now, rest before dispatch"],
                     ].map(([label, value]) => (
-                        <div key={label} className="rounded-2xl border border-[#efeae4] bg-white px-4 py-3">
+                        <div key={label} className="rounded-2xl border border-[#efeae4] bg-white px-3.5 py-3">
                             <dt className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a847c]">
                                 {label}
                             </dt>
@@ -108,20 +98,9 @@ export default async function WholesalePage() {
                     ))}
                 </dl>
 
-                <ol className="mt-6 max-w-2xl space-y-2">
-                    {STEPS.map((step, index) => (
-                        <li key={step} className="flex gap-3 text-[14px] leading-relaxed text-[#2a2724]">
-                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#2a2724] text-[11px] font-semibold text-white">
-                                {index + 1}
-                            </span>
-                            <span>{step}</span>
-                        </li>
-                    ))}
-                </ol>
-
                 <a
                     href={orderUrl}
-                    className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 text-[13px] font-semibold text-white"
+                    className="mt-5 inline-flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 text-[13px] font-semibold text-white"
                 >
                     WhatsApp your mix
                 </a>
@@ -136,7 +115,12 @@ export default async function WholesalePage() {
 
             {sections.map((section) => (
                 <section key={section.category} className={`${SITE_CONTAINER} pb-10`}>
-                    <h2 className="mb-4 font-playfair text-2xl text-[#2a2724]">{section.category}</h2>
+                    <h2 className="mb-4 font-playfair text-2xl text-[#2a2724]">
+                        {section.category}
+                        <span className="ml-2 align-middle text-[13px] font-sans font-medium text-[#8a847c]">
+                            {section.items.length}
+                        </span>
+                    </h2>
                     <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
                         {section.items.map((product) => {
                             const retail = Number(product.price) || 0;
@@ -157,18 +141,15 @@ export default async function WholesalePage() {
                                         />
                                     </div>
                                     <div className="flex flex-1 flex-col p-3">
-                                        <h3 className="line-clamp-2 font-playfair text-[14px] leading-snug text-[#2a2724]">
+                                        <h3 className="line-clamp-2 min-h-10 font-playfair text-[14px] leading-snug text-[#2a2724]">
                                             {product.name}
                                         </h3>
-                                        <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8a5a28]">
-                                            {Math.round(rate * 100)}% of shop price
-                                        </p>
-                                        <p className="text-[18px] font-semibold tabular-nums text-[#2a2724]">
+                                        <p className="mt-2 text-[18px] font-semibold tabular-nums text-[#2a2724]">
                                             {formatRupee(wholesale)}
                                             <span className="ml-1 text-[11px] font-medium text-[#8a847c]">each</span>
                                         </p>
-                                        <p className="mt-1 text-[12px] tabular-nums text-[#6b6560]">
-                                            Shop price for 1 piece stays {formatRupee(retail)}
+                                        <p className="mt-0.5 text-[12px] tabular-nums text-[#6b6560]">
+                                            {Math.round(rate * 100)}% of shop price {formatRupee(retail)}
                                         </p>
                                         <a
                                             href={wholesaleWhatsAppUrl(designMessage(product, wholesale))}
