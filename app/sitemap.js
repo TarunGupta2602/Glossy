@@ -23,6 +23,7 @@ const FRESH_PATHS = new Set([
     "/necklaces",
     "/bracelets",
     "/shop",
+    "/wholesale",
     "/our-story",
     "/faqs",
     "/contact",
@@ -67,6 +68,7 @@ function staticSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
         { path: "/privacy", priority: 0.4, changeFrequency: "yearly" },
         { path: "/terms", priority: 0.4, changeFrequency: "yearly" },
         { path: "/shipping-returns", priority: 0.6, changeFrequency: "monthly" },
+        { path: "/wholesale", priority: 0.8, changeFrequency: "weekly" },
         { path: "/blog", priority: 0.85, changeFrequency: "weekly" },
     ];
 

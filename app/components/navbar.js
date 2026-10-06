@@ -28,6 +28,7 @@ const SHOP_LINKS = [
 const SHOP_EXTRAS = [
     { href: "/shop?sort=newest", label: "New arrivals" },
     { href: "/shop?sort=popular", label: "Bestsellers" },
+    { href: "/wholesale", label: "Wholesale" },
 ];
 
 const GIFT_LINKS = [
