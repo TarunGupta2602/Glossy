@@ -21,13 +21,13 @@ export const revalidate = 300;
 export const metadata = {
     title: "Wholesale jewellery for shops",
     description:
-        "Mix any designs, even one piece of each. Minimum wholesale order is ₹4,000. Earrings, bracelets and rings are 30% of the website price. Necklaces are 40%.",
+        "Mix any designs, even one piece of each. Minimum wholesale order is ₹4,000. Earrings, bracelets and rings are 40% of the website price. Necklaces are 50%.",
     alternates: { canonical: "/wholesale" },
     robots: { index: true, follow: true, "max-image-preview": "large" },
     openGraph: {
         title: "Wholesale jewellery for shops",
         description:
-            "Mix any designs. Minimum ₹4,000. 30% of the website price, 40% on necklaces. Dispatch from Noida.",
+            "Mix any designs. Minimum ₹4,000. 40% of the website price, 50% on necklaces. Dispatch from Noida.",
         url: `${BRAND_URL}/wholesale`,
         siteName: BRAND_NAME,
         type: "website",
@@ -59,8 +59,21 @@ export default async function WholesalePage() {
         groups.get(category).push(product);
     }
 
+    const categoryOrder = [
+        "The Necklace Edit",
+        "Statement Pieces",
+        "Sparkle Jewelry Duo",
+        "Glimmer Bracelet",
+        "Uniqueness Rings",
+    ];
     const sections = [...groups.entries()]
-        .sort((a, b) => a[0].localeCompare(b[0]))
+        .sort((a, b) => {
+            const rank = (name) => {
+                const index = categoryOrder.indexOf(name);
+                return index === -1 ? categoryOrder.length : index;
+            };
+            return rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]);
+        })
         .map(([category, items]) => ({
             category,
             items: items.sort((a, b) => Number(a.price) - Number(b.price)),
