@@ -55,7 +55,7 @@ export default function CollectionHero({
 
     return (
         <>
-            <div className="relative w-full aspect-[16/9] max-h-[210px] sm:aspect-[16/10] sm:max-h-[360px] md:aspect-[21/9] md:max-h-[480px] overflow-hidden bg-gray-900">
+            <div className="relative w-full aspect-[21/9] sm:aspect-[16/10] sm:max-h-[360px] md:aspect-[21/9] md:max-h-[480px] overflow-hidden bg-gray-900">
                 <Image
                     src={imageUrl}
                     alt={alt || title}
@@ -65,7 +65,7 @@ export default function CollectionHero({
                     quality={75}
                     className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20 sm:bg-gradient-to-r sm:from-black/80 sm:via-black/45 sm:to-black/10" />
+                <div className="absolute inset-0 hidden sm:block bg-gradient-to-r from-black/80 via-black/45 to-black/10" />
                 <div className="absolute inset-0 hidden sm:block bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 
                 <div className="absolute inset-0 flex flex-col">
@@ -75,7 +75,7 @@ export default function CollectionHero({
                         </div>
                     )}
 
-                    <div className="flex-1 flex items-end md:items-center">
+                    <div className="hidden sm:flex flex-1 items-end md:items-center">
                         <div className={`${SITE_CONTAINER} w-full pb-7 sm:pb-8 md:pb-0 md:py-10`}>
                             <div className="max-w-2xl">
                                 <div className="flex items-center gap-3 mb-2 md:mb-4">
@@ -108,11 +108,19 @@ export default function CollectionHero({
                     </div>
                 </div>
             </div>
-            {description && (
-                <div className={`${SITE_CONTAINER} sm:hidden py-3 border-b border-gray-100`}>
-                    <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-2">{description}</p>
-                </div>
-            )}
+            <div className={`${SITE_CONTAINER} sm:hidden py-4 border-b border-gray-100`}>
+                <h1 className="font-playfair text-[1.65rem] font-medium text-[#2a2724] leading-tight tracking-tight">
+                    {title}
+                </h1>
+                {description ? (
+                    <p className="mt-2 text-[13px] text-gray-500 leading-relaxed line-clamp-2">{description}</p>
+                ) : null}
+                {pieceLabel ? (
+                    <span className="inline-block mt-3 px-3 py-1 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-600">
+                        {pieceLabel}
+                    </span>
+                ) : null}
+            </div>
         </>
     );
 }

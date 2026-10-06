@@ -24,7 +24,7 @@ export default function LayoutWrapper({ children }) {
 
     // Lift FAB above PDP sticky CTA / shop filter chip / blog share bar + iOS home indicator
     const fabPosition = isProductPage || isCartPage
-        ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
+        ? "bottom-[calc(6.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
             : isBlogPost
                 ? "bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
                 : "bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6";
