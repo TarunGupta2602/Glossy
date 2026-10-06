@@ -27,7 +27,7 @@ const SHOP_LINKS = [
     { href: "/gifts/under-499", label: "Gifts under ₹499" },
     { href: "/festive/diwali", label: "Diwali jewellery" },
     { href: "/festive/navratri", label: "Navratri jewellery" },
-    { href: "/wholesale", label: "Wholesale" },
+    { href: "/wholesale", label: "Wholesale for shops" },
 ];
 
 const HELP_LINKS = [

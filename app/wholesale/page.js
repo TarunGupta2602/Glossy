@@ -64,12 +64,13 @@ export default async function WholesalePage() {
                     For shops and Instagram sellers
                 </p>
                 <h1 className="mt-2 font-playfair text-[2rem] md:text-5xl font-medium text-[#2a2724] tracking-tight leading-tight">
-                    Wholesale rate is 30% of the website price
+                    Shop price does not change. This rate is only for a wholesale order.
                 </h1>
                 <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[#6b6560]">
-                    {pieceCount} designs you can mix. Minimum {WHOLESALE_MIN_PIECES} pieces.
-                    This is 18k gold plated fashion jewellery, anti-tarnish, not hallmarked gold.
-                    Single pieces stay on the shop at the full price. Buy 2 Get 1 Free does not apply here.
+                    {pieceCount} designs, any mix, minimum {WHOLESALE_MIN_PIECES} pieces.
+                    The reseller price is 30% of today’s website price, and it applies only on this page.
+                    One piece on the shop stays at the full price, with cash on delivery and Buy 2 Get 1 Free.
+                    Those offers do not apply to wholesale.
                 </p>
 
                 <dl className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -128,12 +129,15 @@ export default async function WholesalePage() {
                                         <h3 className="font-playfair text-[14px] leading-snug text-[#2a2724] line-clamp-2">
                                             {product.name}
                                         </h3>
-                                        <p className="mt-2 text-[12px] text-[#8a847c] line-through tabular-nums">
-                                            Website {formatRupee(retail)}
+                                        <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8a5a28]">
+                                            Wholesale only
                                         </p>
                                         <p className="text-[18px] font-semibold text-[#2a2724] tabular-nums">
                                             {formatRupee(wholesale)}
                                             <span className="ml-1 text-[11px] font-medium text-[#8a847c]">each</span>
+                                        </p>
+                                        <p className="mt-1 text-[12px] text-[#6b6560] tabular-nums">
+                                            Shop price for 1 piece stays {formatRupee(retail)}
                                         </p>
                                         <a
                                             href={wholesaleWhatsAppUrl(designMessage(product, wholesale))}
