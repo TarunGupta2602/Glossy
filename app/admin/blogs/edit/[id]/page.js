@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../../../context/AuthContext";
 import BlogForm from "../../BlogForm";
-import { adminFetch } from "@/lib/adminApi";
+import { adminFetch, readApiJson } from "@/lib/adminApi";
 
 export default function EditBlogPage({ params }) {
     const { id } = use(params);
@@ -27,7 +27,7 @@ export default function EditBlogPage({ params }) {
     const fetchBlog = async () => {
         try {
             const res = await adminFetch(`/api/blogs/${id}`);
-            const data = await res.json();
+            const data = await readApiJson(res);
             if (data.success) {
                 setBlog(data.blog);
             } else {
@@ -62,7 +62,7 @@ export default function EditBlogPage({ params }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(blogData),
         });
-        const data = await res.json();
+        const data = await readApiJson(res);
 
         if (!data.success) throw new Error(data.error || "Failed to update blog");
 

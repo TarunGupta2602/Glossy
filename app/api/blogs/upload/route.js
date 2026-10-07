@@ -21,10 +21,16 @@ export async function POST(request) {
         }
 
         const supabase = getServiceClient();
-        const originalName =
-            typeof file.name === "string" && file.name.trim()
-                ? file.name.replace(/\s+/g, "-")
-                : `blog-${Date.now()}.jpg`;
+        const cleanedName =
+            typeof file.name === "string"
+                ? file.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^a-z0-9._-]/g, "")
+                      .replace(/-+/g, "-")
+                      .replace(/^[.-]+|[.-]+$/g, "")
+                : "";
+        const originalName = cleanedName || `blog-${Date.now()}.jpg`;
         const baseName = `${Date.now()}-${originalName}`;
 
         let arrayBuffer;

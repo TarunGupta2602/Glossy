@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { adminFetch } from "@/lib/adminApi";
+import { adminFetch, readApiJson } from "@/lib/adminApi";
 import { normalizeBlogSlug, truncateMetaDescription } from "@/lib/seo";
 import { BLOG_TEMPLATES } from "@/lib/blogTemplates";
 
@@ -54,6 +54,53 @@ function wordCount(text) {
         .filter(Boolean).length;
 }
 
+function toDateInputValue(value) {
+    const raw = String(value || "").trim();
+    const match = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : new Date().toISOString().split("T")[0];
+}
+
+/** Shrink a cover before upload. Vercel rejects function bodies over 4.5 MB. */
+async function compressCoverImage(file) {
+    const maxEdge = 1600;
+    let bitmap = null;
+    try {
+        bitmap = await createImageBitmap(file);
+    } catch {
+        bitmap = null;
+    }
+    if (!bitmap) {
+        if (file.size > 3_500_000) {
+            throw new Error(
+                "This photo is too large, and the browser could not shrink it. Save it as a JPG under 3 MB and try again."
+            );
+        }
+        return file;
+    }
+
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close?.();
+
+    const blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, "image/webp", 0.82);
+    });
+    const output =
+        blob ||
+        (await new Promise((resolve) => {
+            canvas.toBlob(resolve, "image/jpeg", 0.82);
+        }));
+    if (!output) return file;
+    const ext = output.type === "image/webp" ? "webp" : "jpg";
+    return new File([output], `cover.${ext}`, { type: output.type || "image/jpeg" });
+}
+
 export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish Blog Post" }) {
     const isNewPost = !initialData?.id;
     const [title, setTitle] = useState(initialData?.title || "");
@@ -92,9 +139,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
             [];
         return rows.map((r) => (Array.isArray(r) ? r.join(" | ") : "")).join("\n");
     });
-    const [datePosted, setDatePosted] = useState(
-        initialData?.date_posted || new Date().toISOString().split("T")[0]
-    );
+    const [datePosted, setDatePosted] = useState(toDateInputValue(initialData?.date_posted));
     const [metaTitle, setMetaTitle] = useState(initialData?.meta_title || "");
     const [metaDescription, setMetaDescription] = useState(
         initialData?.meta_description || ""
@@ -163,11 +208,16 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
         }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
+    const handleImageChange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            const compressed = await compressCoverImage(file);
+            setImageFile(compressed);
+            setImagePreview(URL.createObjectURL(compressed));
+        } catch (err) {
+            e.target.value = "";
+            alert(err.message || "Could not use that image.");
         }
     };
 
@@ -315,7 +365,7 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                     method: "POST",
                     body: formData,
                 });
-                const uploadData = await uploadRes.json();
+                const uploadData = await readApiJson(uploadRes);
 
                 if (!uploadData.success) {
                     throw new Error(uploadData.error || "Failed to upload image");
@@ -361,6 +411,13 @@ export default function BlogForm({ initialData, onSubmit, submitLabel = "Publish
                 content_sections,
                 image: finalImageUrl,
             };
+
+            const payload = JSON.stringify(blogData);
+            if (payload.length > 3_500_000) {
+                throw new Error(
+                    "The article is too large to publish. Remove pictures pasted into the text and keep one cover photo."
+                );
+            }
 
             await onSubmit(blogData);
         } catch (err) {
