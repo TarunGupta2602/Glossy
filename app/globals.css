@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Screen-reader only (announcement bar, skip links, etc.) */
 .sr-only {
