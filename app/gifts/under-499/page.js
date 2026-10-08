@@ -13,7 +13,7 @@ const MAX = 499;
 export const metadata = {
     title: `Jewellery Gifts Under ₹499`,
     description:
-        "Everyday anti-tarnish jewellery gifts under ₹499 — waterproof earrings and chains she’ll actually wear. Gift wrap included. Buy 2 Get 1 Free.",
+        "Everyday anti-tarnish jewellery gifts under ₹499 — earrings and chains she’ll actually wear. Gift wrap included. Buy 2 Get 1 Free.",
     alternates: { canonical: "/gifts/under-499" },
     robots: {
         index: true,

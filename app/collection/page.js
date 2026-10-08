@@ -11,7 +11,7 @@ export const revalidate = 3600;
 export const metadata = {
     title: "Browse Jewellery by Category",
     description:
-        "Explore curated anti-tarnish earrings, necklaces, bracelets, and rings — then shop everyday waterproof pieces for India.",
+        "Explore curated anti-tarnish earrings, necklaces, bracelets, and rings — then shop everyday pieces for India.",
     alternates: {
         canonical: "/collection",
     },

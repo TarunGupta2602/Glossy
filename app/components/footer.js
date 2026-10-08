@@ -44,7 +44,7 @@ const HELP_LINKS = [
 
 const TRUST = [
     "Anti-tarnish",
-    "Hypoallergenic finish",
+    "18k gold plated",
     "Shipping from ₹50",
     "10-day returns",
 ];
@@ -91,7 +91,7 @@ export default function Footer() {
                         <BrandLogo href="/" size="lg" className="mb-5" />
 
                         <p className="text-[14px] leading-relaxed text-gray-600 max-w-sm mb-3">
-                            Anti-tarnish, waterproof jewellery made for everyday India —
+                            Anti-tarnish fashion jewellery made for everyday India —
                             lustrous pieces you can actually wear.
                         </p>
                         <p className="text-[12px] leading-relaxed text-gray-400 max-w-sm mb-6">

@@ -74,7 +74,7 @@ export default function HomeStoryTeaser() {
                         </p>
 
                         <p className="text-[14px] sm:text-[15px] text-[#6b6560] leading-relaxed mb-3">
-                            The Luxe Jewels crafts lightweight anti-tarnish, waterproof pieces you can live
+                            The Luxe Jewels crafts lightweight anti-tarnish pieces you can live
                             in — from first meetings to late evenings.
                         </p>
 

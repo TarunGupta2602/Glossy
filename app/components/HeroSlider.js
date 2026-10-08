@@ -9,7 +9,7 @@ import FestivalCountdown from "./FestivalCountdown";
 const SLIDES = [
     {
         id: "main",
-        eyebrow: "Anti-tarnish · Waterproof · Made for India",
+        eyebrow: "Anti-tarnish · Everyday wear · Made for India",
         title: ["Shine that stays with you — ", "every day"],
         accentClass: "text-[#8a5a28]",
         eyebrowClass: "text-[#8a5a28]",
@@ -17,7 +17,7 @@ const SLIDES = [
         image: "/festive/home-hero-banner.jpg",
         alt: "Gold necklace, rings, cuff and hoop earrings from The Luxe Jewels",
         banner: true,
-        primary: { href: "/shop?sort=popular", label: "Shop bestsellers" },
+        primary: { href: "/shop?sort=popular", label: "Shop most sold" },
         secondary: { href: "/shop?sort=newest", label: "New arrivals" },
         chip: "Daily wear edit",
         chipEyebrow: "Fresh drop",

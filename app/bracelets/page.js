@@ -33,7 +33,7 @@ export async function generateMetadata({ searchParams }) {
         openGraph: {
             title: "Daily Wear Bracelet India",
             description:
-                "Daily wear bracelet and trendy cuffs for India — waterproof anti-tarnish styles for office to evening.",
+                "Daily wear bracelet and trendy cuffs for India — anti-tarnish styles for office to evening.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],

@@ -17,10 +17,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Waterproof Everyday Necklace India (Page ${pageNum})`
-            : "Waterproof Everyday Necklace India",
+            ? `Everyday Necklace India (Page ${pageNum})`
+            : "Everyday Necklace India",
         description:
-            "Waterproof everyday necklace for India — anti-tarnish 18k gold plated pendants, fine chains & layers. Buy 2 Get 1 Free + shipping from ₹50.",
+            "Everyday necklaces for India — anti-tarnish 18k gold plated pendants, fine chains and layers. Buy 2 Get 1 Free + shipping from ₹50.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -31,9 +31,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Waterproof Everyday Necklace India",
+            title: "Everyday Necklace India",
             description:
-                "A waterproof everyday necklace for Indian weather — layer, gift, and wear without constant polishing.",
+                "An everyday necklace for Indian wear — layer, gift, and wipe dry after use.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -65,9 +65,9 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = sliced.totalPages;
     const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
-    const pageTitle = "Waterproof everyday necklace for India";
+    const pageTitle = "Everyday necklace for India";
     const pageDescription =
-        "A waterproof everyday necklace for Indian weather — lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to festive dinner. Buy 2 Get 1 Free, shipping from ₹50.";
+        "Lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to dinner. Buy 2 Get 1 Free, shipping from ₹50.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

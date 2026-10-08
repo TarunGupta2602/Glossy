@@ -37,7 +37,7 @@ const TIMELINE = [
     {
         year: "2024",
         title: "The Luxe Jewels launches",
-        description: "Our first collections of waterproof earrings and gold-plated necklaces go live — crafted for modern women across India.",
+        description: "Our first collections of earrings and gold-plated necklaces go live — crafted for modern women across India.",
     },
     {
         year: "2025",

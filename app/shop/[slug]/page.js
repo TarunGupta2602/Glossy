@@ -40,7 +40,7 @@ export async function generateMetadata({ params }) {
     const description = truncateMetaDescription(
         category.meta_description ||
             category.description ||
-            `Explore our ${displayName} collection. Shop waterproof, 18k gold plated jewellery at The Luxe Jewels India.`
+            `Explore our ${displayName} collection. Shop 18k gold plated fashion jewellery at The Luxe Jewels India.`
     );
 
     return {

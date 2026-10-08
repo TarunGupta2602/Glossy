@@ -28,13 +28,13 @@ export default function ProductTrustFallback({ className = "" }) {
                     <span className="text-[#E91E63]" aria-hidden>
                         ✓
                     </span>
-                    Anti-tarnish &amp; waterproof daily wear
+                    Anti-tarnish daily wear
                 </li>
                 <li className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04]">
                     <span className="text-[#E91E63]" aria-hidden>
                         ✓
                     </span>
-                    Hypoallergenic finish · 18k gold plated
+                    18k gold plated · base metal on each product
                 </li>
                 <li className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 ring-1 ring-black/[0.04]">
                     <span className="text-[#E91E63]" aria-hidden>

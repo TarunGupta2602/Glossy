@@ -3,7 +3,7 @@ export default function TrustStrip({ className = "" }) {
         "Cash on delivery or UPI",
         "Shipping from ₹50",
         "10-day easy returns",
-        "Hypoallergenic finish",
+        "Fashion jewellery",
     ];
 
     return (

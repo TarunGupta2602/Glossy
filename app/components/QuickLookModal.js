@@ -112,7 +112,7 @@ export default function QuickLookModal({ product, reviewCount = 0, onClose }) {
                             Anti-tarnish
                         </span>
                         <span className="rounded-full bg-[#faf7f8] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-gray-600">
-                            Hypoallergenic
+                            Fashion jewellery
                         </span>
                         <span className="rounded-full bg-[#faf7f8] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-gray-600">
                             10-day returns

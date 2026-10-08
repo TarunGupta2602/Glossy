@@ -85,7 +85,7 @@ export default function FestiveCollectionContent({
                                 },
                                 {
                                     title: "Wear after the festival",
-                                    body: "Anti-tarnish and waterproof — not a one-night costume piece.",
+                                    body: "Anti-tarnish fashion jewellery — not a one-night costume piece.",
                                 },
                             ].map((item) => (
                                 <div

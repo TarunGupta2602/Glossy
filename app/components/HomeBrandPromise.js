@@ -2,8 +2,8 @@ import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
 
 const PILLARS = [
-    { title: "Waterproof", body: "Made for real days — coffee, humidity, and all." },
-    { title: "Anti-tarnish", body: "18k gold plated finishes that stay brighter longer." },
+    { title: "With care", body: "Wipe dry after wear. The finish is anti-tarnish, not a waterproof rating." },
+    { title: "Anti-tarnish", body: "18k gold plated colour over a metal base. Thickness is not published." },
     { title: "Everyday wear", body: "Lightweight pieces that never stay in the box." },
 ];
 

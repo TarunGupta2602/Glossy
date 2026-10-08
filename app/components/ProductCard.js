@@ -11,6 +11,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { lowStockCount } from "@/lib/festivalSeason";
+import { isRealBestseller } from "@/lib/unitsSold";
 import { isProductOutOfStock } from "@/lib/productAvailability";
 
 export default function ProductCard({
@@ -121,7 +122,7 @@ export default function ProductCard({
                         <span className="px-2.5 py-1 rounded-full bg-[#8a5a28] text-[#f7f1e8] text-[9px] font-semibold tracking-wide">
                             Only {left} left
                         </span>
-                    ) : hasDiscount ? null : product.is_bestseller && reviewCount > 0 ? (
+                    ) : hasDiscount ? null : isRealBestseller(product.units_sold) ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>

@@ -26,7 +26,9 @@ import {
     resolveProductMaterial,
     resolveProductPlatingNote,
     resolveProductSizeInfo,
+    resolveProductWarranty,
 } from "@/lib/productDefaults";
+import { lowStockCount } from "@/lib/festivalSeason";
 import { isProductOutOfStock } from "@/lib/productAvailability";
 import ProductShare from "../../components/ProductShare";
 
@@ -93,18 +95,22 @@ export default function ProductDetailClient({
         : "0";
 
     const features = (() => {
-        if (product.features) {
-            return Array.isArray(product.features)
+        const raw = product.features
+            ? Array.isArray(product.features)
                 ? product.features
-                : product.features.split("\n").filter(Boolean);
-        }
-        return getDefaultProductFeatures();
+                : product.features.split("\n").filter(Boolean)
+            : [];
+        const cleaned = raw.filter(
+            (line) => !/waterproof|hypoallergenic|skin-safe|nickel-free|lead-free/i.test(String(line))
+        );
+        return cleaned.length ? cleaned : getDefaultProductFeatures(product);
     })();
 
     const specRows = [
         { label: "Material", value: resolveProductMaterial(product) },
         { label: "Plating", value: resolveProductPlatingNote(product) },
         { label: "Care", value: resolveProductCare(product) },
+        { label: "Warranty", value: resolveProductWarranty() },
     ];
     const detailRows = [
         product.weight && { label: "Weight", value: product.weight },
@@ -112,11 +118,7 @@ export default function ProductDetailClient({
     ].filter(Boolean);
 
     const outOfStock = isProductOutOfStock(product);
-    const lowStock =
-        !outOfStock &&
-        product.stock_count != null &&
-        product.stock_count > 0 &&
-        product.stock_count <= 10;
+    const left = lowStockCount(product);
 
     const setGalleryIndex = (next) => {
         if (next === activeIdx) return;
@@ -280,9 +282,9 @@ export default function ProductDetailClient({
                                             })}
                                         </span>
                                     ) : null}
-                                    {lowStock && (
+                                    {left > 0 && (
                                         <span className="pointer-events-auto rounded-full bg-[#faf0f3] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C2185B]">
-                                            Only {product.stock_count} left
+                                            Only {left} left
                                         </span>
                                     )}
                                 </div>
@@ -415,9 +417,9 @@ export default function ProductDetailClient({
                             <p className="mt-3 inline-flex self-start rounded-full bg-[#f4f2f0] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#6b6560]">
                                 Out of stock — this piece is sold out for now
                             </p>
-                        ) : lowStock ? (
+                        ) : left > 0 ? (
                             <p className="mt-3 inline-flex self-start rounded-full bg-[#faf0f3] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#C2185B]">
-                                Only {product.stock_count} left — gift-ready stock
+                                Only {left} left
                             </p>
                         ) : null}
 

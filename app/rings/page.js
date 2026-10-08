@@ -33,7 +33,7 @@ export async function generateMetadata({ searchParams }) {
         openGraph: {
             title: "Buy Anti-Tarnish Rings Online India",
             description:
-                "Lightweight waterproof rings for everyday Indian wear — stackable and gift-ready.",
+                "Lightweight rings for everyday Indian wear — stackable and gift-ready.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],

@@ -15,6 +15,7 @@ import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 import { isProductOutOfStock } from "@/lib/productAvailability";
+import { isRealBestseller } from "@/lib/unitsSold";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
@@ -217,7 +218,9 @@ export default async function Home() {
     ];
   }
   const bestSellerProducts = takeFresh(
-    inStockCatalog.filter((product) => product.is_bestseller)
+    [...inStockCatalog]
+      .filter((product) => isRealBestseller(product.units_sold))
+      .sort((a, b) => (b.units_sold || 0) - (a.units_sold || 0))
   );
   const reviewCounts = reviewCountsFor(allReviewCounts, [
     ...bestSellerProducts,
@@ -257,7 +260,7 @@ export default async function Home() {
           <ProductRow
             title="Our best"
             titleAccent="sellers"
-            eyebrow="Most loved"
+            eyebrow="From real orders"
             products={bestSellerProducts}
             viewAllLink="/shop?sort=popular"
             reviewCounts={reviewCounts}

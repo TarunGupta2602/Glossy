@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getProductPath } from "@/lib/seo";
+import { isRealBestseller } from "@/lib/unitsSold";
 
 export default function EmptyCartSuggestions({
     excludeIds = [],
@@ -21,8 +22,8 @@ export default function EmptyCartSuggestions({
             .then((data) => {
                 if (!data.success) return;
                 const list = (data.products || []).filter((product) => !skip.has(product.id));
-                const best = list.filter((product) => product.is_bestseller).slice(0, 4);
-                setProducts(best.length ? best : list.slice(0, 4));
+                const best = list.filter((product) => isRealBestseller(product.units_sold)).slice(0, 4);
+                setProducts(best);
             })
             .catch(() => {});
     }, [excluded]);

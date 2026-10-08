@@ -7,7 +7,7 @@ export const dynamic = "force-static";
 export const metadata = {
     title: "Help Centre: Shipping, Returns & Care",
     description:
-        "Answers on shipping times, returns, Buy 2 Get 1 Free, COD, waterproof care, and support — before you place an order.",
+        "Answers on shipping times, returns, Buy 2 Get 1 Free, COD, jewellery care, and support — before you place an order.",
     alternates: {
         canonical: "/faqs",
     },

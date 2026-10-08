@@ -65,7 +65,7 @@ export default function ShopClient({
         selectedCategories.length > 0 || minPrice > 0 || maxPrice < 5000 || sortBy !== "newest";
 
     const sortOptions = [
-        { value: "popular", label: "Best Sellers" },
+        { value: "popular", label: "Most sold" },
         { value: "newest", label: "Newest" },
         { value: "price-asc", label: "Price ↑" },
         { value: "price-desc", label: "Price ↓" },
