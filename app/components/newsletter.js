@@ -87,11 +87,8 @@ export default function Newsletter({ variant = "section" }) {
     if (variant === "footer") {
         return (
             <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-2">
-                    The list
-                </p>
-                <p className="text-[14px] text-gray-600 leading-relaxed mb-3 max-w-sm">
-                    10% off your first order with code {WELCOME_CODE}. New drops on this list too.
+                <p className="text-[13px] text-gray-600 leading-snug mb-2.5">
+                    10% off your first order · code {WELCOME_CODE}
                 </p>
                 {form}
                 {message && (

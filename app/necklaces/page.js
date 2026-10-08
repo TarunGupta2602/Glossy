@@ -1,9 +1,7 @@
 import CollectionPageContent from "../components/CollectionPageContent";
-import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { findNecklacesCategory } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
 import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
@@ -98,8 +96,6 @@ export default async function NecklacesPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/necklaces", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
-
-            <CategoryBuyingGuide guide={NECKLACES_GUIDE} />
         </section>
     );
 }

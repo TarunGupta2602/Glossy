@@ -1,9 +1,7 @@
 import CollectionPageContent from "../components/CollectionPageContent";
-import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { findEarringsCategory } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { EARRINGS_GUIDE } from "@/lib/categoryGuides";
 import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
@@ -99,8 +97,6 @@ export default async function EarringsPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/earrings", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
-
-            <CategoryBuyingGuide guide={EARRINGS_GUIDE} />
         </section>
     );
 }

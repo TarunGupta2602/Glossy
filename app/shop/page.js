@@ -4,8 +4,6 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { BRAND_URL } from "@/lib/constants";
-import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
-import { SHOP_GUIDE } from "@/lib/categoryGuides";
 import { buildShopItemListSchema } from "@/lib/itemListSchema";
 import {
     getStorefrontCatalog,
@@ -140,7 +138,6 @@ export default async function ShopPage({ searchParams }) {
                         reviewCounts={reviewCounts}
                     />
             </section>
-            <CategoryBuyingGuide guide={SHOP_GUIDE} />
         </main>
     );
 }

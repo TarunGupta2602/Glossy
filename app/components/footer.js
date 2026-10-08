@@ -4,19 +4,15 @@ import { SITE_CONTAINER } from "@/lib/siteLayout";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import {
-    WHATSAPP_URL,
     SUPPORT_EMAIL,
     SUPPORT_PHONE,
     BRAND_NAME,
-    SERVICE_AREA_LABEL,
     INSTAGRAM_URL,
     INSTAGRAM_HANDLE,
-    BUSINESS_HOURS,
 } from "@/lib/constants";
 import PaymentIcons from "./PaymentIcons";
 import BrandLogo from "./BrandLogo";
 import Newsletter from "./newsletter";
-import { JOURNAL_LINKS } from "@/lib/siteInterlinks";
 
 const SHOP_LINKS = [
     { href: "/shop", label: "Shop all" },
@@ -24,30 +20,38 @@ const SHOP_LINKS = [
     { href: "/necklaces", label: "Necklaces" },
     { href: "/bracelets", label: "Bracelets" },
     { href: "/rings", label: "Rings" },
-    { href: "/gifts/under-499", label: "Gifts under ₹499" },
-    { href: "/festive/diwali", label: "Diwali jewellery" },
-    { href: "/festive/navratri", label: "Navratri jewellery" },
-    { href: "/wholesale", label: "Wholesale for shops" },
+    { href: "/wholesale", label: "Wholesale" },
 ];
 
 const HELP_LINKS = [
-    { href: "/blog", label: "Blog" },
-    { href: "/our-story", label: "Our story" },
-    { href: "/jewellery-shop/noida", label: "Noida" },
-    { href: "/jewellery-shop/greater-noida", label: "Jewellery shop in Greater Noida" },
-    { href: "/jewellery-shop/ghaziabad", label: "Jewellery shop in Ghaziabad" },
-    { href: "/jewellery-shop/delhi-ncr", label: "Jewellery shop in Delhi NCR" },
     { href: "/shipping-returns", label: "Shipping & returns" },
     { href: "/faqs", label: "FAQs" },
     { href: "/contact", label: "Contact" },
+    { href: "/our-story", label: "Our story" },
+    { href: "/blog", label: "Blog" },
 ];
 
-const TRUST = [
-    "Anti-tarnish",
-    "18k gold plated",
-    "Shipping from ₹50",
-    "10-day returns",
-];
+function LinkList({ title, links }) {
+    return (
+        <div>
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400 mb-2.5">
+                {title}
+            </h3>
+            <ul className="space-y-1">
+                {links.map((link) => (
+                    <li key={link.href}>
+                        <Link
+                            href={link.href}
+                            className="inline-flex min-h-7 items-center text-[13px] text-gray-700 hover:text-[#E91E63] transition-colors"
+                        >
+                            {link.label}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
 
 export default function Footer() {
     const [year, setYear] = useState(2026);
@@ -57,217 +61,58 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="relative bg-white border-t border-gray-100 pt-8 md:pt-16 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
+        <footer className="relative bg-white border-t border-gray-100 pt-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-6">
             <div className={SITE_CONTAINER}>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-10 md:pb-12 border-b border-gray-100">
-                    <div className="min-w-0">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#E91E63] mb-1.5">
-                            Need help choosing?
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8">
+                    <div className="col-span-2 sm:col-span-1">
+                        <BrandLogo href="/" size="md" className="mb-3" />
+                        <p className="text-[13px] leading-snug text-gray-500 mb-3 max-w-[16rem]">
+                            Anti-tarnish fashion jewellery, shipped pan-India.
                         </p>
-                        <p className="font-playfair text-xl sm:text-2xl text-gray-900 tracking-tight">
-                            We&apos;re here on WhatsApp
-                        </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2.5">
                         <a
-                            href={WHATSAPP_URL}
+                            href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`}
+                            className="block text-[13px] text-gray-700 hover:text-[#E91E63]"
+                        >
+                            {SUPPORT_PHONE}
+                        </a>
+                        <a
+                            href={`mailto:${SUPPORT_EMAIL}`}
+                            className="mt-1 block text-[13px] text-gray-700 hover:text-[#E91E63] break-all"
+                        >
+                            {SUPPORT_EMAIL}
+                        </a>
+                        <a
+                            href={INSTAGRAM_URL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-[12px] font-bold uppercase tracking-[0.12em] text-white hover:brightness-105 active:scale-[0.98] transition-all"
+                            className="mt-2 inline-flex text-[13px] text-gray-700 hover:text-[#E91E63]"
                         >
-                            Chat now
+                            {INSTAGRAM_HANDLE}
                         </a>
-                        <Link
-                            href="/shop"
-                            className="inline-flex min-h-11 items-center justify-center rounded-full border border-gray-200 px-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-gray-900 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
-                        >
-                            Shop all
+                    </div>
+
+                    <LinkList title="Shop" links={SHOP_LINKS} />
+                    <LinkList title="Help" links={HELP_LINKS} />
+
+                    <div>
+                        <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400 mb-2.5">
+                            The list
+                        </h3>
+                        <Newsletter variant="footer" />
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                        <p className="text-[12px] text-gray-500">© {year} {BRAND_NAME}</p>
+                        <Link href="/privacy" className="text-[11px] uppercase tracking-[0.12em] text-gray-400 hover:text-gray-900">
+                            Privacy
+                        </Link>
+                        <Link href="/terms" className="text-[11px] uppercase tracking-[0.12em] text-gray-400 hover:text-gray-900">
+                            Terms
                         </Link>
                     </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-8 lg:gap-12 py-8 md:py-14 border-b border-gray-100">
-                    <div className="md:col-span-5 lg:col-span-4">
-                        <BrandLogo href="/" size="lg" className="mb-5" />
-
-                        <p className="text-[14px] leading-relaxed text-gray-600 max-w-sm mb-3">
-                            Anti-tarnish fashion jewellery made for everyday India —
-                            lustrous pieces you can actually wear.
-                        </p>
-                        <p className="text-[12px] leading-relaxed text-gray-400 max-w-sm mb-6">
-                            {SERVICE_AREA_LABEL}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mb-7">
-                            {TRUST.map((item) => (
-                                <span
-                                    key={item}
-                                    className="rounded-full border border-gray-200 bg-[#faf7f8] px-3 py-1.5 text-[10px] font-medium tracking-wide text-gray-600"
-                                >
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-
-                        <div className="space-y-1">
-                            <a
-                                href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`}
-                                className="flex items-center gap-3 min-h-10 text-[13px] text-gray-700 hover:text-[#E91E63] transition-colors"
-                            >
-                                <span className="text-gray-400 w-16 shrink-0 text-[10px] uppercase tracking-wider">
-                                    Call
-                                </span>
-                                {SUPPORT_PHONE}
-                            </a>
-                            <a
-                                href={`mailto:${SUPPORT_EMAIL}`}
-                                className="flex items-center gap-3 min-h-10 text-[13px] text-gray-700 hover:text-[#E91E63] transition-colors break-all"
-                            >
-                                <span className="text-gray-400 w-16 shrink-0 text-[10px] uppercase tracking-wider">
-                                    Email
-                                </span>
-                                {SUPPORT_EMAIL}
-                            </a>
-                            <p className="flex items-center gap-3 min-h-10 text-[13px] text-gray-500">
-                                <span className="text-gray-400 w-16 shrink-0 text-[10px] uppercase tracking-wider">
-                                    Hours
-                                </span>
-                                {BUSINESS_HOURS}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="md:col-span-7 lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
-                        <div>
-                            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-                                Shop
-                            </h3>
-                            <ul className="space-y-2.5">
-                                {SHOP_LINKS.map((link) => (
-                                    <li key={link.href}>
-                                        <Link
-                                            href={link.href}
-                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-                                Help
-                            </h3>
-                            <ul className="space-y-2.5">
-                                {HELP_LINKS.map((link) => (
-                                    <li key={link.href}>
-                                        <Link
-                                            href={link.href}
-                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-                                Journal
-                            </h3>
-                            <ul className="space-y-2.5">
-                                {JOURNAL_LINKS.slice(0, 6).map((link) => (
-                                    <li key={link.href}>
-                                        <Link
-                                            href={link.href}
-                                            className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li>
-                                    <Link
-                                        href="/blog"
-                                        className="inline-flex min-h-8 items-center text-[14px] text-gray-700 hover:text-[#E91E63] transition-colors"
-                                    >
-                                        All guides
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className="col-span-2 sm:col-span-1">
-                            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-                                Follow
-                            </h3>
-                            <p className="text-[13px] text-gray-500 leading-relaxed mb-4 max-w-[16rem]">
-                                Styling tips, new drops, and customer looks on Instagram.
-                            </p>
-                            <a
-                                href={INSTAGRAM_URL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-gray-200 bg-[#faf7f8] px-4 text-[13px] font-medium text-gray-900 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
-                                aria-label="Instagram"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    aria-hidden
-                                >
-                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                                </svg>
-                                {INSTAGRAM_HANDLE}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="py-8 md:py-10 border-b border-gray-100">
-                    <Newsletter variant="footer" />
-                </div>
-
-                <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 order-2 md:order-1">
-                        <p className="text-[12px] text-gray-500">
-                            © {year} {BRAND_NAME}
-                        </p>
-                        <div className="hidden sm:block w-px h-3 bg-gray-200" aria-hidden />
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href="/privacy"
-                                className="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-400 hover:text-gray-900 transition-colors"
-                            >
-                                Privacy
-                            </Link>
-                            <Link
-                                href="/terms"
-                                className="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-400 hover:text-gray-900 transition-colors"
-                            >
-                                Terms
-                            </Link>
-                        </div>
-                    </div>
-
-                    <div className="order-1 md:order-2 flex flex-col items-start md:items-end gap-2.5">
-                        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-gray-400">
-                            UPI, cards, and cash on delivery
-                        </span>
-                        <PaymentIcons />
-                    </div>
+                    <PaymentIcons />
                 </div>
             </div>
         </footer>

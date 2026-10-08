@@ -1,9 +1,7 @@
 import CollectionPageContent from "../components/CollectionPageContent";
-import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
 import { redirect } from "next/navigation";
 import { findBraceletsCategory, productMatchesBracelets } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
-import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
 import { getStorefrontCatalog, reviewCountsFor, sliceMatchedProducts } from "@/lib/storefrontCatalog";
 
 export const revalidate = 300;
@@ -98,8 +96,6 @@ export default async function BraceletsPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/bracelets", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
-
-            <CategoryBuyingGuide guide={BRACELETS_GUIDE} />
         </section>
     );
 }
