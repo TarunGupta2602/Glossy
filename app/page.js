@@ -14,7 +14,6 @@ import RevealOnScroll from "./components/RevealOnScroll";
 import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
-import { isProductOutOfStock } from "@/lib/productAvailability";
 import { isRealBestseller } from "@/lib/unitsSold";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
@@ -118,9 +117,7 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
     const category = categories.find((c) => !used.has(c.id) && meta.match(c));
     if (!category) continue;
     used.add(category.id);
-    const products = (productsByCategoryId[category.id] || []).filter(
-      (product) => !isProductOutOfStock(product)
-    );
+    const products = productsByCategoryId[category.id] || [];
     items.push({
       id: category.id,
       label: meta.label,
@@ -184,15 +181,12 @@ export default async function Home() {
   const productsByCategoryId = {};
   for (const category of categories || []) {
     productsByCategoryId[category.id] = catalog
-      .filter(
-        (product) =>
-          product.category_id === category.id && !isProductOutOfStock(product)
-      )
+      .filter((product) => product.category_id === category.id)
       .slice(0, 8);
   }
   const collections = buildCollections(categories || [], productsByCategoryId);
 
-  const inStockCatalog = catalog.filter((product) => !isProductOutOfStock(product));
+  const inStockCatalog = catalog;
   const latestProducts = inStockCatalog.slice(0, 12);
   const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
   const shownOnHome = new Set(
@@ -203,7 +197,7 @@ export default async function Home() {
     const picked = [];
     for (const product of products) {
       if (picked.length >= limit) break;
-      if (shownOnHome.has(product.id) || isProductOutOfStock(product)) continue;
+      if (shownOnHome.has(product.id)) continue;
       shownOnHome.add(product.id);
       picked.push(product);
     }

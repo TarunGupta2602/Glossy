@@ -164,26 +164,13 @@ export default function ProductCard({
                 <div className="hidden md:flex absolute inset-x-3 bottom-3 z-20 pointer-events-none translate-y-2 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                     <Link
                         href={href}
-                        className="pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-10 rounded-xl bg-[#2a2724]/88 text-[10px] font-semibold tracking-[0.14em] uppercase text-white backdrop-blur-sm hover:bg-[#2a2724] transition-colors"
+                        className={`pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-10 rounded-xl text-[10px] font-semibold tracking-[0.14em] uppercase backdrop-blur-sm transition-colors ${
+                            outOfStock
+                                ? "bg-[#efeae4] text-[#6b6560]"
+                                : "bg-[#2a2724]/88 text-white hover:bg-[#2a2724]"
+                        }`}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                        >
-                            <path d="M6 6h15l-1.5 9h-12z" />
-                            <circle cx="9" cy="20" r="1" />
-                            <circle cx="18" cy="20" r="1" />
-                            <path d="M6 6 5 3H2" />
-                        </svg>
-                        Quick view
+                        {outOfStock ? "Out of stock" : "View"}
                     </Link>
                 </div>
             </div>
