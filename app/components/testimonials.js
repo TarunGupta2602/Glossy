@@ -122,6 +122,25 @@ export default function Testimonials({ reviews = [], reviewStats = null }) {
                             </article>
                         );
                     })}
+                    {reviews.length < 4 && (
+                        <article className="bg-white rounded-2xl md:rounded-[1.75rem] p-5 sm:p-6 shadow-[0_12px_36px_-18px_rgba(26,18,20,0.18)] border border-dashed border-[#e7d5c8] flex flex-col">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#b89a6a] mb-3">
+                                Real orders only
+                            </p>
+                            <h3 className="font-playfair text-2xl text-gray-900 tracking-tight mb-3">
+                                Leave a review after your order
+                            </h3>
+                            <p className="text-gray-600 text-[14px] leading-relaxed flex-grow">
+                                We only publish reviews from people who bought. Open the piece from your order and write what the finish was like after a few wears.
+                            </p>
+                            <Link
+                                href="/profile"
+                                className="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E91E63]"
+                            >
+                                Go to your orders →
+                            </Link>
+                        </article>
+                    )}
                 </div>
             </div>
         </section>

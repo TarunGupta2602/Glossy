@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { useOverlayOpen } from "../context/OverlayContext";
-import { PROMO_LABEL } from "@/lib/promo";
+import { PROMO_SHORT } from "@/lib/promo";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { getProductPath } from "@/lib/seo";
 import { getCompleteTheLook } from "@/lib/festivalSeason";
@@ -75,15 +75,10 @@ export default function CartDrawer() {
 
                 <div className="px-5 py-3 border-b border-gray-50 bg-[#faf7f8]">
                     <div className="flex items-center justify-between gap-2 mb-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E91E63]">
-                            {PROMO_LABEL}
-                        </p>
-                        <p className="text-[11px] text-gray-600 text-right">
+                        <p className="text-[12px] font-semibold leading-snug text-[#E91E63]">
                             {freeUnlocked
-                                ? `${promo.completeSets} complimentary gift${promo.completeSets > 1 ? "s" : ""} added`
-                                : untilNext === 1
-                                  ? "Add 1 more for a complimentary gift"
-                                  : "Add 2 pieces for a complimentary gift"}
+                                ? `${promo.completeSets} gift${promo.completeSets > 1 ? "s" : ""} added — ${PROMO_SHORT}`
+                                : PROMO_SHORT}
                         </p>
                     </div>
                     <div className="h-1.5 rounded-full bg-white overflow-hidden">

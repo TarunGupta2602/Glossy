@@ -30,6 +30,7 @@ import {
 } from "@/lib/productDefaults";
 import { lowStockCount } from "@/lib/festivalSeason";
 import { isProductOutOfStock } from "@/lib/productAvailability";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 import ProductShare from "../../components/ProductShare";
 
 function CheckIcon({ className = "w-3.5 h-3.5" }) {
@@ -70,6 +71,9 @@ export default function ProductDetailClient({
     const [imageFade, setImageFade] = useState(true);
     const isWishlisted = isInWishlist(product.id);
     const [addedToBag, setAddedToBag] = useState(false);
+    const [notifyEmail, setNotifyEmail] = useState("");
+    const [notifyMsg, setNotifyMsg] = useState("");
+    const [notifyLoading, setNotifyLoading] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
     const touchStartX = useRef(null);
@@ -414,9 +418,68 @@ export default function ProductDetailClient({
                         )}
 
                         {outOfStock ? (
-                            <p className="mt-3 inline-flex self-start rounded-full bg-[#f4f2f0] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#6b6560]">
-                                Out of stock — this piece is sold out for now
-                            </p>
+                            <div className="mt-3 max-w-md">
+                                <p className="inline-flex self-start rounded-full bg-[#f4f2f0] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#6b6560]">
+                                    Out of stock — this piece is sold out for now
+                                </p>
+                                <form
+                                    className="mt-3 flex flex-col sm:flex-row gap-2"
+                                    onSubmit={async (event) => {
+                                        event.preventDefault();
+                                        if (!notifyEmail.includes("@")) {
+                                            setNotifyMsg("Enter a valid email");
+                                            return;
+                                        }
+                                        setNotifyLoading(true);
+                                        setNotifyMsg("");
+                                        try {
+                                            const response = await fetch("/api/newsletter", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ email: notifyEmail }),
+                                            });
+                                            const data = await response.json();
+                                            if (data.success || data.error === "Already subscribed") {
+                                                setNotifyMsg("You're on the list. We'll email when pieces are back.");
+                                                setNotifyEmail("");
+                                            } else {
+                                                setNotifyMsg("Could not save that email. Try WhatsApp.");
+                                            }
+                                        } catch {
+                                            setNotifyMsg("Could not save that email. Try WhatsApp.");
+                                        } finally {
+                                            setNotifyLoading(false);
+                                        }
+                                    }}
+                                >
+                                    <input
+                                        type="email"
+                                        value={notifyEmail}
+                                        onChange={(event) => setNotifyEmail(event.target.value)}
+                                        placeholder="Email me when it's back"
+                                        className="min-w-0 flex-1 rounded-xl border border-[#efeae4] px-3 py-2.5 text-sm focus:outline-none focus:border-gray-900"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={notifyLoading}
+                                        className="rounded-xl bg-gray-900 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-50"
+                                    >
+                                        {notifyLoading ? "..." : "Notify me"}
+                                    </button>
+                                </form>
+                                <a
+                                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, please tell me when ${product.name} is back in stock.`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mt-2 inline-flex text-[12px] font-semibold text-[#128C7E]"
+                                >
+                                    Or message us on WhatsApp
+                                </a>
+                                {notifyMsg && (
+                                    <p className="mt-2 text-[12px] text-gray-600" role="status">{notifyMsg}</p>
+                                )}
+                            </div>
                         ) : left > 0 ? (
                             <p className="mt-3 inline-flex self-start rounded-full bg-[#faf0f3] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#C2185B]">
                                 Only {left} left

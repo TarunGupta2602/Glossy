@@ -87,7 +87,7 @@ const COLLECTION_META = [
   },
   {
     match: (c) => c.slug === "sparkle-jewelry-duo" || c.slug?.includes("sparkle"),
-    label: "Duos",
+    label: "Bangle + Ring Sets",
     order: 4,
     fallbackImage: "/iloveimg-resized/hero5.jpg",
   },
@@ -124,7 +124,7 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
     items.push({
       id: category.id,
       label: meta.label,
-      name: category.name || meta.label,
+      name: meta.label,
       href: meta.href || getCategoryHref(category),
       order: meta.order,
       image: pickImage(
@@ -196,7 +196,7 @@ export default async function Home() {
   const latestProducts = inStockCatalog.slice(0, 12);
   const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
   const shownOnHome = new Set(
-    (topStyleTabs.find((tab) => tab.id === "all")?.products || []).map((product) => product.id)
+    topStyleTabs.flatMap((tab) => tab.products || []).map((product) => product.id)
   );
 
   const takeFresh = (products, limit = 8) => {
@@ -229,7 +229,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20260918a">
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261008b">
       {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 

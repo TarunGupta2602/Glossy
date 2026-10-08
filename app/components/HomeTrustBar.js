@@ -1,10 +1,10 @@
-import { PROMO_LABEL } from "@/lib/promo";
+import { PROMO_SHORT } from "@/lib/promo";
 
 const ITEMS = [
     "Anti-tarnish fashion jewellery",
     "Perfect gifts for her",
     "Shipping ₹50–₹150",
-    PROMO_LABEL,
+    PROMO_SHORT,
 ];
 
 export default function HomeTrustBar() {
