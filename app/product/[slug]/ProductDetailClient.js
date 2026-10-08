@@ -21,7 +21,12 @@ import {
     getDefaultProductFeatures,
     getFinishAuthenticityNote,
 } from "@/lib/productTrust";
-import { resolveProductSizeInfo } from "@/lib/productDefaults";
+import {
+    resolveProductCare,
+    resolveProductMaterial,
+    resolveProductPlatingNote,
+    resolveProductSizeInfo,
+} from "@/lib/productDefaults";
 import { isProductOutOfStock } from "@/lib/productAvailability";
 import ProductShare from "../../components/ProductShare";
 
@@ -96,12 +101,14 @@ export default function ProductDetailClient({
         return getDefaultProductFeatures();
     })();
 
+    const specRows = [
+        { label: "Material", value: resolveProductMaterial(product) },
+        { label: "Plating", value: resolveProductPlatingNote(product) },
+        { label: "Care", value: resolveProductCare(product) },
+    ];
     const detailRows = [
-        product.material && { label: "Material", value: product.material },
-        product.plating && { label: "Plating", value: product.plating },
         product.weight && { label: "Weight", value: product.weight },
         { label: "Fit / size", value: sizeGuide },
-        product.care_instructions && { label: "Care", value: product.care_instructions },
     ].filter(Boolean);
 
     const outOfStock = isProductOutOfStock(product);
@@ -430,6 +437,24 @@ export default function ProductDetailClient({
                         </p>
 
                         <div className="mt-4 rounded-2xl border border-[#efeae4] bg-[#fdfbf7] px-4 py-3.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#b89a6a] mb-3">
+                                Material &amp; care
+                            </p>
+                            <dl className="space-y-3">
+                                {specRows.map((row) => (
+                                    <div key={row.label}>
+                                        <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2a2724]">
+                                            {row.label}
+                                        </dt>
+                                        <dd className="mt-0.5 text-[13px] text-[#5c5752] leading-relaxed">
+                                            {row.value}
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+                        </div>
+
+                        <div className="mt-3 rounded-2xl border border-[#efeae4] bg-white px-4 py-3.5">
                             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#b89a6a] mb-1">
                                 Fit &amp; size
                             </p>
