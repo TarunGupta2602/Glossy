@@ -720,7 +720,7 @@ export default function Navbar() {
                                     {PROMO_LABEL}
                                 </p>
                                 <p className="text-[13px] font-medium text-[#2a2724] mt-1 leading-snug">
-                                    Buy any 2 — we add a gift
+                                    We add the lowest-priced gift
                                 </p>
                             </div>
                             <span

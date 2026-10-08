@@ -1,5 +1,7 @@
 "use client";
 
+import { getDisplayCategoryName } from "@/lib/categoryLanding";
+
 export default function ShopSidebar({
     categories,
     selectedCategories,
@@ -120,7 +122,7 @@ export default function ShopSidebar({
                                         : "text-gray-600 group-hover:text-gray-800"
                                         }`}
                                 >
-                                    {category.name}
+                                    {getDisplayCategoryName(category)}
                                 </span>
                             </button>
                         );

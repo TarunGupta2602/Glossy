@@ -53,7 +53,7 @@ export const viewport = {
 export const metadata = {
   metadataBase: new URL(BRAND_URL),
   title: {
-    default: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
+    default: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
     template: "%s | The Luxe Jewels"
   },
   description:
@@ -73,7 +73,7 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
+    title: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
     description:
       "Anti-tarnish jewellery for daily wear and gifting — Noida, Delhi NCR, and pan-India. Buy 2 Get 1 Free.",
     url: BRAND_URL,
@@ -97,7 +97,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Luxe Jewels | Anti-Tarnish Jewellery Noida",
+    title: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
     description:
       "Anti-tarnish jewellery for Noida, Delhi NCR & pan-India. Buy 2 Get 1 Free.",
     images: ["/og-image.png", "/logo.png"],

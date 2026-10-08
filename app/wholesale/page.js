@@ -61,10 +61,10 @@ export default async function WholesalePage() {
 
     const categoryOrder = [
         "The Necklace Edit",
-        "Statement Pieces",
-        "Sparkle Jewelry Duo",
-        "Glimmer Bracelet",
-        "Uniqueness Rings",
+        "Earrings",
+        "Bangle + Ring Sets",
+        "Bracelets",
+        "Rings",
     ];
     const sections = [...groups.entries()]
         .sort((a, b) => {
