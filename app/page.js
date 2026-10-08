@@ -14,6 +14,7 @@ import RevealOnScroll from "./components/RevealOnScroll";
 import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
@@ -116,7 +117,9 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
     const category = categories.find((c) => !used.has(c.id) && meta.match(c));
     if (!category) continue;
     used.add(category.id);
-    const products = productsByCategoryId[category.id] || [];
+    const products = (productsByCategoryId[category.id] || []).filter(
+      (product) => !isProductOutOfStock(product)
+    );
     items.push({
       id: category.id,
       label: meta.label,
@@ -180,27 +183,42 @@ export default async function Home() {
   const productsByCategoryId = {};
   for (const category of categories || []) {
     productsByCategoryId[category.id] = catalog
-      .filter((product) => product.category_id === category.id)
+      .filter(
+        (product) =>
+          product.category_id === category.id && !isProductOutOfStock(product)
+      )
       .slice(0, 8);
   }
   const collections = buildCollections(categories || [], productsByCategoryId);
 
-  let bestSellerProducts = catalog.filter((product) => product.is_bestseller).slice(0, 8);
-  let newArrivalProducts = catalog.filter((product) => product.is_new).slice(0, 8);
-  const latestProducts = catalog.slice(0, 12);
-
-  if (newArrivalProducts.length < 4) {
-    const bestIds = new Set(bestSellerProducts.map((p) => p.id));
-    const merged = [...newArrivalProducts];
-    for (const product of latestProducts) {
-      if (merged.length >= 8) break;
-      if (bestIds.has(product.id)) continue;
-      if (!merged.some((p) => p.id === product.id)) merged.push(product);
-    }
-    newArrivalProducts = merged;
-  }
-
+  const inStockCatalog = catalog.filter((product) => !isProductOutOfStock(product));
+  const latestProducts = inStockCatalog.slice(0, 12);
   const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
+  const shownOnHome = new Set(
+    (topStyleTabs.find((tab) => tab.id === "all")?.products || []).map((product) => product.id)
+  );
+
+  const takeFresh = (products, limit = 8) => {
+    const picked = [];
+    for (const product of products) {
+      if (picked.length >= limit) break;
+      if (shownOnHome.has(product.id) || isProductOutOfStock(product)) continue;
+      shownOnHome.add(product.id);
+      picked.push(product);
+    }
+    return picked;
+  };
+
+  let newArrivalProducts = takeFresh(inStockCatalog.filter((product) => product.is_new));
+  if (newArrivalProducts.length < 4) {
+    newArrivalProducts = [
+      ...newArrivalProducts,
+      ...takeFresh(inStockCatalog, 8 - newArrivalProducts.length),
+    ];
+  }
+  const bestSellerProducts = takeFresh(
+    inStockCatalog.filter((product) => product.is_bestseller)
+  );
   const reviewCounts = reviewCountsFor(allReviewCounts, [
     ...bestSellerProducts,
     ...newArrivalProducts,

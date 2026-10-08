@@ -10,7 +10,7 @@ import { IMAGE_BLUR_DATA_URL, PRODUCT_CARD_SIZES } from "@/lib/imageBlur";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { isSellingFast } from "@/lib/festivalSeason";
+import { lowStockCount } from "@/lib/festivalSeason";
 import { isProductOutOfStock } from "@/lib/productAvailability";
 
 export default function ProductCard({
@@ -37,6 +37,7 @@ export default function ProductCard({
     const href = getProductPath(product);
     const hoverImage = product.hover_image;
     const outOfStock = isProductOutOfStock(product);
+    const left = lowStockCount(product);
 
     const handleWishlist = async (e) => {
         e.preventDefault();
@@ -116,11 +117,11 @@ export default function ProductCard({
                         <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Out of stock
                         </span>
-                    ) : isSellingFast(product) ? (
+                    ) : left > 0 ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#8a5a28] text-[#f7f1e8] text-[9px] font-semibold tracking-wide">
-                            Selling fast
+                            Only {left} left
                         </span>
-                    ) : hasDiscount ? null : product.is_bestseller ? (
+                    ) : hasDiscount ? null : product.is_bestseller && reviewCount > 0 ? (
                         <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
                             Bestseller
                         </span>
