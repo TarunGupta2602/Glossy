@@ -3,9 +3,7 @@
 import { BUSINESS_HOURS, BRAND_NAME } from "@/lib/constants";
 import { getFestivalAnnouncements } from "@/lib/festivalSeason";
 
-const announcements = getFestivalAnnouncements();
-
-function MarqueeTrack({ trackId }) {
+function MarqueeTrack({ announcements, trackId }) {
     return (
         <div className="announce-marquee-track" aria-hidden="true">
             {announcements.map((text) => (
@@ -27,6 +25,7 @@ function MarqueeTrack({ trackId }) {
 }
 
 export default function AnnouncementBar() {
+    const announcements = getFestivalAnnouncements();
     const accessibleSummary = `${announcements.join(". ")}. Store hours: ${BUSINESS_HOURS}.`;
 
     return (
@@ -56,8 +55,8 @@ export default function AnnouncementBar() {
             />
 
             <div className="announce-marquee">
-                <MarqueeTrack trackId="a" />
-                <MarqueeTrack trackId="b" />
+                <MarqueeTrack announcements={announcements} trackId="a" />
+                <MarqueeTrack announcements={announcements} trackId="b" />
             </div>
         </div>
     );

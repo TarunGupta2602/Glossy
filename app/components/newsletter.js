@@ -1,7 +1,7 @@
 "use client";
 
 import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_IVORY, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
-import { PROMO_LABEL } from "@/lib/promo";
+import { WELCOME_CODE } from "@/lib/welcomeOffer";
 import { useState } from "react";
 
 export default function Newsletter({ variant = "section" }) {
@@ -32,7 +32,7 @@ export default function Newsletter({ variant = "section" }) {
             const data = await response.json();
 
             if (data.success) {
-                setMessage("You're on the list — welcome.");
+                setMessage(`You're on the list. Use code ${WELCOME_CODE} for 10% off your first order.`);
                 setEmail("");
             } else if (data.error === "Already subscribed") {
                 setMessage("You're already subscribed.");
@@ -91,7 +91,7 @@ export default function Newsletter({ variant = "section" }) {
                     The list
                 </p>
                 <p className="text-[14px] text-gray-600 leading-relaxed mb-3 max-w-sm">
-                    Early access to new anti-tarnish drops and offers like {PROMO_LABEL}.
+                    10% off your first order with code {WELCOME_CODE}. New drops on this list too.
                 </p>
                 {form}
                 {message && (
@@ -110,10 +110,10 @@ export default function Newsletter({ variant = "section" }) {
                     The list
                 </p>
                 <h2 className="text-3xl sm:text-4xl font-playfair font-medium text-gray-900 mb-3 tracking-tight">
-                    Early access to drops
+                    10% off your first order
                 </h2>
                 <p className="text-gray-500 text-[15px] mb-8 max-w-md mx-auto leading-relaxed">
-                    Be first to new anti-tarnish releases and offers like {PROMO_LABEL}.
+                    Join the list and use code {WELCOME_CODE} at checkout. It works once, on your first order.
                 </p>
 
                 {form}

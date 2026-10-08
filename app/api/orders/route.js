@@ -101,7 +101,7 @@ async function createCodOrder(req, auth, body) {
         supabaseService,
         auth.user.id,
         clientItems,
-        { persistFallback: true }
+        { persistFallback: true, welcomeCode: body.welcome_code || "" }
     );
 
     if (checkoutError || !checkout) {
@@ -245,12 +245,20 @@ export async function POST(req) {
         }
 
         const clientItems = Array.isArray(body.items) ? body.items : [];
+        const notedCode = String(payment.notes?.welcome_code || "").trim();
+        const bodyCode = String(body.welcome_code || "").trim();
+        if (notedCode && bodyCode && notedCode.toUpperCase() !== bodyCode.toUpperCase()) {
+            return NextResponse.json(
+                { error: "Offer code does not match the payment" },
+                { status: 400 }
+            );
+        }
 
         const { checkout, error: checkoutError } = await resolveCheckoutCart(
             supabaseService,
             auth.user.id,
             clientItems,
-            { persistFallback: true }
+            { persistFallback: true, welcomeCode: notedCode || bodyCode }
         );
 
         if (checkoutError || !checkout) {
