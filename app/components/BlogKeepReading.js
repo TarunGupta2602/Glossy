@@ -1,11 +1,14 @@
 import Link from "next/link";
+import { isShopCatalogueHref } from "@/lib/blogShopCtas";
 
 /**
  * In-article interlink block — category pages + related journal posts.
  * Always shown so HTML CMS posts still pass link equity even without body links.
  */
 export default function BlogKeepReading({ shopLinks = [], relatedPosts = [] }) {
-    const shops = shopLinks.filter((l) => l?.href && l?.label).slice(0, 6);
+    const shops = shopLinks
+        .filter((l) => l?.href && l?.label && !isShopCatalogueHref(l.href))
+        .slice(0, 6);
     const related = relatedPosts.filter((p) => p?.slug && p?.title).slice(0, 4);
 
     if (shops.length === 0 && related.length === 0) return null;

@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { SITE_CONTAINER } from "@/lib/siteLayout";
 import CollectionHero from "./CollectionHero";
 import ProductCard from "./ProductCard";
 import CategoryPagination from "./CategoryPagination";
 import ExploreCollections from "./ExploreCollections";
-import { getCategoryHref } from "@/lib/categoryLanding";
 import { reviewCardProps } from "@/lib/reviewCounts";
 
 export default function CollectionPageContent({
@@ -75,26 +73,7 @@ export default function CollectionPageContent({
                     ) : (
                         <div className="text-center py-12 md:py-16 px-4 border border-dashed border-gray-200 rounded-2xl bg-white">
                             <p className="text-gray-700 font-semibold mb-1">This collection is being curated</p>
-                            <p className="text-sm text-gray-400 mb-6">New pieces are on the way.</p>
-                            {otherCategories.length > 0 && (
-                                <div className="flex flex-wrap justify-center gap-2 mb-6">
-                                    {otherCategories.slice(0, 5).map((cat) => (
-                                        <Link
-                                            key={cat.id}
-                                            href={getCategoryHref(cat)}
-                                            className="px-4 py-2 rounded-full border border-gray-200 text-xs font-semibold text-gray-700 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors bg-white"
-                                        >
-                                            {cat.name}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                            <Link
-                                href="/shop"
-                                className="inline-flex items-center gap-2 text-[#E91E63] font-bold text-xs uppercase tracking-widest hover:underline"
-                            >
-                                Browse all jewellery →
-                            </Link>
+                            <p className="text-sm text-gray-400">New pieces are on the way.</p>
                         </div>
                     )}
 

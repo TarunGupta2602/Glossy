@@ -242,7 +242,6 @@ export default async function Home() {
             titleAccent="arrivals"
             eyebrow="Just in"
             products={newArrivalProducts}
-            viewAllLink="/shop?sort=newest"
             reviewCounts={reviewCounts}
             surfaceClassName="bg-[#fdfbf7] border-t border-[#efeae4]"
           />
@@ -256,7 +255,6 @@ export default async function Home() {
             titleAccent="sellers"
             eyebrow="From real orders"
             products={bestSellerProducts}
-            viewAllLink="/shop?sort=popular"
             reviewCounts={reviewCounts}
             surfaceClassName="bg-[#faf7f2] border-t border-[#efeae4]"
           />

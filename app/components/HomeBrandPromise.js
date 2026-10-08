@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
 
 const PILLARS = [
@@ -31,15 +30,6 @@ export default function HomeBrandPromise() {
                             <p className="text-[14px] text-gray-500 leading-relaxed">{item.body}</p>
                         </div>
                     ))}
-                </div>
-
-                <div className="mt-12 md:mt-14">
-                    <Link
-                        href="/shop"
-                        className="inline-flex min-h-12 items-center text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-900 border-b border-gray-900 hover:text-[#E91E63] hover:border-[#E91E63] transition-colors"
-                    >
-                        Shop the edit
-                    </Link>
                 </div>
             </div>
         </section>

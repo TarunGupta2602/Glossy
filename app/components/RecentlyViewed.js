@@ -18,7 +18,6 @@ export default function RecentlyViewed() {
             title="Recently viewed"
             eyebrow="Pick up where you left off"
             products={products}
-            viewAllLink="/shop"
             accent="pink"
         />
     );

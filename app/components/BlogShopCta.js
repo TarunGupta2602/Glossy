@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { WHATSAPP_URL, INSTAGRAM_URL } from "@/lib/constants";
+import { isShopCatalogueHref } from "@/lib/blogShopCtas";
 
 /**
  * In-article / sidebar shop CTA — cream/gold to match homepage journal UI.
  */
 export default function BlogShopCta({ cta, compact = false }) {
     if (!cta?.primary?.href) return null;
+
+    const primary = isShopCatalogueHref(cta.primary.href) ? null : cta.primary;
+    const links = (cta.links || []).filter((link) => link?.href && !isShopCatalogueHref(link.href));
 
     if (compact) {
         return (
@@ -20,15 +24,17 @@ export default function BlogShopCta({ cta, compact = false }) {
                     {cta.headline}
                 </h3>
                 <p className="text-[13px] text-[#6b6560] leading-relaxed mb-4">{cta.body}</p>
+                {primary ? (
                 <Link
-                    href={cta.primary.href}
+                    href={primary.href}
                     className="inline-flex w-full min-h-11 items-center justify-center rounded-full bg-[#2a2724] px-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#E91E63] transition-colors"
                 >
-                    {cta.primary.label}
+                    {primary.label}
                 </Link>
-                {cta.links?.length > 0 && (
+                ) : null}
+                {links.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-                        {cta.links.map((link) => (
+                        {links.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
@@ -78,14 +84,17 @@ export default function BlogShopCta({ cta, compact = false }) {
             <p className="text-[15px] text-[#6b6560] leading-relaxed max-w-2xl mb-6">
                 {cta.body}
             </p>
+            {(primary || links.length > 0) ? (
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                {primary ? (
                 <Link
-                    href={cta.primary.href}
+                    href={primary.href}
                     className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#2a2724] px-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#E91E63] transition-colors"
                 >
-                    {cta.primary.label}
+                    {primary.label}
                 </Link>
-                {cta.links?.map((link) => (
+                ) : null}
+                {links.map((link) => (
                     <Link
                         key={link.href}
                         href={link.href}
@@ -95,6 +104,7 @@ export default function BlogShopCta({ cta, compact = false }) {
                     </Link>
                 ))}
             </div>
+            ) : null}
         </section>
     );
 }

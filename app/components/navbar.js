@@ -12,7 +12,6 @@ import LoginModal from "./LoginModal";
 import { useOverlayOpen } from "../context/OverlayContext";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { WHATSAPP_URL } from "@/lib/constants";
-import { PROMO_LABEL } from "@/lib/promo";
 import { getProductPath } from "@/lib/seo";
 import BrandLogo from "./BrandLogo";
 import { isFestivalSeason } from "@/lib/festivalSeason";
@@ -23,11 +22,6 @@ const SHOP_LINKS = [
     { href: "/necklaces", label: "Necklaces" },
     { href: "/bracelets", label: "Bracelets" },
     { href: "/rings", label: "Rings" },
-];
-
-const SHOP_EXTRAS = [
-    { href: "/shop?sort=newest", label: "New arrivals" },
-    { href: "/shop?sort=popular", label: "Most sold" },
 ];
 
 const GIFT_LINKS = [
@@ -362,17 +356,6 @@ export default function Navbar() {
                                             {item.label}
                                         </Link>
                                     ))}
-                                    <div className="mt-1 border-t border-gray-50 pt-1">
-                                        {SHOP_EXTRAS.map((item) => (
-                                            <Link
-                                                key={item.href}
-                                                href={item.href}
-                                                className="block rounded-xl px-3 py-2 text-[12px] font-semibold text-gray-600 hover:bg-[#fdf2f6] hover:text-[#E91E63]"
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        ))}
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -707,30 +690,6 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5">
-                        <Link
-                            href="/shop?sort=popular"
-                            onClick={closeMenu}
-                            className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-[#efeae4] bg-white px-4 py-3.5 active:scale-[0.99] transition-transform"
-                        >
-                            <div className="min-w-0">
-                                <p
-                                    className="text-[9px] font-medium uppercase tracking-[0.18em]"
-                                    style={{ color: "#b89a6a" }}
-                                >
-                                    {PROMO_LABEL}
-                                </p>
-                                <p className="text-[13px] font-medium text-[#2a2724] mt-1 leading-snug">
-                                    A gift piece on us
-                                </p>
-                            </div>
-                            <span
-                                className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                                style={{ color: "#b89a6a" }}
-                            >
-                                Shop
-                            </span>
-                        </Link>
-
                         <nav className="mb-7" aria-label="Primary">
                             <Link
                                 href="/wholesale"
@@ -775,7 +734,7 @@ export default function Navbar() {
                                 </button>
                                 {mobileOpen === "shop" && (
                                     <div className="pb-3 space-y-0.5">
-                                        {[...SHOP_LINKS, ...SHOP_EXTRAS].map((item) => (
+                                        {SHOP_LINKS.map((item) => (
                                             <Link
                                                 key={item.href}
                                                 href={item.href}

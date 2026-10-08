@@ -1,7 +1,6 @@
 "use client";
 
 import { SITE_CONTAINER } from "@/lib/siteLayout";
-import Link from "next/link";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import WishlistTab from "../profile/WishlistTab";
@@ -54,21 +53,6 @@ export default function WishlistPage() {
                         addToCart={addToCart}
                     />
                 </div>
-
-                {wishlist.length > 0 && (
-                    <div className="mt-14 md:mt-24 pt-8 md:pt-12 border-t border-gray-100/60 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
-                        <p className="text-gray-400 text-sm italic text-center md:text-left">&ldquo;Quality is never an accident; it is always the result of intelligent effort.&rdquo;</p>
-                        <Link
-                            href="/shop"
-                            className="bg-gray-900 text-white px-8 py-4 md:px-10 md:py-5 rounded-2xl text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-black transition-all shadow-xl active:scale-95 flex items-center gap-3 min-h-12"
-                        >
-                            Explore More Pieces
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M5 12h14m-7-7 7 7-7 7" />
-                            </svg>
-                        </Link>
-                    </div>
-                )}
             </div>
         </div>
     );

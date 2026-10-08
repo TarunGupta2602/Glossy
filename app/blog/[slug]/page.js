@@ -19,7 +19,7 @@ import {
     keywordToTagSlug,
 } from "@/lib/blogQueries";
 import { applyBlogSeoOverride } from "@/lib/blogSeoOverrides";
-import { getBlogShopCta } from "@/lib/blogShopCtas";
+import { getBlogShopCta, isShopCatalogueHref } from "@/lib/blogShopCtas";
 import { getBlogProductPicks } from "@/lib/blogProductPicks";
 import { getReviewCounts } from "@/lib/reviewCounts";
 import { resolveBlogAuthor } from "@/lib/blogAuthors";
@@ -645,7 +645,7 @@ export default async function BlogDetailPage({ params }) {
 
             <MobileStickyCTA
                 title={blog.title}
-                shopHref={shopCta.primary.href}
+                shopHref={isShopCatalogueHref(shopCta.primary.href) ? "" : shopCta.primary.href}
                 shopLabel={shopCta.primary.label}
             />
         </main>

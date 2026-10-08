@@ -47,13 +47,6 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                             </em>
                         </h2>
                     </div>
-                    <Link
-                        href="/shop"
-                        className="hidden sm:inline-flex h-10 items-center gap-2 rounded-full border border-[#e8e0d6] bg-[#f7f2ea] px-5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2a2724] hover:border-[#b59e7b] transition-colors"
-                    >
-                        Explore shop
-                        <span aria-hidden>→</span>
-                    </Link>
                 </div>
 
                 <div className="mb-8 md:mb-8 lg:mb-10 overflow-x-auto no-scrollbar">
@@ -113,7 +106,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                             </div>
                         )}
 
-                        {activeTab.href && (
+                        {activeTab.href && activeTab.href !== "/shop" && (
                             <div className="mt-8 md:mt-10 text-center">
                                 <Link
                                     href={activeTab.href}

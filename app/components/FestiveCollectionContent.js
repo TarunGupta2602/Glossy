@@ -163,13 +163,7 @@ export default function FestiveCollectionContent({
                         )
                     ) : (
                         <div className="text-center py-12 px-4 border border-dashed border-gray-200 rounded-2xl bg-white">
-                            <p className="text-gray-700 font-semibold mb-1">This edit is being curated</p>
-                            <Link
-                                href="/shop"
-                                className="inline-flex mt-4 text-[#E91E63] font-bold text-xs uppercase tracking-widest hover:underline"
-                            >
-                                Browse all jewellery →
-                            </Link>
+                            <p className="text-gray-700 font-semibold">This edit is being curated</p>
                         </div>
                     )}
 

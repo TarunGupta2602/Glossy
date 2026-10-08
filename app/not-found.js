@@ -20,9 +20,6 @@ export default function NotFound() {
                 <Link href="/earrings" className="px-6 py-3 rounded-full border border-gray-200 text-gray-900 text-sm font-bold uppercase tracking-wide hover:border-[#E91E63] hover:text-[#E91E63] transition-colors">
                     Earrings
                 </Link>
-                <Link href="/shop?sort=popular" className="px-6 py-3 rounded-full border border-gray-200 text-gray-900 text-sm font-bold uppercase tracking-wide hover:border-[#E91E63] hover:text-[#E91E63] transition-colors">
-                    Best Sellers
-                </Link>
             </div>
         </main>
     );

@@ -27,7 +27,7 @@ export default function WishlistTab({ wishlist, initialized, removeFromWishlist,
                 <h3 className="text-xl font-bold text-gray-900 mb-2">No saved items</h3>
                 <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">Save pieces you love from the shop and they&apos;ll show up here.</p>
                 <Link href="/shop" className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-3.5 rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors">
-                    Browse jewellery
+                    Shop all
                 </Link>
             </div>
         );

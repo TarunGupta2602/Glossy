@@ -17,8 +17,7 @@ const SLIDES = [
         image: "/festive/home-hero-banner.jpg",
         alt: "Gold necklace, rings, cuff and hoop earrings from The Luxe Jewels",
         banner: true,
-        primary: { href: "/shop?sort=popular", label: "Shop most sold" },
-        secondary: { href: "/shop?sort=newest", label: "New arrivals" },
+        primary: { href: "/shop", label: "Shop" },
         chip: "Daily wear edit",
         chipEyebrow: "Fresh drop",
         surface: "md:bg-[#fdfbf7]",
@@ -194,12 +193,14 @@ export default function HeroSlider() {
                                     {slide.primary.label}
                                     <span aria-hidden>→</span>
                                 </Link>
+                                {slide.secondary ? (
                                 <Link
                                     href={slide.secondary.href}
                                     className={`inline-flex h-11 md:h-12 flex-1 sm:flex-none items-center justify-center gap-2 rounded-full px-4 md:px-6 text-[11px] font-semibold uppercase tracking-[0.14em] md:tracking-[0.16em] transition-colors md:border-[#2a2724]/25 md:bg-transparent md:backdrop-blur-none md:text-[#2a2724] md:hover:border-[#2a2724] md:hover:bg-transparent ${slide.banner ? "border border-[#2a2724]/25 bg-transparent text-[#2a2724] hover:border-[#2a2724]" : "border border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20"}`}
                                 >
                                     {slide.secondary.label}
                                 </Link>
+                                ) : null}
                             </div>
                         </div>
 

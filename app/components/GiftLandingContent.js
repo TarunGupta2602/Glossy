@@ -122,15 +122,9 @@ export default function GiftLandingContent({
                     </>
                 ) : (
                     <div className="rounded-2xl border border-dashed border-gray-200 p-10 text-center">
-                        <p className="text-gray-700 font-medium mb-3">
+                        <p className="text-gray-700 font-medium">
                             We’re refreshing this gift edit.
                         </p>
-                        <Link
-                            href="/shop"
-                            className="text-[#E91E63] font-semibold text-sm hover:underline"
-                        >
-                            Browse the full catalogue →
-                        </Link>
                     </div>
                 )}
 

@@ -755,12 +755,6 @@ export default function ProductDetailClient({
                                     Soft pieces meant to layer — everyday shine, same anti-tarnish finish.
                                 </p>
                             </div>
-                            <Link
-                                href="/shop"
-                                className="hidden sm:inline-flex text-[11px] font-semibold tracking-[0.16em] uppercase text-[#E91E63] hover:text-[#C2185B] transition-colors shrink-0"
-                            >
-                                Shop all
-                            </Link>
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 sm:gap-x-5 gap-y-8">
@@ -771,15 +765,6 @@ export default function ProductDetailClient({
                                     {...reviewCardProps(relatedReviewCounts, p.id)}
                                 />
                             ))}
-                        </div>
-
-                        <div className="mt-8 text-center sm:hidden">
-                            <Link
-                                href="/shop"
-                                className="text-[11px] font-semibold tracking-[0.16em] uppercase text-[#E91E63]"
-                            >
-                                Shop all jewellery →
-                            </Link>
                         </div>
                     </div>
                 )}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { reviewCardProps } from "@/lib/reviewDisplay";
+import { isShopCatalogueHref } from "@/lib/blogShopCtas";
 
 /**
  * Live product strip on blog posts — turns readers into shoppers.
@@ -12,6 +13,8 @@ export default function BlogProductPicks({
     shopLabel = "See more in shop",
 }) {
     if (!products.length) return null;
+
+    const showShopLink = shopHref && !isShopCatalogueHref(shopHref);
 
     return (
         <section className="my-10 md:my-12" aria-label="Shop picks from this guide">
@@ -27,12 +30,14 @@ export default function BlogProductPicks({
                         Pieces you can order today
                     </h2>
                 </div>
+                {showShopLink ? (
                 <Link
                     href={shopHref}
                     className="hidden sm:inline-flex text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a847c] hover:text-[#E91E63] shrink-0 transition-colors"
                 >
                     {shopLabel}
                 </Link>
+                ) : null}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {products.map((product, index) => (
@@ -45,6 +50,7 @@ export default function BlogProductPicks({
                     />
                 ))}
             </div>
+            {showShopLink ? (
             <div className="mt-5 sm:hidden">
                 <Link
                     href={shopHref}
@@ -53,6 +59,7 @@ export default function BlogProductPicks({
                     {shopLabel}
                 </Link>
             </div>
+            ) : null}
         </section>
     );
 }
