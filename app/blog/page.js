@@ -90,7 +90,15 @@ export default async function BlogPage({ searchParams }) {
         .order("date_posted", { ascending: false })
         .limit(200);
 
+    const FEATURED_BLOG_SLUG = "dhanteras-2026-what-to-buy-under-500";
     const merged = mergeBlogFeeds(dbBlogs, staticSummaries);
+    const featuredIndex = merged.findIndex(
+        (blog) => (normalizeBlogSlug(blog.slug) || blog.slug) === FEATURED_BLOG_SLUG
+    );
+    if (featuredIndex > 0) {
+        const [featured] = merged.splice(featuredIndex, 1);
+        merged.unshift(featured);
+    }
     const totalCount = merged.length;
 
     const from = (page - 1) * BLOG_PAGE_SIZE;
@@ -303,6 +311,10 @@ export default async function BlogPage({ searchParams }) {
                                             </div>
 
                                             <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#a89880] mb-2">
+                                                {(normalizeBlogSlug(blog.slug) || blog.slug) ===
+                                                FEATURED_BLOG_SLUG ? (
+                                                    <span className="text-[#E91E63]">Featured · </span>
+                                                ) : null}
                                                 <time dateTime={blog.date_posted}>
                                                     {formatDate(blog.date_posted)}
                                                 </time>

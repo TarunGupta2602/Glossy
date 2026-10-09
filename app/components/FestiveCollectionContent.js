@@ -180,6 +180,19 @@ export default function FestiveCollectionContent({
                             </p>
                             <p className="text-[13px] text-[#6b6560] mt-1 max-w-md">
                                 Studs and dainty pieces for office gifting, birthdays, and last-minute festive boxes.
+                                {collection.slug === "diwali" ? (
+                                    <>
+                                        {" "}
+                                        Gold budget se bahar ho?{" "}
+                                        <Link
+                                            href="/blog/dhanteras-2026-what-to-buy-under-500"
+                                            className="underline underline-offset-2 hover:text-[#2a2724]"
+                                        >
+                                            Dhanteras 2026 par kya khareedein
+                                        </Link>
+                                        .
+                                    </>
+                                ) : null}
                             </p>
                         </div>
                         <Link

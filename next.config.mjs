@@ -99,6 +99,11 @@ const nextConfig = {
         destination: "/gifts/under-499",
         permanent: true,
       },
+      {
+        source: "/blog/dhanteras-2026-gold-nahi-kharid-sakte-budget-guide-under-500",
+        destination: "/blog/dhanteras-2026-what-to-buy-under-500",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {
