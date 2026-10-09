@@ -19,9 +19,9 @@ export async function generateMetadata({ searchParams }) {
     return {
         title: isPaginated
             ? `Anti-Tarnish Earrings India (Page ${pageNum})`
-            : "Anti-Tarnish Earrings India",
+            : "Anti-Tarnish Earrings",
         description:
-            "Anti-tarnish earrings in India for daily wear — studs, hoops and drops in an 18k gold plated finish. Buy 2 Get 1 Free + shipping from ₹50.",
+            "Anti-tarnish earrings for daily wear — studs, hoops and drops in an 18k gold plated finish. Buy 2 Get 1 Free. Flat ₹50 shipping.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -32,9 +32,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Anti-Tarnish Earrings India",
+            title: "Anti-Tarnish Earrings",
             description:
-                "Anti-tarnish earrings in India for everyday wear — studs and hoops for office, college, and evenings.",
+                "Anti-tarnish studs, hoops and drops for office, college, and evenings. Flat ₹50 shipping.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -66,9 +66,9 @@ export default async function EarringsPage({ searchParams }) {
     const totalPages = sliced.totalPages;
     const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
-    const pageTitle = "Anti-tarnish earrings in India";
+    const pageTitle = "Anti-tarnish earrings";
     const pageDescription =
-        "Anti-tarnish earrings in India made for daily wear — 18k gold plated studs, small hoops, and drops for office to festive nights. Buy 2 Get 1 Free, shipping from ₹50, pan-India delivery.";
+        "Studs, small hoops, and drops in an 18k gold plated anti-tarnish finish for office to festive nights. Buy 2 Get 1 Free. Flat ₹50 shipping across India.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

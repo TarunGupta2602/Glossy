@@ -9,9 +9,9 @@ import RelatedGuides from "../components/RelatedGuides";
 export const revalidate = 3600;
 
 export const metadata = {
-    title: "Browse Jewellery by Category",
+    title: "Shop Earrings, Necklaces and Bracelets",
     description:
-        "Explore curated anti-tarnish earrings, necklaces, bracelets, and rings — then shop everyday pieces for India.",
+        "Shop anti-tarnish earrings, necklaces, and bracelets. In-stock pieces, Buy 2 Get 1 Free, and flat ₹50 shipping across India.",
     alternates: {
         canonical: "/collection",
     },
@@ -22,9 +22,9 @@ export const metadata = {
         "max-snippet": -1,
     },
     openGraph: {
-        title: "Browse Jewellery by Category",
+        title: "Shop Earrings, Necklaces and Bracelets",
         description:
-            "Choose a jewellery category — earrings, necklaces, bracelets, and more — then shop pieces made for daily wear.",
+            "Open earrings, necklaces, or bracelets and shop in-stock anti-tarnish pieces.",
         url: "https://www.theluxejewels.in/collection",
         siteName: "The Luxe Jewels",
         images: [{ url: "/logo.png" }],
@@ -58,11 +58,11 @@ export default async function FeaturedCollections() {
                     Shop by category
                 </span>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-                    Browse jewellery by category
+                    Shop earrings, necklaces and bracelets
                 </h1>
                 <p className="text-sm text-gray-500 mt-2 max-w-lg">
-                    Start with earrings, necklaces, bracelets, or rings — then explore the full
-                    anti-tarnish edit inside each collection.
+                    Start with in-stock earrings, then necklaces or bracelets. Each collection
+                    is anti-tarnish 18k gold plated fashion jewellery.
                 </p>
             </div>
 

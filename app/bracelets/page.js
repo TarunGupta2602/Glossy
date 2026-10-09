@@ -17,10 +17,10 @@ export async function generateMetadata({ searchParams }) {
 
     return {
         title: isPaginated
-            ? `Daily Wear Bracelet India (Page ${pageNum})`
-            : "Daily Wear Bracelet India",
+            ? `Anti-Tarnish Bracelet (Page ${pageNum})`
+            : "Anti-Tarnish Bracelet for Daily Wear",
         description:
-            "Slim anti-tarnish bangles and cuffs for daily wear in India, plus bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.",
+            "Anti-tarnish bracelet for daily wear — slim bangles and cuffs, plus bangle-and-ring sets. Cash on delivery. Flat ₹50 shipping.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -31,9 +31,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Daily Wear Bracelet India",
+            title: "Anti-Tarnish Bracelet for Daily Wear",
             description:
-                "Daily wear bracelet and trendy cuffs for India — anti-tarnish styles for office to evening.",
+                "Slim anti-tarnish bangles and cuffs for office to evening. Flat ₹50 shipping.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -65,9 +65,9 @@ export default async function BraceletsPage({ searchParams }) {
     const totalPages = sliced.totalPages;
     const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
-    const pageTitle = "Daily wear bracelet for India";
+    const pageTitle = "Anti-tarnish bracelet for daily wear";
     const pageDescription =
-        "Shop slim anti-tarnish bangles and cuffs for Indian office days — screw-motif, mother-of-pearl, and crystal-edge styles, plus matching bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.";
+        "Slim bangles and cuffs for office days — screw-motif, mother-of-pearl, and crystal-edge styles, plus matching bangle-and-ring sets. Cash on delivery. Flat ₹50 shipping.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

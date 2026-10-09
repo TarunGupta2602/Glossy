@@ -18,9 +18,9 @@ export async function generateMetadata({ searchParams }) {
     return {
         title: isPaginated
             ? `Everyday Necklace India (Page ${pageNum})`
-            : "Everyday Necklace India",
+            : "Anti-Tarnish Necklace for Daily Wear",
         description:
-            "Everyday necklaces for India — anti-tarnish 18k gold plated pendants, fine chains and layers. Buy 2 Get 1 Free + shipping from ₹50.",
+            "Anti-tarnish necklace for daily wear — 18k gold plated pendants and fine chains. Buy 2 Get 1 Free. Flat ₹50 shipping.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -31,9 +31,9 @@ export async function generateMetadata({ searchParams }) {
                   "max-snippet": -1,
               },
         openGraph: {
-            title: "Everyday Necklace India",
+            title: "Anti-Tarnish Necklace for Daily Wear",
             description:
-                "An everyday necklace for Indian wear — layer, gift, and wipe dry after use.",
+                "Anti-tarnish pendants and fine chains for daily wear. Flat ₹50 shipping.",
             url: `${BRAND_URL}${canonical}`,
             siteName: "The Luxe Jewels",
             images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -65,9 +65,9 @@ export default async function NecklacesPage({ searchParams }) {
     const totalPages = sliced.totalPages;
     const reviewCounts = reviewCountsFor(allReviewCounts, productsWithDiscounts);
 
-    const pageTitle = "Everyday necklace for India";
+    const pageTitle = "Anti-tarnish necklace for daily wear";
     const pageDescription =
-        "Lightweight 18k gold plated anti-tarnish pendants and fine chains you can layer from commute to dinner. Buy 2 Get 1 Free, shipping from ₹50.";
+        "Lightweight 18k gold plated pendants and fine chains for commute to dinner. Buy 2 Get 1 Free. Flat ₹50 shipping across India.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

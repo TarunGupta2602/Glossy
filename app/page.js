@@ -30,12 +30,12 @@ export const metadata = {
     absolute: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
   },
   description:
-    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + flat ₹50 shipping.",
+    "Shop anti-tarnish earrings and necklaces from The Luxe Jewels, Noida. Buy 2 Get 1 Free. Flat ₹50 shipping. Cash on delivery needs no account.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
     description:
-      "Anti-tarnish jewellery for daily wear and gifting — Noida, Delhi NCR, and pan-India. Buy 2 Get 1 Free.",
+      "Shop anti-tarnish earrings and necklaces. Buy 2 Get 1 Free. Flat ₹50 shipping. Cash on delivery needs no account.",
     url: "https://www.theluxejewels.in",
     siteName: "The Luxe Jewels",
     type: "website",
