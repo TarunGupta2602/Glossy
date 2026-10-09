@@ -329,9 +329,9 @@ export default async function BlogDetailPage({ params }) {
                 />
             )}
 
-            <div className={`${HOME_CONTAINER} py-10 md:py-14 lg:py-16`}>
+            <div className={`${HOME_CONTAINER} py-8 md:py-12 lg:py-14`}>
                 <nav
-                    className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-8 md:mb-10 overflow-hidden whitespace-nowrap"
+                    className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-6 md:mb-8 overflow-hidden whitespace-nowrap"
                     aria-label="Breadcrumb"
                 >
                     <Link href="/" className="hover:text-[#E91E63] transition-colors">
@@ -347,10 +347,26 @@ export default async function BlogDetailPage({ params }) {
                     </span>
                 </nav>
 
+                {heroImageSrc && (
+                    <figure className="relative mb-8 md:mb-10 w-full aspect-[16/9] sm:aspect-[2/1] overflow-hidden rounded-2xl md:rounded-[1.75rem] bg-[#efeae4]">
+                        <Image
+                            src={heroImageSrc}
+                            alt={blog.title}
+                            fill
+                            sizes={BLOG_HERO_SIZES}
+                            quality={80}
+                            className="object-cover"
+                            priority
+                            placeholder="blur"
+                            blurDataURL={IMAGE_BLUR_DATA_URL}
+                        />
+                    </figure>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-16">
-                    <div className="lg:col-span-8 space-y-10 md:space-y-14">
-                        <header className="space-y-5">
-                            <div className="flex flex-wrap items-center gap-3">
+                    <div className="lg:col-span-8 space-y-8 md:space-y-10">
+                        <header className="max-w-3xl">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
                                 {keywords.slice(0, 1).map((tag) => (
                                     <Link
                                         key={tag}
@@ -361,87 +377,74 @@ export default async function BlogDetailPage({ params }) {
                                         {tag}
                                     </Link>
                                 ))}
-                                {keywords.length > 0 && (
-                                    <span className="text-[#d4cbc0]">·</span>
-                                )}
-                                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#8a847c]">
-                                    {readMinutes} min read
-                                </span>
                             </div>
 
-                            <h1 className="font-playfair text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.25rem] font-medium tracking-tight text-[#2a2724] leading-[1.12]">
+                            <h1 className="font-playfair text-[1.85rem] sm:text-[2.45rem] md:text-[2.9rem] font-medium tracking-tight text-[#2a2724] leading-[1.15]">
                                 {blog.title}
                             </h1>
 
-                            <div className="flex items-start gap-4 py-4 border-y border-[#efeae4]">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#efeae4] text-[13px] font-semibold text-[#2a2724]">
-                                    {authorProfile.name
-                                        .split(/\s+/)
-                                        .slice(0, 2)
-                                        .map((p) => p[0])
-                                        .join("")
-                                        .toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-[13px] font-medium text-[#2a2724]">
-                                        {authorProfile.name}
-                                        {authorProfile.role ? (
-                                            <span className="text-[#8a847c] font-normal">
-                                                {" "}
-                                                · {authorProfile.role}
-                                            </span>
-                                        ) : null}
-                                    </p>
-                                    {authorProfile.bio ? (
-                                        <p className="mt-1 text-[12px] text-[#6b6560] leading-relaxed">
-                                            {authorProfile.bio}
-                                        </p>
-                                    ) : null}
-                                    <time
-                                        className="mt-1.5 block text-[12px] text-[#8a847c]"
-                                        dateTime={blog.date_posted}
-                                    >
-                                        Published on {formatDate(blog.date_posted)}
-                                    </time>
-                                </div>
+                            {blog.description ? (
+                                <p className="mt-4 text-[16px] sm:text-[17px] text-[#5c5752] leading-relaxed max-w-2xl">
+                                    {blog.description}
+                                </p>
+                            ) : null}
+
+                            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                                <p className="text-[12px] text-[#8a847c]">
+                                    <span className="text-[#2a2724] font-medium">{authorProfile.name}</span>
+                                    <span className="mx-2 text-[#d4cbc0]">·</span>
+                                    <time dateTime={blog.date_posted}>{formatDate(blog.date_posted)}</time>
+                                    <span className="mx-2 text-[#d4cbc0]">·</span>
+                                    {readMinutes} min read
+                                </p>
                                 <ShareButtons title={blog.title} />
                             </div>
                         </header>
 
-                        <div className="lg:hidden">
-                            <BlogShopCta cta={shopCta} compact />
-                        </div>
-
-                        {heroImageSrc && (
-                            <figure className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl md:rounded-[1.5rem] bg-[#efeae4]">
-                                <Image
-                                    src={heroImageSrc}
-                                    alt={blog.title}
-                                    fill
-                                    sizes={BLOG_HERO_SIZES}
-                                    quality={80}
-                                    className="object-cover"
-                                    priority
-                                    placeholder="blur"
-                                    blurDataURL={IMAGE_BLUR_DATA_URL}
-                                />
-                            </figure>
+                        {tocItems.length > 0 && (
+                            <details className="lg:hidden border border-[#efeae4] rounded-2xl px-4 py-3 bg-[#fdfbf7] group">
+                                <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-[11px] font-medium uppercase tracking-[0.16em]">
+                                    <span style={{ color: "#b89a6a" }}>On this page</span>
+                                    <svg
+                                        className="w-4 h-4 text-[#8a847c] transition-transform group-open:rotate-180"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="1.8"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </summary>
+                                <nav className="mt-3 mb-2 space-y-2.5">
+                                    {tocItems.map((item) => (
+                                        <a
+                                            key={item.slug}
+                                            href={`#${item.slug}`}
+                                            className={`block text-[13px] ${item.depth === 2 ? "text-[#3d3935]" : "text-[#8a847c] pl-3"}`}
+                                        >
+                                            {item.text}
+                                        </a>
+                                    ))}
+                                </nav>
+                            </details>
                         )}
 
                         <article
-                            className="prose prose-neutral prose-base sm:prose-lg max-w-none
+                            className="prose prose-neutral prose-base sm:prose-lg max-w-[42rem]
                             prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
-                            prose-h2:text-[1.7rem] sm:prose-h2:text-[2.05rem] prose-h2:leading-snug prose-h2:mt-14 sm:prose-h2:mt-16 prose-h2:mb-5 prose-h2:pb-3.5 prose-h2:border-b prose-h2:border-[#efeae4]
-                            prose-h3:text-[1.25rem] sm:prose-h3:text-[1.45rem] prose-h3:mt-10 prose-h3:mb-3.5
-                            prose-p:text-[#6b6560] prose-p:leading-[1.85] prose-p:mb-6
+                            prose-h2:text-[1.55rem] sm:prose-h2:text-[1.9rem] prose-h2:leading-snug prose-h2:mt-12 sm:prose-h2:mt-14 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
+                            prose-h3:text-[1.2rem] sm:prose-h3:text-[1.35rem] prose-h3:mt-8 prose-h3:mb-3
+                            prose-p:text-[#4a453f] prose-p:leading-[1.8] prose-p:mb-5
                             prose-strong:text-[#2a2724] prose-strong:font-semibold
-                            prose-a:text-[#b89a6a] prose-a:font-medium prose-a:no-underline hover:prose-a:text-[#E91E63] hover:prose-a:underline prose-a:underline-offset-4
-                            prose-ul:my-7 prose-ul:pl-5 prose-li:text-[#6b6560] prose-li:mb-2.5 prose-li:leading-relaxed
-                            prose-ol:my-7 prose-ol:pl-5 prose-ol:space-y-2
-                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#6b6560] prose-blockquote:rounded-r-xl prose-blockquote:my-8
-                            prose-img:rounded-2xl prose-img:my-10
-                            [&_.blog-lead]:text-[1.12rem] sm:[&_.blog-lead]:text-[1.22rem] [&_.blog-lead]:text-[#2a2724]/80 [&_.blog-lead]:leading-[1.8] [&_.blog-lead]:font-normal [&_.blog-lead]:mb-8
-                            [&_.blog-inline-cta]:my-10
+                            prose-a:text-[#9a7344] prose-a:font-medium prose-a:underline prose-a:decoration-[#e4d3b8] prose-a:underline-offset-4 hover:prose-a:text-[#E91E63] hover:prose-a:decoration-[#E91E63]
+                            prose-ul:my-6 prose-ul:pl-5 prose-li:text-[#4a453f] prose-li:my-1.5 prose-li:leading-relaxed
+                            prose-ol:my-6 prose-ol:pl-5
+                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#5c5752] prose-blockquote:rounded-r-xl prose-blockquote:my-8
+                            prose-img:rounded-2xl prose-img:my-8
                             "
                         >
                             <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
@@ -566,81 +569,42 @@ export default async function BlogDetailPage({ params }) {
                                 </div>
                             )}
                         </div>
-
-                        {tocItems.length > 0 && (
-                            <details className="lg:hidden border border-[#efeae4] rounded-2xl p-4 bg-[#fdfbf7] group">
-                                <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-[11px] font-medium uppercase tracking-[0.16em] text-[#2a2724]">
-                                    <span style={{ color: "#b89a6a" }}>On this page</span>
-                                    <svg
-                                        className="w-4 h-4 text-[#8a847c] transition-transform group-open:rotate-180"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="1.8"
-                                            d="M19 9l-7 7-7-7"
-                                        />
-                                    </svg>
-                                </summary>
-                                <nav className="mt-4 space-y-3">
-                                    {tocItems.map((item) => (
-                                        <a
-                                            key={item.slug}
-                                            href={`#${item.slug}`}
-                                            className={`block text-[13px] ${item.depth === 2 ? "text-[#3d3935]" : "text-[#8a847c] pl-3"}`}
-                                        >
-                                            {item.text}
-                                        </a>
-                                    ))}
-                                </nav>
-                            </details>
-                        )}
-
-                        {relatedPosts && relatedPosts.length > 0 && (
-                            <div className="space-y-5 pt-2">
-                                <h3
-                                    className="text-[11px] font-medium uppercase tracking-[0.18em]"
-                                    style={{ color: "#b89a6a" }}
-                                >
-                                    Keep reading
-                                </h3>
-                                <div className="space-y-5">
-                                    {relatedPosts.map((post) => (
-                                        <Link
-                                            key={post.id}
-                                            href={`/blog/${normalizeBlogSlug(post.slug) || post.slug}`}
-                                            className="group flex gap-4 items-start"
-                                        >
-                                            <div className="relative w-[72px] h-[72px] shrink-0 overflow-hidden rounded-xl bg-[#efeae4]">
-                                                <Image
-                                                    src={normalizeBlogImageSrc(post.image) || "/logo.png"}
-                                                    alt={post.title}
-                                                    fill
-                                                    sizes="72px"
-                                                    quality={70}
-                                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                                                    placeholder="blur"
-                                                    blurDataURL={IMAGE_BLUR_DATA_URL}
-                                                />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-playfair text-[15px] font-medium text-[#2a2724] leading-snug group-hover:text-[#E91E63] transition-colors line-clamp-2">
-                                                    {post.title}
-                                                </h4>
-                                                <time className="mt-1 block text-[10px] uppercase tracking-[0.14em] text-[#a89880]">
-                                                    {formatDate(post.date_posted)}
-                                                </time>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </aside>
                 </div>
+
+                {relatedPosts && relatedPosts.length > 0 && (
+                    <section className="mt-14 md:mt-16 pt-10 border-t border-[#efeae4]">
+                        <h2 className="font-playfair text-[1.6rem] text-[#2a2724] mb-6">Keep reading</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            {relatedPosts.map((post) => (
+                                <Link
+                                    key={post.id}
+                                    href={`/blog/${normalizeBlogSlug(post.slug) || post.slug}`}
+                                    className="group block"
+                                >
+                                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#efeae4] mb-3">
+                                        <Image
+                                            src={normalizeBlogImageSrc(post.image) || "/logo.png"}
+                                            alt={post.title}
+                                            fill
+                                            sizes="(max-width: 640px) 100vw, 33vw"
+                                            quality={70}
+                                            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                                            placeholder="blur"
+                                            blurDataURL={IMAGE_BLUR_DATA_URL}
+                                        />
+                                    </div>
+                                    <h3 className="font-playfair text-[1.05rem] font-medium text-[#2a2724] leading-snug group-hover:text-[#E91E63] transition-colors">
+                                        {post.title}
+                                    </h3>
+                                    <time className="mt-1.5 block text-[11px] uppercase tracking-[0.14em] text-[#a89880]">
+                                        {formatDate(post.date_posted)}
+                                    </time>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
 
             <MobileStickyCTA

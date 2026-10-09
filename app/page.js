@@ -15,7 +15,7 @@ import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 import { isRealBestseller } from "@/lib/unitsSold";
-import { sortInStockFirst } from "@/lib/productAvailability";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
@@ -181,14 +181,17 @@ export default async function Home() {
 
   const productsByCategoryId = {};
   for (const category of categories || []) {
-    productsByCategoryId[category.id] = sortInStockFirst(
-      catalog.filter((product) => product.category_id === category.id)
-    ).slice(0, 8);
+    productsByCategoryId[category.id] = catalog
+      .filter(
+        (product) =>
+          product.category_id === category.id && !isProductOutOfStock(product)
+      )
+      .slice(0, 8);
   }
   const collections = buildCollections(categories || [], productsByCategoryId);
 
-  const inStockCatalog = catalog;
-  const latestProducts = inStockCatalog.slice(0, 12);
+  const buyableCatalog = catalog.filter((product) => !isProductOutOfStock(product));
+  const latestProducts = buyableCatalog.slice(0, 12);
   const topStyleTabs = buildTopStyleTabs(collections, latestProducts);
   const shownOnHome = new Set(
     topStyleTabs.flatMap((tab) => tab.products || []).map((product) => product.id)
@@ -205,15 +208,15 @@ export default async function Home() {
     return picked;
   };
 
-  let newArrivalProducts = takeFresh(inStockCatalog.filter((product) => product.is_new));
+  let newArrivalProducts = takeFresh(buyableCatalog.filter((product) => product.is_new));
   if (newArrivalProducts.length < 4) {
     newArrivalProducts = [
       ...newArrivalProducts,
-      ...takeFresh(inStockCatalog, 8 - newArrivalProducts.length),
+      ...takeFresh(buyableCatalog, 8 - newArrivalProducts.length),
     ];
   }
   const bestSellerProducts = takeFresh(
-    [...inStockCatalog]
+    [...buyableCatalog]
       .filter((product) => isRealBestseller(product.units_sold))
       .sort((a, b) => (b.units_sold || 0) - (a.units_sold || 0))
   );
@@ -224,7 +227,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261009a">
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261009b">
       {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 

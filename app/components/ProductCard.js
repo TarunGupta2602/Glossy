@@ -170,7 +170,7 @@ export default function ProductCard({
                                 : "bg-[#2a2724]/88 text-white hover:bg-[#2a2724]"
                         }`}
                     >
-                        {outOfStock ? "Out of stock" : "View"}
+                        View
                     </Link>
                 </div>
             </div>
@@ -187,12 +187,6 @@ export default function ProductCard({
                         {product.name}
                     </h3>
                 </Link>
-
-                {outOfStock && (
-                    <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8a847c]">
-                        Out of stock
-                    </p>
-                )}
 
                 <div className="mt-2.5 flex items-baseline gap-2 min-w-0 flex-wrap">
                     <Link
@@ -218,20 +212,26 @@ export default function ProductCard({
                     </p>
                 )}
 
-                <button
-                    type="button"
-                    onClick={handleAddToBag}
-                    disabled={outOfStock}
-                    className={`mt-2.5 sm:mt-3 w-full min-h-9 sm:min-h-10 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase transition-colors ${
-                        outOfStock
-                            ? "bg-[#efeae4] text-[#8a847c] cursor-not-allowed"
-                            : addedToBag
-                              ? "bg-[#2a2724] text-white"
-                              : "bg-[#E91E63] text-white active:bg-[#C2185B]"
-                    }`}
-                >
-                    {outOfStock ? "Out of stock" : addedToBag ? "Added" : "Add to bag"}
-                </button>
+                {outOfStock ? (
+                    <Link
+                        href={href}
+                        className="mt-2.5 sm:mt-3 inline-flex w-full min-h-9 sm:min-h-10 items-center justify-center rounded-full bg-[#efeae4] text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase text-[#6b6560]"
+                    >
+                        View piece
+                    </Link>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={handleAddToBag}
+                        className={`mt-2.5 sm:mt-3 w-full min-h-9 sm:min-h-10 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase transition-colors ${
+                            addedToBag
+                                ? "bg-[#2a2724] text-white"
+                                : "bg-[#E91E63] text-white active:bg-[#C2185B]"
+                        }`}
+                    >
+                        {addedToBag ? "Added" : "Add to bag"}
+                    </button>
+                )}
             </div>
         </article>
     );

@@ -1,9 +1,11 @@
 import { SITE_CONTAINER } from "@/lib/siteLayout";
+import Link from "next/link";
 import CollectionHero from "./CollectionHero";
 import ProductCard from "./ProductCard";
 import CategoryPagination from "./CategoryPagination";
 import ExploreCollections from "./ExploreCollections";
 import { reviewCardProps } from "@/lib/reviewCounts";
+import { isProductOutOfStock } from "@/lib/productAvailability";
 
 export default function CollectionPageContent({
     breadcrumbs,
@@ -18,11 +20,25 @@ export default function CollectionPageContent({
     otherCategories = [],
     eyebrow,
 }) {
-    const isSmallCollection = products.length <= 4;
+    const available = products.filter((product) => !isProductOutOfStock(product));
+    const soldOut = products.filter((product) => isProductOutOfStock(product));
+    const isSmallCollection = available.length > 0 && available.length <= 4;
 
     const gridClass = isSmallCollection
         ? "grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10"
         : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-5 sm:gap-y-9";
+
+    const renderCards = (list, startIndex = 0) =>
+        list.map((product, index) => (
+            <ProductCard
+                key={product.id}
+                product={product}
+                {...reviewCardProps(reviewCounts, product.id)}
+                hideCategory
+                priority={startIndex + index < 1}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+        ));
 
     return (
         <>
@@ -47,18 +63,32 @@ export default function CollectionPageContent({
                                 </p>
                             )}
 
-                            <div className={gridClass}>
-                                {products.map((product, index) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                        {...reviewCardProps(reviewCounts, product.id)}
-                                        hideCategory
-                                        priority={index < 1}
-                                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                    />
-                                ))}
-                            </div>
+                            {available.length > 0 ? (
+                                <div className={gridClass}>{renderCards(available)}</div>
+                            ) : (
+                                <div className="mb-8 rounded-2xl border border-[#efeae4] bg-white px-5 py-6">
+                                    <p className="font-playfair text-xl text-[#2a2724]">
+                                        These pieces are sold out
+                                    </p>
+                                    <p className="mt-2 text-sm text-[#6b6560] max-w-lg">
+                                        <Link href="/earrings" className="underline underline-offset-2">Earrings</Link>
+                                        {" "}and{" "}
+                                        <Link href="/necklaces" className="underline underline-offset-2">necklaces</Link>
+                                        {" "}that are in stock are ready to order.
+                                    </p>
+                                </div>
+                            )}
+
+                            {soldOut.length > 0 && (
+                                <div className={available.length > 0 ? "mt-12 md:mt-16" : ""}>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a847c] mb-5">
+                                        Sold out for now
+                                    </p>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-5 sm:gap-y-9 opacity-80">
+                                        {renderCards(soldOut, available.length)}
+                                    </div>
+                                </div>
+                            )}
 
                             {pagination && pagination.totalPages > 1 && (
                                 <div className="mt-10 md:mt-12">

@@ -12,6 +12,7 @@ import {
     getProductCanonicalUrl,
     getProductPath,
     SITE_NAME,
+    stripWaterproofClaim,
 } from "@/lib/seo";
 import {
     LEGACY_PRODUCT_REDIRECTS,
@@ -49,16 +50,18 @@ export async function generateMetadata({ params }) {
         42
     );
     const seoDescription = truncateMetaDescription(
-        product.meta_description ||
-        product.description ||
-        `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with shipping from ₹50.`
+        stripWaterproofClaim(
+            product.meta_description ||
+            product.description ||
+            `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with shipping from ₹50.`
+        )
     );
     const canonicalPath = getProductPath(product);
 
     const keywords = String(product.meta_keywords || "")
         .split(",")
         .map((k) => k.trim())
-        .filter(Boolean);
+        .filter((k) => k && !/waterproof/i.test(k));
 
     return {
         title: seoTitle,
@@ -154,7 +157,11 @@ export default async function ProductPage({ params }) {
     const relatedReviewCounts = reviewCountsFor(catalog.reviewCounts, relatedProducts);
 
     // Calculate discount for main product
-    const productWithDiscount = withCalculatedDiscount(product);
+    const productWithDiscount = {
+        ...withCalculatedDiscount(product),
+        description: stripWaterproofClaim(product.description),
+        meta_description: stripWaterproofClaim(product.meta_description),
+    };
 
     const productUrl = getProductCanonicalUrl(product);
     const images = [product.main_image, ...galleryImages]
@@ -204,7 +211,7 @@ export default async function ProductPage({ params }) {
                 name: product.name,
                 sku: product.slug || product.id,
                 image: images.length ? images : [`${BASE_URL}/logo.png`],
-                description: product.meta_description || product.description || `Premium ${product.name} from ${SITE_NAME}.`,
+                description: stripWaterproofClaim(product.meta_description || product.description || `Premium ${product.name} from ${SITE_NAME}.`),
                 brand: { "@type": "Brand", name: SITE_NAME },
                 category: getDisplayCategoryName(product.categories),
                 ...(totalReviews > 0 && {
