@@ -329,9 +329,9 @@ export default async function BlogDetailPage({ params }) {
                 />
             )}
 
-            <div className={`${HOME_CONTAINER} py-8 md:py-12 lg:py-14`}>
+            <div className={`${HOME_CONTAINER} py-6 md:py-8`}>
                 <nav
-                    className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-6 md:mb-8 overflow-hidden whitespace-nowrap"
+                    className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-5 md:mb-6 overflow-hidden whitespace-nowrap"
                     aria-label="Breadcrumb"
                 >
                     <Link href="/" className="hover:text-[#E91E63] transition-colors">
@@ -347,25 +347,24 @@ export default async function BlogDetailPage({ params }) {
                     </span>
                 </nav>
 
-                {heroImageSrc && (
-                    <figure className="relative mb-6 md:mb-8 mx-auto w-full max-w-3xl aspect-[2/1] overflow-hidden rounded-2xl bg-[#efeae4]">
-                        <Image
-                            src={heroImageSrc}
-                            alt={blog.title}
-                            fill
-                            sizes={BLOG_HERO_SIZES}
-                            quality={80}
-                            className="object-cover"
-                            priority
-                            placeholder="blur"
-                            blurDataURL={IMAGE_BLUR_DATA_URL}
-                        />
-                    </figure>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-16">
-                    <div className="lg:col-span-8 space-y-8 md:space-y-10">
-                        <header className="max-w-3xl">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-14 items-start">
+                    <div className="lg:col-span-8 space-y-7 md:space-y-8">
+                        {heroImageSrc && (
+                            <figure className="relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeae4]">
+                                <Image
+                                    src={heroImageSrc}
+                                    alt={blog.title}
+                                    fill
+                                    sizes={BLOG_HERO_SIZES}
+                                    quality={80}
+                                    className="object-cover object-[center_40%]"
+                                    priority
+                                    placeholder="blur"
+                                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                                />
+                            </figure>
+                        )}
+                        <header>
                             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
                                 {keywords.slice(0, 1).map((tag) => (
                                     <Link
@@ -379,7 +378,7 @@ export default async function BlogDetailPage({ params }) {
                                 ))}
                             </div>
 
-                            <h1 className="font-playfair text-[1.85rem] sm:text-[2.45rem] md:text-[2.9rem] font-medium tracking-tight text-[#2a2724] leading-[1.15]">
+                            <h1 className="font-playfair text-[1.75rem] sm:text-[2.15rem] lg:text-[2.45rem] font-medium tracking-tight text-[#2a2724] leading-[1.18]">
                                 {blog.title}
                             </h1>
 
