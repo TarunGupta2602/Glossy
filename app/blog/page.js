@@ -90,7 +90,7 @@ export default async function BlogPage({ searchParams }) {
         .order("date_posted", { ascending: false })
         .limit(200);
 
-    const FEATURED_BLOG_SLUG = "dhanteras-2026-what-to-buy-under-500";
+    const FEATURED_BLOG_SLUG = "what-jewellery-to-wear-with-saree-kurti-western-dress";
     const merged = mergeBlogFeeds(dbBlogs, staticSummaries);
     const featuredIndex = merged.findIndex(
         (blog) => (normalizeBlogSlug(blog.slug) || blog.slug) === FEATURED_BLOG_SLUG
