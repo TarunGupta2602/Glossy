@@ -1,7 +1,6 @@
 "use client";
 
 import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_IVORY, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
-import { WELCOME_CODE } from "@/lib/welcomeOffer";
 import { useState } from "react";
 
 export default function Newsletter({ variant = "section" }) {
@@ -32,7 +31,7 @@ export default function Newsletter({ variant = "section" }) {
             const data = await response.json();
 
             if (data.success) {
-                setMessage(`You're on the list. Use code ${WELCOME_CODE} for 10% off your first order.`);
+                setMessage("You're on the list.");
                 setEmail("");
             } else if (data.error === "Already subscribed") {
                 setMessage("You're already subscribed.");
@@ -88,7 +87,7 @@ export default function Newsletter({ variant = "section" }) {
         return (
             <div>
                 <p className="text-[13px] text-gray-600 leading-snug mb-2.5">
-                    10% off your first order · code {WELCOME_CODE}
+                    New pieces and festive edits.
                 </p>
                 {form}
                 {message && (
@@ -107,10 +106,10 @@ export default function Newsletter({ variant = "section" }) {
                     The list
                 </p>
                 <h2 className="text-3xl sm:text-4xl font-playfair font-medium text-gray-900 mb-3 tracking-tight">
-                    10% off your first order
+                    Join the list
                 </h2>
                 <p className="text-gray-500 text-[15px] mb-8 max-w-md mx-auto leading-relaxed">
-                    Join the list and use code {WELCOME_CODE} at checkout. It works once, on your first order.
+                    New pieces and festive edits, once in a while.
                 </p>
 
                 {form}

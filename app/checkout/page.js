@@ -14,7 +14,6 @@ import { trackPurchase } from "@/lib/gtag";
 import { trackMetaPurchase } from "@/lib/metaPixel";
 import { authFetch } from "@/lib/adminApi";
 import { RETURN_POLICY_SHORT, RETURN_POLICY_SUMMARY } from "@/lib/productTrust";
-import { WELCOME_CODE, isWelcomeCode, welcomeDiscountAmount } from "@/lib/welcomeOffer";
 
 export default function CheckoutPage() {
     const { cart, cartSubtotal, shippingFee, discountAmount, cartTotal, isInitialized, clearCart, promo } = useCart();
@@ -51,12 +50,6 @@ export default function CheckoutPage() {
 
     const [paymentStatus, setPaymentStatus] = useState("idle");
     const [payMode, setPayMode] = useState(null);
-    const [offerInput, setOfferInput] = useState("");
-    const [welcomeOn, setWelcomeOn] = useState(false);
-    const [offerMessage, setOfferMessage] = useState("");
-    const [offerChecking, setOfferChecking] = useState(false);
-    const welcomeDiscount = welcomeOn ? welcomeDiscountAmount(cartSubtotal) : 0;
-    const payableTotal = Math.max(0, cartTotal - welcomeDiscount);
     const [shippingInfo, setShippingInfo] = useState({
         firstName: "",
         lastName: "",
@@ -77,43 +70,6 @@ export default function CheckoutPage() {
             }));
         }
     }, [user?.email]);
-
-    async function applyWelcomeCode() {
-        if (!isWelcomeCode(offerInput)) {
-            setWelcomeOn(false);
-            setOfferMessage("Enter FIRST10 for 10% off your first order.");
-            return;
-        }
-
-        if (!user) {
-            setWelcomeOn(true);
-            setOfferMessage("FIRST10 applies if this mobile number has not ordered before.");
-            return;
-        }
-
-        setOfferChecking(true);
-        setOfferMessage("");
-        try {
-            const response = await authFetch("/api/welcome-offer", {
-                method: "POST",
-                body: JSON.stringify({ code: offerInput }),
-            });
-            const data = await response.json();
-            if (!response.ok || !data.ok) {
-                setWelcomeOn(false);
-                setOfferMessage(data.error || "That code is not valid");
-                return;
-            }
-            setWelcomeOn(true);
-            setOfferMessage("10% off applied to this first order.");
-        } catch (error) {
-            console.error("Welcome code error:", error);
-            setWelcomeOn(false);
-            setOfferMessage("Could not check the code. Try again.");
-        } finally {
-            setOfferChecking(false);
-        }
-    }
 
     const loadRazorpay = () => {
         return new Promise((resolve) => {
@@ -147,7 +103,6 @@ export default function CheckoutPage() {
                     id: item.id,
                     quantity: item.quantity || 1,
                 })),
-                welcome_code: welcomeOn ? WELCOME_CODE : "",
             };
 
             let storeOrderRes;
@@ -180,11 +135,11 @@ export default function CheckoutPage() {
 
             trackPurchase({
                 transactionId: saved.order.id,
-                value: saved.order.total_amount ?? payableTotal,
+                value: saved.order.total_amount ?? cartTotal,
                 items: checkoutItems.filter((item) => !item.isFreeGift),
             });
             trackMetaPurchase({
-                value: saved.order.total_amount ?? payableTotal,
+                value: saved.order.total_amount ?? cartTotal,
                 transactionId: saved.order.id,
             });
 
@@ -249,7 +204,6 @@ export default function CheckoutPage() {
                         id: item.id,
                         quantity: item.quantity || 1,
                     })),
-                    welcome_code: welcomeOn ? WELCOME_CODE : "",
                 }),
             });
 
@@ -259,7 +213,7 @@ export default function CheckoutPage() {
                 throw new Error(orderData.error || "Failed to create order");
             }
 
-            const chargedTotal = orderData.cartTotal ?? payableTotal;
+            const chargedTotal = orderData.cartTotal ?? cartTotal;
 
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -283,7 +237,6 @@ export default function CheckoutPage() {
                                     id: item.id,
                                     quantity: item.quantity || 1,
                                 })),
-                                welcome_code: welcomeOn ? WELCOME_CODE : "",
                             }),
                         });
 
@@ -594,43 +547,6 @@ export default function CheckoutPage() {
                                         <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
                                     </div>
                                 )}
-                                <div className="pt-1">
-                                    <div className="flex gap-2">
-                                        <input
-                                            value={offerInput}
-                                            onChange={(e) => {
-                                                setOfferInput(e.target.value.toUpperCase());
-                                                setWelcomeOn(false);
-                                                setOfferMessage("");
-                                            }}
-                                            placeholder="Code FIRST10"
-                                            className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2.5 text-sm uppercase tracking-wide focus:outline-none focus:border-gray-900"
-                                            autoComplete="off"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={applyWelcomeCode}
-                                            disabled={offerChecking}
-                                            className="shrink-0 rounded-xl bg-gray-900 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-50"
-                                        >
-                                            {offerChecking ? "..." : "Apply"}
-                                        </button>
-                                    </div>
-                                    <p className="mt-2 text-[11px] leading-relaxed text-gray-500">
-                                        {WELCOME_CODE} is 10% off your first order. Shipping stays the same.
-                                    </p>
-                                    {offerMessage && (
-                                        <p className={`mt-1 text-[12px] ${welcomeOn ? "text-green-700" : "text-gray-700"}`} role="status">
-                                            {offerMessage}
-                                        </p>
-                                    )}
-                                </div>
-                                {welcomeDiscount > 0 && (
-                                    <div className="flex justify-between text-sm text-green-600">
-                                        <span className="font-medium">First order 10% ({WELCOME_CODE})</span>
-                                        <span className="font-bold">-₹{welcomeDiscount.toFixed(2)}</span>
-                                    </div>
-                                )}
                                 {promo.completeSets > 0 && promo.freeGiftSelections?.length > 0 && (
                                     <div className="rounded-2xl border border-[#E91E63]/10 bg-[#E91E63]/5 p-4 text-sm text-gray-700">
                                         <p className="font-semibold text-[#E91E63] mb-2">Free gift(s) included</p>
@@ -655,7 +571,7 @@ export default function CheckoutPage() {
                                 </p>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>
-                                    <span className="text-2xl font-black text-[#E91E63]">₹{payableTotal.toFixed(2)}</span>
+                                    <span className="text-2xl font-black text-[#E91E63]">₹{cartTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

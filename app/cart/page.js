@@ -10,7 +10,6 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import TrustStrip from "../components/TrustStrip";
 import EmptyCartSuggestions from "../components/EmptyCartSuggestions";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
-import { WELCOME_CODE } from "@/lib/welcomeOffer";
 
 export default function CartPage() {
     const { cart, cartSubtotal, cartTotal, discountAmount, shippingFee, removeFromCart, updateQuantity, isInitialized, promo } = useCart();
@@ -139,7 +138,7 @@ export default function CartPage() {
                                 </span>
                             </div>
                             <p className="text-[12px] leading-relaxed text-gray-500">
-                                Flat ₹50 shipping on every order. Code {WELCOME_CODE} is 10% off your first order, applied at checkout.
+                                Flat ₹50 shipping on every order.
                             </p>
                         </div>
 

@@ -3,7 +3,6 @@ import Razorpay from "razorpay";
 import { getServiceClient } from "@/lib/supabaseServiceClient";
 import { requireUser } from "@/lib/requireAuth";
 import { resolveCheckoutCart } from "@/lib/checkoutTotals";
-import { WELCOME_CODE } from "@/lib/welcomeOffer";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 function getRazorpay() {
@@ -45,7 +44,7 @@ export async function POST(req) {
             supabase,
             auth.user.id,
             clientItems,
-            { persistFallback: true, welcomeCode: body.welcome_code || "", phone: body.contact_phone || body.shipping_address?.phone || "" }
+            { persistFallback: true }
         );
 
         if (error || !checkout) {
@@ -64,12 +63,6 @@ export async function POST(req) {
                 item_count: String(checkout.checkoutItems.length),
                 paid_subtotal: String(checkout.cartSubtotal),
                 shipping_fee: String(checkout.shippingFee),
-                ...(checkout.welcomeDiscount > 0
-                    ? {
-                          welcome_code: WELCOME_CODE,
-                          welcome_discount: String(checkout.welcomeDiscount),
-                      }
-                    : {}),
             },
         };
 
@@ -80,7 +73,6 @@ export async function POST(req) {
             cartTotal: checkout.cartTotal,
             shippingFee: checkout.shippingFee,
             discountAmount: checkout.discountAmount,
-            welcomeDiscount: checkout.welcomeDiscount || 0,
         });
     } catch (error) {
         console.error("Razorpay Order Error:", error);
