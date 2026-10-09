@@ -20,6 +20,16 @@ export default function OrderConfirmationClient() {
         if (authLoading) return;
 
         if (!user) {
+            try {
+                const saved = sessionStorage.getItem(`tlj-order-${id}`);
+                if (saved) {
+                    setOrder(JSON.parse(saved));
+                    setLoading(false);
+                    return;
+                }
+            } catch {
+                // Fall through to the bag if this browser has no saved order.
+            }
             router.replace("/cart");
             return;
         }
@@ -77,7 +87,7 @@ export default function OrderConfirmationClient() {
                     </h1>
                     <p className="text-gray-500 text-sm max-w-md mx-auto">
                         {isCodOrder(order)
-                            ? "Pay cash when the courier arrives. We will prepare this order from the address on your account."
+                            ? "Pay cash when the courier arrives. We will use the mobile number on this order if we need to reach you."
                             : "Thank you for your order. Your invoice is below — save or print it for your records."}
                     </p>
                 </div>

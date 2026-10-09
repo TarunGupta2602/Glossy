@@ -197,7 +197,7 @@ export default function CartDrawer() {
                             </div>
                         )}
                         <div className="flex justify-between text-[13px] text-gray-600">
-                            <span>Shipping & delivery</span>
+                            <span>Shipping · flat ₹50</span>
                             <span>{shippingFee > 0 ? `₹${shippingFee}` : "—"}</span>
                         </div>
                         <div className="flex justify-between text-[15px] font-semibold text-gray-900">

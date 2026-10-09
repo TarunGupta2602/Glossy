@@ -45,7 +45,7 @@ export async function POST(req) {
             supabase,
             auth.user.id,
             clientItems,
-            { persistFallback: true, welcomeCode: body.welcome_code || "" }
+            { persistFallback: true, welcomeCode: body.welcome_code || "", phone: body.contact_phone || body.shipping_address?.phone || "" }
         );
 
         if (error || !checkout) {

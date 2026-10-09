@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import FestivalCountdown from "./FestivalCountdown";
+import { getLeadFestival } from "@/lib/festivalSeason";
 
 const SLIDES = [
     {
@@ -73,15 +74,20 @@ const MANUAL_RESUME_MS = 9000;
  * Auto-advances on its own. Arrows/dots only pause briefly after a tap.
  */
 export default function HeroSlider() {
+    const leadId = getLeadFestival().slug;
+    const leadSlide = SLIDES.find((item) => item.id === leadId);
+    const slides = leadSlide
+        ? [leadSlide, ...SLIDES.filter((item) => item.id !== leadId)]
+        : SLIDES;
     const [index, setIndex] = useState(0);
     const [hold, setHold] = useState(false);
     const resumeTimer = useRef(null);
-    const slide = SLIDES[index];
-    const Heading = slide.isMain ? "h1" : "p";
+    const slide = slides[index] || slides[0];
+    const Heading = index === 0 ? "h1" : "p";
 
     const goTo = useCallback((next) => {
-        setIndex(((next % SLIDES.length) + SLIDES.length) % SLIDES.length);
-    }, []);
+        setIndex(((next % slides.length) + slides.length) % slides.length);
+    }, [slides.length]);
 
     const goToManual = useCallback(
         (next) => {
@@ -106,10 +112,10 @@ export default function HeroSlider() {
             return undefined;
         }
         const timer = window.setInterval(() => {
-            setIndex((current) => (current + 1) % SLIDES.length);
+            setIndex((current) => (current + 1) % slides.length);
         }, INTERVAL_MS);
         return () => window.clearInterval(timer);
-    }, [hold]);
+    }, [hold, slides.length]);
 
     return (
         <section
@@ -119,7 +125,7 @@ export default function HeroSlider() {
         >
             {slide.banner ? (
                 <div className="relative h-[30vh] min-h-[150px] max-h-[200px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
-                    {SLIDES.filter((item) => item.banner).map((item) => (
+                    {slides.filter((item) => item.banner).map((item) => (
                         <Image
                             key={item.id}
                             src={item.image}
@@ -141,7 +147,7 @@ export default function HeroSlider() {
             ) : (
                 <div className="absolute inset-0 md:hidden" aria-hidden="true">
                     <Image
-                        src={SLIDES[0].image}
+                        src={slides[0].image}
                         alt=""
                         fill
                         priority
@@ -216,7 +222,7 @@ export default function HeroSlider() {
                                 </svg>
                             </button>
                             <div className="flex items-center gap-2" role="tablist" aria-label="Hero slides">
-                                {SLIDES.map((item, i) => (
+                                {slides.map((item, i) => (
                                     <button
                                         key={item.id}
                                         type="button"
@@ -265,7 +271,7 @@ export default function HeroSlider() {
                         <div
                             className={`relative w-full max-w-[460px] lg:max-w-[500px] aspect-[3/4] overflow-hidden rounded-[2rem] ${slide.frame}`}
                         >
-                            {SLIDES.map((item, i) => (
+                            {slides.map((item, i) => (
                                 <Image
                                     key={item.id}
                                     src={item.image}

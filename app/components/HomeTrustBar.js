@@ -3,7 +3,7 @@ import { PROMO_SHORT } from "@/lib/promo";
 const ITEMS = [
     "Anti-tarnish fashion jewellery",
     "Perfect gifts for her",
-    "Shipping ₹50–₹150",
+    "Flat ₹50 shipping",
     PROMO_SHORT,
 ];
 

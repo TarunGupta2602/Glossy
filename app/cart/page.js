@@ -139,7 +139,7 @@ export default function CartPage() {
                                 </span>
                             </div>
                             <p className="text-[12px] leading-relaxed text-gray-500">
-                                Code {WELCOME_CODE} is 10% off your first order, applied at checkout.
+                                Flat ₹50 shipping on every order. Code {WELCOME_CODE} is 10% off your first order, applied at checkout.
                             </p>
                         </div>
 

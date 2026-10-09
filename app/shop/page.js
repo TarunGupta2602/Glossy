@@ -104,7 +104,7 @@ export default async function ShopPage({ searchParams }) {
             <section className={`${SITE_CONTAINER} pt-1 pb-3 md:text-center`}>
                 <h1 className="text-[1.65rem] sm:text-3xl md:text-5xl font-light text-gray-950 tracking-tight md:tracking-tighter mb-2 md:mb-4">Shop anti-tarnish jewellery</h1>
                 <p className="text-[13px] md:text-base text-gray-500 font-normal leading-relaxed max-w-2xl md:mx-auto line-clamp-2 md:line-clamp-none">
-                    The full anti-tarnish catalogue — earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Shipping starts at ₹50 and rises with the order.
+                    The full anti-tarnish catalogue — earrings, everyday necklaces, daily-wear bracelets, and rings. Filter by category, then add two paid pieces for Buy 2 Get 1 Free. Shipping is a flat ₹50 on every order.
                 </p>
             </section>
 

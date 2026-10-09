@@ -79,14 +79,15 @@ export default function CheckoutPage() {
     }, [user?.email]);
 
     async function applyWelcomeCode() {
-        if (!user) {
-            setWelcomeOn(false);
-            setOfferMessage("Sign in to use FIRST10 on your first order.");
-            return;
-        }
         if (!isWelcomeCode(offerInput)) {
             setWelcomeOn(false);
             setOfferMessage("Enter FIRST10 for 10% off your first order.");
+            return;
+        }
+
+        if (!user) {
+            setWelcomeOn(true);
+            setOfferMessage("FIRST10 applies if this mobile number has not ordered before.");
             return;
         }
 
@@ -125,16 +126,12 @@ export default function CheckoutPage() {
     };
 
     const handleCodOrder = async () => {
-        if (!user) {
-            alert("Please sign in to complete checkout.");
-            return;
-        }
         if (!cart.length) {
             alert("Your cart is empty.");
             return;
         }
         if (!shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode) {
-            alert("Please fill in your shipping details.");
+            alert("Please fill in your name, mobile number, and delivery address.");
             return;
         }
 
@@ -142,30 +139,40 @@ export default function CheckoutPage() {
         setPayMode("cod");
 
         try {
-            for (const item of cart) {
-                await authFetch("/api/cart", {
+            const orderBody = {
+                payment_method: "cod",
+                shipping_address: shippingInfo,
+                contact_phone: shippingInfo.phone,
+                items: cart.map((item) => ({
+                    id: item.id,
+                    quantity: item.quantity || 1,
+                })),
+                welcome_code: welcomeOn ? WELCOME_CODE : "",
+            };
+
+            let storeOrderRes;
+            if (user) {
+                for (const item of cart) {
+                    await authFetch("/api/cart", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            productId: item.id,
+                            quantity: item.quantity || 1,
+                            action: "add",
+                        }),
+                    });
+                }
+                storeOrderRes = await authFetch("/api/orders", {
                     method: "POST",
-                    body: JSON.stringify({
-                        productId: item.id,
-                        quantity: item.quantity || 1,
-                        action: "add",
-                    }),
+                    body: JSON.stringify(orderBody),
+                });
+            } else {
+                storeOrderRes = await fetch("/api/orders", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderBody),
                 });
             }
-
-            const storeOrderRes = await authFetch("/api/orders", {
-                method: "POST",
-                body: JSON.stringify({
-                    payment_method: "cod",
-                    shipping_address: shippingInfo,
-                    contact_phone: shippingInfo.phone,
-                    items: cart.map((item) => ({
-                        id: item.id,
-                        quantity: item.quantity || 1,
-                    })),
-                    welcome_code: welcomeOn ? WELCOME_CODE : "",
-                }),
-            });
             const saved = await storeOrderRes.json();
             if (!storeOrderRes.ok) {
                 throw new Error(saved.error || "Could not place the order");
@@ -181,6 +188,12 @@ export default function CheckoutPage() {
                 transactionId: saved.order.id,
             });
 
+            try {
+                sessionStorage.setItem(`tlj-order-${saved.order.id}`, JSON.stringify(saved.order));
+            } catch {
+                // Confirmation can still load for a signed-in account.
+            }
+
             await clearCart();
             router.push(`/order/${saved.order.id}/confirmation`);
         } catch (error) {
@@ -193,7 +206,7 @@ export default function CheckoutPage() {
 
     const handlePayment = async () => {
         if (!user) {
-            alert("Please sign in to complete checkout.");
+            alert("Sign in to pay online. Cash on delivery does not need an account.");
             return;
         }
         if (!cart.length) {
@@ -344,34 +357,6 @@ export default function CheckoutPage() {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-[#E91E63] border-t-transparent rounded-full animate-spin" />
-            </div>
-        );
-    }
-
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-[#fdfbf7] flex flex-col items-center justify-center p-6">
-                <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#efeae4]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#E91E63] mb-2">Checkout</p>
-                    <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sign in to place this order</h1>
-                    <p className="mt-2 text-sm leading-relaxed text-gray-500">
-                        Your bag stays with you. Google sign-in opens the address step so we can pack the order on your account.
-                    </p>
-                    {cart.length > 0 && (
-                        <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#fdfbf7] px-4 py-3 text-sm">
-                            <span className="text-gray-500">
-                                {cart.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0)} in your bag
-                            </span>
-                            <span className="font-bold text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                        </div>
-                    )}
-                    <div className="mt-5">
-                        <ContinueWithGoogle next="/checkout" />
-                    </div>
-                    <Link href="/cart" className="mt-4 block text-center text-[12px] font-semibold text-gray-500 hover:text-gray-900">
-                        Back to bag
-                    </Link>
-                </div>
             </div>
         );
     }
@@ -544,6 +529,7 @@ export default function CheckoutPage() {
                                     "Place order · Cash on delivery"
                                 )}
                             </button>
+                            {user ? (
                             <button
                                 onClick={handlePayment}
                                 disabled={isProcessing || !shippingInfo.firstName || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.pincode}
@@ -554,8 +540,16 @@ export default function CheckoutPage() {
                             >
                                 {isProcessing && payMode === "online" ? "Opening payment..." : "Pay now with UPI or card"}
                             </button>
+                            ) : (
+                            <div className="rounded-2xl border border-gray-200 p-4">
+                                <p className="text-center text-[12px] text-gray-500 mb-3">
+                                    Pay online after a quick sign-in. Cash on delivery is above and does not need an account.
+                                </p>
+                                <ContinueWithGoogle next="/checkout" />
+                            </div>
+                            )}
                             <p className="text-center text-[11px] text-gray-500 leading-relaxed">
-                                Cash on delivery is collected by the courier. The order stays on your signed-in account so we can pack and ship it.
+                                Cash on delivery needs your name, mobile number, and address. Pay the courier when it arrives. Online payment still uses your account.
                             </p>
                         </div>
                     </div>
@@ -657,7 +651,7 @@ export default function CheckoutPage() {
                                     </span>
                                 </div>
                                 <p className="text-[11px] text-gray-400 leading-relaxed">
-                                    ₹50 under ₹500, ₹80 from ₹500, ₹120 from ₹1000, ₹150 from ₹1500.
+                                    Flat ₹50 shipping and delivery on every order.
                                 </p>
                                 <div className="flex justify-between border-t border-gray-100 pt-3">
                                     <span className="text-base font-bold text-gray-900">Total</span>

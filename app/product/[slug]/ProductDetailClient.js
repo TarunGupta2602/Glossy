@@ -416,6 +416,9 @@ export default function ProductDetailClient({
                                 Compare-at price · you save about {discountPercent}%
                             </p>
                         )}
+                        <p className="mt-2 text-[12px] text-[#8a847c]">
+                            Flat ₹50 shipping on every order. Cash on delivery at checkout, no account needed.
+                        </p>
 
                         {outOfStock ? (
                             <div className="mt-3 max-w-md">

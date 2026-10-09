@@ -81,7 +81,7 @@ export default function FestiveCollectionContent({
                                 },
                                 {
                                     title: "Ships pan-India",
-                                    body: "Shipping starts at ₹50 and rises with the order. 10-day unused returns.",
+                                    body: "Shipping is a flat ₹50 on every order. 10-day unused returns.",
                                 },
                                 {
                                     title: "Wear after the festival",

@@ -9,6 +9,7 @@ import {
 } from "@/lib/checkoutTotals";
 import { COD_AVAILABLE } from "@/lib/constants";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { guestCheckoutUserId } from "@/lib/guestCheckout";
 
 const CUSTOMER_ALLOWED_STATUSES = new Set(["cancelled", "return requested"]);
 const ADMIN_ALLOWED_STATUSES = new Set([
@@ -61,7 +62,12 @@ async function createCodOrder(req, auth, body) {
         );
     }
 
-    const limited = rateLimit(`cod:${auth.user.id}:${clientIp(req)}`, {
+    const shipping = body.shipping_address || {};
+    const phone = normalizeIndianMobile(body.contact_phone || shipping.phone);
+    const pincode = String(shipping.pincode || "").trim();
+    const signedInId = auth?.user?.id || null;
+
+    const limited = rateLimit(`cod:${signedInId || phone}:${clientIp(req)}`, {
         limit: 5,
         windowMs: 10 * 60_000,
     });
@@ -71,10 +77,6 @@ async function createCodOrder(req, auth, body) {
             { status: 429 }
         );
     }
-
-    const shipping = body.shipping_address || {};
-    const phone = normalizeIndianMobile(body.contact_phone || shipping.phone);
-    const pincode = String(shipping.pincode || "").trim();
 
     if (!String(shipping.firstName || "").trim() || !String(shipping.address || "").trim()) {
         return NextResponse.json(
@@ -96,12 +98,24 @@ async function createCodOrder(req, auth, body) {
     }
 
     const supabaseService = getServiceClient();
+    let userId = signedInId;
+    if (!userId) {
+        try {
+            userId = await guestCheckoutUserId(supabaseService, phone);
+        } catch (error) {
+            console.error("Guest checkout user error:", error);
+            return NextResponse.json(
+                { error: "Could not place the order. Try again in a moment." },
+                { status: 500 }
+            );
+        }
+    }
     const clientItems = Array.isArray(body.items) ? body.items : [];
     const { checkout, error: checkoutError } = await resolveCheckoutCart(
         supabaseService,
-        auth.user.id,
+        userId,
         clientItems,
-        { persistFallback: true, welcomeCode: body.welcome_code || "" }
+        { persistFallback: Boolean(signedInId), useClientItems: !signedInId, welcomeCode: body.welcome_code || "", phone }
     );
 
     if (checkoutError || !checkout) {
@@ -118,7 +132,7 @@ async function createCodOrder(req, auth, body) {
         .from("orders")
         .insert([
             {
-                user_id: auth.user.id,
+                user_id: userId,
                 razorpay_order_id: codRef,
                 razorpay_payment_id: codRef,
                 total_amount: checkout.cartTotal,
@@ -137,7 +151,9 @@ async function createCodOrder(req, auth, body) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    await supabaseService.from("cart_items").delete().eq("user_id", auth.user.id);
+    if (userId) {
+        await supabaseService.from("cart_items").delete().eq("user_id", userId);
+    }
 
     return NextResponse.json({ success: true, order: data });
 }
@@ -169,13 +185,14 @@ async function decrementStock(supabase, items) {
 
 export async function POST(req) {
     try {
-        const auth = await requireUser(req);
-        if (auth.error) return auth.error;
-
         const body = await req.json();
         if (body.payment_method === "cod") {
-            return createCodOrder(req, auth, body);
+            const auth = await requireUser(req);
+            return createCodOrder(req, auth.error ? null : auth, body);
         }
+
+        const auth = await requireUser(req);
+        if (auth.error) return auth.error;
 
         const {
             razorpay_order_id,
@@ -258,7 +275,7 @@ export async function POST(req) {
             supabaseService,
             auth.user.id,
             clientItems,
-            { persistFallback: true, welcomeCode: notedCode || bodyCode }
+            { persistFallback: true, welcomeCode: notedCode || bodyCode, phone: contact_phone || shipping_address?.phone || "" }
         );
 
         if (checkoutError || !checkout) {

@@ -4,6 +4,7 @@ import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { PROMO_LABEL } from "@/lib/promo";
 import FestivalCountdown from "./FestivalCountdown";
+import { getLeadFestival } from "@/lib/festivalSeason";
 
 const CARDS = [
     {
@@ -26,8 +27,10 @@ const CARDS = [
     },
 ];
 
-/** Festive occasion strip — two distinct edits, one offer. */
+/** Festive occasion strip — two distinct edits, one offer. Navratri leads until it ends. */
 export default function HomeGiftEdits() {
+    const lead = getLeadFestival().slug;
+    const cards = lead === "diwali" ? [...CARDS] : [...CARDS].reverse();
     return (
         <section className="bg-[#fdfbf7] py-10 md:py-14 border-t border-[#efeae4]">
             <div className={HOME_CONTAINER}>
@@ -55,7 +58,7 @@ export default function HomeGiftEdits() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
-                    {CARDS.map((card) => (
+                    {cards.map((card) => (
                         <Link
                             key={card.href}
                             href={card.href}

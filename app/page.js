@@ -15,6 +15,7 @@ import { fetchInstagramReels } from "@/lib/instagram";
 import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 import { isRealBestseller } from "@/lib/unitsSold";
+import { sortInStockFirst } from "@/lib/productAvailability";
 
 const Testimonials = nextDynamic(() => import("./components/testimonials"), {
   loading: () => <div className="h-[200px] bg-white" />,
@@ -29,7 +30,7 @@ export const metadata = {
     absolute: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
   },
   description:
-    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + shipping from ₹50.",
+    "Anti-tarnish jewellery for Noida & India — 18k gold plated earrings, necklaces & more. Buy 2 Get 1 Free + flat ₹50 shipping.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "The Luxe Jewels | Anti-Tarnish Jewellery Online India | Noida",
@@ -180,9 +181,9 @@ export default async function Home() {
 
   const productsByCategoryId = {};
   for (const category of categories || []) {
-    productsByCategoryId[category.id] = catalog
-      .filter((product) => product.category_id === category.id)
-      .slice(0, 8);
+    productsByCategoryId[category.id] = sortInStockFirst(
+      catalog.filter((product) => product.category_id === category.id)
+    ).slice(0, 8);
   }
   const collections = buildCollections(categories || [], productsByCategoryId);
 
@@ -223,7 +224,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261008b">
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261009a">
       {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
       <HeroSlider />
 
