@@ -43,7 +43,7 @@ export default function TermsPage() {
                     All orders are subject to availability and confirmation. We reserve the right to
                     cancel or refuse any order at our discretion. You can pay online with UPI, cards,
                     or net banking, or choose cash on delivery and pay when the parcel arrives.
-                    Sign in so the order stays on your account and we can prepare it.
+                    Cash on delivery needs your name, mobile number, and address. Sign in only if you want to pay online.
                 </p>
             </LegalSection>
 

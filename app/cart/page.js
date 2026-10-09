@@ -166,18 +166,20 @@ export default function CartPage() {
                             </div>
                         </div>
 
-                        {user ? (
-                            <button
-                                onClick={() => router.push("/checkout")}
-                                className="w-full bg-gray-900 text-white py-4 rounded-2xl text-[12px] font-bold tracking-[0.16em] uppercase hover:bg-black transition-all active:scale-[0.98]"
-                            >
-                                Proceed to Checkout
-                            </button>
-                        ) : authLoading ? (
-                            <div className="h-12 rounded-2xl bg-gray-100 animate-pulse" />
-                        ) : (
-                            <ContinueWithGoogle next="/checkout" tone="dark" label="Continue with Google" />
-                        )}
+                        <button
+                            onClick={() => router.push("/checkout")}
+                            className="w-full bg-gray-900 text-white py-4 rounded-2xl text-[12px] font-bold tracking-[0.16em] uppercase hover:bg-black transition-all active:scale-[0.98]"
+                        >
+                            Checkout · Cash on delivery
+                        </button>
+                        {!user && !authLoading ? (
+                            <div className="mt-3">
+                                <p className="text-center text-[11px] text-gray-500 mb-2">
+                                    Cash on delivery does not need an account. Sign in only to pay online.
+                                </p>
+                                <ContinueWithGoogle next="/checkout" tone="dark" label="Pay online with Google" />
+                            </div>
+                        ) : null}
                     </aside>
                 </div>
 
@@ -188,15 +190,18 @@ export default function CartPage() {
                     className="mt-8 border-t border-gray-100 pt-6"
                 />
             </div>
-            {!user && !authLoading && (
-                <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#efeae4] bg-white/95 backdrop-blur-md px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] lg:hidden">
-                    <div className="flex items-center justify-between gap-3 mb-2">
-                        <span className="text-sm text-gray-500">Total</span>
-                        <span className="text-lg font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                    </div>
-                    <ContinueWithGoogle next="/checkout" tone="dark" label="Continue with Google" />
+            <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#efeae4] bg-white/95 backdrop-blur-md px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] lg:hidden">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                    <span className="text-sm text-gray-500">Total</span>
+                    <span className="text-lg font-black text-[#E91E63]">₹{cartTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                 </div>
-            )}
+                <button
+                    onClick={() => router.push("/checkout")}
+                    className="w-full bg-gray-900 text-white py-3.5 rounded-2xl text-[12px] font-bold tracking-[0.16em] uppercase"
+                >
+                    Checkout · Cash on delivery
+                </button>
+            </div>
         </div>
     );
 }
