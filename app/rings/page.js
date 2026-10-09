@@ -1,4 +1,6 @@
 import CollectionPageContent from "../components/CollectionPageContent";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
+import { RINGS_GUIDE } from "@/lib/categoryGuides";
 import { redirect } from "next/navigation";
 import { findRingsCategory, productMatchesRings } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
@@ -96,6 +98,7 @@ export default async function RingsPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/rings", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
+            {page === 1 ? <CategoryBuyingGuide guide={RINGS_GUIDE} /> : null}
         </section>
     );
 }

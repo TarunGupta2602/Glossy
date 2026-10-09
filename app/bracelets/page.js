@@ -1,4 +1,6 @@
 import CollectionPageContent from "../components/CollectionPageContent";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
+import { BRACELETS_GUIDE } from "@/lib/categoryGuides";
 import { redirect } from "next/navigation";
 import { findBraceletsCategory, productMatchesBracelets } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
@@ -96,6 +98,7 @@ export default async function BraceletsPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/bracelets", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
+            {page === 1 ? <CategoryBuyingGuide guide={BRACELETS_GUIDE} /> : null}
         </section>
     );
 }

@@ -35,6 +35,7 @@ const FRESH_PATHS = new Set([
     "/blog/diwali-jewellery-gifts-under-999-india-2026",
     "/blog/navratri-everyday-festive-earrings-india-2026",
     "/blog/18k-gold-plated-vs-real-gold-jewelry",
+    "/blog/dhanteras-2026-what-to-buy-under-500",
     "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion",
     "/blog/25-perfect-gift-ideas-for-girlfriend-under-299-that-shell-actually-love",
     "/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026",

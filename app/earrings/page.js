@@ -1,4 +1,6 @@
 import CollectionPageContent from "../components/CollectionPageContent";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
+import { EARRINGS_GUIDE } from "@/lib/categoryGuides";
 import { redirect } from "next/navigation";
 import { findEarringsCategory } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
@@ -97,6 +99,7 @@ export default async function EarringsPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/earrings", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
+            {page === 1 ? <CategoryBuyingGuide guide={EARRINGS_GUIDE} /> : null}
         </section>
     );
 }

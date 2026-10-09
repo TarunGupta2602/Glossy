@@ -1,4 +1,6 @@
 import CollectionPageContent from "../components/CollectionPageContent";
+import CategoryBuyingGuide from "../components/CategoryBuyingGuide";
+import { NECKLACES_GUIDE } from "@/lib/categoryGuides";
 import { redirect } from "next/navigation";
 import { findNecklacesCategory } from "@/lib/categoryLanding";
 import { BRAND_URL } from "@/lib/constants";
@@ -96,6 +98,7 @@ export default async function NecklacesPage({ searchParams }) {
                 pagination={totalPages > 1 ? { basePath: "/necklaces", page, totalPages } : null}
                 otherCategories={otherCategories}
             />
+            {page === 1 ? <CategoryBuyingGuide guide={NECKLACES_GUIDE} /> : null}
         </section>
     );
 }
