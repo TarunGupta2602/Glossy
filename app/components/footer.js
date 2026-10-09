@@ -20,7 +20,6 @@ const SHOP_LINKS = [
     { href: "/necklaces", label: "Necklaces" },
     { href: "/bracelets", label: "Bracelets" },
     { href: "/rings", label: "Rings" },
-    { href: "/wholesale", label: "Wholesale" },
 ];
 
 const HELP_LINKS = [

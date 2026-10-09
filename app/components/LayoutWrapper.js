@@ -15,7 +15,7 @@ export default function LayoutWrapper({ children }) {
     const { isOverlayOpen } = useOverlay();
     const isAdmin = pathname?.startsWith("/admin");
     const isProductPage = pathname?.startsWith("/product/");
-    const isCartPage = pathname === "/cart" || pathname === "/wholesale";
+    const isCartPage = pathname === "/cart";
     const isBlogPost = pathname?.startsWith("/blog/") && pathname !== "/blog";
 
     if (isAdmin) {

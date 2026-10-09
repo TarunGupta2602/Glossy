@@ -104,6 +104,11 @@ const nextConfig = {
         destination: "/blog/dhanteras-2026-what-to-buy-under-500",
         permanent: true,
       },
+      {
+        source: "/wholesale",
+        destination: "/shop",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

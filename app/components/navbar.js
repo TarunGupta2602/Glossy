@@ -31,7 +31,6 @@ const GIFT_LINKS = [
 ];
 
 const PRIMARY_LINKS = [
-    { href: "/wholesale", label: "Wholesale" },
     { href: "/collection", label: "Collections" },
     { href: "/blog", label: "Blog" },
     { href: "/our-story", label: "Story" },
@@ -691,26 +690,6 @@ export default function Navbar() {
 
                     <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5">
                         <nav className="mb-7" aria-label="Primary">
-                            <Link
-                                href="/wholesale"
-                                onClick={closeMenu}
-                                className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-[#2a2724] px-4 py-3.5 text-white"
-                            >
-                                <span className="min-w-0">
-                                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#e8d5b5]">
-                                        For shops
-                                    </span>
-                                    <span className="mt-1 block font-playfair text-[1.25rem] leading-none">
-                                        Wholesale
-                                    </span>
-                                    <span className="mt-1.5 block text-[12px] text-white/75">
-                                        Mix any pieces. Minimum ₹4,000.
-                                    </span>
-                                </span>
-                                <span className="shrink-0 text-white/80" aria-hidden>
-                                    →
-                                </span>
-                            </Link>
                             <div className="border-b border-[#efeae4]/80">
                                 <button
                                     type="button"
@@ -807,7 +786,7 @@ export default function Navbar() {
                             </div>
 
                             <ul>
-                                {PRIMARY_LINKS.filter((item) => item.href !== "/wholesale").map((item) => (
+                                {PRIMARY_LINKS.map((item) => (
                                     <li key={item.href}>
                                         <Link
                                             href={item.href}

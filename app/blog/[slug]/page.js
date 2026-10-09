@@ -348,7 +348,7 @@ export default async function BlogDetailPage({ params }) {
                 </nav>
 
                 {heroImageSrc && (
-                    <figure className="relative mb-8 md:mb-10 w-full aspect-[16/9] sm:aspect-[2/1] overflow-hidden rounded-2xl md:rounded-[1.75rem] bg-[#efeae4]">
+                    <figure className="relative mb-6 md:mb-8 mx-auto w-full max-w-3xl aspect-[2/1] overflow-hidden rounded-2xl bg-[#efeae4]">
                         <Image
                             src={heroImageSrc}
                             alt={blog.title}

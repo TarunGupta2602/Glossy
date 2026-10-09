@@ -12,7 +12,6 @@ const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
 
 /** Fresh lastmod so Google recrawls new festive / gift / journal URLs. */
 const FESTIVE_LAST_MODIFIED = new Date("2026-10-05T08:00:00.000Z");
-const WHOLESALE_LAST_MODIFIED = new Date("2026-10-06T04:20:00.000Z");
 const FRESH_PATHS = new Set([
     "/",
     "/rings",
@@ -24,7 +23,6 @@ const FRESH_PATHS = new Set([
     "/necklaces",
     "/bracelets",
     "/shop",
-    "/wholesale",
     "/our-story",
     "/faqs",
     "/contact",
@@ -70,7 +68,6 @@ function staticSitemapPages(lastModified = LEGAL_LAST_MODIFIED) {
         { path: "/privacy", priority: 0.4, changeFrequency: "yearly" },
         { path: "/terms", priority: 0.4, changeFrequency: "yearly" },
         { path: "/shipping-returns", priority: 0.6, changeFrequency: "monthly" },
-        { path: "/wholesale", priority: 0.8, changeFrequency: "weekly" },
         { path: "/blog", priority: 0.85, changeFrequency: "weekly" },
     ];
 
@@ -135,9 +132,6 @@ export default async function sitemap() {
 
         const base = staticSitemapPages(catalogLastModified).map((page) => {
             const path = page.url.replace(BASE_URL, "") || "/";
-            if (path === "/wholesale") {
-                return { ...page, lastModified: WHOLESALE_LAST_MODIFIED };
-            }
             if (FRESH_PATHS.has(path)) {
                 return { ...page, lastModified: FESTIVE_LAST_MODIFIED };
             }
