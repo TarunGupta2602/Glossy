@@ -93,23 +93,23 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                     <>
                         <div
                             key={`${activeTab.id}-${animKey}`}
-                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:gap-x-6 md:gap-y-12 transition-opacity duration-200 ${
+                            className={`grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 md:gap-x-5 transition-opacity duration-200 ${
                                 isPending ? "opacity-55" : "opacity-100"
                             }`}
                         >
-                            {products.slice(0, 8).map((product, index) => (
+                            {products.slice(0, 10).map((product, index) => (
                                 <div
                                     key={product.id}
                                     className={`product-card-in ${
                                         index >= mobileLimit ? "hidden md:block" : ""
-                                    }`}
-                                    style={{ animationDelay: `${Math.min(index, 7) * 55}ms` }}
+                                    } ${index >= 8 ? "hidden xl:block" : ""}`}
+                                    style={{ animationDelay: `${Math.min(index, 7) * 45}ms` }}
                                 >
                                     <ProductCard
                                         product={product}
                                         {...reviewCardProps(reviewCounts, product.id)}
                                         priority={index < 1}
-                                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                        sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 20vw"
                                     />
                                 </div>
                             ))}
