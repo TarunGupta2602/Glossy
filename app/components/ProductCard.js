@@ -81,7 +81,7 @@ export default function ProductCard({
     return (
         <article className="group flex flex-col h-full">
             <div
-                className="relative overflow-hidden rounded-xl md:rounded-2xl bg-[#efeae4] aspect-square w-full ring-1 ring-[#e8e2da] transition duration-300 ease-out group-hover:-translate-y-0.5 group-hover:ring-[#d4cbc0] group-hover:shadow-[0_14px_28px_-20px_rgba(42,39,36,0.4)]"
+                className="relative overflow-hidden rounded-[1.15rem] bg-[#f3ebe4] aspect-[4/5] w-full ring-1 ring-[#ebe3da] transition duration-300 ease-out group-hover:-translate-y-1 group-hover:ring-[#d8cfc3] group-hover:shadow-[0_18px_36px_-22px_rgba(42,39,36,0.45)]"
                 onMouseEnter={() => {
                     if (hoverImage) setPreloadHover(true);
                 }}
@@ -188,10 +188,10 @@ export default function ProductCard({
                 </div>
             </div>
 
-            <div className="flex flex-1 flex-col pt-2.5 px-0.5">
+            <div className="flex flex-1 flex-col pt-3 px-0.5">
                 {!hideCategory && (
                     <p
-                        className="text-[9px] font-semibold tracking-[0.16em] uppercase mb-1 truncate"
+                        className="text-[9px] font-semibold tracking-[0.18em] uppercase mb-1.5 truncate"
                         style={{ color: "#b89a6a" }}
                     >
                         {categoryName}
@@ -199,13 +199,13 @@ export default function ProductCard({
                 )}
 
                 <Link href={href} className="block active:opacity-70">
-                    <h3 className="font-playfair text-[13px] sm:text-[15px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.1rem] sm:min-h-[2.35rem] group-hover:text-[#8a5a28] transition-colors">
+                    <h3 className="font-playfair text-[13px] sm:text-[14px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.2rem] group-hover:text-[#8a5a28] transition-colors">
                         {product.name}
                     </h3>
                     <span className="product-card-line" aria-hidden />
                 </Link>
 
-                <div className="mt-2 flex items-center justify-between gap-2 min-w-0">
+                <div className="mt-2.5 flex items-center justify-between gap-2 min-w-0">
                     <div className="flex items-baseline gap-1.5 min-w-0">
                         <Link
                             href={href}
@@ -233,7 +233,7 @@ export default function ProductCard({
                 {outOfStock ? (
                     <Link
                         href={href}
-                        className="mt-2.5 inline-flex w-full min-h-9 items-center justify-center rounded-full border border-[#e0d8ce] text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors"
+                        className="mt-3 inline-flex w-full min-h-10 items-center justify-center rounded-full border border-[#e0d8ce] text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors"
                     >
                         View piece
                     </Link>
@@ -241,10 +241,10 @@ export default function ProductCard({
                     <button
                         type="button"
                         onClick={handleAddToBag}
-                        className={`mt-2.5 w-full min-h-9 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.12em] uppercase transition-all duration-200 active:scale-[0.98] ${
+                        className={`mt-3 w-full min-h-10 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.12em] uppercase transition-all duration-200 active:scale-[0.98] ${
                             addedToBag
                                 ? "bg-[#2a2724] text-white"
-                                : "bg-[#E91E63] text-white hover:bg-[#d81b60]"
+                                : "bg-[#2a2724] text-white hover:bg-[#E91E63]"
                         }`}
                     >
                         {addedToBag ? "Added" : "Add to bag"}

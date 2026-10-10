@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { PROMO_LABEL } from "@/lib/promo";
-import FestivalCountdown from "./FestivalCountdown";
+import { daysUntil, FESTIVAL_SEASON } from "@/lib/festivalSeason";
 
 const CARDS = [
     {
@@ -26,8 +26,17 @@ const CARDS = [
     },
 ];
 
+function diwaliCountdownLine() {
+    const days = daysUntil(FESTIVAL_SEASON.diwali);
+    if (days < 0) return null;
+    if (days === 0) return "Diwali is today";
+    return `Diwali in ${days} day${days === 1 ? "" : "s"}`;
+}
+
 /** Festive occasion strip — Diwali edit + under-₹499 gifts. */
 export default function HomeGiftEdits() {
+    const countdown = diwaliCountdownLine();
+
     return (
         <section className="bg-[#fdfbf7] py-10 md:py-14 border-t border-[#efeae4]">
             <div className={HOME_CONTAINER}>
@@ -50,7 +59,11 @@ export default function HomeGiftEdits() {
                         <p className="text-[13px] sm:text-[14px] text-[#6b6560]">
                             {PROMO_LABEL} this festive season — shop the Diwali look or a smaller everyday gift.
                         </p>
-                        <FestivalCountdown className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5a28]" />
+                        {countdown ? (
+                            <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5a28]">
+                                {countdown}
+                            </p>
+                        ) : null}
                     </div>
                 </div>
 

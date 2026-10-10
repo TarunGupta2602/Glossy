@@ -139,21 +139,33 @@ function buildCollections(categories = [], productsByCategoryId = {}) {
 }
 
 function buildTopStyleTabs(collections, latestProducts) {
-  const allProducts = [];
   const seen = new Set();
+  const all = [];
 
-  for (const collection of collections) {
+  // ALL leads with necklaces — strongest lifestyle images for the first row.
+  const ordered = [
+    ...collections.filter((c) => c.label === "Necklaces"),
+    ...collections.filter((c) => c.label !== "Necklaces"),
+  ];
+
+  for (const collection of ordered) {
     for (const product of collection.products || []) {
+      if (all.length >= 10) break;
       if (seen.has(product.id)) continue;
       seen.add(product.id);
-      allProducts.push(product);
+      all.push(product);
     }
+    if (all.length >= 10) break;
   }
 
-  const all =
-    allProducts.length >= 4
-      ? allProducts.slice(0, 8)
-      : [...allProducts, ...latestProducts.filter((p) => !seen.has(p.id))].slice(0, 8);
+  if (all.length < 8) {
+    for (const product of latestProducts) {
+      if (all.length >= 10) break;
+      if (seen.has(product.id)) continue;
+      seen.add(product.id);
+      all.push(product);
+    }
+  }
 
   return [
     { id: "all", label: "All", href: "/shop", products: all },
@@ -161,7 +173,7 @@ function buildTopStyleTabs(collections, latestProducts) {
       id: c.id,
       label: c.label,
       href: c.href,
-      products: (c.products || []).slice(0, 8),
+      products: (c.products || []).slice(0, 10),
     })),
   ];
 }
@@ -227,8 +239,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010i">
-      {/* home-rev:20261010i — retire Navratri, warmer hero */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010j">
+      {/* home-rev:20261010j — top styles scroll, necklaces-first ALL, diwali-only copy */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>

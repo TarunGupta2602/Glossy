@@ -260,7 +260,6 @@ export default function HeroSlider() {
 
                             {slide.festival ? (
                                 <FestivalCountdown
-                                    slug={slide.festival}
                                     className={`mb-6 text-[12px] font-semibold uppercase tracking-[0.16em] ${slide.eyebrowClass}`}
                                 />
                             ) : null}
