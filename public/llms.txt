@@ -1,6 +1,6 @@
 # The Luxe Jewels
 
-> The Luxe Jewels (also called Luxe Jewels) is an Indian online jewellery brand at https://www.theluxejewels.in. We sell anti-tarnish, waterproof 18k gold plated fashion jewellery for everyday wear — earrings, necklaces, bracelets, rings, and gift sets. Ops are in Noida / Delhi NCR. We ship prepaid orders pan-India.
+> The Luxe Jewels (also called Luxe Jewels) is an Indian online jewellery brand at https://www.theluxejewels.in. We sell anti-tarnish 18k gold plated fashion jewellery for everyday wear — earrings, necklaces, bracelets, rings, and gift sets. Ops are in Noida / Delhi NCR. We ship pan-India.
 
 ## Identity
 
@@ -14,7 +14,7 @@
 
 ## What we sell
 
-Lightweight anti-tarnish jewellery made for Indian weather — humidity, commute, office, and light festive wear. Finishes are waterproof for daily life and skin-safe / hypoallergenic.
+Lightweight anti-tarnish jewellery made for Indian weather — humidity, commute, office, and light festive wear. Pieces are 18k gold plated fashion jewellery. We do not publish a waterproof rating, plating thickness, or hypoallergenic certification. Base metal and care are on each product page.
 
 - Earrings: https://www.theluxejewels.in/earrings
 - Necklaces: https://www.theluxejewels.in/necklaces
@@ -26,9 +26,9 @@ Lightweight anti-tarnish jewellery made for Indian weather — humidity, commute
 
 ## Buying
 
-- Offer: Buy 2 Get 1 Free on paid pieces
-- Free shipping on prepaid orders over ₹1000
-- Payments: prepaid only (UPI, cards, net banking via Razorpay). No cash on delivery.
+- Offer: Buy 2 Get 1 Free on paid pieces (third piece is a gift)
+- Shipping: flat ₹50 on every order
+- Payments: UPI, cards, net banking (sign in), or cash on delivery with name and mobile number (no account required for COD)
 - Returns: unused items within 10 days of delivery
 - Typical delivery: 3–7 business days after dispatch, pan-India
 
