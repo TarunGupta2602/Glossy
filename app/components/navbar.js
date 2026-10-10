@@ -26,8 +26,7 @@ const SHOP_LINKS = [
 
 const GIFT_LINKS = [
     { href: "/gifts/under-499", label: "Gifts under ₹499", hint: "Everyday sparkle" },
-    { href: "/festive/diwali", label: "Diwali jewellery", hint: "Office to puja", badge: "Festive" },
-    { href: "/festive/navratri", label: "Navratri jewellery", hint: "Desk to dandiya" },
+    { href: "/festive/diwali", label: "Diwali jewellery", hint: "Office to puja", badge: "Diwali" },
 ];
 
 const PRIMARY_LINKS = [

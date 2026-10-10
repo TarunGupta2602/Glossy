@@ -71,7 +71,7 @@ export default async function GiftsUnder499Page() {
             />
             <GiftLandingContent
                 title="Jewellery gifts under ₹499"
-                subtitle="Everyday anti-tarnish studs, chains and bracelets under ₹499 — wrap included. For a festival look, open the Diwali or Navratri edit."
+                subtitle="Everyday anti-tarnish studs, chains and bracelets under ₹499 — wrap included. For a festival look, open the Diwali or Diwali edit."
                 maxPrice={MAX}
                 heroImage="/festive/gifts-under-499-hero.jpg"
                 products={products}

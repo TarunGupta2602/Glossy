@@ -258,10 +258,6 @@ export default async function BlogPage({ searchParams }) {
                                 Diwali edit
                             </Link>
                             <span className="text-[#d4cbc0]">·</span>
-                            <Link href="/festive/navratri" className="hover:text-[#E91E63] transition-colors">
-                                Navratri edit
-                            </Link>
-                            <span className="text-[#d4cbc0]">·</span>
                             <Link href="/gifts/under-499" className="hover:text-[#E91E63] transition-colors">
                                 Gifts under ₹499
                             </Link>

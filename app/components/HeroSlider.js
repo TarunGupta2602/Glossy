@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import FestivalCountdown from "./FestivalCountdown";
-import { getLeadFestival } from "@/lib/festivalSeason";
 
 const SLIDES = [
     {
@@ -22,29 +21,10 @@ const SLIDES = [
         primary: { href: "/shop", label: "Shop" },
         chip: "Daily wear edit",
         chipEyebrow: "Fresh drop",
-        surface: "md:bg-[#fdfbf7]",
-        frame: "bg-[#efeae4]",
+        surface: "md:bg-[#f7f1e8]",
+        frame: "bg-[#ead9c4]",
         button: "#b59e7b",
         isMain: true,
-    },
-    {
-        id: "navratri",
-        eyebrow: "Navratri edit",
-        title: ["Navratri edit: nine days, ", "everyday sparkle"],
-        accentClass: "text-[#7a2248]",
-        eyebrowClass: "text-[#7a2248]",
-        body: "Desk to dandiya — lightweight colourful earrings and necklaces under ₹999. Buy 2 Get 1 Free on every order.",
-        image: "/festive/navratri-hero-banner.jpg",
-        alt: "Navratri gold jewellery with dandiya sticks",
-        banner: true,
-        primary: { href: "/festive/navratri", label: "Shop Navratri" },
-        secondary: { href: "/festive/diwali", label: "Shop Diwali" },
-        chip: "Buy 2 Get 1 Free",
-        chipEyebrow: "Festive offer",
-        surface: "md:bg-[#f8f0f4]",
-        frame: "bg-[#ead4de]",
-        button: "#7a2248",
-        festival: "navratri",
     },
     {
         id: "diwali",
@@ -58,7 +38,7 @@ const SLIDES = [
         alt: "Hands wearing gold rings in soft outdoor light",
         banner: true,
         primary: { href: "/festive/diwali", label: "Shop Diwali" },
-        secondary: { href: "/festive/navratri", label: "Shop Navratri" },
+        secondary: { href: "/gifts/under-499", label: "Gifts under ₹499" },
         chip: "Buy 2 Get 1 Free",
         chipEyebrow: "Festive offer",
         surface: "md:bg-[#f7f1e8]",
@@ -99,15 +79,12 @@ function useHeroVideoOk() {
 }
 
 /**
- * Homepage hero carousel: brand header, then Navratri, then Diwali.
+ * Homepage hero carousel: brand header, then Diwali.
  * Auto-advances on its own. Arrows/dots only pause briefly after a tap.
  */
 export default function HeroSlider() {
-    const leadId = getLeadFestival().slug;
-    const leadSlide = SLIDES.find((item) => item.id === leadId);
-    const slides = leadSlide
-        ? [leadSlide, ...SLIDES.filter((item) => item.id !== leadId)]
-        : SLIDES;
+    // Diwali-led season: keep brand slide first, festive second.
+    const slides = SLIDES;
     const [index, setIndex] = useState(0);
     const [hold, setHold] = useState(false);
     const [armedVideos, setArmedVideos] = useState({});
@@ -174,7 +151,7 @@ export default function HeroSlider() {
 
     return (
         <section
-            className={`relative overflow-hidden ${slide.banner ? "bg-[#f7f3ee]" : slide.surface}`}
+            className={`relative overflow-hidden ${slide.banner ? "bg-[#ebe2d6]" : slide.surface}`}
             aria-roledescription="carousel"
             aria-label="The Luxe Jewels"
         >
@@ -202,7 +179,7 @@ export default function HeroSlider() {
                                     quality={78}
                                     placeholder="blur"
                                     blurDataURL={IMAGE_BLUR_DATA_URL}
-                                    className={`object-cover ${
+                                    className={`object-cover brightness-[0.9] contrast-[1.08] saturate-[1.05] ${
                                         item.video
                                             ? "object-[62%_center] md:object-[68%_35%]"
                                             : "object-[78%_center] md:object-[70%_28%]"
@@ -214,7 +191,7 @@ export default function HeroSlider() {
                                             if (el) videoRefs.current[item.id] = el;
                                             else delete videoRefs.current[item.id];
                                         }}
-                                        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                                        className={`absolute inset-0 h-full w-full object-cover brightness-[0.9] contrast-[1.08] saturate-[1.05] transition-opacity duration-700 ${
                                             item.id === "main"
                                                 ? "object-[62%_center] md:object-[68%_35%]"
                                                 : "object-[55%_40%] md:object-[60%_35%]"
@@ -236,8 +213,10 @@ export default function HeroSlider() {
                             </div>
                         );
                     })}
-                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#f7f3ee] from-[10%] via-[#f7f3ee]/85 via-[48%] to-transparent to-[74%]" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#f7f3ee] to-transparent md:hidden" />
+                    <div className="pointer-events-none absolute inset-0 bg-[#8a5a28]/[0.07]" />
+                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#ebe2d6] from-[0%] via-[#ebe2d6]/75 via-[36%] to-transparent to-[62%]" />
+                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-[radial-gradient(ellipse_at_78%_42%,transparent_15%,rgba(42,39,36,0.22)_100%)]" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#ebe2d6] to-transparent md:hidden" />
                 </div>
             ) : (
                 <div className="absolute inset-0 md:hidden" aria-hidden="true">

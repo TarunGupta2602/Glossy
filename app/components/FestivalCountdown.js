@@ -8,19 +8,15 @@ export default function FestivalCountdown({ className = "", style, slug }) {
     const [name, setName] = useState("Diwali");
 
     useEffect(() => {
-        if (slug === "diwali") {
-            setName("Diwali");
-            setDays(daysUntil(FESTIVAL_SEASON.diwali));
+        if (slug === "diwali" || !slug) {
+            const lead = slug === "diwali" ? { name: "Diwali", date: FESTIVAL_SEASON.diwali } : getLeadFestival();
+            setName(lead.name);
+            setDays(daysUntil(lead.date));
             return;
         }
-        if (slug === "navratri") {
-            setName("Navratri");
-            setDays(daysUntil(FESTIVAL_SEASON.navratriStart));
-            return;
-        }
-        const lead = getLeadFestival();
-        setName(lead.name);
-        setDays(daysUntil(lead.date));
+        // Retired festival slugs fall back to Diwali.
+        setName("Diwali");
+        setDays(daysUntil(FESTIVAL_SEASON.diwali));
     }, [slug]);
 
     if (days == null || days < 0) return null;

@@ -4,7 +4,6 @@ import { HOME_CONTAINER } from "@/lib/siteLayout";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
 import { PROMO_LABEL } from "@/lib/promo";
 import FestivalCountdown from "./FestivalCountdown";
-import { getLeadFestival } from "@/lib/festivalSeason";
 
 const CARDS = [
     {
@@ -17,20 +16,18 @@ const CARDS = [
         accent: "#e8d5b5",
     },
     {
-        href: "/festive/navratri",
-        title: "Navratri jewellery",
-        hint: "Desk to dandiya",
-        image: "/festive/navratri-hero-banner.jpg",
-        alt: "Navratri gold jewellery with dandiya sticks",
-        position: "object-[68%_42%]",
-        accent: "#f3c6d6",
+        href: "/gifts/under-499",
+        title: "Gifts under ₹499",
+        hint: "Easy everyday gifting",
+        image: "/hero/hero-b-poster.jpg",
+        alt: "Gold rings styled for everyday gifting",
+        position: "object-[55%_40%]",
+        accent: "#e8d5b5",
     },
 ];
 
-/** Festive occasion strip — two distinct edits, one offer. Navratri leads until it ends. */
+/** Festive occasion strip — Diwali edit + under-₹499 gifts. */
 export default function HomeGiftEdits() {
-    const lead = getLeadFestival().slug;
-    const cards = lead === "diwali" ? [...CARDS] : [...CARDS].reverse();
     return (
         <section className="bg-[#fdfbf7] py-10 md:py-14 border-t border-[#efeae4]">
             <div className={HOME_CONTAINER}>
@@ -43,22 +40,22 @@ export default function HomeGiftEdits() {
                             This festive season
                         </p>
                         <h2 className="font-playfair text-[1.85rem] sm:text-[2.2rem] font-semibold text-[#2a2724] tracking-tight leading-[1.12]">
-                            Two festivals.{" "}
+                            Diwali edit.{" "}
                             <em className="italic font-normal" style={{ color: "#b89a6a" }}>
-                                One offer.
+                                Ready to gift.
                             </em>
                         </h2>
                     </div>
                     <div className="max-w-sm">
                         <p className="text-[13px] sm:text-[14px] text-[#6b6560]">
-                            {PROMO_LABEL} this festive season — pick the edit that matches the night.
+                            {PROMO_LABEL} this festive season — shop the Diwali look or a smaller everyday gift.
                         </p>
                         <FestivalCountdown className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a5a28]" />
                     </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
-                    {cards.map((card) => (
+                    {CARDS.map((card) => (
                         <Link
                             key={card.href}
                             href={card.href}
@@ -91,13 +88,6 @@ export default function HomeGiftEdits() {
                             </div>
                         </Link>
                     ))}
-                </div>
-
-                <div className="mt-5 md:mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-[#6b6560]">
-                    <span>Need a smaller gift?</span>
-                    <Link href="/gifts/under-499" className="font-semibold text-[#2a2724] hover:text-[#E91E63]">
-                        Gifts under ₹499
-                    </Link>
                 </div>
             </div>
         </section>

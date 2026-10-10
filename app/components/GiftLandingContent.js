@@ -76,12 +76,6 @@ export default function GiftLandingContent({
                                 >
                                     Diwali edit
                                 </Link>
-                                <Link
-                                    href="/festive/navratri"
-                                    className="inline-flex min-h-10 items-center rounded-full border border-gray-200 bg-white px-4 text-[12px] font-semibold text-gray-900 hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
-                                >
-                                    Navratri edit
-                                </Link>
                             </div>
                         </div>
 
@@ -154,12 +148,12 @@ export default function GiftLandingContent({
                         </div>
                     </Link>
                     <Link
-                        href="/festive/navratri"
-                        className="group relative overflow-hidden rounded-[1.35rem] min-h-[180px] bg-[#f3e6ec]"
+                        href="/shop"
+                        className="group relative overflow-hidden rounded-[1.35rem] min-h-[180px] bg-[#f6f0ec]"
                     >
                         <Image
-                            src="/festive/navratri-festive-hero.jpg"
-                            alt="Navratri jewellery edit"
+                            src="/hero/hero-a-poster.jpg"
+                            alt="Shop all anti-tarnish jewellery"
                             fill
                             sizes="(max-width: 768px) 100vw, 50vw"
                             quality={80}
@@ -169,11 +163,11 @@ export default function GiftLandingContent({
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                         <div className="absolute inset-x-0 bottom-0 p-5">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#f3c6d6] mb-1">
-                                Festival look
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#e8d5b5] mb-1">
+                                Full catalogue
                             </p>
                             <p className="font-playfair text-[1.35rem] text-white font-medium">
-                                Shop the Navratri edit
+                                Shop all jewellery
                             </p>
                         </div>
                     </Link>
@@ -189,8 +183,8 @@ export default function GiftLandingContent({
                         last-minute festive boxes. Add two paid pieces for {PROMO_LABEL}.
                     </p>
                     <p className="text-[14px] text-gray-600 leading-relaxed">
-                        Want a festival look rather than a budget pick? Open the Diwali or Navratri
-                        edit — those pages are curated by occasion, not just price.
+                        Want a festival look rather than a budget pick? Open the Diwali edit — curated
+                        by occasion, not just price.
                     </p>
                 </div>
             </section>

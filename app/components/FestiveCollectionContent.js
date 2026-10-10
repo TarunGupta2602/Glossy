@@ -4,7 +4,6 @@ import CollectionHero from "./CollectionHero";
 import ProductCard from "./ProductCard";
 import FestivalCountdown from "./FestivalCountdown";
 import { reviewCardProps } from "@/lib/reviewCounts";
-import { NAVRATRI_COLOURS } from "@/lib/festivalSeason";
 
 export default function FestiveCollectionContent({
     collection,
@@ -105,36 +104,6 @@ export default function FestiveCollectionContent({
                             ))}
                         </div>
                     </div>
-
-                    {collection.showColourEdit ? (
-                        <div className="mb-10 md:mb-12 rounded-[1.35rem] border border-[#efeae4] bg-white px-5 py-5 sm:px-6">
-                            <p
-                                className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-2"
-                                style={{ color: accent }}
-                            >
-                                Navratri colours edit
-                            </p>
-                            <p className="text-[13px] text-[#6b6560] mb-4 max-w-xl">
-                                Nine days, nine colours — match lightweight studs and drops to the day,
-                                without costume jewellery.
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                                {NAVRATRI_COLOURS.map((colour) => (
-                                    <span
-                                        key={colour.day}
-                                        className="inline-flex items-center gap-2 rounded-full border border-[#efeae4] bg-[#fdfbf7] pl-1.5 pr-3 py-1 text-[11px] text-[#5c5752]"
-                                    >
-                                        <span
-                                            className="h-4 w-4 rounded-full ring-1 ring-black/10"
-                                            style={{ backgroundColor: colour.hex }}
-                                            aria-hidden
-                                        />
-                                        Day {colour.day} · {colour.name}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    ) : null}
 
                     {products.length > 0 ? (
                         sections.length > 0 ? (

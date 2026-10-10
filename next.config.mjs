@@ -109,6 +109,11 @@ const nextConfig = {
         destination: "/shop",
         permanent: true,
       },
+      {
+        source: "/festive/navratri",
+        destination: "/festive/diwali",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

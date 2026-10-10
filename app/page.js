@@ -227,8 +227,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010h">
-      {/* home-rev:20261010h — compressed hero video backgrounds */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010i">
+      {/* home-rev:20261010i — retire Navratri, warmer hero */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
