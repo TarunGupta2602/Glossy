@@ -6,7 +6,6 @@ import {
     HOME_CONTAINER,
     HOME_SECTION_Y,
     HOME_SECTION_HEADER_GAP,
-    HOME_SURFACE_SAND,
     HOME_SURFACE_EDGE,
 } from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
@@ -39,7 +38,9 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
     };
 
     return (
-        <section className={`${className || HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE}`}>
+        <section
+            className={`${className || HOME_SECTION_Y} bg-[#fdfbf7] ${HOME_SURFACE_EDGE}`}
+        >
             <div className={HOME_CONTAINER}>
                 <div
                     className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}
@@ -47,22 +48,22 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                     <div className="text-left">
                         <p
                             className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
-                            style={{ color: "#b59e7b" }}
+                            style={{ color: "#b89a6a" }}
                         >
                             Browse
                         </p>
                         <h2 className="text-3xl sm:text-4xl font-playfair font-medium text-[#2a2724] tracking-tight">
                             Top{" "}
-                            <em className="italic font-normal" style={{ color: "#b59e7b" }}>
+                            <em className="italic font-normal" style={{ color: "#b89a6a" }}>
                                 styles
                             </em>
                         </h2>
                     </div>
                 </div>
 
-                <div className="mb-8 md:mb-8 lg:mb-10 overflow-x-auto no-scrollbar">
+                <div className="mb-8 md:mb-9 overflow-x-auto no-scrollbar">
                     <div
-                        className="flex md:flex-wrap items-center justify-start gap-2 sm:gap-2.5 w-max md:w-auto"
+                        className="flex md:flex-wrap items-center justify-start gap-2 w-max md:w-auto pb-0.5"
                         role="tablist"
                         aria-label="Shop by style"
                     >
@@ -75,10 +76,10 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                                     role="tab"
                                     aria-selected={isActive}
                                     onClick={() => selectTab(tab.id)}
-                                    className={`shrink-0 px-4 sm:px-5 py-2.5 min-h-10 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border transition-all duration-300 ease-out active:scale-95 ${
+                                    className={`shrink-0 px-4 sm:px-5 py-2 min-h-10 text-[11px] font-semibold tracking-[0.12em] uppercase rounded-full border transition-all duration-300 ease-out active:scale-95 ${
                                         isActive
-                                            ? "bg-[#2a2724] text-white border-[#2a2724] shadow-[0_10px_24px_-16px_rgba(42,39,36,0.7)]"
-                                            : "bg-white text-gray-700 border-gray-200 hover:border-[#b89a6a] hover:text-[#2a2724]"
+                                            ? "bg-[#2a2724] text-white border-[#2a2724]"
+                                            : "bg-transparent text-[#6b6560] border-[#e0d8ce] hover:border-[#b89a6a] hover:text-[#2a2724]"
                                     }`}
                                 >
                                     {tab.label}
@@ -92,7 +93,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                     <>
                         <div
                             key={`${activeTab.id}-${animKey}`}
-                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6 lg:gap-7 transition-opacity duration-200 ${
+                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:gap-x-6 md:gap-y-12 transition-opacity duration-200 ${
                                 isPending ? "opacity-55" : "opacity-100"
                             }`}
                         >

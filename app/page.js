@@ -227,8 +227,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010b">
-      {/* home-rev:20261010a — explore edits sit under the hero */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010c">
+      {/* home-rev:20261010c — cleaner product cards */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>

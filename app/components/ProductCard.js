@@ -77,9 +77,9 @@ export default function ProductCard({
     };
 
     return (
-        <article className="group flex flex-col h-full overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-[transform,shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(42,39,36,0.42)]">
+        <article className="group flex flex-col h-full">
             <div
-                className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full"
+                className="relative overflow-hidden rounded-2xl md:rounded-[1.35rem] bg-[#f4f2f0] aspect-[4/5] w-full ring-1 ring-[#e8e2da]/80 transition-[box-shadow,transform] duration-300 ease-out group-hover:ring-[#d4cbc0] group-hover:shadow-[0_16px_36px_-24px_rgba(42,39,36,0.35)]"
                 onMouseEnter={() => {
                     if (hoverImage) setLoadHover(true);
                 }}
@@ -90,12 +90,12 @@ export default function ProductCard({
                         alt={product.image_alt || product.name}
                         fill
                         sizes={sizes}
-                        quality={priority ? 70 : 55}
+                        quality={priority ? 75 : 60}
                         priority={priority}
                         loading={priority ? "eager" : "lazy"}
                         placeholder="blur"
                         blurDataURL={IMAGE_BLUR_DATA_URL}
-                        className={`object-cover transition-[transform,opacity] duration-[700ms] ease-out will-change-transform md:group-hover:scale-[1.03] ${
+                        className={`object-cover transition-[transform,opacity] duration-700 ease-out will-change-transform md:group-hover:scale-[1.04] ${
                             hoverImage ? "md:group-hover:opacity-0" : ""
                         } ${outOfStock ? "opacity-70" : ""}`}
                     />
@@ -105,7 +105,7 @@ export default function ProductCard({
                             alt=""
                             fill
                             sizes={sizes}
-                            quality={55}
+                            quality={60}
                             loading="lazy"
                             aria-hidden
                             className="object-cover opacity-0 transition-opacity duration-500 md:group-hover:opacity-100"
@@ -115,19 +115,19 @@ export default function ProductCard({
 
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-1.5 pointer-events-none max-w-[75%]">
                     {outOfStock ? (
-                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
+                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724]/92 text-white text-[9px] font-semibold tracking-[0.08em] uppercase backdrop-blur-sm">
                             Out of stock
                         </span>
                     ) : left > 0 ? (
-                        <span className="px-2.5 py-1 rounded-full bg-[#8a5a28] text-[#f7f1e8] text-[9px] font-semibold tracking-wide">
+                        <span className="px-2.5 py-1 rounded-full bg-[#8a5a28]/95 text-[#f7f1e8] text-[9px] font-semibold tracking-[0.08em] uppercase backdrop-blur-sm">
                             Only {left} left
                         </span>
                     ) : hasDiscount ? null : isRealBestseller(product.units_sold) ? (
-                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724] text-white text-[9px] font-semibold tracking-wide">
+                        <span className="px-2.5 py-1 rounded-full bg-[#2a2724]/92 text-white text-[9px] font-semibold tracking-[0.08em] uppercase backdrop-blur-sm">
                             Bestseller
                         </span>
                     ) : product.is_new ? (
-                        <span className="px-2.5 py-1 rounded-full bg-white text-[#2a2724] text-[9px] font-semibold tracking-wide ring-1 ring-black/5">
+                        <span className="px-2.5 py-1 rounded-full bg-white/95 text-[#2a2724] text-[9px] font-semibold tracking-[0.08em] uppercase ring-1 ring-black/[0.04]">
                             New
                         </span>
                     ) : null}
@@ -138,10 +138,10 @@ export default function ProductCard({
                         type="button"
                         onClick={handleWishlist}
                         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                        className={`absolute top-3 right-3 z-20 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 ${
+                        className={`absolute top-3 right-3 z-20 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 backdrop-blur-sm ${
                             wishlisted
                                 ? "bg-[#E91E63] text-white"
-                                : "bg-white text-gray-500 hover:text-[#E91E63]"
+                                : "bg-white/95 text-[#8a847c] hover:text-[#E91E63] ring-1 ring-black/[0.04]"
                         } ${wishPulse ? "scale-110" : ""}`}
                     >
                         <svg
@@ -161,61 +161,67 @@ export default function ProductCard({
                     </button>
                 )}
 
-                <div className="hidden md:flex absolute inset-x-3 bottom-3 z-20 pointer-events-none translate-y-2 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                    <Link
-                        href={href}
-                        className={`pointer-events-auto inline-flex items-center justify-center gap-2 w-full min-h-10 rounded-xl text-[10px] font-semibold tracking-[0.14em] uppercase backdrop-blur-sm transition-colors ${
-                            outOfStock
-                                ? "bg-[#efeae4] text-[#6b6560]"
-                                : "bg-[#2a2724]/88 text-white hover:bg-[#2a2724]"
-                        }`}
-                    >
-                        View
-                    </Link>
+                <div className="hidden md:flex absolute inset-x-0 bottom-0 z-20 pointer-events-none translate-y-1 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                    <div className="w-full p-3 bg-gradient-to-t from-black/35 to-transparent">
+                        <Link
+                            href={href}
+                            className={`pointer-events-auto inline-flex items-center justify-center w-full min-h-10 rounded-full text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
+                                outOfStock
+                                    ? "bg-white/90 text-[#6b6560]"
+                                    : "bg-white/95 text-[#2a2724] hover:bg-white"
+                            }`}
+                        >
+                            View piece
+                        </Link>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex flex-1 flex-col px-2.5 sm:px-4 pt-2.5 sm:pt-3.5 pb-3 sm:pb-4">
+            <div className="flex flex-1 flex-col pt-3.5 px-0.5">
                 {!hideCategory && (
-                    <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gray-400 mb-1 truncate">
+                    <p
+                        className="text-[10px] font-medium tracking-[0.16em] uppercase mb-1.5 truncate"
+                        style={{ color: "#b89a6a" }}
+                    >
                         {categoryName}
                     </p>
                 )}
 
                 <Link href={href} className="block active:opacity-70">
-                    <h3 className="font-playfair text-[13px] sm:text-[16px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.15rem] sm:min-h-[2.4rem] group-hover:text-[#E91E63] transition-colors">
+                    <h3 className="font-playfair text-[15px] sm:text-[17px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.4rem] sm:min-h-[2.55rem] group-hover:text-[#8a5a28] transition-colors">
                         {product.name}
                     </h3>
                 </Link>
 
-                <div className="mt-2.5 flex items-baseline gap-2 min-w-0 flex-wrap">
-                    <Link
-                        href={href}
-                        className="text-[15px] font-bold text-[#2a2724] tabular-nums"
-                    >
-                        ₹{price}
-                    </Link>
-                    {hasDiscount && (
-                        <span className="text-[12px] text-gray-400 line-through tabular-nums">
-                            ₹
-                            {originalPrice.toLocaleString(undefined, {
-                                maximumFractionDigits: 0,
-                            })}
-                        </span>
+                <div className="mt-2 flex items-center justify-between gap-2 min-w-0">
+                    <div className="flex items-baseline gap-2 min-w-0">
+                        <Link
+                            href={href}
+                            className="text-[15px] sm:text-[16px] font-semibold text-[#2a2724] tabular-nums"
+                        >
+                            ₹{price}
+                        </Link>
+                        {hasDiscount && (
+                            <span className="text-[12px] text-[#a89880] line-through tabular-nums">
+                                ₹
+                                {originalPrice.toLocaleString(undefined, {
+                                    maximumFractionDigits: 0,
+                                })}
+                            </span>
+                        )}
+                    </div>
+                    {reviewCount > 0 && (
+                        <p className="shrink-0 text-[11px] text-[#a89880] tabular-nums">
+                            <span className="text-[#b89a6a]">★</span>{" "}
+                            {reviewAverage > 0 ? reviewAverage.toFixed(1) : "—"}
+                        </p>
                     )}
                 </div>
-
-                {reviewCount > 0 && (
-                    <p className="mt-1.5 text-[11px] text-gray-400 tabular-nums">
-                        <span className="text-amber-500">★</span>{" "}
-                        {reviewAverage > 0 ? reviewAverage.toFixed(1) : "—"} ({reviewCount})
-                    </p>
-                )}
 
                 {outOfStock ? (
                     <Link
                         href={href}
-                        className="mt-2.5 sm:mt-3 inline-flex w-full min-h-9 sm:min-h-10 items-center justify-center rounded-full bg-[#efeae4] text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase text-[#6b6560]"
+                        className="mt-3.5 inline-flex w-full min-h-10 items-center justify-center rounded-full border border-[#e0d8ce] bg-transparent text-[11px] font-semibold tracking-[0.12em] uppercase text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors"
                     >
                         View piece
                     </Link>
@@ -223,10 +229,10 @@ export default function ProductCard({
                     <button
                         type="button"
                         onClick={handleAddToBag}
-                        className={`mt-2.5 sm:mt-3 w-full min-h-9 sm:min-h-10 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-[0.1em] sm:tracking-[0.12em] uppercase transition-colors ${
+                        className={`mt-3.5 w-full min-h-10 rounded-full text-[11px] font-semibold tracking-[0.12em] uppercase transition-all duration-200 active:scale-[0.98] ${
                             addedToBag
                                 ? "bg-[#2a2724] text-white"
-                                : "bg-[#E91E63] text-white active:bg-[#C2185B]"
+                                : "bg-[#2a2724] text-white hover:bg-[#3d3935]"
                         }`}
                     >
                         {addedToBag ? "Added" : "Add to bag"}
