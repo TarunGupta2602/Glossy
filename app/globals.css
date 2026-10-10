@@ -148,8 +148,21 @@ select:focus-visible,
 }
 
 .group:hover .product-card-line,
-.group:focus-within .product-card-line {
+.group:focus-within .product-card-line,
+.group:active .product-card-line {
   width: 2.75rem;
+}
+
+/* Touch phones: show gold line without needing hover */
+@media (hover: none) {
+  .product-card-line {
+    width: 2rem;
+  }
+
+  .product-card-accent {
+    width: 55% !important;
+    opacity: 0.9;
+  }
 }
 
 @keyframes product-scroll-rise {

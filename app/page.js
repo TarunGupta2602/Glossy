@@ -229,8 +229,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010k">
-      {/* home-rev:20261010k — drop home reviews; full Instagram reel row */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010m">
+      {/* home-rev:20261010m — mobile parity for hero video + card motion */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>

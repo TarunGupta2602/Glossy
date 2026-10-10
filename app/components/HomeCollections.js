@@ -23,6 +23,7 @@ export default function HomeCollections({ collections = [] }) {
     const [stepPx, setStepPx] = useState(260);
     const resumeTimer = useRef(null);
     const holdAutoplay = useRef(false);
+    const touchStartX = useRef(null);
 
     useEffect(() => {
         const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -126,10 +127,23 @@ export default function HomeCollections({ collections = [] }) {
                 </button>
 
                 <div
-                    className="relative mx-auto h-[340px] sm:h-[400px] md:h-[460px] lg:h-[500px]"
+                    className="relative mx-auto h-[340px] sm:h-[400px] md:h-[460px] lg:h-[500px] touch-pan-y"
                     style={{ perspective: "1400px", transformStyle: "preserve-3d" }}
                     aria-roledescription="carousel"
                     aria-label="Shop by edit"
+                    onTouchStart={(e) => {
+                        touchStartX.current = e.changedTouches[0]?.clientX ?? null;
+                    }}
+                    onTouchEnd={(e) => {
+                        const start = touchStartX.current;
+                        const end = e.changedTouches[0]?.clientX;
+                        touchStartX.current = null;
+                        if (start == null || end == null) return;
+                        const delta = end - start;
+                        if (Math.abs(delta) < 40) return;
+                        pauseBriefly();
+                        go(delta < 0 ? 1 : -1);
+                    }}
                 >
                     {items.map((item, index) => {
                         const title = item.label || item.name;

@@ -81,8 +81,11 @@ export default function ProductCard({
     return (
         <article className="group flex flex-col h-full">
             <div
-                className="relative overflow-hidden rounded-[1.15rem] bg-[#f3ebe4] aspect-[4/5] w-full ring-1 ring-[#ebe3da] transition duration-300 ease-out group-hover:-translate-y-1 group-hover:ring-[#d8cfc3] group-hover:shadow-[0_18px_36px_-22px_rgba(42,39,36,0.45)]"
+                className="relative overflow-hidden rounded-[1.15rem] bg-[#f3ebe4] aspect-[4/5] w-full ring-1 ring-[#ebe3da] transition duration-300 ease-out group-hover:-translate-y-1 group-active:-translate-y-0.5 group-hover:ring-[#d8cfc3] group-hover:shadow-[0_18px_36px_-22px_rgba(42,39,36,0.45)]"
                 onMouseEnter={() => {
+                    if (hoverImage) setPreloadHover(true);
+                }}
+                onTouchStart={() => {
                     if (hoverImage) setPreloadHover(true);
                 }}
             >
@@ -97,7 +100,7 @@ export default function ProductCard({
                         loading={priority ? "eager" : "lazy"}
                         placeholder="blur"
                         blurDataURL={IMAGE_BLUR_DATA_URL}
-                        className={`object-cover transition-[transform,opacity] duration-500 ease-out will-change-transform md:group-hover:scale-[1.05] ${
+                        className={`object-cover transition-[transform,opacity] duration-500 ease-out will-change-transform group-hover:scale-[1.04] group-active:scale-[1.02] ${
                             canSwapHover ? "md:group-hover:opacity-0" : ""
                         } ${outOfStock ? "opacity-70" : ""}`}
                     />
@@ -120,9 +123,9 @@ export default function ProductCard({
                     ) : null}
                 </Link>
 
-                <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#2a2724]/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
+                <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#2a2724]/20 via-transparent to-transparent opacity-40 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100" />
                 <span
-                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[2px] w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-transparent via-[#b89a6a] to-transparent transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:group-hover:w-2/3"
+                    className="product-card-accent pointer-events-none absolute bottom-0 left-1/2 z-10 h-[2px] w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-transparent via-[#b89a6a] to-transparent transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-2/3 group-active:w-1/2"
                     aria-hidden
                 />
 

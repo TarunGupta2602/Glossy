@@ -57,22 +57,17 @@ function useHeroVideoOk() {
     useEffect(() => {
         const decide = () => {
             const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-            const desktop = window.matchMedia("(min-width: 768px)").matches;
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             const saveData = Boolean(connection?.saveData);
             const slowNet = /2g/i.test(connection?.effectiveType || "");
-            setOk(desktop && !reduceMotion && !saveData && !slowNet);
+            // Mobile + desktop: play compressed hero videos unless data-saver / slow net / reduced motion.
+            setOk(!reduceMotion && !saveData && !slowNet);
         };
 
         decide();
-        const mq = window.matchMedia("(min-width: 768px)");
-        const onChange = () => decide();
-        mq.addEventListener?.("change", onChange);
-        window.addEventListener("resize", onChange);
-        return () => {
-            mq.removeEventListener?.("change", onChange);
-            window.removeEventListener("resize", onChange);
-        };
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        connection?.addEventListener?.("change", decide);
+        return () => connection?.removeEventListener?.("change", decide);
     }, []);
 
     return ok;
@@ -156,7 +151,7 @@ export default function HeroSlider() {
             aria-label="The Luxe Jewels"
         >
             {slide.banner ? (
-                <div className="relative h-[30vh] min-h-[150px] max-h-[200px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
+                <div className="absolute inset-0">
                     {slides.filter((item) => item.banner).map((item) => {
                         const active = item.id === slide.id;
                         const mounted = Boolean(item.video && videoOk && armedVideos[item.id]);
@@ -181,8 +176,8 @@ export default function HeroSlider() {
                                     blurDataURL={IMAGE_BLUR_DATA_URL}
                                     className={`object-cover brightness-[0.9] contrast-[1.08] saturate-[1.05] ${
                                         item.video
-                                            ? "object-[62%_center] md:object-[68%_35%]"
-                                            : "object-[78%_center] md:object-[70%_28%]"
+                                            ? "object-[55%_35%] md:object-[68%_35%]"
+                                            : "object-[70%_30%] md:object-[70%_28%]"
                                     }`}
                                 />
                                 {mounted ? (
@@ -193,7 +188,7 @@ export default function HeroSlider() {
                                         }}
                                         className={`absolute inset-0 h-full w-full object-cover brightness-[0.9] contrast-[1.08] saturate-[1.05] transition-opacity duration-700 ${
                                             item.id === "main"
-                                                ? "object-[62%_center] md:object-[68%_35%]"
+                                                ? "object-[55%_35%] md:object-[68%_35%]"
                                                 : "object-[55%_40%] md:object-[60%_35%]"
                                         } ${videoVisible ? "opacity-100" : "opacity-0"}`}
                                         muted
@@ -214,9 +209,9 @@ export default function HeroSlider() {
                         );
                     })}
                     <div className="pointer-events-none absolute inset-0 bg-[#8a5a28]/[0.07]" />
+                    <div className="pointer-events-none absolute inset-0 md:hidden bg-gradient-to-b from-[#ebe2d6]/25 via-[#ebe2d6]/70 to-[#ebe2d6]" />
                     <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#ebe2d6] from-[0%] via-[#ebe2d6]/75 via-[36%] to-transparent to-[62%]" />
                     <div className="pointer-events-none absolute inset-0 hidden md:block bg-[radial-gradient(ellipse_at_78%_42%,transparent_15%,rgba(42,39,36,0.22)_100%)]" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#ebe2d6] to-transparent md:hidden" />
                 </div>
             ) : (
                 <div className="absolute inset-0 md:hidden" aria-hidden="true">
@@ -235,8 +230,10 @@ export default function HeroSlider() {
                 </div>
             )}
 
-            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex md:items-center py-5 md:py-8 lg:py-10 ${
-                slide.banner ? "min-h-0 items-start md:min-h-[420px] lg:min-h-[460px] xl:min-h-[500px] md:items-center" : "min-h-[88svh] items-end md:min-h-0 md:items-center"
+            <div className={`relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex py-6 md:py-8 lg:py-10 ${
+                slide.banner
+                    ? "min-h-[78svh] items-end md:min-h-[420px] lg:min-h-[460px] xl:min-h-[500px] md:items-center"
+                    : "min-h-[88svh] items-end md:min-h-0 md:items-center"
             }`}>
                 <div className="grid w-full md:grid-cols-[1.05fr_0.95fr] lg:grid-cols-[1.08fr_0.92fr] gap-10 lg:gap-14 items-center">
                     <div className="text-left pb-2 md:pb-0" aria-live="polite">
@@ -287,7 +284,7 @@ export default function HeroSlider() {
                             <button
                                 type="button"
                                 onClick={() => goToManual(index - 1)}
-                                className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
                                 aria-label="Previous slide"
                             >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
@@ -329,7 +326,7 @@ export default function HeroSlider() {
                             <button
                                 type="button"
                                 onClick={() => goToManual(index + 1)}
-                                className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2724]/15 text-[#2a2724] hover:border-[#2a2724] transition-colors"
                                 aria-label="Next slide"
                             >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
