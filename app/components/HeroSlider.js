@@ -15,8 +15,9 @@ const SLIDES = [
         accentClass: "text-[#8a5a28]",
         eyebrowClass: "text-[#8a5a28]",
         body: "Lightweight anti-tarnish jewellery you can live in — from first meetings to late evenings, with pieces ready to gift.",
-        image: "/festive/home-hero-banner.jpg",
-        alt: "Gold necklace, rings, cuff and hoop earrings from The Luxe Jewels",
+        image: "/hero/hero-a-poster.jpg",
+        video: "/hero/hero-a.mp4",
+        alt: "Silver jewellery arranged on a soft studio surface",
         banner: true,
         primary: { href: "/shop", label: "Shop" },
         chip: "Daily wear edit",
@@ -52,8 +53,9 @@ const SLIDES = [
         accentClass: "text-[#8a5a28]",
         eyebrowClass: "text-[#8a5a28]",
         body: "Office to puja — gold-look necklaces and earrings she can wear after the diyas are packed away.",
-        image: "/festive/diwali-hero-banner.jpg",
-        alt: "Diwali gold jewellery styled with a diya",
+        image: "/hero/hero-b-poster.jpg",
+        video: "/hero/hero-b.mp4",
+        alt: "Hands wearing gold rings in soft outdoor light",
         banner: true,
         primary: { href: "/festive/diwali", label: "Shop Diwali" },
         secondary: { href: "/festive/navratri", label: "Shop Navratri" },
@@ -66,8 +68,35 @@ const SLIDES = [
     },
 ];
 
-const INTERVAL_MS = 5500;
+const INTERVAL_MS = 6500;
 const MANUAL_RESUME_MS = 9000;
+
+function useHeroVideoOk() {
+    const [ok, setOk] = useState(false);
+
+    useEffect(() => {
+        const decide = () => {
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const desktop = window.matchMedia("(min-width: 768px)").matches;
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const saveData = Boolean(connection?.saveData);
+            const slowNet = /2g/i.test(connection?.effectiveType || "");
+            setOk(desktop && !reduceMotion && !saveData && !slowNet);
+        };
+
+        decide();
+        const mq = window.matchMedia("(min-width: 768px)");
+        const onChange = () => decide();
+        mq.addEventListener?.("change", onChange);
+        window.addEventListener("resize", onChange);
+        return () => {
+            mq.removeEventListener?.("change", onChange);
+            window.removeEventListener("resize", onChange);
+        };
+    }, []);
+
+    return ok;
+}
 
 /**
  * Homepage hero carousel: brand header, then Navratri, then Diwali.
@@ -81,9 +110,18 @@ export default function HeroSlider() {
         : SLIDES;
     const [index, setIndex] = useState(0);
     const [hold, setHold] = useState(false);
+    const [armedVideos, setArmedVideos] = useState({});
+    const [readyVideos, setReadyVideos] = useState({});
     const resumeTimer = useRef(null);
+    const videoRefs = useRef({});
+    const videoOk = useHeroVideoOk();
     const slide = slides[index] || slides[0];
     const Heading = index === 0 ? "h1" : "p";
+
+    useEffect(() => {
+        if (!videoOk || !slide.video) return;
+        setArmedVideos((prev) => (prev[slide.id] ? prev : { ...prev, [slide.id]: true }));
+    }, [slide.id, slide.video, videoOk]);
 
     const goTo = useCallback((next) => {
         setIndex(((next % slides.length) + slides.length) % slides.length);
@@ -117,6 +155,23 @@ export default function HeroSlider() {
         return () => window.clearInterval(timer);
     }, [hold, slides.length]);
 
+    useEffect(() => {
+        Object.entries(videoRefs.current).forEach(([id, el]) => {
+            if (!el) return;
+            if (id === slide.id && videoOk) {
+                const play = el.play();
+                if (play?.catch) play.catch(() => {});
+            } else {
+                el.pause();
+                try {
+                    el.currentTime = 0;
+                } catch {
+                    /* ignore seek race */
+                }
+            }
+        });
+    }, [slide.id, videoOk]);
+
     return (
         <section
             className={`relative overflow-hidden ${slide.banner ? "bg-[#f7f3ee]" : slide.surface}`}
@@ -125,23 +180,63 @@ export default function HeroSlider() {
         >
             {slide.banner ? (
                 <div className="relative h-[30vh] min-h-[150px] max-h-[200px] md:absolute md:inset-0 md:h-auto md:max-h-none md:min-h-0">
-                    {slides.filter((item) => item.banner).map((item) => (
-                        <Image
-                            key={item.id}
-                            src={item.image}
-                            alt=""
-                            fill
-                            priority={item.id === "main"}
-                            sizes="100vw"
-                            quality={80}
-                            placeholder="blur"
-                            blurDataURL={IMAGE_BLUR_DATA_URL}
-                            className={`object-cover object-[78%_center] md:object-[70%_28%] transition-opacity duration-700 ${
-                                item.id === slide.id ? "opacity-100" : "opacity-0"
-                            }`}
-                        />
-                    ))}
-                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#f7f3ee] from-[8%] via-[#f7f3ee]/80 via-[46%] to-transparent to-[72%]" />
+                    {slides.filter((item) => item.banner).map((item) => {
+                        const active = item.id === slide.id;
+                        const mounted = Boolean(item.video && videoOk && armedVideos[item.id]);
+                        const videoVisible = Boolean(active && readyVideos[item.id]);
+
+                        return (
+                            <div
+                                key={item.id}
+                                className={`absolute inset-0 transition-opacity duration-700 ${
+                                    active ? "opacity-100" : "opacity-0"
+                                }`}
+                                aria-hidden={!active}
+                            >
+                                <Image
+                                    src={item.image}
+                                    alt=""
+                                    fill
+                                    priority={item.id === "main"}
+                                    sizes="100vw"
+                                    quality={78}
+                                    placeholder="blur"
+                                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                                    className={`object-cover ${
+                                        item.video
+                                            ? "object-[62%_center] md:object-[68%_35%]"
+                                            : "object-[78%_center] md:object-[70%_28%]"
+                                    }`}
+                                />
+                                {mounted ? (
+                                    <video
+                                        ref={(el) => {
+                                            if (el) videoRefs.current[item.id] = el;
+                                            else delete videoRefs.current[item.id];
+                                        }}
+                                        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                                            item.id === "main"
+                                                ? "object-[62%_center] md:object-[68%_35%]"
+                                                : "object-[55%_40%] md:object-[60%_35%]"
+                                        } ${videoVisible ? "opacity-100" : "opacity-0"}`}
+                                        muted
+                                        playsInline
+                                        loop
+                                        preload="metadata"
+                                        poster={item.image}
+                                        onCanPlay={() =>
+                                            setReadyVideos((prev) =>
+                                                prev[item.id] ? prev : { ...prev, [item.id]: true }
+                                            )
+                                        }
+                                    >
+                                        <source src={item.video} type="video/mp4" />
+                                    </video>
+                                ) : null}
+                            </div>
+                        );
+                    })}
+                    <div className="pointer-events-none absolute inset-0 hidden md:block bg-gradient-to-r from-[#f7f3ee] from-[10%] via-[#f7f3ee]/85 via-[48%] to-transparent to-[74%]" />
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#f7f3ee] to-transparent md:hidden" />
                 </div>
             ) : (

@@ -227,8 +227,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010g">
-      {/* home-rev:20261010g — earrings image, shop-by-edit after top styles, card motion */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010h">
+      {/* home-rev:20261010h — compressed hero video backgrounds */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
