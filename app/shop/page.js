@@ -32,7 +32,7 @@ export async function generateMetadata({ searchParams }) {
     return {
         title,
         description:
-            "Shop anti-tarnish jewellery in India — earrings, everyday necklaces, daily-wear bracelets. Buy 2 Get 1 Free + shipping from ₹50.",
+            "Shop anti-tarnish jewellery in India — earrings, everyday necklaces, daily-wear bracelets. Buy 2 Get 1 Free + flat ₹50 shipping.",
         alternates: { canonical },
         robots: hasFilters || isPaginated
             ? { index: false, follow: true }

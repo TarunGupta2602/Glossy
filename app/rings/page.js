@@ -20,7 +20,7 @@ export async function generateMetadata({ searchParams }) {
             ? `Anti-Tarnish Rings for Daily Wear (Page ${pageNum})`
             : "Buy Anti-Tarnish Rings Online India",
         description:
-            "Everyday anti-tarnish rings for India — the open emerald band, stackable rhinestone set, and matching bangle-and-ring sets. Cash on delivery or UPI. Shipping from ₹50.",
+            "Everyday anti-tarnish rings for India — the open emerald band, stackable rhinestone set, and matching bangle-and-ring sets. Cash on delivery or UPI. Flat ₹50 shipping.",
         alternates: { canonical },
         robots: isPaginated
             ? { index: false, follow: true }
@@ -67,7 +67,7 @@ export default async function RingsPage({ searchParams }) {
 
     const pageTitle = "Buy Anti-Tarnish Rings Online India";
     const pageDescription =
-        "Rings only: the Gold Emerald Open Ring, the stackable rhinestone set, and bangle-and-ring sets. Not the full shop. Cash on delivery or UPI, shipping from ₹50.";
+        "Rings only: the Gold Emerald Open Ring, the stackable rhinestone set, and bangle-and-ring sets. Not the full shop. Cash on delivery or UPI, flat ₹50 shipping.";
 
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",

@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 export const metadata = {
     title: "Shipping Times, Tracking & 10-Day Returns",
     description:
-        "Delivery times across India, shipping from ₹50, cash on delivery, and our 10-day return policy.",
+        "Delivery times across India, flat ₹50 shipping, cash on delivery without an account, and our 10-day return policy.",
     alternates: {
         canonical: "/shipping-returns",
     },
@@ -34,7 +34,7 @@ export default function ShippingReturns() {
                         <li>Standard delivery: 3–7 business days</li>
                         <li>Express delivery: 1–3 business days (where available)</li>
                         <li>Shipping and delivery is a flat ₹50 on every order</li>
-                        <li>Cash on delivery: sign in at checkout and pay the courier on arrival</li>
+                        <li>Cash on delivery: name and mobile number only — no account needed. Pay the courier on arrival</li>
                     </ul>
                 </LegalSection>
 

@@ -691,7 +691,7 @@ export default function ProductDetailClient({
                         <p className="mt-7 text-[12px] text-[#8a847c] leading-relaxed">
                             Arrives in{" "}
                             <span className="font-semibold text-[#2a2724]">3–5 business days</span>{" "}
-                            across India · Secure prepaid checkout
+                            across India · COD or prepaid checkout
                         </p>
                     </div>
                 </div>

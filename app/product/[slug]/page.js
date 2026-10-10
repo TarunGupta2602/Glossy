@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
         stripWaterproofClaim(
             product.meta_description ||
             product.description ||
-            `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with shipping from ₹50.`
+            `Shop ${product.name} from our ${categoryName} collection. Premium anti-tarnish jewellery with flat ₹50 shipping.`
         )
     );
     const canonicalPath = getProductPath(product);
