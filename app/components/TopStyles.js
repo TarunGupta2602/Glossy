@@ -100,10 +100,10 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                             {products.slice(0, 10).map((product, index) => (
                                 <div
                                     key={product.id}
-                                    className={`product-card-in ${
+                                    className={`product-scroll-rise ${
                                         index >= mobileLimit ? "hidden md:block" : ""
                                     } ${index >= 8 ? "hidden xl:block" : ""}`}
-                                    style={{ animationDelay: `${Math.min(index, 7) * 45}ms` }}
+                                    style={{ animationDelay: `${Math.min(index, 7) * 70}ms` }}
                                 >
                                     <ProductCard
                                         product={product}

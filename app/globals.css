@@ -138,6 +138,36 @@ select:focus-visible,
   animation: product-card-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.product-card-line {
+  display: block;
+  height: 1px;
+  width: 0;
+  margin-top: 0.55rem;
+  background: linear-gradient(90deg, #b89a6a, rgba(184, 154, 106, 0.15));
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .product-card-line,
+.group:focus-within .product-card-line {
+  width: 2.75rem;
+}
+
+@keyframes product-scroll-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-scroll-rise {
+  opacity: 0;
+  animation: product-scroll-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .hero-copy-in {
   animation: hero-copy-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -152,14 +182,21 @@ select:focus-visible,
   .hero-copy-in,
   .animate-fade-in-up,
   .product-card-in,
+  .product-scroll-rise,
   .img-shimmer,
   .ken-burns,
   .hero-progress-bar {
     animation: none !important;
   }
 
-  .product-card-in {
+  .product-card-in,
+  .product-scroll-rise {
     opacity: 1;
+  }
+
+  .product-card-line {
+    width: 2rem;
+    transition: none;
   }
 
   .reveal-on-scroll {

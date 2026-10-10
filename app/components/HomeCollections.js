@@ -29,10 +29,10 @@ export default function HomeCollections({ collections = [] }) {
         const syncMotion = () => setReduceMotion(motion.matches);
         const syncStep = () => {
             const w = window.innerWidth;
-            if (w < 640) setStepPx(190);
-            else if (w < 1024) setStepPx(280);
-            else if (w < 1280) setStepPx(340);
-            else setStepPx(380);
+            if (w < 640) setStepPx(168);
+            else if (w < 1024) setStepPx(240);
+            else if (w < 1280) setStepPx(290);
+            else setStepPx(320);
         };
         syncMotion();
         syncStep();
@@ -126,8 +126,8 @@ export default function HomeCollections({ collections = [] }) {
                 </button>
 
                 <div
-                    className="relative mx-auto h-[390px] sm:h-[480px] md:h-[560px] lg:h-[620px]"
-                    style={{ perspective: "1600px", transformStyle: "preserve-3d" }}
+                    className="relative mx-auto h-[340px] sm:h-[400px] md:h-[460px] lg:h-[500px]"
+                    style={{ perspective: "1400px", transformStyle: "preserve-3d" }}
                     aria-roledescription="carousel"
                     aria-label="Shop by edit"
                 >
@@ -136,9 +136,9 @@ export default function HomeCollections({ collections = [] }) {
                         const wrapped = wrapOffset(index, active, count);
                         const abs = Math.abs(wrapped);
                         const isActive = wrapped === 0;
-                        const scale = isActive ? 1 : abs === 1 ? 0.9 : 0.78;
-                        const opacity = isActive ? 1 : abs === 1 ? 0.88 : 0.4;
-                        const rotate = wrapped * -18;
+                        const scale = isActive ? 1 : abs === 1 ? 0.88 : 0.76;
+                        const opacity = isActive ? 1 : abs === 1 ? 0.86 : 0.38;
+                        const rotate = wrapped * -16;
                         const z = 60 - abs * 12;
 
                         return (
@@ -155,7 +155,7 @@ export default function HomeCollections({ collections = [] }) {
                                         setActive(index);
                                     }
                                 }}
-                                className="absolute left-1/2 top-0 w-[min(78vw,320px)] sm:w-[360px] md:w-[400px] lg:w-[440px] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
+                                className="absolute left-1/2 top-0 w-[min(70vw,260px)] sm:w-[290px] md:w-[320px] lg:w-[350px] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
                                 style={{
                                     transform: `translate3d(calc(-50% + ${wrapped * stepPx}px), 0, 0) rotateY(${rotate}deg) scale(${scale})`,
                                     opacity,
@@ -164,29 +164,36 @@ export default function HomeCollections({ collections = [] }) {
                                 }}
                             >
                                 <div
-                                    className={`relative aspect-[3/4] overflow-hidden rounded-[1.25rem] md:rounded-[1.5rem] bg-[#efeae4] ${
+                                    className={`relative aspect-[3/4] overflow-hidden rounded-[1.15rem] md:rounded-[1.35rem] bg-[#efeae4] ${
                                         isActive
-                                            ? "shadow-[0_28px_60px_-28px_rgba(42,39,36,0.55)] ring-1 ring-black/[0.04]"
-                                            : "shadow-[0_16px_36px_-28px_rgba(42,39,36,0.4)]"
+                                            ? "shadow-[0_24px_48px_-24px_rgba(42,39,36,0.5)] ring-1 ring-black/[0.04]"
+                                            : "shadow-[0_14px_32px_-26px_rgba(42,39,36,0.38)]"
                                     }`}
                                 >
                                     <Image
                                         src={item.image || "/logo.png"}
                                         alt={title}
                                         fill
-                                        sizes="(max-width: 640px) 78vw, (max-width: 1024px) 400px, 440px"
+                                        sizes="(max-width: 640px) 70vw, (max-width: 1024px) 320px, 350px"
                                         quality={isActive ? 85 : 70}
                                         placeholder="blur"
                                         blurDataURL={IMAGE_BLUR_DATA_URL}
-                                        className="object-cover object-center"
+                                        className={`object-cover object-center transition-transform duration-700 ease-out ${
+                                            isActive ? "scale-105" : "scale-100"
+                                        }`}
                                         priority={index === 0 || isActive}
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-6 pt-12">
-                                        <span className="font-sans text-[13px] sm:text-[14px] font-semibold uppercase tracking-[0.2em] text-white drop-shadow-sm">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-5 pt-12">
+                                        <span className="font-sans text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.2em] text-white drop-shadow-sm">
                                             {title}
                                         </span>
-                                        <span className="mt-2.5 h-px w-12 bg-white/90" aria-hidden />
+                                        <span
+                                            className={`mt-2.5 h-px bg-gradient-to-r from-transparent via-[#f0e2c4] to-transparent transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                                                isActive ? "w-14 opacity-100" : "w-0 opacity-0"
+                                            }`}
+                                            aria-hidden
+                                        />
                                     </div>
                                 </div>
                             </Link>

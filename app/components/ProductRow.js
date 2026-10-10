@@ -120,10 +120,11 @@ export default function ProductRow({
                     ref={scrollRef}
                     className="flex items-stretch gap-3 sm:gap-6 md:gap-7 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar scroll-smooth"
                 >
-                    {products.map((product) => (
+                    {products.map((product, index) => (
                         <div
                             key={product.id}
-                            className="shrink-0 w-[72vw] max-w-[260px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
+                            className="product-scroll-rise shrink-0 w-[72vw] max-w-[260px] sm:w-[250px] sm:max-w-none md:w-[270px] snap-start"
+                            style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
                         >
                             <ProductCard
                                 product={product}

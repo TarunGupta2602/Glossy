@@ -227,20 +227,20 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010e">
-      {/* home-rev:20261010e — tighter cards, fixed hover flash */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010g">
+      {/* home-rev:20261010g — earrings image, shop-by-edit after top styles, card motion */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
-        <HomeCollections collections={collections} />
-      </RevealOnScroll>
-
-      <RevealOnScroll>
         <TopStyles
           tabs={topStyleTabs}
           reviewCounts={reviewCounts}
           className="pt-8 pb-14 md:pt-8 md:pb-14 lg:pt-10 lg:pb-16"
         />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <HomeCollections collections={collections} />
       </RevealOnScroll>
 
       {newArrivalProducts.length > 0 && (

@@ -121,6 +121,10 @@ export default function ProductCard({
                 </Link>
 
                 <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-[#2a2724]/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 md:group-hover:opacity-100" />
+                <span
+                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[2px] w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-transparent via-[#b89a6a] to-transparent transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:group-hover:w-2/3"
+                    aria-hidden
+                />
 
                 <div className="absolute top-2.5 left-2.5 z-20 flex flex-col items-start gap-1 pointer-events-none max-w-[75%]">
                     {outOfStock ? (
@@ -198,9 +202,10 @@ export default function ProductCard({
                     <h3 className="font-playfair text-[13px] sm:text-[15px] font-medium text-[#2a2724] leading-snug line-clamp-2 min-h-[2.1rem] sm:min-h-[2.35rem] group-hover:text-[#8a5a28] transition-colors">
                         {product.name}
                     </h3>
+                    <span className="product-card-line" aria-hidden />
                 </Link>
 
-                <div className="mt-1.5 flex items-center justify-between gap-2 min-w-0">
+                <div className="mt-2 flex items-center justify-between gap-2 min-w-0">
                     <div className="flex items-baseline gap-1.5 min-w-0">
                         <Link
                             href={href}
