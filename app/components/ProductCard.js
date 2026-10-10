@@ -77,7 +77,7 @@ export default function ProductCard({
     };
 
     return (
-        <article className="group flex flex-col h-full overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-shadow duration-300 hover:shadow-[0_14px_36px_-16px_rgba(42,39,36,0.4)]">
+        <article className="group flex flex-col h-full overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-white shadow-[0_8px_30px_-18px_rgba(42,39,36,0.35)] ring-1 ring-black/[0.04] transition-[transform,shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(42,39,36,0.42)]">
             <div
                 className="relative overflow-hidden bg-[#f4f2f0] aspect-square w-full"
                 onMouseEnter={() => {

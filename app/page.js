@@ -227,11 +227,15 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261009b">
-      {/* home-rev:20260918a — if View Source lacks this, you are on a stale cache */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010b">
+      {/* home-rev:20261010a — explore edits sit under the hero */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
+        <HomeCollections collections={collections} />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
         <TopStyles
           tabs={topStyleTabs}
           reviewCounts={reviewCounts}
@@ -264,10 +268,6 @@ export default async function Home() {
           />
         </RevealOnScroll>
       )}
-
-      <RevealOnScroll>
-        <HomeCollections collections={collections} />
-      </RevealOnScroll>
 
       <RevealOnScroll>
         <HomeGiftEdits />

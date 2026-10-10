@@ -2,7 +2,13 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SECTION_HEADER_GAP, HOME_SURFACE_SAND, HOME_SURFACE_EDGE } from "@/lib/siteLayout";
+import {
+    HOME_CONTAINER,
+    HOME_SECTION_Y,
+    HOME_SECTION_HEADER_GAP,
+    HOME_SURFACE_SAND,
+    HOME_SURFACE_EDGE,
+} from "@/lib/siteLayout";
 import ProductCard from "./ProductCard";
 import { reviewCardProps } from "@/lib/reviewDisplay";
 
@@ -11,6 +17,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
     const [activeId, setActiveId] = useState(safeTabs[0]?.id || "all");
     const [isPending, startTransition] = useTransition();
     const [showAllMobile, setShowAllMobile] = useState(false);
+    const [animKey, setAnimKey] = useState(0);
 
     const activeTab = useMemo(
         () => safeTabs.find((tab) => tab.id === activeId) || safeTabs[0],
@@ -23,16 +30,20 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
     const mobileLimit = showAllMobile ? 8 : 4;
 
     const selectTab = (id) => {
+        if (id === activeId) return;
         startTransition(() => {
             setActiveId(id);
             setShowAllMobile(false);
+            setAnimKey((k) => k + 1);
         });
     };
 
     return (
         <section className={`${className || HOME_SECTION_Y} ${HOME_SURFACE_SAND} ${HOME_SURFACE_EDGE}`}>
             <div className={HOME_CONTAINER}>
-                <div className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}>
+                <div
+                    className={`flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ${HOME_SECTION_HEADER_GAP} px-1`}
+                >
                     <div className="text-left">
                         <p
                             className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
@@ -50,20 +61,25 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                 </div>
 
                 <div className="mb-8 md:mb-8 lg:mb-10 overflow-x-auto no-scrollbar">
-                    <div className="flex md:flex-wrap items-center justify-start gap-2 sm:gap-2.5 w-max md:w-auto">
+                    <div
+                        className="flex md:flex-wrap items-center justify-start gap-2 sm:gap-2.5 w-max md:w-auto"
+                        role="tablist"
+                        aria-label="Shop by style"
+                    >
                         {safeTabs.map((tab) => {
                             const isActive = tab.id === activeTab.id;
                             return (
                                 <button
                                     key={tab.id}
                                     type="button"
+                                    role="tab"
+                                    aria-selected={isActive}
                                     onClick={() => selectTab(tab.id)}
-                                    className={`shrink-0 px-4 sm:px-5 py-2.5 min-h-10 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border transition-all duration-200 active:scale-95 ${
+                                    className={`shrink-0 px-4 sm:px-5 py-2.5 min-h-10 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border transition-all duration-300 ease-out active:scale-95 ${
                                         isActive
-                                            ? "bg-[#2a2724] text-white border-[#2a2724]"
-                                            : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
+                                            ? "bg-[#2a2724] text-white border-[#2a2724] shadow-[0_10px_24px_-16px_rgba(42,39,36,0.7)]"
+                                            : "bg-white text-gray-700 border-gray-200 hover:border-[#b89a6a] hover:text-[#2a2724]"
                                     }`}
-                                    aria-pressed={isActive}
                                 >
                                     {tab.label}
                                 </button>
@@ -75,14 +91,18 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                 {products.length > 0 ? (
                     <>
                         <div
+                            key={`${activeTab.id}-${animKey}`}
                             className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6 lg:gap-7 transition-opacity duration-200 ${
-                                isPending ? "opacity-50" : "opacity-100"
+                                isPending ? "opacity-55" : "opacity-100"
                             }`}
                         >
                             {products.slice(0, 8).map((product, index) => (
                                 <div
                                     key={product.id}
-                                    className={index >= mobileLimit ? "hidden md:block" : undefined}
+                                    className={`product-card-in ${
+                                        index >= mobileLimit ? "hidden md:block" : ""
+                                    }`}
+                                    style={{ animationDelay: `${Math.min(index, 7) * 55}ms` }}
                                 >
                                     <ProductCard
                                         product={product}
@@ -99,7 +119,7 @@ export default function TopStyles({ tabs = [], reviewCounts = {}, className = ""
                                 <button
                                     type="button"
                                     onClick={() => setShowAllMobile(true)}
-                                    className="min-h-11 px-5 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-800 border border-gray-300 rounded-full"
+                                    className="min-h-11 px-5 text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-800 border border-gray-300 rounded-full hover:border-[#b89a6a] transition-colors"
                                 >
                                     Show more
                                 </button>
