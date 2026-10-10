@@ -227,7 +227,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010c">
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010d">
       {/* home-rev:20261010c — cleaner product cards */}
       <HeroSlider />
 
