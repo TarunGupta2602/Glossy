@@ -112,7 +112,7 @@ export default function HomeInstagramReels({ reels = [] }) {
                         </h2>
                         <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] max-w-md leading-relaxed">
                             {festive
-                                ? "Festive styling and new drops — tap a reel, then shop the Diwali or Diwali edit."
+                                ? "Festive styling and new drops — tap a reel, then shop the Diwali edit."
                                 : "Styling moments, new drops, and everyday shine — tap to play a reel."}
                         </p>
                     </div>
