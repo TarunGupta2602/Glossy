@@ -1,6 +1,4 @@
 import nextDynamic from "next/dynamic";
-import { getFeaturedReviews } from "@/lib/featuredReviews";
-import { getSiteReviewStats } from "@/lib/reviewStats";
 import { getCategoryHref } from "@/lib/categoryLanding";
 import HomeCollections from "./components/HomeCollections";
 import HomeInstagramReels from "./components/HomeInstagramReels";
@@ -16,10 +14,6 @@ import { HOME_FAQS } from "@/lib/faqs";
 import { getStorefrontCatalog, reviewCountsFor } from "@/lib/storefrontCatalog";
 import { isRealBestseller } from "@/lib/unitsSold";
 import { isProductOutOfStock } from "@/lib/productAvailability";
-
-const Testimonials = nextDynamic(() => import("./components/testimonials"), {
-  loading: () => <div className="h-[200px] bg-white" />,
-});
 
 const Newsletter = nextDynamic(() => import("./components/newsletter"), {
   loading: () => <div className="h-[160px] bg-white" />,
@@ -181,14 +175,10 @@ function buildTopStyleTabs(collections, latestProducts) {
 export default async function Home() {
   const [
     { categories, products: catalog, reviewCounts: allReviewCounts },
-    featuredReviews,
-    reviewStats,
     instagramReels,
   ] = await Promise.all([
     getStorefrontCatalog(),
-    getFeaturedReviews(4),
-    getSiteReviewStats(),
-    fetchInstagramReels(3),
+    fetchInstagramReels(6),
   ]);
 
   const productsByCategoryId = {};
@@ -239,8 +229,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010j">
-      {/* home-rev:20261010j — top styles scroll, necklaces-first ALL, diwali-only copy */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010k">
+      {/* home-rev:20261010k — drop home reviews; full Instagram reel row */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
@@ -291,10 +281,6 @@ export default async function Home() {
 
       <RevealOnScroll>
         <HomeStoryTeaser />
-      </RevealOnScroll>
-
-      <RevealOnScroll>
-        <Testimonials reviews={featuredReviews} reviewStats={reviewStats} />
       </RevealOnScroll>
 
       <Newsletter />

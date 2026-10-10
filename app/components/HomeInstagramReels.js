@@ -7,7 +7,6 @@ import { HOME_CONTAINER, HOME_SECTION_Y, HOME_SURFACE_MIST, HOME_SURFACE_EDGE } 
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/constants";
 import { INSTAGRAM_FALLBACK_IMAGES } from "@/lib/instagram";
 import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
-import { isFestivalSeason } from "@/lib/festivalSeason";
 
 function reelEmbedSrc(permalink) {
     const base = (permalink || "").replace(/\/?$/, "/");
@@ -21,8 +20,8 @@ function ReelCard({ reel, poster, index }) {
     const thumb = reel.thumbnailUrl || poster;
 
     return (
-        <article className="shrink-0 w-[min(72vw,280px)] sm:w-[260px] md:w-[270px] snap-start">
-            <div className="relative aspect-[9/16] overflow-hidden rounded-2xl md:rounded-[1.5rem] bg-[#efeae4] shadow-[0_8px_30px_rgba(42,39,36,0.06)]">
+        <article className="min-w-0 w-full">
+            <div className="relative aspect-[9/16] overflow-hidden rounded-2xl md:rounded-[1.35rem] bg-[#efeae4] shadow-[0_8px_30px_rgba(42,39,36,0.06)]">
                 {active ? (
                     <iframe
                         src={reelEmbedSrc(permalink)}
@@ -44,16 +43,16 @@ function ReelCard({ reel, poster, index }) {
                             src={thumb}
                             alt=""
                             fill
-                            sizes="280px"
+                            sizes="(max-width: 640px) 48vw, (max-width: 1280px) 33vw, 16vw"
                             quality={60}
-                            loading={index < 2 ? "lazy" : "lazy"}
+                            loading="lazy"
                             placeholder="blur"
                             blurDataURL={IMAGE_BLUR_DATA_URL}
                             className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         />
                         <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
                         <span
-                            className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-[#2a2724] shadow-sm transition-transform duration-300 group-hover:scale-105"
+                            className="absolute inset-0 m-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-white/90 text-[#2a2724] shadow-sm transition-transform duration-300 group-hover:scale-105"
                             aria-hidden="true"
                         >
                             <svg
@@ -73,7 +72,7 @@ function ReelCard({ reel, poster, index }) {
                 href={permalink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-10 items-center text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors px-0.5"
+                className="mt-2.5 inline-flex min-h-9 items-center text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
             >
                 Open on Instagram
             </a>
@@ -87,8 +86,7 @@ function ReelCard({ reel, poster, index }) {
 export default function HomeInstagramReels({ reels = [] }) {
     if (!reels.length) return null;
 
-    const visible = reels.slice(0, 3);
-    const festive = isFestivalSeason();
+    const visible = reels.slice(0, 6);
 
     return (
         <section
@@ -96,7 +94,7 @@ export default function HomeInstagramReels({ reels = [] }) {
             aria-label="Instagram reels"
         >
             <div className={HOME_CONTAINER}>
-                <div className="flex items-end justify-between gap-4 mb-8 md:mb-8 lg:mb-10">
+                <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
                     <div>
                         <p
                             className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
@@ -110,11 +108,6 @@ export default function HomeInstagramReels({ reels = [] }) {
                                 Instagram
                             </em>
                         </h2>
-                        <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] max-w-md leading-relaxed">
-                            {festive
-                                ? "Festive styling and new drops — tap a reel, then shop the Diwali edit."
-                                : "Styling moments, new drops, and everyday shine — tap to play a reel."}
-                        </p>
                     </div>
                     <Link
                         href={INSTAGRAM_URL}
@@ -126,7 +119,7 @@ export default function HomeInstagramReels({ reels = [] }) {
                     </Link>
                 </div>
 
-                <div className="flex gap-4 md:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2 -mx-1 px-1">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
                     {visible.map((reel, index) => (
                         <ReelCard
                             key={reel.id}
