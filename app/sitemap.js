@@ -11,7 +11,7 @@ const BASE_URL = "https://www.theluxejewels.in";
 const LEGAL_LAST_MODIFIED = new Date("2026-03-01T00:00:00.000Z");
 
 /** Fresh lastmod so Google recrawls new festive / gift / journal URLs. */
-const FESTIVE_LAST_MODIFIED = new Date("2026-10-05T08:00:00.000Z");
+const FESTIVE_LAST_MODIFIED = new Date("2026-10-11T04:30:00.000Z");
 const FRESH_PATHS = new Set([
     "/",
     "/rings",
@@ -25,6 +25,8 @@ const FRESH_PATHS = new Set([
     "/our-story",
     "/faqs",
     "/contact",
+    "/blog",
+    "/blog/is-anti-tarnish-jewellery-real-how-to-check-india",
     "/blog/cash-on-delivery-jewellery-online-india",
     "/blog/navratri-2026-9-colours-9-jewellery-pairings",
     "/blog/how-to-layer-necklaces-diwali-party-looks",
@@ -37,6 +39,9 @@ const FRESH_PATHS = new Set([
     "/blog/15-best-bracelets-for-daily-wear-in-india-2026-gold-silver-fashion",
     "/blog/25-perfect-gift-ideas-for-girlfriend-under-299-that-shell-actually-love",
     "/blog/best-jewelry-gifts-raksha-bandhan-friendship-day-2026",
+    "/blog/why-jewellery-turns-black-anti-tarnish-care-india",
+    "/blog/minimalist-gold-jewelry-everyday-outfit-ideas",
+    "/blog/7-reasons-why-dainty-heart-necklaces-are-perfect-for-everyday-wear",
 ]);
 
 function toDate(value, fallback) {
