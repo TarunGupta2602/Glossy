@@ -22,8 +22,7 @@ function reelEmbedSrc(permalink) {
 }
 
 /**
- * Instagram reels — same 3D tilt coverflow as Shop by edit, auto-advancing.
- * Center card tap loads the Instagram embed; side cards rotate the carousel.
+ * Instagram reels — 3D coverflow matched to Shop by edit, with cleaner card chrome.
  */
 export default function HomeInstagramReels({ reels = [] }) {
     const items = reels.slice(0, 6);
@@ -31,7 +30,7 @@ export default function HomeInstagramReels({ reels = [] }) {
     const [active, setActive] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [reduceMotion, setReduceMotion] = useState(false);
-    const [stepPx, setStepPx] = useState(200);
+    const [stepPx, setStepPx] = useState(240);
     const resumeTimer = useRef(null);
     const holdAutoplay = useRef(false);
     const touchStartX = useRef(null);
@@ -41,10 +40,11 @@ export default function HomeInstagramReels({ reels = [] }) {
         const syncMotion = () => setReduceMotion(motion.matches);
         const syncStep = () => {
             const w = window.innerWidth;
-            if (w < 640) setStepPx(132);
-            else if (w < 1024) setStepPx(180);
-            else if (w < 1280) setStepPx(210);
-            else setStepPx(230);
+            // Wider step than card width so side reels breathe (less crush).
+            if (w < 640) setStepPx(158);
+            else if (w < 1024) setStepPx(210);
+            else if (w < 1280) setStepPx(250);
+            else setStepPx(280);
         };
         syncMotion();
         syncStep();
@@ -89,7 +89,6 @@ export default function HomeInstagramReels({ reels = [] }) {
     const current = items[active];
     const currentPermalink =
         current.permalink || `https://www.instagram.com/reel/${current.id}/`;
-    const currentCaption = (current.caption || "").trim();
 
     return (
         <section
@@ -120,10 +119,10 @@ export default function HomeInstagramReels({ reels = [] }) {
                         pauseBriefly();
                         go(-1);
                     }}
-                    className="absolute left-2 sm:left-4 md:left-8 top-1/2 z-50 -translate-y-1/2 inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#2a2724] border border-[#efeae4] hover:border-[#b89a6a] hover:text-[#8a5a28] transition-colors shadow-[0_8px_24px_-12px_rgba(42,39,36,0.45)]"
+                    className="absolute left-1 sm:left-3 md:left-6 top-[46%] z-50 -translate-y-1/2 inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/95 text-[#2a2724] border border-[#efeae4] hover:border-[#b89a6a] hover:text-[#8a5a28] transition-colors shadow-[0_8px_24px_-12px_rgba(42,39,36,0.45)]"
                     aria-label="Previous reel"
                 >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
                         <path d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
@@ -133,17 +132,17 @@ export default function HomeInstagramReels({ reels = [] }) {
                         pauseBriefly();
                         go(1);
                     }}
-                    className="absolute right-2 sm:right-4 md:right-8 top-1/2 z-50 -translate-y-1/2 inline-flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#2a2724] border border-[#efeae4] hover:border-[#b89a6a] hover:text-[#8a5a28] transition-colors shadow-[0_8px_24px_-12px_rgba(42,39,36,0.45)]"
+                    className="absolute right-1 sm:right-3 md:right-6 top-[46%] z-50 -translate-y-1/2 inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/95 text-[#2a2724] border border-[#efeae4] hover:border-[#b89a6a] hover:text-[#8a5a28] transition-colors shadow-[0_8px_24px_-12px_rgba(42,39,36,0.45)]"
                     aria-label="Next reel"
                 >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
                         <path d="M9 18l6-6-6-6" />
                     </svg>
                 </button>
 
                 <div
-                    className="relative mx-auto h-[380px] sm:h-[440px] md:h-[500px] lg:h-[540px] touch-pan-y"
-                    style={{ perspective: "1400px", transformStyle: "preserve-3d" }}
+                    className="relative mx-auto h-[360px] sm:h-[420px] md:h-[470px] lg:h-[500px] touch-pan-y"
+                    style={{ perspective: "1600px", transformStyle: "preserve-3d" }}
                     aria-roledescription="carousel"
                     aria-label="Instagram reels"
                     onTouchStart={(e) => {
@@ -170,9 +169,9 @@ export default function HomeInstagramReels({ reels = [] }) {
                         const wrapped = wrapOffset(index, active, count);
                         const abs = Math.abs(wrapped);
                         const isActive = wrapped === 0;
-                        const scale = isActive ? 1 : abs === 1 ? 0.88 : 0.76;
-                        const opacity = isActive ? 1 : abs === 1 ? 0.86 : 0.38;
-                        const rotate = wrapped * -16;
+                        const scale = isActive ? 1 : abs === 1 ? 0.9 : 0.78;
+                        const opacity = abs > 2 ? 0 : isActive ? 1 : abs === 1 ? 0.78 : 0.28;
+                        const rotate = wrapped * -11;
                         const z = 60 - abs * 12;
                         const showEmbed = isActive && playing;
 
@@ -182,19 +181,19 @@ export default function HomeInstagramReels({ reels = [] }) {
                                 tabIndex={isActive ? 0 : -1}
                                 aria-hidden={!isActive}
                                 aria-current={isActive ? "true" : undefined}
-                                className="absolute left-1/2 top-0 w-[min(56vw,200px)] sm:w-[220px] md:w-[240px] lg:w-[260px] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
+                                className="absolute left-1/2 top-1/2 w-[min(52vw,190px)] sm:w-[210px] md:w-[230px] lg:w-[248px] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
                                 style={{
-                                    transform: `translate3d(calc(-50% + ${wrapped * stepPx}px), 0, 0) rotateY(${rotate}deg) scale(${scale})`,
+                                    transform: `translate3d(calc(-50% + ${wrapped * stepPx}px), -50%, 0) rotateY(${rotate}deg) scale(${scale})`,
                                     opacity,
                                     zIndex: z,
                                     pointerEvents: abs > 1 ? "none" : "auto",
                                 }}
                             >
                                 <div
-                                    className={`relative aspect-[9/16] overflow-hidden rounded-[1.15rem] md:rounded-[1.35rem] bg-[#efeae4] ${
+                                    className={`relative aspect-[9/16] overflow-hidden rounded-[1.25rem] md:rounded-[1.4rem] bg-[#efeae4] ${
                                         isActive
-                                            ? "shadow-[0_24px_48px_-24px_rgba(42,39,36,0.5)] ring-1 ring-black/[0.04]"
-                                            : "shadow-[0_14px_32px_-26px_rgba(42,39,36,0.38)]"
+                                            ? "shadow-[0_28px_50px_-26px_rgba(42,39,36,0.55)] ring-1 ring-black/[0.05]"
+                                            : "shadow-[0_12px_28px_-22px_rgba(42,39,36,0.4)]"
                                     }`}
                                 >
                                     {showEmbed ? (
@@ -230,41 +229,46 @@ export default function HomeInstagramReels({ reels = [] }) {
                                                 src={poster}
                                                 alt={caption || `Instagram reel ${index + 1}`}
                                                 fill
-                                                sizes="(max-width: 640px) 56vw, 260px"
-                                                quality={isActive ? 80 : 65}
+                                                sizes="(max-width: 640px) 52vw, 248px"
+                                                quality={isActive ? 82 : 62}
                                                 placeholder="blur"
                                                 blurDataURL={IMAGE_BLUR_DATA_URL}
                                                 className={`object-cover object-center transition-transform duration-700 ease-out ${
-                                                    isActive ? "scale-105" : "scale-100"
+                                                    isActive ? "scale-[1.03]" : "scale-100"
                                                 }`}
                                                 priority={index === 0 || isActive}
                                             />
-                                            <span className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
-                                            <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/95 backdrop-blur-[2px]">
-                                                <span className="h-1.5 w-1.5 rounded-full bg-[#E91E63]" aria-hidden />
-                                                Reel
-                                            </span>
+                                            <span
+                                                className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent transition-opacity ${
+                                                    isActive ? "opacity-100" : "opacity-40"
+                                                }`}
+                                            />
+
                                             {isActive ? (
-                                                <span
-                                                    className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/92 text-[#2a2724] shadow-[0_10px_28px_-12px_rgba(42,39,36,0.55)] transition-transform duration-300 group-hover:scale-105"
-                                                    aria-hidden
-                                                >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path d="M8 5v14l11-7z" />
-                                                    </svg>
-                                                </span>
+                                                <>
+                                                    <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-[2px]">
+                                                        <span className="h-1.5 w-1.5 rounded-full bg-[#E91E63]" aria-hidden />
+                                                        Reel
+                                                    </span>
+                                                    <span
+                                                        className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/93 text-[#2a2724] shadow-[0_10px_28px_-12px_rgba(42,39,36,0.55)] transition-transform duration-300 group-hover:scale-105"
+                                                        aria-hidden
+                                                    >
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M8 5v14l11-7z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-6 pt-14">
+                                                        <span className="font-sans text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.16em] text-white drop-shadow-sm text-center line-clamp-2">
+                                                            {caption || "Tap to play"}
+                                                        </span>
+                                                        <span
+                                                            className="mt-2.5 h-px w-12 bg-gradient-to-r from-transparent via-[#f0e2c4] to-transparent"
+                                                            aria-hidden
+                                                        />
+                                                    </span>
+                                                </>
                                             ) : null}
-                                            <span className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-5 pt-12">
-                                                <span className="font-sans text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.18em] text-white drop-shadow-sm text-center line-clamp-2">
-                                                    {caption || "Tap to play"}
-                                                </span>
-                                                <span
-                                                    className={`mt-2.5 h-px bg-gradient-to-r from-transparent via-[#f0e2c4] to-transparent transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                                                        isActive ? "w-14 opacity-100" : "w-0 opacity-0"
-                                                    }`}
-                                                    aria-hidden
-                                                />
-                                            </span>
                                         </button>
                                     )}
                                 </div>
@@ -273,12 +277,12 @@ export default function HomeInstagramReels({ reels = [] }) {
                     })}
                 </div>
 
-                <div className="mt-5 md:mt-6 flex flex-col items-center gap-3">
+                <div className="mt-4 md:mt-5 flex flex-col items-center gap-2.5">
                     <a
                         href={currentPermalink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex min-h-10 items-center text-[12px] font-semibold uppercase tracking-[0.16em] text-[#2a2724] hover:text-[#E91E63] transition-colors"
+                        className="inline-flex min-h-9 items-center text-[12px] font-semibold uppercase tracking-[0.16em] text-[#2a2724] hover:text-[#E91E63] transition-colors"
                     >
                         {playing ? "Open on Instagram →" : "Watch this reel →"}
                     </a>
@@ -309,11 +313,6 @@ export default function HomeInstagramReels({ reels = [] }) {
                             Follow us
                         </Link>
                     </div>
-                    {currentCaption ? (
-                        <p className="max-w-sm text-center text-[12px] text-[#8a847c] line-clamp-1">
-                            {currentCaption}
-                        </p>
-                    ) : null}
                 </div>
             </div>
         </section>

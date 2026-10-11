@@ -229,8 +229,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261011c">
-      {/* home-rev:20261011c — Instagram reels 3D coverflow matching shop-by-edit */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261011d">
+      {/* home-rev:20261011d — Instagram coverflow spacing + cleaner active chrome */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
