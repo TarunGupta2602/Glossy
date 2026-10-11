@@ -68,14 +68,6 @@ function ReelCard({ reel, poster, index }) {
                     </button>
                 )}
             </div>
-            <a
-                href={permalink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2.5 inline-flex min-h-9 items-center text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
-            >
-                Open on Instagram
-            </a>
         </article>
     );
 }
@@ -94,15 +86,15 @@ export default function HomeInstagramReels({ reels = [] }) {
             aria-label="Instagram reels"
         >
             <div className={HOME_CONTAINER}>
-                <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 md:mb-8">
                     <div>
                         <p
-                            className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
+                            className="text-[11px] font-medium tracking-[0.2em] uppercase mb-2"
                             style={{ color: "#b89a6a" }}
                         >
                             {INSTAGRAM_HANDLE}
                         </p>
-                        <h2 className="text-3xl sm:text-4xl font-playfair font-medium text-gray-900 tracking-tight">
+                        <h2 className="font-playfair text-[1.85rem] sm:text-[2.2rem] font-medium text-[#2a2724] tracking-tight leading-[1.12]">
                             On{" "}
                             <em className="italic font-normal" style={{ color: "#b89a6a" }}>
                                 Instagram
@@ -113,13 +105,13 @@ export default function HomeInstagramReels({ reels = [] }) {
                         href={INSTAGRAM_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hidden sm:inline-flex text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors min-h-11 items-center"
+                        className="inline-flex min-h-10 items-center text-[11px] font-semibold tracking-[0.14em] uppercase text-[#8a847c] hover:text-[#E91E63] transition-colors"
                     >
-                        Follow us
+                        Follow us →
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
                     {visible.map((reel, index) => (
                         <ReelCard
                             key={reel.id}
@@ -132,17 +124,6 @@ export default function HomeInstagramReels({ reels = [] }) {
                             }
                         />
                     ))}
-                </div>
-
-                <div className="mt-8 md:mt-10 flex justify-center sm:hidden">
-                    <Link
-                        href={INSTAGRAM_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-[11px] font-semibold tracking-[0.14em] uppercase text-gray-500 hover:text-[#E91E63] transition-colors"
-                    >
-                        Follow {INSTAGRAM_HANDLE}
-                    </Link>
                 </div>
             </div>
         </section>

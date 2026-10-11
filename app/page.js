@@ -229,8 +229,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261010n">
-      {/* home-rev:20261010n — hi-res studio mains for weak product images */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261011a">
+      {/* home-rev:20261011a — shop-by-edit editorial strip + cleaner Instagram row */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
