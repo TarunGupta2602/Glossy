@@ -69,7 +69,7 @@ export default function BlogShopCta({ cta, compact = false }) {
 
     return (
         <section
-            className="my-10 md:my-12 rounded-2xl border border-[#efeae4] bg-[#fdfbf7] p-6 sm:p-8"
+            className="my-10 md:my-12 rounded-[1.5rem] border border-[#e4dcd2] bg-white p-6 sm:p-8 shadow-[0_16px_40px_-32px_rgba(42,39,36,0.35)]"
             aria-label="Shop related jewellery"
         >
             <p
@@ -98,7 +98,7 @@ export default function BlogShopCta({ cta, compact = false }) {
                     <Link
                         key={link.href}
                         href={link.href}
-                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#2a2724]/20 px-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2a2724] hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
+                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#2a2724]/15 bg-[#fdfbf7] px-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2a2724] hover:border-[#E91E63] hover:text-[#E91E63] transition-colors"
                     >
                         {link.label}
                     </Link>
