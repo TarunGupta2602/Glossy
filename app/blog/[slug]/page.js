@@ -1,4 +1,5 @@
 import { getServiceClient } from "@/lib/supabaseServiceClient";
+import { HOME_CONTAINER } from "@/lib/siteLayout";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -25,11 +26,13 @@ import { resolveBlogAuthor } from "@/lib/blogAuthors";
 import BlogShopCta from "../../components/BlogShopCta";
 import BlogProductPicks from "../../components/BlogProductPicks";
 import BlogContentSections from "../../components/BlogContentSections";
+import BlogKeepReading from "../../components/BlogKeepReading";
 import { ShareButtons, MobileStickyCTA } from "./BlogInteraction";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
-import { IMAGE_BLUR_DATA_URL } from "@/lib/imageBlur";
+import { IMAGE_BLUR_DATA_URL, BLOG_HERO_SIZES } from "@/lib/imageBlur";
 import {
     looksLikeHtml,
+    extractHtmlHeadings,
     enhanceBlogHtml,
     ensureBlogInterlinks,
 } from "@/lib/blogFormat";
@@ -127,6 +130,21 @@ function createSlug(text) {
     return normalizeBlogSlug(text);
 }
 
+function getMarkdownHeadings(content) {
+    return String(content)
+        .split(/\r?\n/)
+        .map((line) => line.match(/^(#{1,3})\s+(.*)$/))
+        .filter(Boolean)
+        .map(([_, hashes, text]) => {
+            const depth = hashes.length === 1 ? 2 : hashes.length;
+            return {
+                text: text.trim(),
+                depth,
+                slug: createSlug(text.trim()),
+            };
+        });
+}
+
 export default async function BlogDetailPage({ params }) {
     const { slug } = await params;
     let supabase = null;
@@ -166,6 +184,7 @@ export default async function BlogDetailPage({ params }) {
     const readMinutes = Math.max(1, Math.ceil(wordCount / 220));
 
     const contentIsHtml = looksLikeHtml(blog.content);
+    const markdownToc = !contentIsHtml && blog.content ? getMarkdownHeadings(blog.content) : [];
 
     const renderer = {
         heading({ tokens, depth, raw }) {
@@ -211,6 +230,8 @@ export default async function BlogDetailPage({ params }) {
         );
     }
 
+    const tocItems =
+        markdownToc.length > 0 ? markdownToc : extractHtmlHeadings(htmlContent);
     const seoTitle = formatPageTitle(blog.meta_title || blog.title);
     const seoDescription = truncateMetaDescription(
         blog.meta_description || blog.description || ""
@@ -291,12 +312,8 @@ export default async function BlogDetailPage({ params }) {
               }
             : null;
 
-    const categoryLabel = keywords[0] || "Jewellery tips";
-    const publishedLabel = formatDate(blog.date_posted);
-    const updatedLabel = formatDate(blog.updated_at || blog.date_posted);
-
     return (
-        <main className="min-h-screen bg-white text-[#1f1c1a]">
+        <main className="min-h-screen bg-white text-[#2a2724]">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
@@ -312,169 +329,262 @@ export default async function BlogDetailPage({ params }) {
                 />
             )}
 
-            {/* Education-article layout inspired by luxury house journals (left-aligned, calm, image after meta) */}
-            <div className="mx-auto w-full max-w-[720px] px-5 sm:px-6 pt-6 md:pt-10 pb-16 md:pb-24">
+            <div className={`${HOME_CONTAINER} py-6 md:py-8`}>
                 <nav
-                    className="flex items-center gap-2 text-[12px] text-[#6b6560] mb-8 md:mb-10 overflow-hidden whitespace-nowrap"
+                    className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8a847c] mb-5 md:mb-6 overflow-hidden whitespace-nowrap"
                     aria-label="Breadcrumb"
                 >
                     <Link href="/" className="hover:text-[#E91E63] transition-colors">
                         Home
                     </Link>
-                    <span className="text-[#cfc7bd]">—</span>
+                    <span className="text-[#d4cbc0]">/</span>
                     <Link href="/blog" className="hover:text-[#E91E63] transition-colors">
                         Journal
                     </Link>
+                    <span className="text-[#d4cbc0]">/</span>
+                    <span className="text-[#2a2724] truncate normal-case tracking-normal font-normal">
+                        {blog.title}
+                    </span>
                 </nav>
 
-                <header className="mb-7 md:mb-8">
-                    <p className="text-[13px] text-[#6b6560] mb-4">
-                        Category:{" "}
-                        <Link
-                            href={`/blog/tag/${keywordToTagSlug(categoryLabel)}`}
-                            className="text-[#1f1c1a] underline underline-offset-4 decoration-[#d8d0c6] hover:text-[#E91E63] hover:decoration-[#E91E63]"
-                        >
-                            {categoryLabel}
-                        </Link>
-                    </p>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-14 items-start">
+                    <div className="lg:col-span-8 space-y-7 md:space-y-8">
+                        {heroImageSrc && (
+                            <figure className="relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeae4]">
+                                <Image
+                                    src={heroImageSrc}
+                                    alt={blog.title}
+                                    fill
+                                    sizes={BLOG_HERO_SIZES}
+                                    quality={80}
+                                    className="object-cover object-[center_40%]"
+                                    priority
+                                    placeholder="blur"
+                                    blurDataURL={IMAGE_BLUR_DATA_URL}
+                                />
+                            </figure>
+                        )}
+                        <header>
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
+                                {keywords.slice(0, 1).map((tag) => (
+                                    <Link
+                                        key={tag}
+                                        href={`/blog/tag/${keywordToTagSlug(tag)}`}
+                                        className="text-[10px] font-medium uppercase tracking-[0.18em] hover:text-[#E91E63] transition-colors"
+                                        style={{ color: "#b89a6a" }}
+                                    >
+                                        {tag}
+                                    </Link>
+                                ))}
+                            </div>
 
-                    <h1 className="font-playfair text-[2rem] sm:text-[2.5rem] md:text-[2.85rem] font-medium tracking-tight text-[#1f1c1a] leading-[1.18]">
-                        {blog.title}
-                    </h1>
+                            <h1 className="font-playfair text-[1.75rem] sm:text-[2.15rem] lg:text-[2.45rem] font-medium tracking-tight text-[#2a2724] leading-[1.18]">
+                                {blog.title}
+                            </h1>
 
-                    {blog.description ? (
-                        <p className="mt-4 text-[17px] sm:text-[18px] text-[#4a453f] leading-relaxed">
-                            {blog.description}
-                        </p>
-                    ) : null}
+                            {blog.description ? (
+                                <p className="mt-4 text-[16px] sm:text-[17px] text-[#5c5752] leading-relaxed max-w-2xl">
+                                    {blog.description}
+                                </p>
+                            ) : null}
 
-                    <p className="mt-6 text-[13px] text-[#6b6560]">
-                        Author:{" "}
-                        <span className="text-[#1f1c1a] font-medium">{authorProfile.name}</span>
-                        <span className="mx-2 text-[#cfc7bd]">|</span>
-                        {readMinutes} min read
-                    </p>
-                    <p className="mt-1.5 text-[13px] text-[#6b6560]">
-                        Published: <time dateTime={blog.date_posted}>{publishedLabel}</time>
-                        <span className="mx-2 text-[#cfc7bd]">|</span>
-                        Last updated:{" "}
-                        <time dateTime={blog.updated_at || blog.date_posted}>{updatedLabel}</time>
-                    </p>
-                </header>
+                            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                                <p className="text-[12px] text-[#8a847c]">
+                                    <span className="text-[#2a2724] font-medium">{authorProfile.name}</span>
+                                    <span className="mx-2 text-[#d4cbc0]">·</span>
+                                    <time dateTime={blog.date_posted}>{formatDate(blog.date_posted)}</time>
+                                    <span className="mx-2 text-[#d4cbc0]">·</span>
+                                    {readMinutes} min read
+                                </p>
+                                <ShareButtons title={blog.title} />
+                            </div>
+                        </header>
 
-                {heroImageSrc && (
-                    <figure className="relative w-full aspect-[16/10] overflow-hidden bg-[#f3efe9] mb-5 md:mb-6">
-                        <Image
-                            src={heroImageSrc}
-                            alt={blog.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 720px"
-                            quality={84}
-                            className="object-cover object-center"
-                            priority
-                            placeholder="blur"
-                            blurDataURL={IMAGE_BLUR_DATA_URL}
-                        />
-                    </figure>
-                )}
-
-                <div className="mb-10 md:mb-12">
-                    <ShareButtons title={blog.title} labeled />
-                </div>
-
-                <article
-                    className="prose prose-neutral prose-base sm:prose-lg max-w-none
-                    prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#1f1c1a]
-                    prose-h2:text-[1.45rem] sm:prose-h2:text-[1.7rem] prose-h2:leading-snug prose-h2:mt-11 sm:prose-h2:mt-12 prose-h2:mb-4
-                    prose-h3:text-[1.15rem] sm:prose-h3:text-[1.28rem] prose-h3:mt-8 prose-h3:mb-3
-                    prose-p:text-[#3f3a35] prose-p:leading-[1.85] prose-p:mb-5
-                    prose-strong:text-[#1f1c1a] prose-strong:font-semibold
-                    prose-a:text-[#8a6538] prose-a:font-medium prose-a:underline prose-a:decoration-[#d8cbb8] prose-a:underline-offset-4 hover:prose-a:text-[#E91E63] hover:prose-a:decoration-[#E91E63]
-                    prose-ul:my-6 prose-ul:pl-5 prose-li:text-[#3f3a35] prose-li:my-1.5 prose-li:leading-relaxed
-                    prose-ol:my-6 prose-ol:pl-5
-                    prose-blockquote:border-l-2 prose-blockquote:border-[#c4a574] prose-blockquote:pl-5 prose-blockquote:not-italic prose-blockquote:text-[#5c5752] prose-blockquote:my-8
-                    prose-img:rounded-none prose-img:my-8
-                    "
-                >
-                    <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-                </article>
-
-                <BlogContentSections
-                    whyThisMatters={sections.why_this_matters}
-                    comparisonTable={sections.comparison_table}
-                    tipsMistakes={sections.tips_mistakes}
-                />
-
-                <div className="mt-12 md:mt-14">
-                    <ShareButtons title={blog.title} labeled />
-                </div>
-
-                <div className="mt-12 md:mt-14">
-                    <BlogShopCta cta={shopCta} />
-                </div>
-
-                <BlogProductPicks
-                    products={productPicks}
-                    reviewCounts={reviewCounts}
-                    shopHref={shopCta.primary.href}
-                    shopLabel={shopCta.primary.label}
-                />
-
-                {blog.faqs && blog.faqs.length > 0 && (
-                    <section className="pt-14 md:pt-16 border-t border-[#ece7e1]">
-                        <h2 className="font-playfair text-[1.6rem] md:text-[1.85rem] font-medium text-[#1f1c1a] tracking-tight mb-6">
-                            Questions answered
-                        </h2>
-                        <div className="divide-y divide-[#ece7e1] border-y border-[#ece7e1]">
-                            {blog.faqs.map((faq, idx) => (
-                                <details key={idx} className="group py-5">
-                                    <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
-                                        <span className="font-playfair text-[17px] md:text-[18px] font-medium text-[#1f1c1a] pr-2 leading-snug">
-                                            {faq.question}
-                                        </span>
-                                        <span
-                                            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#ddd6ce] text-[#8a847c] group-open:border-[#b89a6a] group-open:text-[#b89a6a]"
-                                            aria-hidden
+                        {tocItems.length > 0 && (
+                            <details className="lg:hidden border border-[#efeae4] rounded-2xl px-4 py-3 bg-[#fdfbf7] group">
+                                <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-[11px] font-medium uppercase tracking-[0.16em]">
+                                    <span style={{ color: "#b89a6a" }}>On this page</span>
+                                    <svg
+                                        className="w-4 h-4 text-[#8a847c] transition-transform group-open:rotate-180"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="1.8"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </summary>
+                                <nav className="mt-3 mb-2 space-y-2.5">
+                                    {tocItems.map((item) => (
+                                        <a
+                                            key={item.slug}
+                                            href={`#${item.slug}`}
+                                            className={`block text-[13px] ${item.depth === 2 ? "text-[#3d3935]" : "text-[#8a847c] pl-3"}`}
                                         >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                            >
-                                                <path d="M12 5v14" className="group-open:opacity-0" />
-                                                <path d="M5 12h14" />
-                                            </svg>
-                                        </span>
-                                    </summary>
-                                    <p className="mt-3 text-[14px] sm:text-[15px] text-[#5c5752] leading-relaxed pr-8">
-                                        {faq.answer}
-                                    </p>
-                                </details>
-                            ))}
-                        </div>
-                    </section>
-                )}
-            </div>
+                                            {item.text}
+                                        </a>
+                                    ))}
+                                </nav>
+                            </details>
+                        )}
 
-            {relatedPosts && relatedPosts.length > 0 && (
-                <section className="border-t border-[#ece7e1] bg-[#faf8f5]">
-                    <div className="mx-auto w-full max-w-[1100px] px-5 sm:px-6 py-12 md:py-16">
-                        <h2 className="font-playfair text-[1.75rem] md:text-[2rem] text-[#1f1c1a] mb-8 md:mb-10">
-                            Discover more
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-10">
+                        <article
+                            className="prose prose-neutral prose-base sm:prose-lg max-w-none
+                            prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
+                            prose-h2:text-[1.55rem] sm:prose-h2:text-[1.9rem] prose-h2:leading-snug prose-h2:mt-12 sm:prose-h2:mt-14 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
+                            prose-h3:text-[1.2rem] sm:prose-h3:text-[1.35rem] prose-h3:mt-8 prose-h3:mb-3
+                            prose-p:text-[#4a453f] prose-p:leading-[1.8] prose-p:mb-5
+                            prose-strong:text-[#2a2724] prose-strong:font-semibold
+                            prose-a:text-[#9a7344] prose-a:font-medium prose-a:underline prose-a:decoration-[#e4d3b8] prose-a:underline-offset-4 hover:prose-a:text-[#E91E63] hover:prose-a:decoration-[#E91E63]
+                            prose-ul:my-6 prose-ul:pl-5 prose-li:text-[#4a453f] prose-li:my-1.5 prose-li:leading-relaxed
+                            prose-ol:my-6 prose-ol:pl-5
+                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#5c5752] prose-blockquote:rounded-r-xl prose-blockquote:my-8
+                            prose-img:rounded-2xl prose-img:my-8
+                            "
+                        >
+                            <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                        </article>
+
+                        <BlogKeepReading
+                            shopLinks={[
+                                shopCta.primary,
+                                ...(shopCta.links || []),
+                                { href: "/bracelets", label: "Bracelets" },
+                                { href: "/rings", label: "Rings" },
+                            ]}
+                            relatedPosts={relatedPosts}
+                        />
+
+                        <BlogContentSections
+                            whyThisMatters={sections.why_this_matters}
+                            comparisonTable={sections.comparison_table}
+                            tipsMistakes={sections.tips_mistakes}
+                        />
+
+                        <BlogShopCta cta={shopCta} />
+
+                        <BlogProductPicks
+                            products={productPicks}
+                            reviewCounts={reviewCounts}
+                            shopHref={shopCta.primary.href}
+                            shopLabel={shopCta.primary.label}
+                        />
+
+                        {blog.faqs && blog.faqs.length > 0 && (
+                            <section className="pt-14 md:pt-16 border-t border-[#efeae4]">
+                                <p
+                                    className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
+                                    style={{ color: "#b89a6a" }}
+                                >
+                                    Support
+                                </p>
+                                <h2 className="font-playfair text-2xl md:text-3xl font-medium text-[#2a2724] tracking-tight mb-6">
+                                    Questions,{" "}
+                                    <em className="italic font-normal" style={{ color: "#b89a6a" }}>
+                                        answered
+                                    </em>
+                                </h2>
+                                <div className="divide-y divide-[#e8e2da] border-y border-[#e8e2da]">
+                                    {blog.faqs.map((faq, idx) => (
+                                        <details key={idx} className="group py-5">
+                                            <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+                                                <span className="font-playfair text-[17px] md:text-[18px] font-medium text-[#2a2724] pr-2 leading-snug">
+                                                    {faq.question}
+                                                </span>
+                                                <span
+                                                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[#8a847c] group-open:border-[#b89a6a] group-open:text-[#b89a6a]"
+                                                    style={{ borderColor: "#d4cbc0" }}
+                                                    aria-hidden
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="12"
+                                                        height="12"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                    >
+                                                        <path d="M12 5v14" className="group-open:opacity-0" />
+                                                        <path d="M5 12h14" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] leading-relaxed max-w-2xl pr-10">
+                                                {faq.answer}
+                                            </p>
+                                        </details>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {keywords.length > 0 && (
+                            <div className="pt-8 flex flex-wrap gap-2">
+                                <span className="w-full text-[10px] font-medium uppercase tracking-[0.18em] text-[#a89880] mb-1">
+                                    Topics
+                                </span>
+                                {keywords.map((tag) => (
+                                    <Link
+                                        key={tag}
+                                        href={`/blog/tag/${keywordToTagSlug(tag)}`}
+                                        className="px-3.5 py-2 border border-[#efeae4] text-[12px] text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors rounded-full"
+                                    >
+                                        {tag}
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <aside className="hidden lg:block lg:col-span-4 self-start sticky top-24">
+                        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain space-y-6 pr-1">
+                            <BlogShopCta cta={shopCta} compact />
+
+                            {tocItems.length > 0 && (
+                                <div className="border border-[#efeae4] rounded-2xl p-5 bg-[#fdfbf7]">
+                                    <h3
+                                        className="text-[11px] font-medium uppercase tracking-[0.18em] mb-4"
+                                        style={{ color: "#b89a6a" }}
+                                    >
+                                        On this page
+                                    </h3>
+                                    <nav className="space-y-2.5">
+                                        {(tocItems.some((item) => item.depth === 2)
+                                            ? tocItems.filter((item) => item.depth === 2)
+                                            : tocItems
+                                        ).slice(0, 8).map((item) => (
+                                            <a
+                                                key={item.slug}
+                                                href={`#${item.slug}`}
+                                                className="block text-[13px] leading-snug text-[#3d3935] transition-colors hover:text-[#E91E63]"
+                                            >
+                                                {item.text}
+                                            </a>
+                                        ))}
+                                    </nav>
+                                </div>
+                            )}
+                        </div>
+                    </aside>
+                </div>
+
+                {relatedPosts && relatedPosts.length > 0 && (
+                    <section className="mt-14 md:mt-16 pt-10 border-t border-[#efeae4]">
+                        <h2 className="font-playfair text-[1.6rem] text-[#2a2724] mb-6">Keep reading</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             {relatedPosts.map((post) => (
                                 <Link
                                     key={post.id}
                                     href={`/blog/${normalizeBlogSlug(post.slug) || post.slug}`}
                                     className="group block"
                                 >
-                                    <div className="relative aspect-[4/3] overflow-hidden bg-[#efeae4] mb-4">
+                                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#efeae4] mb-3">
                                         <Image
                                             src={normalizeBlogImageSrc(post.image) || "/logo.png"}
                                             alt={post.title}
@@ -486,21 +596,18 @@ export default async function BlogDetailPage({ params }) {
                                             blurDataURL={IMAGE_BLUR_DATA_URL}
                                         />
                                     </div>
-                                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#8a847c] mb-2">
-                                        Journal
-                                    </p>
-                                    <h3 className="font-playfair text-[1.15rem] font-medium text-[#1f1c1a] leading-snug group-hover:text-[#E91E63] transition-colors">
+                                    <h3 className="font-playfair text-[1.05rem] font-medium text-[#2a2724] leading-snug group-hover:text-[#E91E63] transition-colors">
                                         {post.title}
                                     </h3>
-                                    <p className="mt-2 text-[12px] text-[#8a847c]">
+                                    <time className="mt-1.5 block text-[11px] uppercase tracking-[0.14em] text-[#a89880]">
                                         {formatDate(post.date_posted)}
-                                    </p>
+                                    </time>
                                 </Link>
                             ))}
                         </div>
-                    </div>
-                </section>
-            )}
+                    </section>
+                )}
+            </div>
 
             <MobileStickyCTA
                 title={blog.title}
