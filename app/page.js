@@ -178,7 +178,7 @@ export default async function Home() {
     instagramReels,
   ] = await Promise.all([
     getStorefrontCatalog(),
-    fetchInstagramReels(6),
+    fetchInstagramReels(9),
   ]);
 
   const productsByCategoryId = {};
@@ -229,8 +229,8 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261011a">
-      {/* home-rev:20261011a — shop-by-edit editorial strip + cleaner Instagram row */}
+    <main className="min-h-screen bg-[#fdfbf7]" data-home-rev="20261011b">
+      {/* home-rev:20261011b — keep 3D shop-by-edit; richer Instagram reels rail */}
       <HeroSlider />
 
       <RevealOnScroll startVisible>
