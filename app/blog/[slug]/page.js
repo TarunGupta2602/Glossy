@@ -347,231 +347,203 @@ export default async function BlogDetailPage({ params }) {
                     </span>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-14 items-start">
-                    <div className="lg:col-span-8 space-y-7 md:space-y-8">
-                        {heroImageSrc && (
-                            <figure className="relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeae4]">
-                                <Image
-                                    src={heroImageSrc}
-                                    alt={blog.title}
-                                    fill
-                                    sizes={BLOG_HERO_SIZES}
-                                    quality={80}
-                                    className="object-cover object-[center_40%]"
-                                    priority
-                                    placeholder="blur"
-                                    blurDataURL={IMAGE_BLUR_DATA_URL}
-                                />
-                            </figure>
-                        )}
-                        <header>
-                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
-                                {keywords.slice(0, 1).map((tag) => (
-                                    <Link
-                                        key={tag}
-                                        href={`/blog/tag/${keywordToTagSlug(tag)}`}
-                                        className="text-[10px] font-medium uppercase tracking-[0.18em] hover:text-[#E91E63] transition-colors"
-                                        style={{ color: "#b89a6a" }}
-                                    >
-                                        {tag}
-                                    </Link>
-                                ))}
-                            </div>
-
-                            <h1 className="font-playfair text-[1.75rem] sm:text-[2.15rem] lg:text-[2.45rem] font-medium tracking-tight text-[#2a2724] leading-[1.18]">
-                                {blog.title}
-                            </h1>
-
-                            {blog.description ? (
-                                <p className="mt-4 text-[16px] sm:text-[17px] text-[#5c5752] leading-relaxed max-w-2xl">
-                                    {blog.description}
-                                </p>
-                            ) : null}
-
-                            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                                <p className="text-[12px] text-[#8a847c]">
-                                    <span className="text-[#2a2724] font-medium">{authorProfile.name}</span>
-                                    <span className="mx-2 text-[#d4cbc0]">·</span>
-                                    <time dateTime={blog.date_posted}>{formatDate(blog.date_posted)}</time>
-                                    <span className="mx-2 text-[#d4cbc0]">·</span>
-                                    {readMinutes} min read
-                                </p>
-                                <ShareButtons title={blog.title} />
-                            </div>
-                        </header>
-
-                        {tocItems.length > 0 && (
-                            <details className="lg:hidden border border-[#efeae4] rounded-2xl px-4 py-3 bg-[#fdfbf7] group">
-                                <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-[11px] font-medium uppercase tracking-[0.16em]">
-                                    <span style={{ color: "#b89a6a" }}>On this page</span>
-                                    <svg
-                                        className="w-4 h-4 text-[#8a847c] transition-transform group-open:rotate-180"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="1.8"
-                                            d="M19 9l-7 7-7-7"
-                                        />
-                                    </svg>
-                                </summary>
-                                <nav className="mt-3 mb-2 space-y-2.5">
-                                    {tocItems.map((item) => (
-                                        <a
-                                            key={item.slug}
-                                            href={`#${item.slug}`}
-                                            className={`block text-[13px] ${item.depth === 2 ? "text-[#3d3935]" : "text-[#8a847c] pl-3"}`}
-                                        >
-                                            {item.text}
-                                        </a>
-                                    ))}
-                                </nav>
-                            </details>
-                        )}
-
-                        <article
-                            className="prose prose-neutral prose-base sm:prose-lg max-w-[42rem]
-                            prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
-                            prose-h2:text-[1.55rem] sm:prose-h2:text-[1.9rem] prose-h2:leading-snug prose-h2:mt-12 sm:prose-h2:mt-14 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
-                            prose-h3:text-[1.2rem] sm:prose-h3:text-[1.35rem] prose-h3:mt-8 prose-h3:mb-3
-                            prose-p:text-[#4a453f] prose-p:leading-[1.8] prose-p:mb-5
-                            prose-strong:text-[#2a2724] prose-strong:font-semibold
-                            prose-a:text-[#9a7344] prose-a:font-medium prose-a:underline prose-a:decoration-[#e4d3b8] prose-a:underline-offset-4 hover:prose-a:text-[#E91E63] hover:prose-a:decoration-[#E91E63]
-                            prose-ul:my-6 prose-ul:pl-5 prose-li:text-[#4a453f] prose-li:my-1.5 prose-li:leading-relaxed
-                            prose-ol:my-6 prose-ol:pl-5
-                            prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#5c5752] prose-blockquote:rounded-r-xl prose-blockquote:my-8
-                            prose-img:rounded-2xl prose-img:my-8
-                            "
-                        >
-                            <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-                        </article>
-
-                        <BlogKeepReading
-                            shopLinks={[
-                                shopCta.primary,
-                                ...(shopCta.links || []),
-                                { href: "/bracelets", label: "Bracelets" },
-                                { href: "/rings", label: "Rings" },
-                            ]}
-                            relatedPosts={relatedPosts}
-                        />
-
-                        <BlogContentSections
-                            whyThisMatters={sections.why_this_matters}
-                            comparisonTable={sections.comparison_table}
-                            tipsMistakes={sections.tips_mistakes}
-                        />
-
-                        <BlogShopCta cta={shopCta} />
-
-                        <BlogProductPicks
-                            products={productPicks}
-                            reviewCounts={reviewCounts}
-                            shopHref={shopCta.primary.href}
-                            shopLabel={shopCta.primary.label}
-                        />
-
-                        {blog.faqs && blog.faqs.length > 0 && (
-                            <section className="pt-14 md:pt-16 border-t border-[#efeae4]">
-                                <p
-                                    className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
+                <div className="mx-auto w-full max-w-[46rem] space-y-7 md:space-y-8">
+                    {heroImageSrc && (
+                        <figure className="relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeae4]">
+                            <Image
+                                src={heroImageSrc}
+                                alt={blog.title}
+                                fill
+                                sizes={BLOG_HERO_SIZES}
+                                quality={80}
+                                className="object-cover object-[center_40%]"
+                                priority
+                                placeholder="blur"
+                                blurDataURL={IMAGE_BLUR_DATA_URL}
+                            />
+                        </figure>
+                    )}
+                    <header>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
+                            {keywords.slice(0, 1).map((tag) => (
+                                <Link
+                                    key={tag}
+                                    href={`/blog/tag/${keywordToTagSlug(tag)}`}
+                                    className="text-[10px] font-medium uppercase tracking-[0.18em] hover:text-[#E91E63] transition-colors"
                                     style={{ color: "#b89a6a" }}
                                 >
-                                    Support
-                                </p>
-                                <h2 className="font-playfair text-2xl md:text-3xl font-medium text-[#2a2724] tracking-tight mb-6">
-                                    Questions,{" "}
-                                    <em className="italic font-normal" style={{ color: "#b89a6a" }}>
-                                        answered
-                                    </em>
-                                </h2>
-                                <div className="divide-y divide-[#e8e2da] border-y border-[#e8e2da]">
-                                    {blog.faqs.map((faq, idx) => (
-                                        <details key={idx} className="group py-5">
-                                            <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
-                                                <span className="font-playfair text-[17px] md:text-[18px] font-medium text-[#2a2724] pr-2 leading-snug">
-                                                    {faq.question}
-                                                </span>
-                                                <span
-                                                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[#8a847c] group-open:border-[#b89a6a] group-open:text-[#b89a6a]"
-                                                    style={{ borderColor: "#d4cbc0" }}
-                                                    aria-hidden
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="12"
-                                                        height="12"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2"
-                                                        strokeLinecap="round"
-                                                    >
-                                                        <path d="M12 5v14" className="group-open:opacity-0" />
-                                                        <path d="M5 12h14" />
-                                                    </svg>
-                                                </span>
-                                            </summary>
-                                            <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] leading-relaxed max-w-2xl pr-10">
-                                                {faq.answer}
-                                            </p>
-                                        </details>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                                    {tag}
+                                </Link>
+                            ))}
+                        </div>
 
-                        {keywords.length > 0 && (
-                            <div className="pt-8 flex flex-wrap gap-2">
-                                <span className="w-full text-[10px] font-medium uppercase tracking-[0.18em] text-[#a89880] mb-1">
-                                    Topics
-                                </span>
-                                {keywords.map((tag) => (
-                                    <Link
-                                        key={tag}
-                                        href={`/blog/tag/${keywordToTagSlug(tag)}`}
-                                        className="px-3.5 py-2 border border-[#efeae4] text-[12px] text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors rounded-full"
+                        <h1 className="font-playfair text-[1.75rem] sm:text-[2.15rem] lg:text-[2.45rem] font-medium tracking-tight text-[#2a2724] leading-[1.18]">
+                            {blog.title}
+                        </h1>
+
+                        {blog.description ? (
+                            <p className="mt-4 text-[16px] sm:text-[17px] text-[#5c5752] leading-relaxed">
+                                {blog.description}
+                            </p>
+                        ) : null}
+
+                        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                            <p className="text-[12px] text-[#8a847c]">
+                                <span className="text-[#2a2724] font-medium">{authorProfile.name}</span>
+                                <span className="mx-2 text-[#d4cbc0]">·</span>
+                                <time dateTime={blog.date_posted}>{formatDate(blog.date_posted)}</time>
+                                <span className="mx-2 text-[#d4cbc0]">·</span>
+                                {readMinutes} min read
+                            </p>
+                            <ShareButtons title={blog.title} />
+                        </div>
+                    </header>
+
+                    <BlogShopCta cta={shopCta} compact />
+
+                    {tocItems.length > 0 && (
+                        <details className="border border-[#efeae4] rounded-2xl px-4 py-3 bg-[#fdfbf7] group">
+                            <summary className="flex items-center justify-between cursor-pointer list-none min-h-11 text-[11px] font-medium uppercase tracking-[0.16em]">
+                                <span style={{ color: "#b89a6a" }}>On this page</span>
+                                <svg
+                                    className="w-4 h-4 text-[#8a847c] transition-transform group-open:rotate-180"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="1.8"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </summary>
+                            <nav className="mt-3 mb-2 space-y-2.5">
+                                {(tocItems.some((item) => item.depth === 2)
+                                    ? tocItems.filter((item) => item.depth === 2)
+                                    : tocItems
+                                ).map((item) => (
+                                    <a
+                                        key={item.slug}
+                                        href={`#${item.slug}`}
+                                        className="block text-[13px] text-[#3d3935]"
                                     >
-                                        {tag}
-                                    </Link>
+                                        {item.text}
+                                    </a>
+                                ))}
+                            </nav>
+                        </details>
+                    )}
+
+                    <article
+                        className="prose prose-neutral prose-base sm:prose-lg max-w-none
+                        prose-headings:font-playfair prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-[#2a2724]
+                        prose-h2:text-[1.55rem] sm:prose-h2:text-[1.9rem] prose-h2:leading-snug prose-h2:mt-12 sm:prose-h2:mt-14 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[#efeae4]
+                        prose-h3:text-[1.2rem] sm:prose-h3:text-[1.35rem] prose-h3:mt-8 prose-h3:mb-3
+                        prose-p:text-[#4a453f] prose-p:leading-[1.8] prose-p:mb-5
+                        prose-strong:text-[#2a2724] prose-strong:font-semibold
+                        prose-a:text-[#9a7344] prose-a:font-medium prose-a:underline prose-a:decoration-[#e4d3b8] prose-a:underline-offset-4 hover:prose-a:text-[#E91E63] hover:prose-a:decoration-[#E91E63]
+                        prose-ul:my-6 prose-ul:pl-5 prose-li:text-[#4a453f] prose-li:my-1.5 prose-li:leading-relaxed
+                        prose-ol:my-6 prose-ol:pl-5
+                        prose-blockquote:border-l-2 prose-blockquote:border-[#b89a6a] prose-blockquote:bg-[#fdfbf7] prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-[#5c5752] prose-blockquote:rounded-r-xl prose-blockquote:my-8
+                        prose-img:rounded-2xl prose-img:my-8
+                        "
+                    >
+                        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                    </article>
+
+                    <BlogKeepReading
+                        shopLinks={[
+                            shopCta.primary,
+                            ...(shopCta.links || []),
+                            { href: "/bracelets", label: "Bracelets" },
+                            { href: "/rings", label: "Rings" },
+                        ]}
+                        relatedPosts={relatedPosts}
+                    />
+
+                    <BlogContentSections
+                        whyThisMatters={sections.why_this_matters}
+                        comparisonTable={sections.comparison_table}
+                        tipsMistakes={sections.tips_mistakes}
+                    />
+
+                    <BlogShopCta cta={shopCta} />
+
+                    <BlogProductPicks
+                        products={productPicks}
+                        reviewCounts={reviewCounts}
+                        shopHref={shopCta.primary.href}
+                        shopLabel={shopCta.primary.label}
+                    />
+
+                    {blog.faqs && blog.faqs.length > 0 && (
+                        <section className="pt-14 md:pt-16 border-t border-[#efeae4]">
+                            <p
+                                className="text-[11px] font-medium tracking-[0.2em] uppercase mb-3"
+                                style={{ color: "#b89a6a" }}
+                            >
+                                Support
+                            </p>
+                            <h2 className="font-playfair text-2xl md:text-3xl font-medium text-[#2a2724] tracking-tight mb-6">
+                                Questions,{" "}
+                                <em className="italic font-normal" style={{ color: "#b89a6a" }}>
+                                    answered
+                                </em>
+                            </h2>
+                            <div className="divide-y divide-[#e8e2da] border-y border-[#e8e2da]">
+                                {blog.faqs.map((faq, idx) => (
+                                    <details key={idx} className="group py-5">
+                                        <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+                                            <span className="font-playfair text-[17px] md:text-[18px] font-medium text-[#2a2724] pr-2 leading-snug">
+                                                {faq.question}
+                                            </span>
+                                            <span
+                                                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[#8a847c] group-open:border-[#b89a6a] group-open:text-[#b89a6a]"
+                                                style={{ borderColor: "#d4cbc0" }}
+                                                aria-hidden
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="12"
+                                                    height="12"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                >
+                                                    <path d="M12 5v14" className="group-open:opacity-0" />
+                                                    <path d="M5 12h14" />
+                                                </svg>
+                                            </span>
+                                        </summary>
+                                        <p className="mt-3 text-[14px] sm:text-[15px] text-[#6b6560] leading-relaxed pr-10">
+                                            {faq.answer}
+                                        </p>
+                                    </details>
                                 ))}
                             </div>
-                        )}
-                    </div>
+                        </section>
+                    )}
 
-                    <aside className="lg:col-span-4">
-                        <div className="hidden lg:block lg:sticky lg:top-24 max-h-[calc(100vh-6.5rem)] overflow-y-auto overscroll-contain space-y-6 pr-1">
-                            <BlogShopCta cta={shopCta} compact />
-
-                            {tocItems.length > 0 && (
-                                <div className="border border-[#efeae4] rounded-2xl p-5 bg-[#fdfbf7]">
-                                    <h3
-                                        className="text-[11px] font-medium uppercase tracking-[0.18em] mb-4"
-                                        style={{ color: "#b89a6a" }}
-                                    >
-                                        On this page
-                                    </h3>
-                                    <nav className="space-y-2.5">
-                                        {(tocItems.some((item) => item.depth === 2)
-                                            ? tocItems.filter((item) => item.depth === 2)
-                                            : tocItems
-                                        ).map((item) => (
-                                            <a
-                                                key={item.slug}
-                                                href={`#${item.slug}`}
-                                                className="block text-[13px] leading-snug text-[#3d3935] transition-colors hover:text-[#E91E63]"
-                                            >
-                                                {item.text}
-                                            </a>
-                                        ))}
-                                    </nav>
-                                </div>
-                            )}
+                    {keywords.length > 0 && (
+                        <div className="pt-8 flex flex-wrap gap-2">
+                            <span className="w-full text-[10px] font-medium uppercase tracking-[0.18em] text-[#a89880] mb-1">
+                                Topics
+                            </span>
+                            {keywords.map((tag) => (
+                                <Link
+                                    key={tag}
+                                    href={`/blog/tag/${keywordToTagSlug(tag)}`}
+                                    className="px-3.5 py-2 border border-[#efeae4] text-[12px] text-[#6b6560] hover:border-[#b89a6a] hover:text-[#2a2724] transition-colors rounded-full"
+                                >
+                                    {tag}
+                                </Link>
+                            ))}
                         </div>
-                    </aside>
+                    )}
                 </div>
 
                 {relatedPosts && relatedPosts.length > 0 && (
