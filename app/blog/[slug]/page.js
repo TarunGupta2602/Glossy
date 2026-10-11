@@ -542,24 +542,27 @@ export default async function BlogDetailPage({ params }) {
                         )}
                     </div>
 
-                    <aside className="lg:col-span-4 space-y-8">
-                        <div className="hidden lg:block lg:sticky lg:top-28 space-y-8">
+                    <aside className="lg:col-span-4">
+                        <div className="hidden lg:block lg:sticky lg:top-24 max-h-[calc(100vh-6.5rem)] overflow-y-auto overscroll-contain space-y-6 pr-1">
                             <BlogShopCta cta={shopCta} compact />
 
                             {tocItems.length > 0 && (
-                                <div className="border border-[#efeae4] rounded-2xl p-6 bg-[#fdfbf7]">
+                                <div className="border border-[#efeae4] rounded-2xl p-5 bg-[#fdfbf7]">
                                     <h3
-                                        className="text-[11px] font-medium uppercase tracking-[0.18em] mb-5"
+                                        className="text-[11px] font-medium uppercase tracking-[0.18em] mb-4"
                                         style={{ color: "#b89a6a" }}
                                     >
                                         On this page
                                     </h3>
-                                    <nav className="space-y-3">
-                                        {tocItems.map((item) => (
+                                    <nav className="space-y-2.5">
+                                        {(tocItems.some((item) => item.depth === 2)
+                                            ? tocItems.filter((item) => item.depth === 2)
+                                            : tocItems
+                                        ).map((item) => (
                                             <a
                                                 key={item.slug}
                                                 href={`#${item.slug}`}
-                                                className={`block text-[13px] leading-snug transition-colors hover:text-[#E91E63] ${item.depth === 2 ? "text-[#3d3935]" : "text-[#8a847c] pl-3 border-l border-[#e8e2da]"}`}
+                                                className="block text-[13px] leading-snug text-[#3d3935] transition-colors hover:text-[#E91E63]"
                                             >
                                                 {item.text}
                                             </a>
