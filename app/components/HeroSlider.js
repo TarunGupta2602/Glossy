@@ -59,9 +59,8 @@ function useHeroVideoOk() {
             const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             const saveData = Boolean(connection?.saveData);
-            const slowNet = /2g/i.test(connection?.effectiveType || "");
-            // Mobile + desktop: play compressed hero videos unless data-saver / slow net / reduced motion.
-            setOk(!reduceMotion && !saveData && !slowNet);
+            // Only skip video for accessibility / explicit data-saver — keep autoplay on normal mobile.
+            setOk(!reduceMotion && !saveData);
         };
 
         decide();
@@ -71,6 +70,12 @@ function useHeroVideoOk() {
     }, []);
 
     return ok;
+}
+
+function tryPlay(el) {
+    if (!el) return;
+    const play = el.play();
+    if (play?.catch) play.catch(() => {});
 }
 
 /**
@@ -90,10 +95,21 @@ export default function HeroSlider() {
     const slide = slides[index] || slides[0];
     const Heading = index === 0 ? "h1" : "p";
 
+    // Arm every hero video once videos are allowed — keeps the next slide ready to play.
     useEffect(() => {
-        if (!videoOk || !slide.video) return;
-        setArmedVideos((prev) => (prev[slide.id] ? prev : { ...prev, [slide.id]: true }));
-    }, [slide.id, slide.video, videoOk]);
+        if (!videoOk) return;
+        setArmedVideos((prev) => {
+            const next = { ...prev };
+            let changed = false;
+            for (const item of slides) {
+                if (item.video && !next[item.id]) {
+                    next[item.id] = true;
+                    changed = true;
+                }
+            }
+            return changed ? next : prev;
+        });
+    }, [videoOk, slides]);
 
     const goTo = useCallback((next) => {
         setIndex(((next % slides.length) + slides.length) % slides.length);
@@ -127,22 +143,60 @@ export default function HeroSlider() {
         return () => window.clearInterval(timer);
     }, [hold, slides.length]);
 
+    // Keep the active hero video playing; resume after tab blur, stall, or OS pause.
     useEffect(() => {
+        if (!videoOk) return undefined;
+
         Object.entries(videoRefs.current).forEach(([id, el]) => {
-            if (!el) return;
-            if (id === slide.id && videoOk) {
-                const play = el.play();
-                if (play?.catch) play.catch(() => {});
-            } else {
-                el.pause();
-                try {
-                    el.currentTime = 0;
-                } catch {
-                    /* ignore seek race */
-                }
+            if (!el || id === slide.id) return;
+            el.pause();
+            try {
+                el.currentTime = 0;
+            } catch {
+                /* ignore seek race */
             }
         });
-    }, [slide.id, videoOk]);
+
+        const el = videoRefs.current[slide.id];
+        if (!el) return undefined;
+
+        let cancelled = false;
+
+        const ensurePlay = () => {
+            if (cancelled || document.hidden) return;
+            if (el.paused || el.ended) tryPlay(el);
+        };
+
+        tryPlay(el);
+
+        const onVis = () => {
+            if (!document.hidden) ensurePlay();
+        };
+        const onPageShow = () => ensurePlay();
+
+        document.addEventListener("visibilitychange", onVis);
+        window.addEventListener("pageshow", onPageShow);
+        el.addEventListener("pause", ensurePlay);
+        el.addEventListener("stalled", ensurePlay);
+        el.addEventListener("waiting", ensurePlay);
+        el.addEventListener("suspend", ensurePlay);
+        el.addEventListener("ended", ensurePlay);
+        el.addEventListener("canplay", ensurePlay);
+        const poll = window.setInterval(ensurePlay, 1200);
+
+        return () => {
+            cancelled = true;
+            document.removeEventListener("visibilitychange", onVis);
+            window.removeEventListener("pageshow", onPageShow);
+            el.removeEventListener("pause", ensurePlay);
+            el.removeEventListener("stalled", ensurePlay);
+            el.removeEventListener("waiting", ensurePlay);
+            el.removeEventListener("suspend", ensurePlay);
+            el.removeEventListener("ended", ensurePlay);
+            el.removeEventListener("canplay", ensurePlay);
+            window.clearInterval(poll);
+        };
+    }, [slide.id, videoOk, armedVideos]);
 
     return (
         <section
@@ -183,20 +237,36 @@ export default function HeroSlider() {
                                 {mounted ? (
                                     <video
                                         ref={(el) => {
-                                            if (el) videoRefs.current[item.id] = el;
-                                            else delete videoRefs.current[item.id];
+                                            if (el) {
+                                                videoRefs.current[item.id] = el;
+                                                if (active && videoOk) tryPlay(el);
+                                            } else {
+                                                delete videoRefs.current[item.id];
+                                            }
                                         }}
                                         className={`absolute inset-0 h-full w-full object-cover brightness-[0.9] contrast-[1.08] saturate-[1.05] transition-opacity duration-700 ${
                                             item.id === "main"
                                                 ? "object-[55%_35%] md:object-[68%_35%]"
                                                 : "object-[55%_40%] md:object-[60%_35%]"
                                         } ${videoVisible ? "opacity-100" : "opacity-0"}`}
+                                        autoPlay
                                         muted
                                         playsInline
                                         loop
-                                        preload="metadata"
+                                        preload="auto"
                                         poster={item.image}
-                                        onCanPlay={() =>
+                                        onLoadedData={() =>
+                                            setReadyVideos((prev) =>
+                                                prev[item.id] ? prev : { ...prev, [item.id]: true }
+                                            )
+                                        }
+                                        onCanPlay={() => {
+                                            setReadyVideos((prev) =>
+                                                prev[item.id] ? prev : { ...prev, [item.id]: true }
+                                            );
+                                            if (active && videoOk) tryPlay(videoRefs.current[item.id]);
+                                        }}
+                                        onPlaying={() =>
                                             setReadyVideos((prev) =>
                                                 prev[item.id] ? prev : { ...prev, [item.id]: true }
                                             )
